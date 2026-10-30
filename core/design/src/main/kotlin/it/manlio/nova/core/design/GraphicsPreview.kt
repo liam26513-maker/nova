@@ -119,12 +119,13 @@ private fun scene(
     phase: Float,
     dark: Boolean,
 ): List<Blob> {
-    val alpha = if (dark) 0.75f else 0.9f
-    val r = size.height * 0.42f
+    val alpha = if (dark) 0.8f else 0.95f
+    val r = size.height * 0.36f
+    // Le forme attraversano il centro, cioè passano proprio dietro al vetro.
     return listOf(
-        Blob(Offset(size.width * (0.08f + 0.5f * phase), size.height * 0.35f), r, Color(0xFF8FA9C4).copy(alpha = alpha)),
-        Blob(Offset(size.width * (0.92f - 0.55f * phase), size.height * 0.62f), r * 0.9f, Color(0xFFB9C7A8).copy(alpha = alpha)),
-        Blob(Offset(size.width * (0.35f + 0.3f * phase), size.height * 0.9f), r * 0.7f, Color(0xFFD9B99B).copy(alpha = alpha)),
+        Blob(Offset(size.width * (0.05f + 0.6f * phase), size.height * 0.42f), r, Color(0xFF7F9CC0).copy(alpha = alpha)),
+        Blob(Offset(size.width * (0.95f - 0.6f * phase), size.height * 0.58f), r * 0.9f, Color(0xFFA9BF92).copy(alpha = alpha)),
+        Blob(Offset(size.width * (0.30f + 0.4f * phase), size.height * 0.5f), r * 0.6f, Color(0xFFD9A982).copy(alpha = alpha)),
     )
 }
 
@@ -148,11 +149,11 @@ private fun frozenBlur(
 }
 
 private val PREVIEW_HEIGHT = 132.dp
-private val PANEL_HEIGHT = 76.dp
+private val PANEL_HEIGHT = 84.dp
 private const val PANEL_WIDTH_FRACTION = 0.56f
 private const val LOOP_MS = 5_000
 private const val LIVE_BLUR = 48f
 private const val FROZEN_SCALE = 0.25f
 private const val FROZEN_BLUR_RADIUS = 5
-private const val GLASS_TINT = 0.75f
+private const val GLASS_TINT = 0.45f
 private const val SOLID_ALPHA = 0.96f
