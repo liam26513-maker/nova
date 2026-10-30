@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Identità del prodotto (nome e colore del marchio)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "displayName", "accentColor"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "displayName": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "accentColor": { "$ref": "#/$defs/color" }
+  },
+  "$defs": {
+    "color": { "type": "string", "pattern": "^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$" }
+  }
+}

@@ -1,0 +1,14 @@
+# Regole di base di detekt, con eccezioni motivate.
+naming:
+  FunctionNaming:
+    # I composable Compose iniziano con la maiuscola.
+    ignoreAnnotated: ['Composable']
+style:
+  MagicNumber:
+    # Token di design e coefficienti geometrici sono numeri voluti.
+    excludes: ['**/core/design/**']
+  ReturnCount:
+    max: 4
+complexity:
+  LongParameterList:
+    ignoreAnnotated: ['Composable']

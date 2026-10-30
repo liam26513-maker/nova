@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tema (colori, raggi, materiali, movimento)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "dark", "colors", "radii", "materialOpacity", "motion"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "dark": { "type": "boolean" },
+    "colors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["background", "surface", "onSurface", "onSurfaceMuted", "accent"],
+      "properties": {
+        "background": { "$ref": "#/$defs/color" },
+        "surface": { "$ref": "#/$defs/color" },
+        "onSurface": { "$ref": "#/$defs/color" },
+        "onSurfaceMuted": { "$ref": "#/$defs/color" },
+        "accent": { "$ref": "#/$defs/color" }
+      }
+    },
+    "radii": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["small", "medium", "large"],
+      "properties": {
+        "small": { "type": "number", "minimum": 0 },
+        "medium": { "type": "number", "minimum": 0 },
+        "large": { "type": "number", "minimum": 0 }
+      }
+    },
+    "materialOpacity": { "type": "number", "minimum": 0, "maximum": 1 },
+    "motion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stiffness", "dampingRatio"],
+      "properties": {
+        "stiffness": { "type": "number", "exclusiveMinimum": 0 },
+        "dampingRatio": { "type": "number", "minimum": 0.1, "maximum": 2 }
+      }
+    }
+  },
+  "$defs": {
+    "color": { "type": "string", "pattern": "^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$" }
+  }
+}

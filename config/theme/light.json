@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "light",
+  "name": "Chiaro",
+  "dark": false,
+  "colors": {
+    "background": "#F2F2F7",
+    "surface": "#FFFFFF",
+    "onSurface": "#1C1C1E",
+    "onSurfaceMuted": "#6C6C70",
+    "accent": "#0A84FF"
+  },
+  "radii": {
+    "small": 10,
+    "medium": 16,
+    "large": 26
+  },
+  "materialOpacity": 0.72,
+  "motion": {
+    "stiffness": 380,
+    "dampingRatio": 0.86
+  }
+}

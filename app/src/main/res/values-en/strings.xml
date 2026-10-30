@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="graphics_level_title">Graphics level</string>
+    <string name="graphics_level_current">Current: %1$s</string>
+    <string name="graphics_level_auto">Automatic</string>
+    <string name="graphics_level_maximum">Maximum</string>
+    <string name="graphics_level_balanced">Balanced</string>
+    <string name="graphics_level_performance">Performance</string>
+    <string name="status_title">System status</string>
+    <string name="status_config">Configuration: version %1$s</string>
+    <string name="status_modules_none">Modules: none installed yet</string>
+</resources>

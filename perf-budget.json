@@ -1,0 +1,15 @@
+{
+  "_nota": "Budget di prestazioni (SPEC §15). Superarli richiede un ADR approvato in docs/adr/. Le metriche dinamiche saranno misurate in CI dal punto 10 della Fase 0.",
+  "touchFeedbackFrames": 1,
+  "homeFrameP90Ms": 16.6,
+  "homeJankPercentMax": 3,
+  "homeWarmReturnMs": 250,
+  "launcherColdStartMs": 900,
+  "searchOpenMs": 150,
+  "searchPerKeystrokeMs": 50,
+  "controlCenterOpenMs": 120,
+  "launcherIdlePssMb": 150,
+  "launcherApkMb": 25,
+  "keyboardApkMb": 15,
+  "maxRegressionPercentPerPr": 10
+}
