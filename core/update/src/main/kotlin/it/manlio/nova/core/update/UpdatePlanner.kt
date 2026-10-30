@@ -8,6 +8,8 @@ import java.security.MessageDigest
 @Serializable
 data class Release(
     @SerialName("tag_name") val tag: String,
+    val name: String? = null,
+    @SerialName("published_at") val publishedAt: String? = null,
     val draft: Boolean = false,
     val prerelease: Boolean = false,
     val body: String? = null,
@@ -28,6 +30,9 @@ data class AppUpdate(
     val apk: Asset,
     val checksum: Asset,
     val notes: String?,
+    val title: String? = null,
+    /** Data di pubblicazione ISO-8601 (es. 2026-10-30T22:15:00Z). */
+    val publishedAt: String? = null,
 )
 
 /** Un aggiornamento della sola configurazione (si applica a caldo, senza reinstallare). */
@@ -62,15 +67,7 @@ object UpdatePlanner {
         installedConfigVersion: String,
     ): UpdatePlan {
         val published = releases.filter { !it.draft && !it.prerelease }
-        val app =
-            published
-                .mapNotNull { r ->
-                    val apk = r.assets.firstOrNull { APK.matches(it.name) } ?: return@mapNotNull null
-                    val checksum = r.assets.firstOrNull { it.name == "${apk.name}.sha256" } ?: return@mapNotNull null
-                    val code = APK.find(apk.name)!!.groupValues[1].toIntOrNull() ?: return@mapNotNull null
-                    AppUpdate(code, r.tag, apk, checksum, r.body)
-                }.filter { it.versionCode > installedVersionCode }
-                .maxByOrNull { it.versionCode }
+        val app = appReleases(published).filter { it.versionCode > installedVersionCode }.maxByOrNull { it.versionCode }
         val config =
             published
                 .mapNotNull { r ->
@@ -82,6 +79,28 @@ object UpdatePlanner {
                 .maxWithOrNull { a, b -> compareVersions(a.version, b.version) }
         return UpdatePlan(app, config)
     }
+
+    /**
+     * Versioni dell'app più vecchie di quella installata, dalla più recente, per il ritorno indietro
+     * d'emergenza (SPEC §4.6). Al massimo [limit].
+     */
+    fun previousVersions(
+        releases: List<Release>,
+        installedVersionCode: Int,
+        limit: Int = 10,
+    ): List<AppUpdate> =
+        appReleases(releases.filter { !it.draft && !it.prerelease })
+            .filter { it.versionCode < installedVersionCode }
+            .sortedByDescending { it.versionCode }
+            .take(limit)
+
+    private fun appReleases(published: List<Release>): List<AppUpdate> =
+        published.mapNotNull { r ->
+            val apk = r.assets.firstOrNull { APK.matches(it.name) } ?: return@mapNotNull null
+            val checksum = r.assets.firstOrNull { it.name == "${apk.name}.sha256" } ?: return@mapNotNull null
+            val code = APK.find(apk.name)!!.groupValues[1].toIntOrNull() ?: return@mapNotNull null
+            AppUpdate(code, r.tag, apk, checksum, r.body, r.name, r.publishedAt)
+        }
 
     /** Confronto semantico "1.10.0" > "1.9.3". Parti mancanti o non numeriche valgono 0. */
     fun compareVersions(

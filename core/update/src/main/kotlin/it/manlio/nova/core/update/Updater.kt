@@ -108,6 +108,37 @@ class Updater(
         return null
     }
 
+    /** Versioni dell'app più vecchie di quella installata (per il ritorno indietro d'emergenza). */
+    suspend fun previousVersions(): Result<List<AppUpdate>> =
+        runCatching { UpdatePlanner.previousVersions(client.releases(), versionCode) }
+
+    /**
+     * Ritorno d'emergenza a una versione precedente (SPEC §4.6). Android non installa versioni più
+     * vecchie sopra quelle nuove: GitHub ricompila il codice di [target] con un numero di versione più
+     * alto e lo pubblica come release normale, che poi arriva come qualsiasi aggiornamento.
+     * @return null se la richiesta è partita, altrimenti il motivo.
+     */
+    suspend fun requestRollback(target: AppUpdate): String? {
+        if (!TAG_FORMAT.matches(target.tag) || target.versionCode >= versionCode) return "Versione non valida: ${target.tag}"
+        return runCatching {
+            history.addRestorePoint(restorePoint("richiesta di ritorno a ${target.tag}"))
+            client.dispatchWorkflow(ROLLBACK_WORKFLOW, "main", mapOf("tag" to target.tag))
+            log.i(TAG, "chiesto il ritorno a ${target.tag}")
+        }.fold(
+            onSuccess = { null },
+            onFailure = {
+                val reason =
+                    if (it is GitHubClient.HttpException && it.code in FORBIDDEN_CODES) {
+                        "Il token non ha il permesso \"Actions: Read and write\": rigeneralo con quel permesso"
+                    } else {
+                        reasonFor(it)
+                    }
+                log.w(TAG, "ritorno a ${target.tag} non avviato: $reason")
+                reason
+            },
+        )
+    }
+
     fun setToken(token: String): String? =
         runCatching { tokens.set(token) }
             .fold(
@@ -157,16 +188,19 @@ class Updater(
         what: String,
         error: Throwable,
     ) {
-        val reason =
-            when {
-                error is GitHubClient.HttpException && error.code == UNAUTHORIZED -> "Token GitHub non valido o scaduto"
-                error is GitHubClient.HttpException && error.code == NOT_FOUND -> "Repository non trovato: controlla i permessi del token"
-                error is java.io.IOException -> "Nessuna connessione o GitHub non raggiungibile"
-                else -> error.message ?: error::class.simpleName.orEmpty()
-            }
+        val reason = reasonFor(error)
         log.w(TAG, "$what: $reason")
         publish(UpdateState.Failed("$what: $reason"))
     }
+
+    /** Motivo comprensibile di un errore di rete o di GitHub. */
+    fun reasonFor(error: Throwable): String =
+        when {
+            error is GitHubClient.HttpException && error.code == UNAUTHORIZED -> "Token GitHub non valido o scaduto"
+            error is GitHubClient.HttpException && error.code == NOT_FOUND -> "Repository non trovato: controlla i permessi del token"
+            error is java.io.IOException -> "Nessuna connessione o GitHub non raggiungibile"
+            else -> error.message ?: error::class.simpleName.orEmpty()
+        }
 
     private fun publish(state: UpdateState) {
         _state.value = state
@@ -176,5 +210,8 @@ class Updater(
         const val TAG = "update"
         const val UNAUTHORIZED = 401
         const val NOT_FOUND = 404
+        val FORBIDDEN_CODES = setOf(403, 404)
+        const val ROLLBACK_WORKFLOW = "rollback.yml"
+        val TAG_FORMAT = Regex("^v\\d+\\.\\d+\\.\\d+$")
     }
 }

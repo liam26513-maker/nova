@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
 import it.manlio.nova.core.design.SquircleShape
 import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.update.AppUpdate
 import it.manlio.nova.core.update.UpdateState
 import java.text.DateFormat
 import java.util.Date
@@ -49,6 +51,10 @@ data class SystemActions(
     val onRollbackConfig: () -> Unit,
     val onShizukuAction: () -> Unit,
     val onRevertSystem: () -> Unit,
+    /** Versioni precedenti dell'app; in caso di errore l'eccezione porta il motivo leggibile. */
+    val onLoadPrevious: suspend () -> Result<List<AppUpdate>> = { Result.success(emptyList()) },
+    /** Chiede il ritorno a una versione precedente; restituisce il motivo se non è partito. */
+    val onRollbackApp: suspend (AppUpdate) -> String? = { null },
 )
 
 @Composable
@@ -85,6 +91,91 @@ fun UpdatesSection(
                 showDivider = true,
                 onClick = actions.onRollbackConfig,
             )
+        }
+        if (state.update != UpdateState.NoToken) RollbackApp(actions)
+    }
+}
+
+/** Passi del ritorno d'emergenza a una versione precedente dell'app. */
+private sealed interface RollbackStep {
+    data object Closed : RollbackStep
+
+    data object Loading : RollbackStep
+
+    data class Choose(val versions: List<AppUpdate>) : RollbackStep
+
+    data class Confirm(val target: AppUpdate) : RollbackStep
+
+    data class Sending(val target: AppUpdate) : RollbackStep
+
+    data class Done(val target: AppUpdate) : RollbackStep
+
+    data class Error(val reason: String) : RollbackStep
+}
+
+/**
+ * Ultima voce di "Aggiornamenti", da usare solo se un aggiornamento ha creato un problema che le
+ * versioni successive non risolvono. Chiede sempre conferma prima di partire.
+ */
+@Composable
+private fun RollbackApp(actions: SystemActions) {
+    var step by remember { mutableStateOf<RollbackStep>(RollbackStep.Closed) }
+    val close = { step = RollbackStep.Closed }
+    LaunchedEffect(step) {
+        when (val s = step) {
+            RollbackStep.Loading ->
+                step =
+                    actions.onLoadPrevious().fold(
+                        onSuccess = { RollbackStep.Choose(it) },
+                        onFailure = { RollbackStep.Error(it.message.orEmpty()) },
+                    )
+            is RollbackStep.Sending -> step = actions.onRollbackApp(s.target)?.let(RollbackStep::Error) ?: RollbackStep.Done(s.target)
+            else -> Unit
+        }
+    }
+    when (val s = step) {
+        RollbackStep.Closed ->
+            SettingsRow(
+                stringResource(R.string.rollback_app),
+                summary = stringResource(R.string.rollback_app_summary),
+                showDivider = true,
+                onClick = { step = RollbackStep.Loading },
+            )
+        RollbackStep.Loading -> SettingsRow(stringResource(R.string.rollback_loading), showDivider = true)
+        is RollbackStep.Choose -> {
+            if (s.versions.isEmpty()) SettingsRow(stringResource(R.string.rollback_none), showDivider = true)
+            s.versions.forEach { v ->
+                SettingsRow(
+                    v.tag,
+                    summary = listOfNotNull(v.publishedAt?.take(DATE_LENGTH), v.title).joinToString(" · ").ifEmpty { null },
+                    showDivider = true,
+                    onClick = { step = RollbackStep.Confirm(v) },
+                )
+            }
+            SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = close)
+        }
+        is RollbackStep.Confirm -> {
+            SettingsBlock(showDivider = true) {
+                BasicText(
+                    stringResource(R.string.rollback_confirm_text, s.target.tag),
+                    style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 14.sp, lineHeight = 19.sp),
+                )
+            }
+            SettingsRow(
+                stringResource(R.string.rollback_confirm, s.target.tag),
+                showDivider = true,
+                onClick = { step = RollbackStep.Sending(s.target) },
+            )
+            SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = close)
+        }
+        is RollbackStep.Sending -> SettingsRow(stringResource(R.string.rollback_sending), showDivider = true)
+        is RollbackStep.Done -> {
+            SettingsRow(stringResource(R.string.rollback_done_title), summary = stringResource(R.string.rollback_done, s.target.tag), showDivider = true)
+            SettingsRow(stringResource(R.string.rollback_close), showDivider = true, onClick = close)
+        }
+        is RollbackStep.Error -> {
+            SettingsRow(stringResource(R.string.rollback_failed), summary = s.reason, showDivider = true)
+            SettingsRow(stringResource(R.string.rollback_close), showDivider = true, onClick = close)
         }
     }
 }
@@ -175,3 +266,4 @@ private fun Muted(text: String) {
 }
 
 private const val PERCENT = 100
+private const val DATE_LENGTH = 10

@@ -3,6 +3,9 @@ package it.manlio.nova.core.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -23,6 +26,28 @@ class GitHubClient(
             val conn = open("https://api.github.com/repos/$repo/releases?per_page=30", "application/vnd.github+json")
             JSON.decodeFromString<List<Release>>(conn.read())
         }
+
+    /**
+     * Avvia un workflow di GitHub Actions (serve il permesso "Actions: Read and write" sul token).
+     * Usato solo per il ritorno a una versione precedente: [inputs] sono già validati dal chiamante.
+     */
+    suspend fun dispatchWorkflow(
+        workflow: String,
+        ref: String,
+        inputs: Map<String, String>,
+    ) = withContext(Dispatchers.IO) {
+        val body = JSON.encodeToString(JsonObject.serializer(), buildJsonObject {
+            put("ref", ref)
+            put("inputs", buildJsonObject { inputs.forEach { (k, v) -> put(k, v) } })
+        })
+        val conn = open("https://api.github.com/repos/$repo/actions/workflows/$workflow/dispatches", "application/vnd.github+json")
+        conn.requestMethod = "POST"
+        conn.doOutput = true
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.outputStream.use { it.write(body.toByteArray()) }
+        conn.read()
+        Unit
+    }
 
     suspend fun downloadText(asset: Asset): String = withContext(Dispatchers.IO) { fetch(asset).read() }
 
