@@ -21,7 +21,7 @@ import org.robolectric.annotation.GraphicsMode
 /** Schermate di riferimento delle Impostazioni (tablet 1280×800, 160 dpi come il dispositivo reale). */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = "w1280dp-h800dp-land-mdpi", sdk = [34])
+@Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34])
 class SettingsScreenshotTest {
     @get:Rule val compose = createComposeRule()
 
