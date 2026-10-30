@@ -58,7 +58,10 @@ class GitHubClient(
             val location = api.getHeaderField("Location") ?: throw IOException("Rinvio senza destinazione")
             api.disconnect()
             require(location.startsWith("https://")) { "Rinvio non sicuro" }
-            return (URL(location).openConnection() as HttpURLConnection).apply { connectTimeout = TIMEOUT_MS; readTimeout = TIMEOUT_MS }
+            return (URL(location).openConnection() as HttpURLConnection).apply {
+                connectTimeout = TIMEOUT_MS
+                readTimeout = TIMEOUT_MS
+            }
         }
         return api
     }
