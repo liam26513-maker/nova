@@ -60,9 +60,7 @@ class ConfigEngine(
         return result
     }
 
-    private fun build(
-        vararg layers: JsonObject,
-    ): ApplyResult {
+    private fun build(vararg layers: JsonObject): ApplyResult {
         val merged = layers.reduce(::deepMerge)
         val config =
             try {

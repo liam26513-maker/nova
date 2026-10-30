@@ -84,6 +84,7 @@ class ConfigEngineTest {
 
     @Test(expected = IllegalStateException::class)
     fun `invalid compiled defaults fail fast`() {
-        ConfigEngine(1, ConfigEngine.deepMerge(repoDefaults(), ConfigEngine.JSON.parseToJsonElement("""{"brand":{"accentColor":"x"}}""") as JsonObject))
+        val broken = ConfigEngine.JSON.parseToJsonElement("""{"brand":{"accentColor":"x"}}""") as JsonObject
+        ConfigEngine(1, ConfigEngine.deepMerge(repoDefaults(), broken))
     }
 }

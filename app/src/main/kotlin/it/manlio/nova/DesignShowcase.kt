@@ -68,7 +68,10 @@ fun DesignShowcase(
             BasicText(brandName, style = TextStyle(t.colors.onSurface, 40.sp, FontWeight.Bold))
             MaterialSurface(backdrop, Modifier.width(520.dp)) {
                 Column(Modifier.padding(NovaSpacing.l), verticalArrangement = Arrangement.spacedBy(NovaSpacing.s)) {
-                    BasicText(stringResource(R.string.graphics_level_title), style = TextStyle(t.colors.onSurface, 20.sp, FontWeight.SemiBold))
+                    BasicText(
+                        stringResource(R.string.graphics_level_title),
+                        style = TextStyle(t.colors.onSurface, 20.sp, FontWeight.SemiBold),
+                    )
                     BasicText(
                         stringResource(R.string.graphics_level_current, stringResource(level.label())),
                         style = TextStyle(t.colors.onSurfaceMuted, 15.sp),

@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.manlio.nova.core.config.NovaConfig
 import it.manlio.nova.core.design.GraphicsLevel
@@ -18,7 +19,6 @@ import it.manlio.nova.core.design.NovaRadii
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.core.design.parseNovaColor
-import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     private val frameThread = HandlerThread("nova-frames").apply { start() }

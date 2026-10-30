@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NOVA</string>
+    <string name="app_name" translatable="false">NOVA</string>
     <string name="graphics_level_title">Livello grafico</string>
     <string name="graphics_level_current">Attuale: %1$s</string>
     <string name="graphics_level_auto">Automatico</string>

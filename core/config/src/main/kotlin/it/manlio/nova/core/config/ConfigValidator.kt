@@ -23,22 +23,27 @@ object ConfigValidator {
             }
             if (c.brand.displayName.isBlank()) add("brand.displayName vuoto")
             color("brand.accentColor", c.brand.accentColor)
-            with(c.theme.colors) {
+            addAll(validateTheme(c.theme))
+            c.modules.modules.keys.filterNot { ID.matches(it) }.forEach { add("modules: id non valido '$it'") }
+        }
+
+    private fun validateTheme(t: ThemeConfig): List<String> =
+        buildList {
+            with(t.colors) {
                 color("theme.colors.background", background)
                 color("theme.colors.surface", surface)
                 color("theme.colors.onSurface", onSurface)
                 color("theme.colors.onSurfaceMuted", onSurfaceMuted)
                 color("theme.colors.accent", accent)
             }
-            if (!ID.matches(c.theme.id)) add("theme.id non valido: ${c.theme.id}")
-            with(c.theme.radii) {
+            if (!ID.matches(t.id)) add("theme.id non valido: ${t.id}")
+            with(t.radii) {
                 if (small < 0 || medium < 0 || large < 0) add("theme.radii negativi")
                 if (small > medium || medium > large) add("theme.radii devono crescere: small ≤ medium ≤ large")
             }
-            if (c.theme.materialOpacity !in 0f..1f) add("theme.materialOpacity fuori da 0..1")
-            if (c.theme.motion.stiffness <= 0f) add("theme.motion.stiffness deve essere > 0")
-            if (c.theme.motion.dampingRatio !in 0.1f..2f) add("theme.motion.dampingRatio fuori da 0.1..2")
-            c.modules.modules.keys.filterNot { ID.matches(it) }.forEach { add("modules: id non valido '$it'") }
+            if (t.materialOpacity !in 0f..1f) add("theme.materialOpacity fuori da 0..1")
+            if (t.motion.stiffness <= 0f) add("theme.motion.stiffness deve essere > 0")
+            if (t.motion.dampingRatio !in 0.1f..2f) add("theme.motion.dampingRatio fuori da 0.1..2")
         }
 
     private fun MutableList<String>.color(
