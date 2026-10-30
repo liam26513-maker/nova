@@ -36,10 +36,14 @@ class GitHubClient(
         ref: String,
         inputs: Map<String, String>,
     ) = withContext(Dispatchers.IO) {
-        val body = JSON.encodeToString(JsonObject.serializer(), buildJsonObject {
-            put("ref", ref)
-            put("inputs", buildJsonObject { inputs.forEach { (k, v) -> put(k, v) } })
-        })
+        val body =
+            JSON.encodeToString(
+                JsonObject.serializer(),
+                buildJsonObject {
+                    put("ref", ref)
+                    put("inputs", buildJsonObject { inputs.forEach { (k, v) -> put(k, v) } })
+                },
+            )
         val conn = open("https://api.github.com/repos/$repo/actions/workflows/$workflow/dispatches", "application/vnd.github+json")
         conn.requestMethod = "POST"
         conn.doOutput = true

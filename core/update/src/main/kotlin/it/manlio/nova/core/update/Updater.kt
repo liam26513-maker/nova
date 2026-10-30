@@ -109,8 +109,7 @@ class Updater(
     }
 
     /** Versioni dell'app più vecchie di quella installata (per il ritorno indietro d'emergenza). */
-    suspend fun previousVersions(): Result<List<AppUpdate>> =
-        runCatching { UpdatePlanner.previousVersions(client.releases(), versionCode) }
+    suspend fun previousVersions(): Result<List<AppUpdate>> = runCatching { UpdatePlanner.previousVersions(client.releases(), versionCode) }
 
     /**
      * Ritorno d'emergenza a una versione precedente (SPEC §4.6). Android non installa versioni più

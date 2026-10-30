@@ -154,30 +154,37 @@ private fun RollbackApp(actions: SystemActions) {
             }
             SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = close)
         }
-        is RollbackStep.Confirm -> {
-            SettingsBlock(showDivider = true) {
-                BasicText(
-                    stringResource(R.string.rollback_confirm_text, s.target.tag),
-                    style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 14.sp, lineHeight = 19.sp),
-                )
-            }
-            SettingsRow(
-                stringResource(R.string.rollback_confirm, s.target.tag),
-                showDivider = true,
-                onClick = { step = RollbackStep.Sending(s.target) },
-            )
-            SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = close)
-        }
+        is RollbackStep.Confirm -> ConfirmRollback(s.target, onConfirm = { step = RollbackStep.Sending(s.target) }, onCancel = close)
         is RollbackStep.Sending -> SettingsRow(stringResource(R.string.rollback_sending), showDivider = true)
-        is RollbackStep.Done -> {
-            SettingsRow(stringResource(R.string.rollback_done_title), summary = stringResource(R.string.rollback_done, s.target.tag), showDivider = true)
-            SettingsRow(stringResource(R.string.rollback_close), showDivider = true, onClick = close)
-        }
-        is RollbackStep.Error -> {
-            SettingsRow(stringResource(R.string.rollback_failed), summary = s.reason, showDivider = true)
-            SettingsRow(stringResource(R.string.rollback_close), showDivider = true, onClick = close)
-        }
+        is RollbackStep.Done -> Outcome(R.string.rollback_done_title, stringResource(R.string.rollback_done, s.target.tag), close)
+        is RollbackStep.Error -> Outcome(R.string.rollback_failed, s.reason, close)
     }
+}
+
+@Composable
+private fun ConfirmRollback(
+    target: AppUpdate,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    SettingsBlock(showDivider = true) {
+        BasicText(
+            stringResource(R.string.rollback_confirm_text, target.tag),
+            style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 14.sp, lineHeight = 19.sp),
+        )
+    }
+    SettingsRow(stringResource(R.string.rollback_confirm, target.tag), showDivider = true, onClick = onConfirm)
+    SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = onCancel)
+}
+
+@Composable
+private fun Outcome(
+    title: Int,
+    summary: String,
+    onClose: () -> Unit,
+) {
+    SettingsRow(stringResource(title), summary = summary, showDivider = true)
+    SettingsRow(stringResource(R.string.rollback_close), showDivider = true, onClick = onClose)
 }
 
 @Composable
