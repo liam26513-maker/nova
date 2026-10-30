@@ -1,0 +1,44 @@
+name: Rilascio configurazione
+
+# Una modifica in config/ con meta.version aumentata diventa un aggiornamento a caldo:
+# il tablet lo applica senza reinstallare (SPEC §4.5, docs/AGGIORNAMENTI.md).
+on:
+  push:
+    branches: [main]
+    paths: ['config/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rilascio-config
+  cancel-in-progress: false
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Valida
+        run: |
+          pip install --quiet jsonschema
+          python tools/validate_config.py config
+
+      - name: Pubblica
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(python -c "import json; print(json.load(open('config/meta.json'))['version'])")
+          tag="config-v$version"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "::warning::$tag esiste già: aumenta \"version\" in config/meta.json per pubblicare la modifica."
+            exit 0
+          fi
+          mkdir -p out
+          python tools/config_bundle.py config > out/nova-config.json
+          (cd out && sha256sum nova-config.json > nova-config.json.sha256)
+          gh release create "$tag" out/nova-config.json out/nova-config.json.sha256 \
+            --title "Configurazione $version" --notes "Aggiornamento della configurazione: si applica senza reinstallare." \
+            --target "$GITHUB_SHA"

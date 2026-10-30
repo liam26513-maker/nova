@@ -1,0 +1,83 @@
+name: Torna a una versione precedente
+
+# Android non accetta downgrade: si ricompila il codice di una release passata con un
+# versionCode più alto e lo si pubblica come nuova release (SPEC §4.6).
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release a cui tornare (es. v0.1.103)'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rilascio
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Controlla il tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' || { echo "Tag non valido: $TAG"; exit 1; }
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag }}
+      # Gli script di rilascio vengono sempre da main, anche se il tag è vecchio.
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          path: main-tools
+          sparse-checkout: tools
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Versione
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tags=$(gh release list --limit 200 --json tagName --jq '.[].tagName')
+          read code name < <(python main-tools/tools/next_version.py $tags)
+          echo "NOVA_VERSION_CODE=$code" >> "$GITHUB_ENV"
+          echo "NOVA_VERSION_NAME=$name" >> "$GITHUB_ENV"
+
+      - name: Chiave di firma
+        env:
+          KEYSTORE_BASE64: ${{ secrets.NOVA_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/nova.jks"
+          echo "NOVA_KEYSTORE_FILE=$RUNNER_TEMP/nova.jks" >> "$GITHUB_ENV"
+
+      - name: Build firmata
+        env:
+          NOVA_KEYSTORE_PASSWORD: ${{ secrets.NOVA_KEYSTORE_PASSWORD }}
+          NOVA_KEY_ALIAS: ${{ secrets.NOVA_KEY_ALIAS }}
+          NOVA_KEY_PASSWORD: ${{ secrets.NOVA_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease
+
+      - name: Pubblica
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk "out/nova-$NOVA_VERSION_CODE.apk"
+          (cd out && sha256sum "nova-$NOVA_VERSION_CODE.apk" > "nova-$NOVA_VERSION_CODE.apk.sha256")
+          gh release create "v$NOVA_VERSION_NAME" out/nova-*.apk out/nova-*.apk.sha256 \
+            --title "NOVA $NOVA_VERSION_NAME (ripristino di $TAG)" \
+            --notes "Ritorno al codice di $TAG, ricompilato con un numero di versione più alto per poterlo installare sopra." \
+            --target main
+
+      - name: Pulizia
+        if: always()
+        run: rm -f "$RUNNER_TEMP/nova.jks"

@@ -14,16 +14,31 @@ android {
         applicationId = "it.manlio.nova"
         minSdk = 31
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        // In CI release.yml li imposta (versionCode sempre crescente); in locale valgono i default.
+        versionCode = System.getenv("NOVA_VERSION_CODE")?.toInt() ?: 1
+        versionName = System.getenv("NOVA_VERSION_NAME") ?: "0.1.0"
         // Repository da cui arrivano gli aggiornamenti (SPEC §4.5).
         buildConfigField("String", "GITHUB_REPO", "\"liam26513-maker/nova\"")
     }
 
     sourceSets["main"].assets.srcDir(rootProject.file("config"))
 
+    // Chiave di firma definitiva: solo in CI, dai segreti del repository (mai nel codice).
+    val keystore = System.getenv("NOVA_KEYSTORE_FILE")?.let(::file)?.takeIf { it.exists() }
+    signingConfigs {
+        if (keystore != null) {
+            create("release") {
+                storeFile = keystore
+                storePassword = System.getenv("NOVA_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("NOVA_KEY_ALIAS")
+                keyPassword = System.getenv("NOVA_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (keystore != null) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
