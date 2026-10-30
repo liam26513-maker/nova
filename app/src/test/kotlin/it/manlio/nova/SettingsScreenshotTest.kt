@@ -42,7 +42,15 @@ class SettingsScreenshotTest {
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, graphics.level)) {
-                SettingsScreen(config.brand.displayName, config.meta.version, graphics, SAMPLE_PROFILE, onChoose, onMeasure = {}, onShowReport = {})
+                SettingsScreen(
+                    brandName = config.brand.displayName,
+                    configVersion = config.meta.version,
+                    graphics = graphics,
+                    profile = SAMPLE_PROFILE,
+                    onChoose = onChoose,
+                    onMeasure = {},
+                    onShowReport = {},
+                )
             }
         }
     }

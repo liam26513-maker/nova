@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlurEffect
-import androidx.compose.ui.graphics.Canvas as ImageCanvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
+import androidx.compose.ui.graphics.Canvas as ImageCanvas
 
 /**
  * Anteprima dal vivo del livello grafico: forme che scorrono dietro un pannello di vetro.
@@ -139,7 +139,9 @@ private fun frozenBlur(
     val small = ImageBitmap(w, h)
     val canvas = ImageCanvas(small)
     canvas.drawRect(0f, 0f, w.toFloat(), h.toFloat(), Paint().apply { color = base })
-    scene(Size(w.toFloat(), h.toFloat()), 0f, dark).forEach { b -> canvas.drawCircle(b.centre, b.radius, Paint().apply { color = b.color }) }
+    scene(Size(w.toFloat(), h.toFloat()), 0f, dark).forEach { b ->
+        canvas.drawCircle(b.centre, b.radius, Paint().apply { color = b.color })
+    }
     val px = IntArray(w * h).also { small.readPixels(it) }
     val blurred = BoxBlur.blur(px, w, h, radius = FROZEN_BLUR_RADIUS)
     return Bitmap.createBitmap(blurred, w, h, Bitmap.Config.ARGB_8888).asImageBitmap()

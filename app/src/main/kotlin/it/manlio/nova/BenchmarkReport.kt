@@ -58,10 +58,8 @@ fun BenchmarkReportScreen(
                         val title =
                             stringResource(level.label()) +
                                 if (level == profile.ceiling) " · " + stringResource(R.string.report_recommended) else ""
-                        BasicText(
-                            title,
-                            style = TextStyle(t.colors.onSurface, 17.sp, if (level == profile.ceiling) FontWeight.SemiBold else FontWeight.Normal),
-                        )
+                        val weight = if (level == profile.ceiling) FontWeight.SemiBold else FontWeight.Normal
+                        BasicText(title, style = TextStyle(t.colors.onSurface, 17.sp, weight))
                         Spacer(Modifier.height(NovaSpacing.xxs))
                         BasicText(
                             stringResource(R.string.report_level_value, smooth.roundToInt(), p90.roundToInt()),
