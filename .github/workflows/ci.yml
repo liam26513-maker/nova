@@ -37,6 +37,12 @@ jobs:
       - name: Android Lint e build release
         run: ./gradlew :app:lintRelease :app:assembleRelease
 
+      - name: Budget di dimensione (perf-budget.json)
+        run: python tools/check_budget.py app/build/outputs/apk/release/app-release-unsigned.apk
+
+      - name: Script di rilascio
+        run: python tools/next_version.py
+
       - name: Report dei test
         if: failure()
         uses: actions/upload-artifact@v4

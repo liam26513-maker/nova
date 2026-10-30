@@ -29,3 +29,15 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 - La configurazione si applica sempre da sola.
 - L'app si installa da sola solo nei controlli automatici e solo con Shizuku attivo. Altrimenti compare "Installa" e Android chiede conferma.
 - Prima di ogni cambio viene salvato un punto di ripristino (ultimi 10).
+
+## Come nascono le release (GitHub Actions)
+
+| Workflow | Quando parte | Cosa pubblica |
+|---|---|---|
+| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti) | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`; note dal `CHANGELOG.md` |
+| `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
+| `rollback.yml` | a mano (Actions → "Torna a una versione precedente") | ricompila il codice di un tag passato con un `versionCode` più alto, così si installa sopra |
+
+- **versionCode:** il più alto tra le release esistenti + 1, partendo da 101 (`tools/next_version.py`). Le anteprime di sviluppo hanno 1, quindi qualsiasi release le sostituisce.
+- **Firma:** la chiave sta solo nei segreti del repository (`NOVA_KEYSTORE_BASE64`, `NOVA_KEYSTORE_PASSWORD`, `NOVA_KEY_ALIAS`, `NOVA_KEY_PASSWORD`) e in una copia offline del proprietario. Il file viene creato nel runner solo per la build e poi cancellato. **Non cambiarla mai:** con un'altra firma il tablet rifiuta gli aggiornamenti.
+- **Budget:** CI e rilascio falliscono se l'APK supera `launcherApkMb` di `perf-budget.json` (`tools/check_budget.py`). I budget dinamici (avvio, fotogrammi) verranno misurati con Macrobenchmark quando ci sarà un dispositivo in CI; per ora si verificano a mano (docs/TEST-MANUALE.md).
