@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.roborazzi) apply false
 }
 
 detekt {
