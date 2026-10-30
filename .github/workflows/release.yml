@@ -11,6 +11,9 @@ on:
 permissions:
   contents: write
 
+env:
+  NOVA_CERT_SHA256: bc629beba848496d5c9317c33a14df01e3203f612a78a4a23aac61fbcaa6c3eb
+
 concurrency:
   group: rilascio
   cancel-in-progress: false
@@ -55,7 +58,10 @@ jobs:
       - name: Verifica firma e budget
         run: |
           apk=app/build/outputs/apk/release/app-release.apk
-          "$ANDROID_HOME"/build-tools/*/apksigner verify --print-certs "$apk" | grep -i "SHA-256"
+          apksigner=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner
+          # Impronta pubblica della chiave di NOVA: una firma diversa romperebbe gli aggiornamenti sul tablet.
+          "$apksigner" verify --print-certs "$apk" | tee firma.txt
+          grep -q "SHA-256 digest: $NOVA_CERT_SHA256" firma.txt || { echo "Firma inattesa"; exit 1; }
           python tools/check_budget.py "$apk"
 
       - name: Pubblica
