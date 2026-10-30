@@ -30,11 +30,11 @@ class NovaApp : Application() {
      * Livello iniziale atteso sul tablet di riferimento (SPEC §2.1): Bilanciato.
      * shortcut: tetto fisso a MAXIMUM, finché il profilatore dispositivo (Fase 0, punto 6) non lo calcola.
      */
-    val graphicsController =
-        GraphicsLevelController(GraphicsLevel.BALANCED) { _graphics.value = it }
-
-    private val _graphics = MutableStateFlow(graphicsController.state)
+    private val _graphics = MutableStateFlow(GraphicsState(GraphicsLevel.BALANCED, automatic = true))
     val graphics: StateFlow<GraphicsState> = _graphics.asStateFlow()
+
+    val graphicsController: GraphicsLevelController =
+        GraphicsLevelController(GraphicsLevel.BALANCED) { _graphics.value = it }
 
     override fun onCreate() {
         super.onCreate()
