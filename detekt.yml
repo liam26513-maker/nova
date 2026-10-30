@@ -1,19 +1,28 @@
 # Regole di base di detekt, con eccezioni motivate.
 naming:
   FunctionNaming:
-    # I composable Compose iniziano con la maiuscola.
-    ignoreAnnotated: ['Composable']
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+# I composable Compose iniziano con la maiuscola.
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+ignoreAnnotated: ['Composable']
 style:
   MaxLineLength:
-    maxLineLength: 140 # allineato a ktlint (.editorconfig)
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+maxLineLength: 140 # allineato a ktlint (.editorconfig)
   MagicNumber:
-    # Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
-    excludes: ['**/core/design/**', '**/DesignShowcase.kt']
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+# Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+excludes: ['**/core/design/**', '**/DesignShowcase.kt']
   ReturnCount:
-    max: 4
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+max: 4
 complexity:
   LongParameterList:
-    functionThreshold: 7
-    ignoreAnnotated: ['Composable']
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+functionThreshold: 7
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+ignoreAnnotated: ['Composable']
   TooManyFunctions:
-    thresholdInClasses: 15
+ Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+thresholdInClasses: 15

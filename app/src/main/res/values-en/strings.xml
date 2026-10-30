@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_title">Settings</string>
     <string name="graphics_level_title">Graphics level</string>
-    <string name="graphics_level_current">Current: %1$s</string>
+    <string name="graphics_level_footer">Automatic picks the richest level the tablet can run smoothly.</string>
+    <string name="graphics_level_auto_now">Chosen automatically: %1$s</string>
+    <string name="graphics_level_fixed_now">Set by you: %1$s</string>
     <string name="graphics_level_auto">Automatic</string>
     <string name="graphics_level_maximum">Maximum</string>
     <string name="graphics_level_balanced">Balanced</string>
     <string name="graphics_level_performance">Performance</string>
     <string name="status_title">System status</string>
-    <string name="status_config">Configuration: version %1$s</string>
-    <string name="status_modules_none">Modules: none installed yet</string>
+    <string name="status_config_title">Configuration</string>
+    <string name="status_modules_title">Modules</string>
+    <string name="status_modules_none">None</string>
 </resources>

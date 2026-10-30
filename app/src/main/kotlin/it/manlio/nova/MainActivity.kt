@@ -37,13 +37,18 @@ class MainActivity : ComponentActivity() {
         val app = application as NovaApp
         setContent {
             val config by app.config.current.collectAsStateWithLifecycle()
-            val level by app.graphicsLevel.collectAsStateWithLifecycle()
-            NovaTheme(tokensFrom(config, level)) {
-                DesignShowcase(
+            val graphics by app.graphics.collectAsStateWithLifecycle()
+            NovaTheme(tokensFrom(config, graphics.level)) {
+                SettingsScreen(
                     brandName = config.brand.displayName,
                     configVersion = config.meta.version,
-                    level = level,
-                    onPickLevel = { picked, lock -> app.graphicsController.set(picked, lock) },
+                    graphics = graphics,
+                    onChoose = { choice ->
+                        when (choice) {
+                            LevelChoice.Automatic -> app.graphicsController.setAutomatic()
+                            is LevelChoice.Fixed -> app.graphicsController.setManual(choice.level)
+                        }
+                    },
                 )
             }
         }

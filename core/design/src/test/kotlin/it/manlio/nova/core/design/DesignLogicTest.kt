@@ -24,7 +24,7 @@ class GraphicsLevelControllerTest {
     @Test
     fun `five slow seconds downgrade one level`() {
         val changes = mutableListOf<GraphicsLevel>()
-        val c = GraphicsLevelController(GraphicsLevel.MAXIMUM) { changes += it }
+        val c = GraphicsLevelController(GraphicsLevel.MAXIMUM) { changes += it.level }
         c.feed(0, 5, slowFrame) // il quinto secondo si chiude al primo frame del sesto
         assertEquals(GraphicsLevel.MAXIMUM, c.level)
         c.feed(5, 1, fastFrame)
@@ -56,9 +56,36 @@ class GraphicsLevelControllerTest {
     @Test
     fun `locked level never changes by itself`() {
         val c = GraphicsLevelController(GraphicsLevel.MAXIMUM)
-        c.set(GraphicsLevel.MAXIMUM, lock = true)
+        c.setManual(GraphicsLevel.MAXIMUM)
         c.feed(0, 30, slowFrame)
-        assertEquals(GraphicsLevel.MAXIMUM, c.level)
+        assertEquals(GraphicsState(GraphicsLevel.MAXIMUM, automatic = false), c.state)
+    }
+
+    @Test
+    fun `automatic mode is reported, restores the start level and adapts again`() {
+        val states = mutableListOf<GraphicsState>()
+        val c = GraphicsLevelController(GraphicsLevel.BALANCED) { states += it }
+        assertEquals(GraphicsState(GraphicsLevel.BALANCED, automatic = true), c.state)
+        c.setManual(GraphicsLevel.MAXIMUM)
+        c.setAutomatic()
+        assertEquals(
+            listOf(
+                GraphicsState(GraphicsLevel.MAXIMUM, automatic = false),
+                GraphicsState(GraphicsLevel.BALANCED, automatic = true),
+            ),
+            states,
+        )
+        c.feed(0, 6, slowFrame)
+        assertEquals(GraphicsState(GraphicsLevel.PERFORMANCE, automatic = true), c.state)
+    }
+
+    @Test
+    fun `switching to automatic notifies even when the level does not change`() {
+        val states = mutableListOf<GraphicsState>()
+        val c = GraphicsLevelController(GraphicsLevel.BALANCED) { states += it }
+        c.setManual(GraphicsLevel.BALANCED)
+        c.setAutomatic()
+        assertEquals(listOf(false, true), states.map { it.automatic })
     }
 
     @Test

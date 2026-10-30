@@ -5,6 +5,7 @@ import android.content.Context
 import it.manlio.nova.core.config.ConfigEngine
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.GraphicsLevelController
+import it.manlio.nova.core.design.GraphicsState
 import it.manlio.nova.core.modules.ModuleRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,15 +26,15 @@ class NovaApp : Application() {
     // Nessun modulo funzionale ancora: arriveranno dalla Fase 1 in poi.
     val modules = ModuleRegistry(emptyList())
 
-    private val _graphicsLevel = MutableStateFlow(GraphicsLevel.BALANCED)
-    val graphicsLevel: StateFlow<GraphicsLevel> = _graphicsLevel.asStateFlow()
-
     /**
      * Livello iniziale atteso sul tablet di riferimento (SPEC §2.1): Bilanciato.
      * shortcut: tetto fisso a MAXIMUM, finché il profilatore dispositivo (Fase 0, punto 6) non lo calcola.
      */
     val graphicsController =
-        GraphicsLevelController(GraphicsLevel.BALANCED) { _graphicsLevel.value = it }
+        GraphicsLevelController(GraphicsLevel.BALANCED) { _graphics.value = it }
+
+    private val _graphics = MutableStateFlow(graphicsController.state)
+    val graphics: StateFlow<GraphicsState> = _graphics.asStateFlow()
 
     override fun onCreate() {
         super.onCreate()
