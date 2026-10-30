@@ -13,6 +13,16 @@ import it.manlio.nova.core.device.DeviceProfiler
 import it.manlio.nova.core.device.LevelAdvisor
 import it.manlio.nova.core.modules.ModuleRegistry
 import it.manlio.nova.core.safemode.SafeModeActivity
+import it.manlio.nova.core.system.ShizukuBridge
+import it.manlio.nova.core.system.SystemChangeLog
+import it.manlio.nova.core.update.ApkInstaller
+import it.manlio.nova.core.update.ConfigTarget
+import it.manlio.nova.core.update.GitHubClient
+import it.manlio.nova.core.update.LocalHistory
+import it.manlio.nova.core.update.TokenStore
+import it.manlio.nova.core.update.Updater
+import it.manlio.nova.core.update.UpdaterProvider
+import it.manlio.nova.core.update.UpdateWorker
 import it.manlio.nova.core.telemetry.BootGuard
 import it.manlio.nova.core.telemetry.CrashReporter
 import it.manlio.nova.core.telemetry.KeyValueFile
@@ -30,7 +40,9 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /** Assemblaggio del nucleo: affidabilità, configurazione, registro moduli, livello grafico. */
-class NovaApp : Application() {
+class NovaApp :
+    Application(),
+    UpdaterProvider {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     val log = LocalLog()
@@ -59,6 +71,19 @@ class NovaApp : Application() {
         GraphicsLevelController(GraphicsLevel.BALANCED) { _graphics.value = it }
 
     lateinit var profiler: DeviceProfiler
+        private set
+
+    lateinit var shizuku: ShizukuBridge
+        private set
+
+    /** Modifiche di sistema fatte da NOVA, tutte annullabili (SPEC §7.1). */
+    lateinit var systemChanges: SystemChangeLog
+        private set
+
+    override lateinit var updater: Updater
+        private set
+
+    lateinit var updateHistory: LocalHistory
         private set
 
     private val _profile = MutableStateFlow<DeviceProfile?>(null)
@@ -100,6 +125,10 @@ class NovaApp : Application() {
         appScope.launch {
             config.current.collect { c -> modules.apply(c.modules.modules, capabilities = emptySet()) }
         }
+        shizuku = ShizukuBridge(this).also { it.start() }
+        systemChanges = SystemChangeLog(SystemChangeLog.fileIn(filesDir), shizuku)
+        setUpUpdates()
+
         profiler = DeviceProfiler(this)
         appScope.launch {
             // Profilo salvato, oppure prima lettura dell'hardware (senza benchmark).
@@ -113,6 +142,42 @@ class NovaApp : Application() {
             bootGuard.markHealthy()
             log.i(TAG, "avvio stabile")
         }
+    }
+
+    private fun setUpUpdates() {
+        updateHistory = LocalHistory(File(filesDir, "updates"))
+        // La configurazione scaricata vive su file: va riapplicata a ogni avvio.
+        updateHistory.activeBundle()?.let { json ->
+            (config.applyBundle(json) as? ApplyResult.Rejected)?.let {
+                log.w(TAG, "pacchetto di configurazione salvato non valido, uso i default: ${it.reason}")
+                updateHistory.setActive(null)
+            }
+        }
+        val tokens = TokenStore(File(filesDir, "github-token.bin"))
+        updater =
+            Updater(
+                context = this,
+                versionCode = BuildConfig.VERSION_CODE,
+                versionName = BuildConfig.VERSION_NAME,
+                client = GitHubClient(BuildConfig.GITHUB_REPO, tokens::get),
+                tokens = tokens,
+                installer = ApkInstaller(this, shizuku),
+                shizuku = shizuku,
+                config =
+                    object : ConfigTarget {
+                        override fun currentVersion() = config.current.value.meta.version
+
+                        override fun apply(json: String) = (config.applyBundle(json) as? ApplyResult.Rejected)?.reason
+
+                        override fun reset() {
+                            config.applyBundle("{}")
+                        }
+                    },
+                history = updateHistory,
+                log = log,
+            )
+        UpdateWorker.schedule(this)
+        appScope.launch { updater.check(automatic = true) }
     }
 
     /** Volume giù tenuto premuto all'avvio, o richiesta dalle impostazioni. */

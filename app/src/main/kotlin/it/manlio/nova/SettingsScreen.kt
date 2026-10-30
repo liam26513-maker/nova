@@ -35,6 +35,8 @@ fun SettingsScreen(
     onChoose: (LevelChoice) -> Unit,
     onMeasure: () -> Unit,
     onShowReport: () -> Unit,
+    system: SystemUiState,
+    systemActions: SystemActions,
 ) {
     val t = Nova.tokens
     SettingsScaffold(title = stringResource(R.string.settings_title), subtitle = brandName) { backdrop ->
@@ -67,6 +69,8 @@ fun SettingsScreen(
             }
         }
         DeviceSection(backdrop, profile, onMeasure, onShowReport)
+        UpdatesSection(backdrop, system, systemActions)
+        SystemToolsSection(backdrop, system, systemActions)
         SettingsSection(backdrop, header = stringResource(R.string.status_title)) {
             SettingsRow(stringResource(R.string.status_config_title), trailing = { Value(configVersion) })
             SettingsRow(

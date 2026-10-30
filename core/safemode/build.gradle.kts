@@ -21,6 +21,7 @@ kotlin { jvmToolchain(17) }
 dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:telemetry"))
+    implementation(project(":core:system"))
     implementation(platform(libs.compose.bom))
     implementation(libs.androidx.activity.compose)
 }

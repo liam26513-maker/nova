@@ -1,5 +1,7 @@
 package it.manlio.nova
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -26,6 +28,8 @@ import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.core.design.parseNovaColor
 import it.manlio.nova.core.safemode.SafeModeActivity
+import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.update.UpdateState
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -53,6 +57,19 @@ class MainActivity : ComponentActivity() {
             val profile by app.profile.collectAsStateWithLifecycle()
             var measuring by remember { mutableStateOf<GraphicsLevel?>(null) }
             var showReport by remember { mutableStateOf(false) }
+            val update by app.updater.state.collectAsStateWithLifecycle()
+            val shizukuStatus by app.shizuku.status.collectAsStateWithLifecycle()
+            var changesVersion by remember { mutableStateOf(0) }
+            val system =
+                remember(update, shizukuStatus, changesVersion) {
+                    SystemUiState(
+                        versionName = BuildConfig.VERSION_NAME,
+                        update = update,
+                        hasConfigHistory = app.updateHistory.activeVersion() != null,
+                        shizuku = shizukuStatus,
+                        systemChanges = app.systemChanges.entries().size,
+                    )
+                }
             val scope = rememberCoroutineScope()
             NovaTheme(tokensFrom(config, graphics.level)) {
                 val current = measuring
@@ -86,6 +103,30 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         onShowReport = { showReport = true },
+                        system = system,
+                        systemActions =
+                            SystemActions(
+                                onCheck = { scope.launch { app.updater.check(automatic = false) } },
+                                onInstall = {
+                                    (update as? UpdateState.AppAvailable)?.let { u -> scope.launch { app.updater.install(u.update) } }
+                                },
+                                onSaveToken = { token ->
+                                    app.updater.setToken(token).also { error ->
+                                        if (error == null) scope.launch { app.updater.check(automatic = false) }
+                                    }
+                                },
+                                onRollbackConfig = {
+                                    app.updater.rollbackConfig()
+                                    changesVersion++
+                                },
+                                onShizukuAction = { openShizuku(app) },
+                                onRevertSystem = {
+                                    scope.launch {
+                                        app.systemChanges.revertAll()
+                                        changesVersion++
+                                    }
+                                },
+                            ),
                     )
                 }
             }
@@ -114,6 +155,17 @@ class MainActivity : ComponentActivity() {
         app.enterSafeMode()
         openSafeModeIfNeeded(app)
         return true
+    }
+
+    /** Chiede il permesso a Shizuku, oppure apre l'app Shizuku (o la sua pagina nel Play Store). */
+    private fun openShizuku(app: NovaApp) {
+        if (app.shizuku.status.value == ShizukuStatus.NEEDS_PERMISSION) {
+            app.shizuku.requestPermission()
+            return
+        }
+        val launch = packageManager.getLaunchIntentForPackage(SHIZUKU_PACKAGE)
+        val store = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$SHIZUKU_PACKAGE"))
+        runCatching { startActivity(launch ?: store) }
     }
 
     private fun openSafeModeIfNeeded(app: NovaApp): Boolean {
@@ -161,3 +213,4 @@ internal fun tokensFrom(
 }
 
 private const val SAFE_MODE_KEY_WINDOW_MS = 3_000L
+private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"

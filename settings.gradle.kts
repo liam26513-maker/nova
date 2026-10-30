@@ -24,4 +24,6 @@ include(
     ":core:telemetry",
     ":core:safemode",
     ":core:device",
+    ":core:system",
+    ":core:update",
 )

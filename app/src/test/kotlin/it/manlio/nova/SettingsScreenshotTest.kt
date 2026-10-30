@@ -12,6 +12,8 @@ import it.manlio.nova.core.design.GraphicsState
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.device.BenchmarkResult
 import it.manlio.nova.core.device.DeviceProfile
+import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.update.UpdateState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -50,6 +52,8 @@ class SettingsScreenshotTest {
                     onChoose = onChoose,
                     onMeasure = {},
                     onShowReport = {},
+                    system = SAMPLE_SYSTEM,
+                    systemActions = SystemActions({}, {}, { null }, {}, {}, {}),
                 )
             }
         }
@@ -132,4 +136,13 @@ private val SAMPLE_PROFILE =
             ),
         startLevel = GraphicsLevel.BALANCED,
         ceiling = GraphicsLevel.BALANCED,
+    )
+
+private val SAMPLE_SYSTEM =
+    SystemUiState(
+        versionName = "0.1.0",
+        update = UpdateState.UpToDate(checkedAt = 0),
+        hasConfigHistory = true,
+        shizuku = ShizukuStatus.NEEDS_PERMISSION,
+        systemChanges = 2,
     )
