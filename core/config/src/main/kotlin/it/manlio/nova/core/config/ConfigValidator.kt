@@ -8,7 +8,9 @@ package it.manlio.nova.core.config
 object ConfigValidator {
     private val COLOR = Regex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
     private val ID = Regex("^[a-z][a-z0-9-]*$")
-    private val DAMPING_RANGE = 0.1f..2f
+    private const val MIN_DAMPING = 0.1f
+    private const val MAX_DAMPING = 2f
+    private val DAMPING_RANGE = MIN_DAMPING..MAX_DAMPING
 
     fun validate(c: NovaConfig): List<String> =
         buildList {

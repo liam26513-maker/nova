@@ -15,3 +15,5 @@ complexity:
   LongParameterList:
     functionThreshold: 7
     ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    thresholdInClasses: 15
