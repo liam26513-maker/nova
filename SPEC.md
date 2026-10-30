@@ -329,7 +329,7 @@ Auto-merge abilitato: se tutto è verde, la PR viene unita. Il proprietario può
 - Installazione APK: via Shizuku (`PackageInstaller` con privilegi shell) senza conferme; senza Shizuku, con una conferma di sistema.
 - Prima di installare: salva la versione corrente in **"punti di ripristino"** (metadati, config attiva, override locali).
 - Dopo l'installazione: avvio di controllo. Se NOVA va in crash entro 60 secondi per 2 volte → **modalità provvisoria** (§14.2) e proposta di ritorno indietro.
-- **Ritorno indietro del codice:** Android rifiuta i downgrade, quindi il pulsante "Torna alla versione precedente" avvia il workflow `rollback.yml` (API GitHub, `workflow_dispatch`) che ricompila il tag precedente con `versionCode` superiore e lo pubblica. Tempo stimato: pochi minuti. Nel frattempo è attiva la modalità provvisoria.
+- **Ritorno indietro del codice:** Android rifiuta i downgrade, quindi la voce "Torna a una versione precedente" (ultima di Impostazioni → Aggiornamenti, solo per emergenze, con scelta della versione e conferma) avvia il workflow `rollback.yml` (API GitHub, `workflow_dispatch`, token con permesso Actions) che ricompila quel tag con `versionCode` superiore e lo pubblica. Dopo 10 minuti NOVA ricontrolla da sola e la installa come un aggiornamento normale. Dettagli in `docs/AGGIORNAMENTI.md`.
 - **Ritorno indietro della config:** istantaneo e locale (si conservano gli ultimi 10 pacchetti).
 
 ### 4.7 Fallback senza cloud (opzionale, Fase 5)

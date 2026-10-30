@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.update.UpdateState
+import it.manlio.nova.core.update.UpdateWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -101,6 +102,12 @@ private fun systemActions(
         onChanged()
     },
     onShizukuAction = openShizuku,
+    onLoadPrevious = {
+        app.updater.previousVersions().recoverCatching { throw IllegalStateException(app.updater.reasonFor(it)) }
+    },
+    onRollbackApp = { target ->
+        app.updater.requestRollback(target).also { if (it == null) UpdateWorker.checkSoon(app) }
+    },
     onRevertSystem = {
         scope.launch {
             app.systemChanges.revertAll()

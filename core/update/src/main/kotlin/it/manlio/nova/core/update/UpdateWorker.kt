@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -29,6 +31,8 @@ class UpdateWorker(
     companion object {
         private const val NAME = "nova-update-check"
         private const val HOURS = 6L
+        private const val SOON = "nova-update-check-soon"
+        private const val SOON_MINUTES = 10L
 
         fun schedule(context: Context) {
             val request =
@@ -36,6 +40,16 @@ class UpdateWorker(
                     .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                     .build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(NAME, ExistingPeriodicWorkPolicy.KEEP, request)
+        }
+
+        /** Un controllo tra 10 minuti: il tempo che GitHub impiega a preparare la versione richiesta. */
+        fun checkSoon(context: Context) {
+            val request =
+                OneTimeWorkRequestBuilder<UpdateWorker>()
+                    .setInitialDelay(SOON_MINUTES, TimeUnit.MINUTES)
+                    .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .build()
+            WorkManager.getInstance(context).enqueueUniqueWork(SOON, ExistingWorkPolicy.REPLACE, request)
         }
     }
 }

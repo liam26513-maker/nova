@@ -71,4 +71,16 @@
     <string name="system_shizuku_open">Open Shizuku to activate it</string>
     <string name="system_revert">Undo system changes (%1$d)</string>
     <string name="system_revert_summary">Restores every setting to its original value</string>
+    <string name="rollback_app">Go back to a previous version</string>
+    <string name="rollback_app_summary">Emergencies only: when an update caused a problem that later versions do not fix</string>
+    <string name="rollback_loading">Looking for previous versions…</string>
+    <string name="rollback_none">There are no previous versions to go back to</string>
+    <string name="rollback_cancel">Cancel</string>
+    <string name="rollback_close">Close</string>
+    <string name="rollback_confirm_text">NOVA will go back to how version %1$s worked. GitHub prepares it in a few minutes and the tablet receives it as a normal update: your settings stay. When a fix arrives, it will update again on its own.</string>
+    <string name="rollback_confirm">Yes, go back to %1$s</string>
+    <string name="rollback_sending">Sending the request to GitHub…</string>
+    <string name="rollback_done_title">Request sent</string>
+    <string name="rollback_done">In about 10 minutes version %1$s arrives as an update</string>
+    <string name="rollback_failed">Rollback not started</string>
 </resources>

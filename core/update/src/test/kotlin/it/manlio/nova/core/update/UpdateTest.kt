@@ -69,6 +69,23 @@ class UpdatePlannerTest {
     }
 
     @Test
+    fun `previous versions are older ones only, newest first, without drafts or missing checksums`() {
+        val releases =
+            listOf(
+                app("v0.1.101", 101),
+                app("v0.1.103", 103),
+                app("v0.1.104", 104),
+                app("v0.1.102", 102, withChecksum = false),
+                app("v0.1.100", 100, draft = true),
+                config("0.2.0"),
+            )
+        val previous = UpdatePlanner.previousVersions(releases, installedVersionCode = 104)
+        assertEquals(listOf(103, 101), previous.map { it.versionCode })
+        assertEquals(listOf(103), UpdatePlanner.previousVersions(releases, 104, limit = 1).map { it.versionCode })
+        assertTrue(UpdatePlanner.previousVersions(releases, 101).isEmpty())
+    }
+
+    @Test
     fun `semantic version comparison`() {
         assertTrue(UpdatePlanner.compareVersions("1.10.0", "1.9.3") > 0)
         assertTrue(UpdatePlanner.compareVersions("0.1", "0.1.0") == 0)
