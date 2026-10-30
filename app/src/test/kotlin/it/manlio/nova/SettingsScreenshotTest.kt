@@ -31,6 +31,7 @@ class SettingsScreenshotTest {
         onChoose: (LevelChoice) -> Unit = {},
     ) {
         val assets = RuntimeEnvironment.getApplication().assets
+
         fun read(p: String) = assets.open(p).bufferedReader().use { it.readText() }
         val config =
             ConfigEngine(
