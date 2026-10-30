@@ -45,7 +45,8 @@ class DeviceProfiler(private val context: Context) {
             screenHeightPx = minOf(mode.physicalWidth, mode.physicalHeight),
             densityDpi = metrics.densityDpi,
             refreshRatesHz = display.supportedModes.map { it.refreshRate }.distinct().sortedDescending(),
-            supportsRealtimeBlur = true, // RenderEffect esiste da Android 12 (minSdk 31)
+            // RenderEffect esiste da Android 12 (minSdk 31).
+            supportsRealtimeBlur = true,
             supportsFreeform = pm.hasSystemFeature(PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT),
             supportsMultipleUsers = UserManager.supportsMultipleUsers(),
             hasStylusDigitizer =

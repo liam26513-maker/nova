@@ -47,6 +47,9 @@ object LevelAdvisor {
     const val FRAME_BUDGET_MS = 16.7f
     const val MAX_JANK_PERCENT = 5f
     const val LOW_RAM_MB = 3_000L
+    private const val ALL_PERCENT = 100f
+    private const val P90_NUM = 9
+    private const val P90_DEN = 10
 
     fun advise(
         result: BenchmarkResult,
@@ -56,7 +59,7 @@ object LevelAdvisor {
         val smooth =
             GraphicsLevel.entries.filter { level ->
                 val p90 = result.p90MsByLevel[level] ?: return@filter false
-                val jank = result.jankPercentByLevel[level] ?: 100f
+                val jank = result.jankPercentByLevel[level] ?: ALL_PERCENT
                 p90 <= FRAME_BUDGET_MS && jank < MAX_JANK_PERCENT
             }
         var ceiling = smooth.firstOrNull() ?: GraphicsLevel.PERFORMANCE
@@ -67,10 +70,10 @@ object LevelAdvisor {
 
     /** p90 e percentuale di frame oltre il budget da una lista di durate in millisecondi. */
     fun summarize(frameMs: List<Float>): Pair<Float, Float> {
-        if (frameMs.isEmpty()) return Float.MAX_VALUE to 100f
+        if (frameMs.isEmpty()) return Float.MAX_VALUE to ALL_PERCENT
         val sorted = frameMs.sorted()
-        val p90 = sorted[((sorted.size - 1) * 9) / 10]
-        val jank = frameMs.count { it > FRAME_BUDGET_MS } * 100f / frameMs.size
+        val p90 = sorted[((sorted.size - 1) * P90_NUM) / P90_DEN]
+        val jank = frameMs.count { it > FRAME_BUDGET_MS } * ALL_PERCENT / frameMs.size
         return p90 to jank
     }
 }

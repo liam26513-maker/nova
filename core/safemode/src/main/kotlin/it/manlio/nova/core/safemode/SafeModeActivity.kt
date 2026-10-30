@@ -97,8 +97,7 @@ class SafeModeActivity : ComponentActivity() {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         /** Quanti report di crash aspettano di essere letti. */
-        fun pendingCrashes(context: Context): Int =
-            crashDir(context).listFiles { f -> f.name.startsWith(CrashReporter.PREFIX) }?.size ?: 0
+        fun pendingCrashes(context: Context): Int = crashDir(context).listFiles { f -> f.name.startsWith(CrashReporter.PREFIX) }?.size ?: 0
     }
 }
 

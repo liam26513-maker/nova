@@ -65,16 +65,17 @@ class NovaApp : Application() {
     val profile: StateFlow<DeviceProfile?> = _profile.asStateFlow()
 
     /** Salva un nuovo esito del benchmark e applica livello di partenza e tetto (SPEC §3.6). */
-    suspend fun applyBenchmark(result: BenchmarkResult) = withContext(Dispatchers.IO) {
-        val base = _profile.value ?: profiler.readHardware()
-        val (start, ceiling) = LevelAdvisor.advise(result, base.ramMb, base.supportsRealtimeBlur)
-        val updated = base.copy(benchmark = result, startLevel = start, ceiling = ceiling, measuredAt = System.currentTimeMillis())
-        profiler.save(updated)
-        _profile.value = updated
-        graphicsController.configure(start, ceiling)
-        graphicsController.setAutomatic()
-        log.i(TAG, "benchmark: partenza $start, tetto $ceiling, p90 ${result.p90MsByLevel}")
-    }
+    suspend fun applyBenchmark(result: BenchmarkResult) =
+        withContext(Dispatchers.IO) {
+            val base = _profile.value ?: profiler.readHardware()
+            val (start, ceiling) = LevelAdvisor.advise(result, base.ramMb, base.supportsRealtimeBlur)
+            val updated = base.copy(benchmark = result, startLevel = start, ceiling = ceiling, measuredAt = System.currentTimeMillis())
+            profiler.save(updated)
+            _profile.value = updated
+            graphicsController.configure(start, ceiling)
+            graphicsController.setAutomatic()
+            log.i(TAG, "benchmark: partenza $start, tetto $ceiling, p90 ${result.p90MsByLevel}")
+        }
 
     override fun onCreate() {
         super.onCreate()

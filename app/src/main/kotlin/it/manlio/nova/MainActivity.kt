@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.SystemClock
-import android.view.KeyEvent
 import android.view.FrameMetrics
+import android.view.KeyEvent
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
