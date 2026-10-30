@@ -81,7 +81,10 @@ sealed interface SystemCommand {
 
         fun requireKey(key: String) = require(KEY.matches(key)) { "Chiave non consentita: $key" }
 
-        fun requirePackage(name: String) = require(PACKAGE.matches(name) && name.length <= MAX_PACKAGE_LENGTH) { "Nome di pacchetto non valido: $name" }
+        fun requirePackage(name: String) =
+            require(PACKAGE.matches(name) && name.length <= MAX_PACKAGE_LENGTH) {
+                "Nome di pacchetto non valido: $name"
+            }
     }
 }
 

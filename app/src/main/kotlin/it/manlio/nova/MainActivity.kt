@@ -18,7 +18,6 @@ import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.NovaColors
 import it.manlio.nova.core.design.NovaMotion
 import it.manlio.nova.core.design.NovaRadii
-import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.core.design.parseNovaColor
 import it.manlio.nova.core.safemode.SafeModeActivity

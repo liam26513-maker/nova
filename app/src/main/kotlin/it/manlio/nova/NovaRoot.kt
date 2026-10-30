@@ -77,7 +77,6 @@ fun NovaRoot(
             )
         }
     }
-
 }
 
 /** Azioni delle sezioni Aggiornamenti e Strumenti di sistema. */
@@ -88,24 +87,24 @@ private fun systemActions(
     onChanged: () -> Unit,
     openShizuku: () -> Unit,
 ) = SystemActions(
-        onCheck = { scope.launch { app.updater.check(automatic = false) } },
-        onInstall = {
-            (update as? UpdateState.AppAvailable)?.let { u -> scope.launch { app.updater.install(u.update) } }
-        },
-        onSaveToken = { token ->
-            app.updater.setToken(token).also { error ->
-                if (error == null) scope.launch { app.updater.check(automatic = false) }
-            }
-        },
-        onRollbackConfig = {
-            app.updater.rollbackConfig()
+    onCheck = { scope.launch { app.updater.check(automatic = false) } },
+    onInstall = {
+        (update as? UpdateState.AppAvailable)?.let { u -> scope.launch { app.updater.install(u.update) } }
+    },
+    onSaveToken = { token ->
+        app.updater.setToken(token).also { error ->
+            if (error == null) scope.launch { app.updater.check(automatic = false) }
+        }
+    },
+    onRollbackConfig = {
+        app.updater.rollbackConfig()
+        onChanged()
+    },
+    onShizukuAction = openShizuku,
+    onRevertSystem = {
+        scope.launch {
+            app.systemChanges.revertAll()
             onChanged()
-        },
-        onShizukuAction = openShizuku,
-        onRevertSystem = {
-            scope.launch {
-                app.systemChanges.revertAll()
-                onChanged()
-            }
-        },
-    )
+        }
+    },
+)
