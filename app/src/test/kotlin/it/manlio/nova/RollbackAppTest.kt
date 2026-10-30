@@ -18,9 +18,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 /** Il ritorno a una versione precedente: lista, conferma obbligatoria, esito ed errori. */
 @RunWith(AndroidJUnit4::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE) // lo sfondo delle Impostazioni disegna una bitmap vera
 @Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34], application = Application::class)
 class RollbackAppTest {
     @get:Rule val compose = createComposeRule()
