@@ -51,6 +51,7 @@ interface ConfigTarget {
  * Aggiornatore (SPEC §4.6): controlla le release, applica a caldo la configurazione e scarica,
  * verifica e installa l'app. Prima di ogni cambio salva un punto di ripristino.
  */
+@Suppress("LongParameterList") // punto di assemblaggio: ogni dipendenza è esplicita e sostituibile nei test
 class Updater(
     private val context: Context,
     private val versionCode: Int,

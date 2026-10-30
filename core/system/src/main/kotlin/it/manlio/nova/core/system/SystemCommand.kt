@@ -74,13 +74,14 @@ sealed interface SystemCommand {
     }
 
     private companion object {
+        const val MAX_PACKAGE_LENGTH = 128
         val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
         val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
 
         fun requireKey(key: String) = require(KEY.matches(key)) { "Chiave non consentita: $key" }
 
-        fun requirePackage(name: String) = require(PACKAGE.matches(name) && name.length <= 128) { "Nome di pacchetto non valido: $name" }
+        fun requirePackage(name: String) = require(PACKAGE.matches(name) && name.length <= MAX_PACKAGE_LENGTH) { "Nome di pacchetto non valido: $name" }
     }
 }
 

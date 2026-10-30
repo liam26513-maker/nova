@@ -12,7 +12,7 @@ class ShellService : IShellService.Stub() {
     }
 
     override fun exec(argv: Array<String>): String {
-        val process = ProcessBuilder(*argv).redirectErrorStream(true).start()
+        val process = ProcessBuilder(argv.toList()).redirectErrorStream(true).start()
         val output = process.inputStream.bufferedReader().use { it.readText() }
         val code = process.waitFor()
         return "$code\n$output"

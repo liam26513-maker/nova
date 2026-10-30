@@ -34,17 +34,19 @@ class ApkInstaller(
         expectedVersionCode: Int,
     ): ApkCheck {
         val pm = context.packageManager
-        val archive =
-            pm.getPackageArchiveInfo(apk.path, PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong()))
-                ?: return ApkCheck.Rejected("Il file scaricato non è un'app valida")
-        if (archive.packageName != context.packageName) return ApkCheck.Rejected("L'app scaricata non è NOVA")
-        if (archive.longVersionCode != expectedVersionCode.toLong()) return ApkCheck.Rejected("Versione inattesa nell'app scaricata")
-        val installed =
-            pm.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong()))
-        val ours = installed.signingInfo?.apkContentsSigners.fingerprints()
-        val theirs = archive.signingInfo?.apkContentsSigners.fingerprints()
-        if (ours.isEmpty() || ours != theirs) return ApkCheck.Rejected("La firma non corrisponde: aggiornamento rifiutato")
-        return ApkCheck.Ok
+        val flags = PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong())
+        val archive = pm.getPackageArchiveInfo(apk.path, flags)
+        val ours = pm.getPackageInfo(context.packageName, flags).signingInfo?.apkContentsSigners.fingerprints()
+        val reason =
+            when {
+                archive == null -> "Il file scaricato non è un'app valida"
+                archive.packageName != context.packageName -> "L'app scaricata non è NOVA"
+                archive.longVersionCode != expectedVersionCode.toLong() -> "Versione inattesa nell'app scaricata"
+                ours.isEmpty() || ours != archive.signingInfo?.apkContentsSigners.fingerprints() ->
+                    "La firma non corrisponde: aggiornamento rifiutato"
+                else -> null
+            }
+        return reason?.let(ApkCheck::Rejected) ?: ApkCheck.Ok
     }
 
     /** @return null se avviata, altrimenti il motivo dell'errore. */
