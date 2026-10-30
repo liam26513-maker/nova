@@ -72,3 +72,8 @@ dependencies {
     testImplementation(libs.roborazzi)
     testImplementation(libs.roborazzi.compose)
 }
+
+// I test unitari (Robolectric/Compose) girano sulla variante debug: ui-test-manifest esiste solo lì.
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
+}
