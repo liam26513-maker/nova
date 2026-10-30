@@ -11,4 +11,6 @@
     <string name="safemode_system_launcher_summary">Scegli un\'altra app Home finché il problema non è risolto</string>
     <string name="safemode_last_error">Ultimo errore</string>
     <string name="safemode_apps">App</string>
+    <string name="safemode_revert_system">Annulla le modifiche di sistema (%1$d)</string>
+    <string name="safemode_revert_system_summary">Riporta ogni impostazione cambiata da NOVA al valore originale (serve Shizuku attivo)</string>
 </resources>

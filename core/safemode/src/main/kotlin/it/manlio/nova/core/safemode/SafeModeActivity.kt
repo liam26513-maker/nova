@@ -11,8 +11,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -25,10 +27,13 @@ import it.manlio.nova.core.design.SettingsBlock
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsScaffold
 import it.manlio.nova.core.design.SettingsSection
+import it.manlio.nova.core.system.ShizukuBridge
+import it.manlio.nova.core.system.SystemChangeLog
 import it.manlio.nova.core.telemetry.BootGuard
 import it.manlio.nova.core.telemetry.CrashReporter
 import it.manlio.nova.core.telemetry.KeyValueFile
 import it.manlio.nova.core.telemetry.SafeModeReason
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -44,7 +49,11 @@ class SafeModeActivity : ComponentActivity() {
                 ?: SafeModeReason.REQUESTED
         val lastCrash = crashDir(this).listFiles()?.maxByOrNull { it.name }?.readLines()?.take(CRASH_PREVIEW_LINES)
         val apps = launchableApps()
+        val shizuku = ShizukuBridge(this).also { it.start() }
+        val changes = SystemChangeLog(SystemChangeLog.fileIn(filesDir), shizuku)
         setContent {
+            val scope = rememberCoroutineScope()
+            var pendingChanges by remember { mutableIntStateOf(changes.entries().size) }
             NovaTheme(NovaTokens.Fallback.copy(dark = isNight())) {
                 SafeModeScreen(
                     reason = reason,
@@ -53,6 +62,10 @@ class SafeModeActivity : ComponentActivity() {
                     onLeave = ::leave,
                     onSystemLauncher = { startActivity(Intent(Settings.ACTION_HOME_SETTINGS)) },
                     onOpenApp = { pkg -> packageManager.getLaunchIntentForPackage(pkg)?.let(::startActivity) },
+                    systemChanges = pendingChanges,
+                    onRevertSystem = {
+                        scope.launch { pendingChanges = changes.revertAll() }
+                    },
                 )
             }
         }
@@ -109,6 +122,8 @@ private fun SafeModeScreen(
     onLeave: () -> Unit,
     onSystemLauncher: () -> Unit,
     onOpenApp: (String) -> Unit,
+    systemChanges: Int,
+    onRevertSystem: () -> Unit,
 ) {
     val t = Nova.tokens
     var showCrash by remember { mutableStateOf(false) }
@@ -131,6 +146,14 @@ private fun SafeModeScreen(
                 showDivider = true,
                 onClick = onSystemLauncher,
             )
+            if (systemChanges > 0) {
+                SettingsRow(
+                    stringResource(R.string.safemode_revert_system, systemChanges),
+                    summary = stringResource(R.string.safemode_revert_system_summary),
+                    showDivider = true,
+                    onClick = onRevertSystem,
+                )
+            }
             if (lastCrash != null) {
                 SettingsRow(
                     stringResource(R.string.safemode_last_error),

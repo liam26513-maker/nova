@@ -16,6 +16,8 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
+        // Repository da cui arrivano gli aggiornamenti (SPEC §4.5).
+        buildConfigField("String", "GITHUB_REPO", "\"liam26513-maker/nova\"")
     }
 
     sourceSets["main"].assets.srcDir(rootProject.file("config"))
@@ -56,6 +58,8 @@ dependencies {
     implementation(project(":core:telemetry"))
     implementation(project(":core:safemode"))
     implementation(project(":core:device"))
+    implementation(project(":core:system"))
+    implementation(project(":core:update"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

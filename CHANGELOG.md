@@ -23,3 +23,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
   - dopo la misura compare il **resoconto**, con la fluidità di ogni livello e il livello consigliato. Si può riaprire dalle Impostazioni;
   - sotto il selettore c'è un'**anteprima dal vivo**: forme colorate che passano dietro un pannello di vetro, per vedere davvero la differenza fra i livelli, con una frase che la spiega.
 
+### Strumenti di sistema e aggiornamenti (Fase 0, punti 7–8)
+- **Shizuku:** NOVA può usare le funzioni di sistema senza root. Solo comandi di un elenco fisso e controllato, mai testo libero; app di sistema essenziali protette; **ogni modifica viene registrata e si annulla con un tocco**, anche dalla modalità provvisoria.
+- **Aggiornamenti automatici dal tuo GitHub:** colleghi una volta il token (salvato cifrato) e NOVA controlla all'avvio e ogni 6 ore.
+  - La **configurazione** si aggiorna da sola, senza reinstallare, e si può tornare indietro all'istante.
+  - L'**app** si aggiorna da sola con Shizuku attivo, altrimenti con un tocco su "Installa".
+  - Ogni file viene controllato: impronta e **stessa firma** dell'app installata. Prima di ogni cambio viene salvato un punto di ripristino.
+

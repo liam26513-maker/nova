@@ -1,5 +1,6 @@
 package it.manlio.nova
 
+import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -12,6 +13,8 @@ import it.manlio.nova.core.design.GraphicsState
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.device.BenchmarkResult
 import it.manlio.nova.core.device.DeviceProfile
+import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.update.UpdateState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +26,8 @@ import org.robolectric.annotation.GraphicsMode
 /** Schermate di riferimento delle Impostazioni (tablet 1280×800, 160 dpi come il dispositivo reale). */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34])
+// Application vuota: le schermate non devono avviare Shizuku, WorkManager o la rete.
+@Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34], application = Application::class)
 class SettingsScreenshotTest {
     @get:Rule val compose = createComposeRule()
 
@@ -50,6 +54,8 @@ class SettingsScreenshotTest {
                     onChoose = onChoose,
                     onMeasure = {},
                     onShowReport = {},
+                    system = SAMPLE_SYSTEM,
+                    systemActions = SystemActions({}, {}, { null }, {}, {}, {}),
                 )
             }
         }
@@ -59,6 +65,14 @@ class SettingsScreenshotTest {
     fun light_automatic() {
         render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
         compose.onRoot().captureRoboImage("screenshots/impostazioni_chiaro_automatico.png")
+    }
+
+    /** Pagina intera (finestra molto alta) per vedere anche Aggiornamenti e Strumenti di sistema. */
+    @Test
+    @Config(qualifiers = "it-w1280dp-h2400dp-port-mdpi")
+    fun full_page() {
+        render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_pagina_intera.png")
     }
 
     @Test
@@ -132,4 +146,13 @@ private val SAMPLE_PROFILE =
             ),
         startLevel = GraphicsLevel.BALANCED,
         ceiling = GraphicsLevel.BALANCED,
+    )
+
+private val SAMPLE_SYSTEM =
+    SystemUiState(
+        versionName = "0.1.0",
+        update = UpdateState.UpToDate(checkedAt = 0),
+        hasConfigHistory = true,
+        shizuku = ShizukuStatus.NEEDS_PERMISSION,
+        systemChanges = 2,
     )

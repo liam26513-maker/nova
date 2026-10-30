@@ -1,5 +1,7 @@
 package it.manlio.nova
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -10,23 +12,16 @@ import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.manlio.nova.core.config.NovaConfig
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.NovaColors
 import it.manlio.nova.core.design.NovaMotion
 import it.manlio.nova.core.design.NovaRadii
-import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.core.design.parseNovaColor
 import it.manlio.nova.core.safemode.SafeModeActivity
-import kotlinx.coroutines.launch
+import it.manlio.nova.core.system.ShizukuStatus
 
 class MainActivity : ComponentActivity() {
     private var createdAt = 0L
@@ -48,47 +43,7 @@ class MainActivity : ComponentActivity() {
         createdAt = SystemClock.uptimeMillis()
         if (openSafeModeIfNeeded(app)) return
         setContent {
-            val config by app.config.current.collectAsStateWithLifecycle()
-            val graphics by app.graphics.collectAsStateWithLifecycle()
-            val profile by app.profile.collectAsStateWithLifecycle()
-            var measuring by remember { mutableStateOf<GraphicsLevel?>(null) }
-            var showReport by remember { mutableStateOf(false) }
-            val scope = rememberCoroutineScope()
-            NovaTheme(tokensFrom(config, graphics.level)) {
-                val current = measuring
-                val measured = profile?.takeIf { it.benchmark != null }
-                if (current != null) {
-                    BenchmarkScreen(current)
-                } else if (showReport && measured != null) {
-                    BenchmarkReportScreen(measured, onDone = { showReport = false })
-                } else {
-                    SettingsScreen(
-                        brandName = config.brand.displayName,
-                        configVersion = config.meta.version,
-                        graphics = graphics,
-                        profile = profile,
-                        onChoose = { choice ->
-                            when (choice) {
-                                LevelChoice.Automatic -> app.graphicsController.setAutomatic()
-                                is LevelChoice.Fixed -> app.graphicsController.setManual(choice.level)
-                            }
-                        },
-                        onMeasure = {
-                            val runner = BenchmarkRunner(app.graphicsController).also { benchmark = it }
-                            scope.launch {
-                                try {
-                                    app.applyBenchmark(runner.run { measuring = it })
-                                    showReport = true
-                                } finally {
-                                    benchmark = null
-                                    measuring = null
-                                }
-                            }
-                        },
-                        onShowReport = { showReport = true },
-                    )
-                }
-            }
+            NovaRoot(app, setBenchmark = { benchmark = it }, openShizuku = { openShizuku(app) })
         }
     }
 
@@ -114,6 +69,17 @@ class MainActivity : ComponentActivity() {
         app.enterSafeMode()
         openSafeModeIfNeeded(app)
         return true
+    }
+
+    /** Chiede il permesso a Shizuku, oppure apre l'app Shizuku (o la sua pagina nel Play Store). */
+    private fun openShizuku(app: NovaApp) {
+        if (app.shizuku.status.value == ShizukuStatus.NEEDS_PERMISSION) {
+            app.shizuku.requestPermission()
+            return
+        }
+        val launch = packageManager.getLaunchIntentForPackage(SHIZUKU_PACKAGE)
+        val store = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$SHIZUKU_PACKAGE"))
+        runCatching { startActivity(launch ?: store) }
     }
 
     private fun openSafeModeIfNeeded(app: NovaApp): Boolean {
@@ -161,3 +127,4 @@ internal fun tokensFrom(
 }
 
 private const val SAFE_MODE_KEY_WINDOW_MS = 3_000L
+private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
