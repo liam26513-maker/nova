@@ -21,4 +21,7 @@ include(
     ":core:design",
     ":core:config",
     ":core:modules",
+    ":core:telemetry",
+    ":core:safemode",
+    ":core:device",
 )

@@ -34,18 +34,23 @@ data class GraphicsState(
  * Thread-safe: i frame arrivano da un thread dedicato, le scelte dell'utente dal thread principale.
  */
 class GraphicsLevelController(
-    /** Livello da cui parte (e a cui torna) la modalità automatica. */
-    private val startLevel: GraphicsLevel,
-    /** Il livello più ricco consentito (dal profilo del dispositivo). */
+    startLevel: GraphicsLevel,
     ceiling: GraphicsLevel = GraphicsLevel.MAXIMUM,
-    private val frameBudgetNanos: Long = 16_666_667L,
+    /**
+     * Un secondo è "lento" se il 90° percentile supera questo valore. È il doppio di un frame a 60 Hz,
+     * come l'euristica di JankStats: FrameMetrics.TOTAL_DURATION include la coda verso lo schermo,
+     * quindi superare di poco 16,7 ms è normale anche quando nessun frame viene perso.
+     */
+    private val frameBudgetNanos: Long = 33_333_333L,
     private val onChange: (GraphicsState) -> Unit = {},
 ) {
     private val lock = Any()
 
-    var ceiling: GraphicsLevel = ceiling
-        get() = synchronized(lock) { field }
-        set(value) = synchronized(lock) { field = value }
+    /** Livello da cui parte (e a cui torna) la modalità automatica. */
+    private var startLevel = startLevel
+
+    /** Il livello più ricco consentito (dal profilo del dispositivo). */
+    private var ceiling = ceiling
 
     @Volatile
     var state: GraphicsState = GraphicsState(bounded(startLevel, ceiling), automatic = true)
@@ -75,12 +80,26 @@ class GraphicsLevelController(
         if (count < second.size) second[count++] = durationNanos
     }
 
-    /** L'utente fissa un livello: non cambierà più da solo. */
+    /**
+     * L'utente fissa un livello: non cambierà più da solo. La scelta manuale non è limitata dal
+     * tetto: il tetto vale solo per Automatico (l'utente decide sempre).
+     */
     fun setManual(newLevel: GraphicsLevel) =
         synchronized(lock) {
             resetCounters()
-            publish(GraphicsState(bounded(newLevel, ceiling), automatic = false))
+            publish(GraphicsState(newLevel, automatic = false))
         }
+
+    /** Nuovi limiti dal profilatore: in automatico si riparte subito dal nuovo livello; una scelta manuale resta com'è. */
+    fun configure(
+        start: GraphicsLevel,
+        maxLevel: GraphicsLevel,
+    ) = synchronized(lock) {
+        startLevel = start
+        ceiling = maxLevel
+        resetCounters()
+        if (state.automatic) publish(GraphicsState(bounded(start, maxLevel), automatic = true))
+    }
 
     /** Torna alla scelta automatica, ripartendo dal livello di partenza. */
     fun setAutomatic() =
