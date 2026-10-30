@@ -67,6 +67,14 @@ class SettingsScreenshotTest {
         compose.onRoot().captureRoboImage("screenshots/impostazioni_chiaro_automatico.png")
     }
 
+    /** Pagina intera (finestra molto alta) per vedere anche Aggiornamenti e Strumenti di sistema. */
+    @Test
+    @Config(qualifiers = "it-w1280dp-h2400dp-port-mdpi")
+    fun full_page() {
+        render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_pagina_intera.png")
+    }
+
     @Test
     fun light_fixed_maximum() {
         render("theme/light.json", GraphicsState(GraphicsLevel.MAXIMUM, automatic = false))
