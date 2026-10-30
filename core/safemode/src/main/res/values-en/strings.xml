@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="safemode_title">Safe mode</string>
+    <string name="safemode_reason_starts">NOVA closed several times while starting. You are in a reduced, safe version: your apps and data are untouched.</string>
+    <string name="safemode_reason_update">NOVA closed several times after the last update. You are in a reduced, safe version: try again or use \"Repair\".</string>
+    <string name="safemode_reason_requested">You asked for safe mode. Only the essentials are here.</string>
+    <string name="safemode_actions">What you can do</string>
+    <string name="safemode_leave">Restart NOVA normally</string>
+    <string name="safemode_leave_summary">Leaves safe mode and tries again</string>
+    <string name="safemode_system_launcher">Use the system home</string>
+    <string name="safemode_system_launcher_summary">Pick another Home app until the problem is fixed</string>
+    <string name="safemode_last_error">Last error</string>
+    <string name="safemode_apps">Apps</string>
+</resources>

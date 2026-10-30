@@ -53,6 +53,9 @@ dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:config"))
     implementation(project(":core:modules"))
+    implementation(project(":core:telemetry"))
+    implementation(project(":core:safemode"))
+    implementation(project(":core:device"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

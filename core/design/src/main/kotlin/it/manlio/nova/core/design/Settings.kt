@@ -178,19 +178,43 @@ fun SettingsSection(
     }
 }
 
-/** Una voce: titolo, descrizione facoltativa e un elemento a destra (valore, interruttore…). */
+/**
+ * Una voce: titolo, descrizione facoltativa e un elemento a destra (valore, interruttore…).
+ * Con [onClick] la voce diventa un'azione: si illumina appena al tocco e mostra una freccia discreta.
+ */
 @Composable
 fun SettingsRow(
     title: String,
     summary: String? = null,
     showDivider: Boolean = false,
+    onClick: (() -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val t = Nova.tokens
+    val view = LocalView.current
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val highlight by animateColorAsState(
+        if (pressed) t.colors.onSurface.copy(alpha = 0.06f) else Color.Transparent,
+        t.motion.spring(),
+        label = "row-press",
+    )
     Column {
         if (showDivider) Hairline(Modifier.padding(start = NovaSpacing.m))
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = NovaSpacing.m, vertical = NovaSpacing.s),
+            Modifier
+                .fillMaxWidth()
+                .background(highlight)
+                .then(
+                    if (onClick == null) {
+                        Modifier
+                    } else {
+                        Modifier.clickable(interaction, indication = null, role = Role.Button) {
+                            view.perform(NovaHaptic.TAP)
+                            onClick()
+                        }
+                    },
+                ).padding(horizontal = NovaSpacing.m, vertical = NovaSpacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
@@ -202,6 +226,10 @@ fun SettingsRow(
             if (trailing != null) {
                 Spacer(Modifier.width(NovaSpacing.m))
                 trailing()
+            }
+            if (onClick != null) {
+                Spacer(Modifier.width(NovaSpacing.s))
+                BasicText("›", style = TextStyle(t.colors.onSurfaceMuted.copy(alpha = 0.6f), 22.sp, FontWeight.Light))
             }
         }
     }

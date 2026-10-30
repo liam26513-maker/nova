@@ -2,23 +2,45 @@ package it.manlio.nova
 
 import android.app.Application
 import android.content.Context
+import it.manlio.nova.core.config.ApplyResult
 import it.manlio.nova.core.config.ConfigEngine
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.GraphicsLevelController
 import it.manlio.nova.core.design.GraphicsState
+import it.manlio.nova.core.device.BenchmarkResult
+import it.manlio.nova.core.device.DeviceProfile
+import it.manlio.nova.core.device.DeviceProfiler
+import it.manlio.nova.core.device.LevelAdvisor
 import it.manlio.nova.core.modules.ModuleRegistry
+import it.manlio.nova.core.safemode.SafeModeActivity
+import it.manlio.nova.core.telemetry.BootGuard
+import it.manlio.nova.core.telemetry.CrashReporter
+import it.manlio.nova.core.telemetry.KeyValueFile
+import it.manlio.nova.core.telemetry.LocalLog
+import it.manlio.nova.core.telemetry.SafeModeReason
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
-/** Assemblaggio del nucleo: configurazione, registro moduli, livello grafico. */
+/** Assemblaggio del nucleo: affidabilità, configurazione, registro moduli, livello grafico. */
 class NovaApp : Application() {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    val log = LocalLog()
+
+    lateinit var bootGuard: BootGuard
+        private set
+
+    /** Se non è null, NOVA deve aprirsi in modalità provvisoria (SPEC §14.2). */
+    var safeModeReason: SafeModeReason? = null
+        private set
 
     lateinit var config: ConfigEngine
         private set
@@ -28,7 +50,7 @@ class NovaApp : Application() {
 
     /**
      * Livello iniziale atteso sul tablet di riferimento (SPEC §2.1): Bilanciato.
-     * shortcut: tetto fisso a MAXIMUM, finché il profilatore dispositivo (Fase 0, punto 6) non lo calcola.
+     * Dopo il benchmark, partenza e tetto arrivano dal profilo del dispositivo.
      */
     private val _graphics = MutableStateFlow(GraphicsState(GraphicsLevel.BALANCED, automatic = true))
     val graphics: StateFlow<GraphicsState> = _graphics.asStateFlow()
@@ -36,16 +58,66 @@ class NovaApp : Application() {
     val graphicsController: GraphicsLevelController =
         GraphicsLevelController(GraphicsLevel.BALANCED) { _graphics.value = it }
 
+    lateinit var profiler: DeviceProfiler
+        private set
+
+    private val _profile = MutableStateFlow<DeviceProfile?>(null)
+    val profile: StateFlow<DeviceProfile?> = _profile.asStateFlow()
+
+    /** Salva un nuovo esito del benchmark e applica livello di partenza e tetto (SPEC §3.6). */
+    suspend fun applyBenchmark(result: BenchmarkResult) = withContext(Dispatchers.IO) {
+        val base = _profile.value ?: profiler.readHardware()
+        val (start, ceiling) = LevelAdvisor.advise(result, base.ramMb, base.supportsRealtimeBlur)
+        val updated = base.copy(benchmark = result, startLevel = start, ceiling = ceiling, measuredAt = System.currentTimeMillis())
+        profiler.save(updated)
+        _profile.value = updated
+        graphicsController.configure(start, ceiling)
+        graphicsController.setAutomatic()
+        log.i(TAG, "benchmark: partenza $start, tetto $ceiling, p90 ${result.p90MsByLevel}")
+    }
+
     override fun onCreate() {
         super.onCreate()
+        // Per primi: il gestore dei crash deve coprire anche gli errori dell'avvio.
+        bootGuard = BootGuard(KeyValueFile(SafeModeActivity.bootFile(this)))
+        CrashReporter(SafeModeActivity.crashDir(this), log, bootGuard, BuildConfig.VERSION_NAME).install()
+        safeModeReason = bootGuard.onLaunch(BuildConfig.VERSION_CODE.toLong())
+        log.i(TAG, "avvio ${BuildConfig.VERSION_NAME}, modalità provvisoria: ${safeModeReason ?: "no"}")
+        if (safeModeReason != null) return // in modalità provvisoria non si carica niente altro
+
         config = ConfigEngine(BuildConfig.VERSION_CODE, loadDefaults(this))
-        overridesFile(this).takeIf { it.exists() }?.readText()?.let(config::setOverrides)
+        overridesFile(this).takeIf { it.exists() }?.readText()?.let { json ->
+            (config.setOverrides(json) as? ApplyResult.Rejected)?.let { log.w(TAG, "override locali ignorati: ${it.reason}") }
+        }
         appScope.launch {
             config.current.collect { c -> modules.apply(c.modules.modules, capabilities = emptySet()) }
         }
+        profiler = DeviceProfiler(this)
+        appScope.launch {
+            // Profilo salvato, oppure prima lettura dell'hardware (senza benchmark).
+            val profile = profiler.load() ?: profiler.readHardware().also(profiler::save)
+            _profile.value = profile
+            if (profile.benchmark != null) graphicsController.configure(profile.startLevel, profile.ceiling)
+        }
+        appScope.launch {
+            delay(HEALTHY_AFTER_MS)
+            bootGuard.markHealthy()
+            log.i(TAG, "avvio stabile")
+        }
+    }
+
+    /** Volume giù tenuto premuto all'avvio, o richiesta dalle impostazioni. */
+    fun enterSafeMode() {
+        bootGuard.requestSafeMode()
+        safeModeReason = SafeModeReason.REQUESTED
     }
 
     companion object {
+        private const val TAG = "nova"
+
+        /** Dopo questo tempo senza crash l'avvio è considerato riuscito. */
+        private const val HEALTHY_AFTER_MS = 20_000L
+
         fun overridesFile(context: Context) = File(context.filesDir, "config-overrides.json")
 
         /** I default compilati sono i file di `config/` del repository, inclusi negli asset. */

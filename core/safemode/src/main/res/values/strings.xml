@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="safemode_title">Modalità provvisoria</string>
+    <string name="safemode_reason_starts">NOVA si è chiusa più volte all\'avvio. Sei in una versione ridotta e sicura: le tue app e i tuoi dati sono al loro posto.</string>
+    <string name="safemode_reason_update">Dopo l\'ultimo aggiornamento NOVA si è chiusa più volte. Sei in una versione ridotta e sicura: puoi riprovare o usare \"Ripara\".</string>
+    <string name="safemode_reason_requested">Hai chiesto la modalità provvisoria. Qui trovi solo l\'essenziale.</string>
+    <string name="safemode_actions">Cosa puoi fare</string>
+    <string name="safemode_leave">Riavvia NOVA normalmente</string>
+    <string name="safemode_leave_summary">Esce dalla modalità provvisoria e riprova</string>
+    <string name="safemode_system_launcher">Usa la home di sistema</string>
+    <string name="safemode_system_launcher_summary">Scegli un\'altra app Home finché il problema non è risolto</string>
+    <string name="safemode_last_error">Ultimo errore</string>
+    <string name="safemode_apps">App</string>
+</resources>

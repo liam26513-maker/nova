@@ -14,4 +14,20 @@
     <string name="status_config_title">Configurazione</string>
     <string name="status_modules_title">Moduli</string>
     <string name="status_modules_none">Nessuno</string>
+    <string name="device_title">Il tuo tablet</string>
+    <string name="device_footer">Misurato sul tuo hardware reale. Il livello massimo è il più ricco che resta fluido; Automatico non lo supera mai.</string>
+    <string name="device_cpu">Processore</string>
+    <string name="device_cores">%1$d core</string>
+    <string name="device_ram">Memoria</string>
+    <string name="device_gb" translatable="false">%1$d GB</string>
+    <string name="device_screen">Schermo</string>
+    <string name="device_screen_value" translatable="false">%1$d×%2$d · %3$d Hz</string>
+    <string name="device_ceiling">Livello massimo fluido</string>
+    <string name="device_not_measured">Non ancora misurato</string>
+    <string name="device_measure">Misura le prestazioni</string>
+    <string name="device_measure_again">Misura di nuovo le prestazioni</string>
+    <string name="device_measure_summary">Circa 12 secondi, mostra dei pannelli in movimento</string>
+    <string name="benchmark_title">Misuro le prestazioni</string>
+    <string name="benchmark_subtitle">Prova del livello %1$s…</string>
+    <string name="benchmark_hint">Non toccare lo schermo per qualche secondo.</string>
 </resources>

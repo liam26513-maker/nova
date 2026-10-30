@@ -89,6 +89,17 @@ class GraphicsLevelControllerTest {
     }
 
     @Test
+    fun `configure applies the profile in automatic mode and caps a manual choice`() {
+        val c = GraphicsLevelController(GraphicsLevel.BALANCED)
+        c.configure(start = GraphicsLevel.PERFORMANCE, maxLevel = GraphicsLevel.BALANCED)
+        assertEquals(GraphicsState(GraphicsLevel.PERFORMANCE, automatic = true), c.state)
+        c.setManual(GraphicsLevel.MAXIMUM)
+        assertEquals(GraphicsLevel.BALANCED, c.level) // oltre il tetto del tablet non si va
+        c.configure(start = GraphicsLevel.MAXIMUM, maxLevel = GraphicsLevel.MAXIMUM)
+        assertEquals(GraphicsState(GraphicsLevel.BALANCED, automatic = false), c.state) // scelta manuale rispettata
+    }
+
+    @Test
     fun `lightest level does not go further`() {
         val c = GraphicsLevelController(GraphicsLevel.PERFORMANCE)
         c.feed(0, 30, slowFrame)

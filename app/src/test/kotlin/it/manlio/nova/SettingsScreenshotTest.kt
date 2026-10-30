@@ -10,6 +10,8 @@ import it.manlio.nova.core.config.ConfigEngine
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.GraphicsState
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.core.device.BenchmarkResult
+import it.manlio.nova.core.device.DeviceProfile
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +42,7 @@ class SettingsScreenshotTest {
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, graphics.level)) {
-                SettingsScreen(config.brand.displayName, config.meta.version, graphics, onChoose)
+                SettingsScreen(config.brand.displayName, config.meta.version, graphics, SAMPLE_PROFILE, onChoose, onMeasure = {})
             }
         }
     }
@@ -71,3 +73,31 @@ class SettingsScreenshotTest {
         assertEquals(LevelChoice.Automatic, chosen)
     }
 }
+
+/** Profilo del tablet di riferimento (SPEC §2.1), per schermate realistiche. */
+private val SAMPLE_PROFILE =
+    DeviceProfile(
+        manufacturer = "UJJ",
+        model = "U6_EEA",
+        soc = "Allwinner A523",
+        androidSdk = 34,
+        cpuCores = 8,
+        cpuClustersMhz = listOf(1800, 1416),
+        ramMb = 5_980,
+        freeStorageMb = 98_000,
+        screenWidthPx = 1280,
+        screenHeightPx = 800,
+        densityDpi = 160,
+        refreshRatesHz = listOf(60f),
+        supportsRealtimeBlur = true,
+        supportsFreeform = false,
+        supportsMultipleUsers = false,
+        hasStylusDigitizer = false,
+        benchmark =
+            BenchmarkResult(
+                p90MsByLevel = mapOf(GraphicsLevel.MAXIMUM to 21f, GraphicsLevel.BALANCED to 13f, GraphicsLevel.PERFORMANCE to 9f),
+                jankPercentByLevel = mapOf(GraphicsLevel.MAXIMUM to 18f, GraphicsLevel.BALANCED to 2f, GraphicsLevel.PERFORMANCE to 1f),
+            ),
+        startLevel = GraphicsLevel.BALANCED,
+        ceiling = GraphicsLevel.BALANCED,
+    )

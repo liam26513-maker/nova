@@ -13,4 +13,18 @@
     <string name="status_config_title">Configuration</string>
     <string name="status_modules_title">Modules</string>
     <string name="status_modules_none">None</string>
+    <string name="device_title">Your tablet</string>
+    <string name="device_footer">Measured on your real hardware. The highest smooth level is the richest that stays fluid; Automatic never goes above it.</string>
+    <string name="device_cpu">Processor</string>
+    <string name="device_cores">%1$d cores</string>
+    <string name="device_ram">Memory</string>
+    <string name="device_screen">Screen</string>
+    <string name="device_ceiling">Highest smooth level</string>
+    <string name="device_not_measured">Not measured yet</string>
+    <string name="device_measure">Measure performance</string>
+    <string name="device_measure_again">Measure performance again</string>
+    <string name="device_measure_summary">About 12 seconds, shows moving panels</string>
+    <string name="benchmark_title">Measuring performance</string>
+    <string name="benchmark_subtitle">Testing the %1$s level…</string>
+    <string name="benchmark_hint">Please don\'t touch the screen for a few seconds.</string>
 </resources>

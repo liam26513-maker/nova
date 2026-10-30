@@ -34,18 +34,18 @@ data class GraphicsState(
  * Thread-safe: i frame arrivano da un thread dedicato, le scelte dell'utente dal thread principale.
  */
 class GraphicsLevelController(
-    /** Livello da cui parte (e a cui torna) la modalità automatica. */
-    private val startLevel: GraphicsLevel,
-    /** Il livello più ricco consentito (dal profilo del dispositivo). */
+    startLevel: GraphicsLevel,
     ceiling: GraphicsLevel = GraphicsLevel.MAXIMUM,
     private val frameBudgetNanos: Long = 16_666_667L,
     private val onChange: (GraphicsState) -> Unit = {},
 ) {
     private val lock = Any()
 
-    var ceiling: GraphicsLevel = ceiling
-        get() = synchronized(lock) { field }
-        set(value) = synchronized(lock) { field = value }
+    /** Livello da cui parte (e a cui torna) la modalità automatica. */
+    private var startLevel = startLevel
+
+    /** Il livello più ricco consentito (dal profilo del dispositivo). */
+    private var ceiling = ceiling
 
     @Volatile
     var state: GraphicsState = GraphicsState(bounded(startLevel, ceiling), automatic = true)
@@ -81,6 +81,24 @@ class GraphicsLevelController(
             resetCounters()
             publish(GraphicsState(bounded(newLevel, ceiling), automatic = false))
         }
+
+    /** Nuovi limiti dal profilatore: se si è in automatico si riparte subito dal nuovo livello. */
+    fun configure(
+        start: GraphicsLevel,
+        maxLevel: GraphicsLevel,
+    ) = synchronized(lock) {
+        startLevel = start
+        ceiling = maxLevel
+        resetCounters()
+        val current = state
+        publish(
+            if (current.automatic) {
+                GraphicsState(bounded(start, maxLevel), automatic = true)
+            } else {
+                current.copy(level = bounded(current.level, maxLevel))
+            },
+        )
+    }
 
     /** Torna alla scelta automatica, ripartendo dal livello di partenza. */
     fun setAutomatic() =
