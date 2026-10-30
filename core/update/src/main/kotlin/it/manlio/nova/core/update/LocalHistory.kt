@@ -25,7 +25,8 @@ class LocalHistory(private val dir: File) {
     private val bundles = File(dir, "config-bundles")
     private val activeFile = File(dir, "config-active")
 
-    fun restorePoints(): List<RestorePoint> = runCatching { JSON.decodeFromString<List<RestorePoint>>(pointsFile.readText()) }.getOrDefault(emptyList())
+    fun restorePoints(): List<RestorePoint> =
+        runCatching { JSON.decodeFromString<List<RestorePoint>>(pointsFile.readText()) }.getOrDefault(emptyList())
 
     fun addRestorePoint(point: RestorePoint) {
         val all = (restorePoints() + point).takeLast(KEEP)

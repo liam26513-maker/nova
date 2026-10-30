@@ -49,7 +49,12 @@ class UpdatePlannerTest {
     fun `drafts, pre-releases and assets without checksum are ignored`() {
         val plan =
             UpdatePlanner.plan(
-                listOf(app("v1", 9, draft = true), app("v2", 10, prerelease = true), app("v3", 11, withChecksum = false), config("9.9.9", false)),
+                listOf(
+                    app("v1", 9, draft = true),
+                    app("v2", 10, prerelease = true),
+                    app("v3", 11, withChecksum = false),
+                    config("9.9.9", false),
+                ),
                 installedVersionCode = 1,
                 installedConfigVersion = "0.1.0",
             )

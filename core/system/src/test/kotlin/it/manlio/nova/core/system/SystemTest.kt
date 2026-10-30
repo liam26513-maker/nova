@@ -37,7 +37,9 @@ class SystemCommandTest {
 
     @Test
     fun `protected packages can never be disabled or stopped`() {
-        listOf("com.android.systemui", "com.android.settings", "it.manlio.nova", "com.android.providers.media", "moe.shizuku.privileged.api")
+        val protectedOnes =
+            listOf("com.android.systemui", "com.android.settings", "it.manlio.nova", "com.android.providers.media", "moe.shizuku.privileged.api")
+        protectedOnes
             .forEach { pkg ->
                 assertTrue(pkg, runCatching { SystemCommand.DisablePackage(pkg) }.isFailure)
                 assertTrue(pkg, runCatching { SystemCommand.ForceStop(pkg) }.isFailure)

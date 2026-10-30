@@ -43,7 +43,8 @@ class ApkInstaller(
             pm.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong()))
         val ours = installed.signingInfo?.apkContentsSigners.fingerprints()
         val theirs = archive.signingInfo?.apkContentsSigners.fingerprints()
-        return if (ours.isNotEmpty() && ours == theirs) ApkCheck.Ok else ApkCheck.Rejected("La firma non corrisponde: aggiornamento rifiutato")
+        if (ours.isEmpty() || ours != theirs) return ApkCheck.Rejected("La firma non corrisponde: aggiornamento rifiutato")
+        return ApkCheck.Ok
     }
 
     /** @return null se avviata, altrimenti il motivo dell'errore. */
@@ -58,7 +59,10 @@ class ApkInstaller(
 
     private fun installWithConfirmation(apk: File) {
         val installer = context.packageManager.packageInstaller
-        val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL).apply { setAppPackageName(context.packageName) }
+        val params =
+            PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL).apply {
+                setAppPackageName(context.packageName)
+            }
         val id = installer.createSession(params)
         installer.openSession(id).use { session ->
             session.openWrite("nova.apk", 0, apk.length()).use { out ->
@@ -72,7 +76,9 @@ class ApkInstaller(
     }
 
     private fun Array<Signature>?.fingerprints(): Set<String> =
-        orEmpty().map { sig -> MessageDigest.getInstance("SHA-256").digest(sig.toByteArray()).joinToString("") { "%02x".format(it) } }.toSet()
+        orEmpty()
+            .map { sig -> MessageDigest.getInstance("SHA-256").digest(sig.toByteArray()).joinToString("") { "%02x".format(it) } }
+            .toSet()
 
     private companion object {
         const val MAX_REASON = 200
@@ -85,7 +91,8 @@ class InstallResultReceiver : BroadcastReceiver() {
         context: Context,
         intent: Intent,
     ) {
-        if (intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE) == PackageInstaller.STATUS_PENDING_USER_ACTION) {
+        val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)
+        if (status == PackageInstaller.STATUS_PENDING_USER_ACTION) {
             intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java)?.let {
                 context.startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             }

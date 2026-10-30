@@ -122,7 +122,7 @@ class Updater(
             val expected = Checksums.parse(client.downloadText(update.checksum)) ?: error("Impronta mancante")
             val json = client.downloadText(update.bundle)
             kotlin.check(Checksums.sha256(json.toByteArray()) == expected) { "L'impronta della configurazione non corrisponde" }
-            history.addRestorePoint(RestorePoint(clock(), "configurazione ${update.version}", versionCode, versionName, config.currentVersion()))
+            history.addRestorePoint(restorePoint("configurazione ${update.version}"))
             config.apply(json)?.let { error(it) }
             history.saveBundle(update.version, json)
             log.i(TAG, "configurazione ${update.version} applicata")
@@ -140,7 +140,7 @@ class Updater(
             client.download(update.apk, apk) { publish(UpdateState.Downloading(it)) }
             kotlin.check(Checksums.sha256(apk) == expected) { "L'impronta del file scaricato non corrisponde" }
             (installer.check(apk, update.versionCode) as? ApkCheck.Rejected)?.let { error(it.reason) }
-            history.addRestorePoint(RestorePoint(clock(), "app ${update.tag}", versionCode, versionName, config.currentVersion()))
+            history.addRestorePoint(restorePoint("app ${update.tag}"))
             publish(UpdateState.Installing)
             log.i(TAG, "installo ${update.tag} (${update.versionCode})")
             val silent = shizuku.status.value == ShizukuStatus.READY
@@ -149,6 +149,8 @@ class Updater(
             // Con Shizuku il processo viene sostituito subito dalla nuova versione.
         }.onFailure { fail("Aggiornamento non riuscito", it) }
     }
+
+    private fun restorePoint(reason: String) = RestorePoint(clock(), reason, versionCode, versionName, config.currentVersion())
 
     private fun fail(
         what: String,

@@ -62,7 +62,8 @@ fun UpdatesSection(
         SettingsRow(stringResource(R.string.updates_version), trailing = { Muted(state.versionName) })
         SettingsRow(stringResource(R.string.updates_status), summary = describe(state.update), showDivider = true)
         when (val u = state.update) {
-            UpdateState.NoToken -> SettingsRow(stringResource(R.string.updates_connect), showDivider = true, onClick = { editingToken = true })
+            UpdateState.NoToken ->
+                SettingsRow(stringResource(R.string.updates_connect), showDivider = true, onClick = { editingToken = true })
             is UpdateState.AppAvailable ->
                 SettingsRow(
                     stringResource(R.string.updates_install, u.update.tag),
