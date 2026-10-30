@@ -18,19 +18,6 @@ import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsScaffold
 import it.manlio.nova.core.design.SettingsSection
 
-/** Scelta del livello grafico mostrata all'utente: Automatico oppure un livello fisso. */
-sealed interface LevelChoice {
-    data object Automatic : LevelChoice
-
-    data class Fixed(val level: GraphicsLevel) : LevelChoice
-
-    companion object {
-        val all: List<LevelChoice> = listOf(Automatic) + GraphicsLevel.entries.map(::Fixed)
-
-        fun of(state: GraphicsState): LevelChoice = if (state.automatic) Automatic else Fixed(state.level)
-    }
-}
-
 /**
  * Pagina Impostazioni (provvisoria finché non arriva la home, Fase 0 punto 11).
  * Usa il linguaggio visivo calmo comune a tutte le schermate di sistema.
