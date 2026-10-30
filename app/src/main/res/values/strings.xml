@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">NOVA</string>
+    <string name="settings_title">Impostazioni</string>
+    <string name="graphics_level_title">Livello grafico</string>
+    <string name="graphics_level_footer">Automatico sceglie da solo il livello più ricco che il tablet regge in modo fluido.</string>
+    <string name="graphics_level_auto_now">Scelto automaticamente: %1$s</string>
+    <string name="graphics_level_fixed_now">Fissato da te: %1$s</string>
+    <string name="graphics_level_auto">Automatico</string>
+    <string name="graphics_level_maximum">Massimo</string>
+    <string name="graphics_level_balanced">Bilanciato</string>
+    <string name="graphics_level_performance">Prestazioni</string>
+    <string name="status_title">Stato del sistema</string>
+    <string name="status_config_title">Configurazione</string>
+    <string name="status_modules_title">Moduli</string>
+    <string name="status_modules_none">Nessuno</string>
+</resources>

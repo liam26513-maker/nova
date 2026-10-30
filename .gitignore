@@ -13,3 +13,7 @@ captures/
 *.keystore
 keystore.properties
 *.env
+
+# Immagini generate dai test (Roborazzi)
+screenshots/
+app/screenshots/

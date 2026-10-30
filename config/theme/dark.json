@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "dark",
+  "name": "Scuro",
+  "dark": true,
+  "colors": {
+    "background": "#0E0F11",
+    "surface": "#1C1C1F",
+    "onSurface": "#F2F2F4",
+    "onSurfaceMuted": "#9A9AA0",
+    "accent": "#8FA9C4"
+  },
+  "radii": {
+    "small": 10,
+    "medium": 16,
+    "large": 26
+  },
+  "materialOpacity": 0.58,
+  "motion": {
+    "stiffness": 380,
+    "dampingRatio": 0.86
+  }
+}

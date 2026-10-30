@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Metadati del pacchetto di configurazione",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "version"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "minAppVersion": { "type": "integer", "minimum": 0 }
+  }
+}
