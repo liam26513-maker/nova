@@ -1,5 +1,6 @@
 package it.manlio.nova
 
+import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -25,7 +26,8 @@ import org.robolectric.annotation.GraphicsMode
 /** Schermate di riferimento delle Impostazioni (tablet 1280×800, 160 dpi come il dispositivo reale). */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34])
+// Application vuota: le schermate non devono avviare Shizuku, WorkManager o la rete.
+@Config(qualifiers = "it-w1280dp-h800dp-land-mdpi", sdk = [34], application = Application::class)
 class SettingsScreenshotTest {
     @get:Rule val compose = createComposeRule()
 
