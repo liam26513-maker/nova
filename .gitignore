@@ -1,0 +1,15 @@
+# Gradle / Android
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Segreti: mai nel repository
+*.jks
+*.keystore
+keystore.properties
+*.env
