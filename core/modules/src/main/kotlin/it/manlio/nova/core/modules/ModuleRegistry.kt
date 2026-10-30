@@ -81,7 +81,25 @@ class ModuleRegistry(
         }
 
     private suspend fun reconcile() {
-        // 1. Calcola chi deve girare, in ordine di dipendenza.
+        val (target, waiting) = computeTarget()
+        // Ferma prima i dipendenti (ordine inverso).
+        for (id in order.asReversed()) {
+            if (state(id) == ModuleState.Running && id !in target) safeStop(id)
+        }
+        // Avvia in ordine di dipendenza; se una dipendenza non parte, il dipendente attende.
+        for (id in order) {
+            val m = byId.getValue(id)
+            when {
+                id in suspended -> update(id, ModuleState.Suspended(suspended.getValue(id)))
+                id in target -> startIfNeeded(m)
+                id in waiting -> update(id, waiting.getValue(id))
+                else -> update(id, ModuleState.Disabled)
+            }
+        }
+    }
+
+    /** Chi deve girare, in ordine di dipendenza, e chi attende permessi o altri moduli. */
+    private fun computeTarget(): Pair<Set<String>, Map<String, ModuleState.Waiting>> {
         val target = mutableSetOf<String>()
         val waiting = mutableMapOf<String, ModuleState.Waiting>()
         for (id in order) {
@@ -95,20 +113,7 @@ class ModuleRegistry(
                 waiting[id] = ModuleState.Waiting(missingCaps, missingDeps)
             }
         }
-        // 2. Ferma prima i dipendenti (ordine inverso).
-        for (id in order.asReversed()) {
-            if (state(id) == ModuleState.Running && id !in target) safeStop(id)
-        }
-        // 3. Avvia in ordine di dipendenza; se una dipendenza non parte, il dipendente attende.
-        for (id in order) {
-            val m = byId.getValue(id)
-            when {
-                id in suspended -> update(id, ModuleState.Suspended(suspended.getValue(id)))
-                id in target -> startIfNeeded(m)
-                id in waiting -> update(id, waiting.getValue(id))
-                else -> update(id, ModuleState.Disabled)
-            }
-        }
+        return target to waiting
     }
 
     private suspend fun startIfNeeded(m: NovaModule) {

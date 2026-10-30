@@ -8,6 +8,7 @@ package it.manlio.nova.core.config
 object ConfigValidator {
     private val COLOR = Regex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")
     private val ID = Regex("^[a-z][a-z0-9-]*$")
+    private val DAMPING_RANGE = 0.1f..2f
 
     fun validate(c: NovaConfig): List<String> =
         buildList {
@@ -43,7 +44,7 @@ object ConfigValidator {
             }
             if (t.materialOpacity !in 0f..1f) add("theme.materialOpacity fuori da 0..1")
             if (t.motion.stiffness <= 0f) add("theme.motion.stiffness deve essere > 0")
-            if (t.motion.dampingRatio !in 0.1f..2f) add("theme.motion.dampingRatio fuori da 0.1..2")
+            if (t.motion.dampingRatio !in DAMPING_RANGE) add("theme.motion.dampingRatio fuori da $DAMPING_RANGE")
         }
 
     private fun MutableList<String>.color(

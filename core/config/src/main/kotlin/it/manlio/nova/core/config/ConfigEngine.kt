@@ -83,7 +83,8 @@ class ConfigEngine(
     companion object {
         val JSON = Json { ignoreUnknownKeys = false }
 
-        private fun parse(json: String): JsonObject? = runCatching { JSON.parseToJsonElement(json).jsonObject }.getOrNull()
+        private fun parse(json: String): JsonObject? =
+            runCatching { JSON.parseToJsonElement(json).jsonObject }.getOrNull()
 
         private fun ApplyResult.orThrow(): NovaConfig =
             when (this) {

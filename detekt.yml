@@ -4,11 +4,14 @@ naming:
     # I composable Compose iniziano con la maiuscola.
     ignoreAnnotated: ['Composable']
 style:
+  MaxLineLength:
+    maxLineLength: 140 # allineato a ktlint (.editorconfig)
   MagicNumber:
-    # Token di design e coefficienti geometrici sono numeri voluti.
-    excludes: ['**/core/design/**']
+    # Token di design, coefficienti geometrici e sfondo dimostrativo sono numeri voluti.
+    excludes: ['**/core/design/**', '**/DesignShowcase.kt']
   ReturnCount:
     max: 4
 complexity:
   LongParameterList:
+    functionThreshold: 7
     ignoreAnnotated: ['Composable']
