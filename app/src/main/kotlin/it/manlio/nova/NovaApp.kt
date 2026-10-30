@@ -69,7 +69,14 @@ class NovaApp : Application() {
         withContext(Dispatchers.IO) {
             val base = _profile.value ?: profiler.readHardware()
             val (start, ceiling) = LevelAdvisor.advise(result, base.ramMb, base.supportsRealtimeBlur)
-            val updated = base.copy(benchmark = result, startLevel = start, ceiling = ceiling, measuredAt = System.currentTimeMillis())
+            val updated =
+                base.copy(
+                    benchmark = result,
+                    startLevel = start,
+                    ceiling = ceiling,
+                    measuredAt = System.currentTimeMillis(),
+                    benchmarkMethod = LevelAdvisor.METHOD,
+                )
             profiler.save(updated)
             _profile.value = updated
             graphicsController.configure(start, ceiling)
@@ -96,7 +103,8 @@ class NovaApp : Application() {
         profiler = DeviceProfiler(this)
         appScope.launch {
             // Profilo salvato, oppure prima lettura dell'hardware (senza benchmark).
-            val profile = profiler.load() ?: profiler.readHardware().also(profiler::save)
+            // Un benchmark misurato col vecchio metodo (troppo severo) viene scartato: va rifatto.
+            val profile = (profiler.load() ?: profiler.readHardware()).withoutStaleBenchmark().also(profiler::save)
             _profile.value = profile
             if (profile.benchmark != null) graphicsController.configure(profile.startLevel, profile.ceiling)
         }

@@ -26,6 +26,7 @@ import it.manlio.nova.core.design.Nova
 import it.manlio.nova.core.design.NovaSpacing
 import it.manlio.nova.core.design.SettingsScaffold
 import it.manlio.nova.core.device.BenchmarkResult
+import it.manlio.nova.core.device.FrameSample
 import it.manlio.nova.core.device.LevelAdvisor
 import kotlinx.coroutines.delay
 import java.util.Collections
@@ -35,13 +36,16 @@ import java.util.Collections
  * e misura i tempi di frame. Circa 12 secondi in tutto.
  */
 class BenchmarkRunner(private val controller: GraphicsLevelController) {
-    private val frames = Collections.synchronizedList(mutableListOf<Float>())
+    private val frames = Collections.synchronizedList(mutableListOf<FrameSample>())
 
     @Volatile private var collecting = false
 
-    /** Riceve le durate dei frame dal listener di FrameMetrics (thread dedicato). */
-    fun onFrame(durationNanos: Long) {
-        if (collecting) frames += durationNanos / NANOS_PER_MS
+    /** Riceve durata e scadenza dei frame dal listener di FrameMetrics (thread dedicato). */
+    fun onFrame(
+        durationNanos: Long,
+        deadlineNanos: Long,
+    ) {
+        if (collecting) frames += FrameSample(durationNanos / NANOS_PER_MS, deadlineNanos / NANOS_PER_MS)
     }
 
     suspend fun run(onProgress: (GraphicsLevel) -> Unit): BenchmarkResult {

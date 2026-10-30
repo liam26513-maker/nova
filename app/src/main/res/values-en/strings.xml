@@ -27,4 +27,17 @@
     <string name="benchmark_title">Measuring performance</string>
     <string name="benchmark_subtitle">Testing the %1$s level…</string>
     <string name="benchmark_hint">Please don\'t touch the screen for a few seconds.</string>
+    <string name="graphics_explain_maximum">Real-time blur: the glass follows what moves behind it. The most beautiful and the heaviest.</string>
+    <string name="graphics_explain_balanced">Blur computed once: almost the same look, almost no cost. The glass does not follow movement.</string>
+    <string name="graphics_explain_performance">Solid panels, no blur: maximum smoothness.</string>
+    <string name="device_report">See the last measurement report</string>
+    <string name="report_title">Report</string>
+    <string name="report_verdict">Your tablet stays smooth up to the %1$s level. Automatic will use this level.</string>
+    <string name="report_verdict_start">Your tablet stays smooth up to the %1$s level. Automatic will start from %2$s to keep memory free.</string>
+    <string name="report_levels">Smoothness by level</string>
+    <string name="report_recommended">recommended</string>
+    <string name="report_level_value">Smooth in %1$d%% of frames · 9 in 10 within %2$d ms</string>
+    <string name="report_footer">A frame is slow when it arrives more than one frame late. You can always pick any level by hand: the advice only applies to Automatic.</string>
+    <string name="report_done">Done</string>
+    <string name="report_done_summary">Back to settings</string>
 </resources>

@@ -9,3 +9,9 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Ogni cambio di scelta dà una leggera vibrazione e un piccolo "rimbalzo".
 - [ ] Ruotando il tablet la schermata si adatta senza riavviarsi.
 - [ ] Con il tema scuro di sistema attivo, all'apertura NOVA usa il tema scuro.
+
+## Livelli e misura (correzioni)
+- [ ] Toccando **Massimo** il vetro dell'anteprima sfoca in tempo reale le forme che passano; con **Bilanciato** la sfocatura resta ferma; con **Prestazioni** il pannello è pieno.
+- [ ] Dopo "Misura le prestazioni" compare il **Resoconto** con tre barre di fluidità e un livello "consigliato"; "Fatto" riporta alle Impostazioni.
+- [ ] Anche se il consigliato è più basso, toccando **Massimo** o **Bilanciato** la scelta viene applicata ("Fissato da te: …").
+

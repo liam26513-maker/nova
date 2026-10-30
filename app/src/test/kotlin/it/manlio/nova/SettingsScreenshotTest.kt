@@ -42,7 +42,7 @@ class SettingsScreenshotTest {
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, graphics.level)) {
-                SettingsScreen(config.brand.displayName, config.meta.version, graphics, SAMPLE_PROFILE, onChoose, onMeasure = {})
+                SettingsScreen(config.brand.displayName, config.meta.version, graphics, SAMPLE_PROFILE, onChoose, onMeasure = {}, onShowReport = {})
             }
         }
     }
@@ -63,6 +63,30 @@ class SettingsScreenshotTest {
     fun dark_performance() {
         render("theme/dark.json", GraphicsState(GraphicsLevel.PERFORMANCE, automatic = false))
         compose.onRoot().captureRoboImage("screenshots/impostazioni_scuro_prestazioni.png")
+    }
+
+    @Test
+    fun report() {
+        val assets = RuntimeEnvironment.getApplication().assets
+
+        fun read(p: String) = assets.open(p).bufferedReader().use { it.readText() }
+        val config =
+            ConfigEngine(
+                1,
+                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read("theme/light.json"), read("modules.json")),
+            ).current.value
+        compose.setContent {
+            NovaTheme(tokensFrom(config, GraphicsLevel.BALANCED)) { BenchmarkReportScreen(SAMPLE_PROFILE, onDone = {}) }
+        }
+        compose.onRoot().captureRoboImage("screenshots/resoconto_misura.png")
+    }
+
+    @Test
+    fun tapping_maximum_is_allowed_even_when_the_ceiling_is_lower() {
+        var chosen: LevelChoice? = null
+        render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true)) { chosen = it }
+        compose.onNodeWithText("Massimo").performClick()
+        assertEquals(LevelChoice.Fixed(GraphicsLevel.MAXIMUM), chosen)
     }
 
     @Test

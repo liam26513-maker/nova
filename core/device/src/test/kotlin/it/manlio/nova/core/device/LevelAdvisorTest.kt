@@ -17,42 +17,87 @@ class LevelAdvisorTest {
         jankPercentByLevel = mapOf(MAXIMUM to jank, BALANCED to jank, PERFORMANCE to jank),
     )
 
+    private fun jank(
+        max: Float,
+        balanced: Float,
+        perf: Float,
+    ) = BenchmarkResult(
+        p90MsByLevel = mapOf(MAXIMUM to 20f, BALANCED to 20f, PERFORMANCE to 20f),
+        jankPercentByLevel = mapOf(MAXIMUM to max, BALANCED to balanced, PERFORMANCE to perf),
+    )
+
     @Test
     fun `fast device can use maximum`() {
-        assertEquals(MAXIMUM to MAXIMUM, LevelAdvisor.advise(result(12f, 9f, 7f), ramMb = 6000, realtimeBlur = true))
+        assertEquals(MAXIMUM to MAXIMUM, LevelAdvisor.advise(jank(1f, 0f, 0f), ramMb = 6000, realtimeBlur = true))
     }
 
     @Test
-    fun `slow blur keeps the ceiling at balanced`() {
-        assertEquals(BALANCED to BALANCED, LevelAdvisor.advise(result(24f, 14f, 10f), ramMb = 6000, realtimeBlur = true))
+    fun `a p90 just above one vsync is still smooth if frames are not dropped`() {
+        // Bug segnalato: con la soglia fissa di 16,7 ms ogni livello risultava "lento".
+        assertEquals(MAXIMUM to MAXIMUM, LevelAdvisor.advise(result(19f, 18f, 17f, jank = 1f), 6000, true))
+    }
+
+    @Test
+    fun `janky blur keeps the ceiling at balanced`() {
+        assertEquals(BALANCED to BALANCED, LevelAdvisor.advise(jank(15f, 2f, 1f), ramMb = 6000, realtimeBlur = true))
     }
 
     @Test
     fun `nothing smooth falls back to performance`() {
-        assertEquals(PERFORMANCE to PERFORMANCE, LevelAdvisor.advise(result(40f, 30f, 25f), ramMb = 6000, realtimeBlur = true))
-    }
-
-    @Test
-    fun `too much jank disqualifies a level even with a good p90`() {
-        assertEquals(PERFORMANCE to PERFORMANCE, LevelAdvisor.advise(result(12f, 12f, 12f, jank = 20f), 6000, true))
+        assertEquals(PERFORMANCE to PERFORMANCE, LevelAdvisor.advise(jank(40f, 30f, 25f), ramMb = 6000, realtimeBlur = true))
     }
 
     @Test
     fun `low ram starts at balanced even if maximum is smooth`() {
-        assertEquals(BALANCED to MAXIMUM, LevelAdvisor.advise(result(12f, 9f, 7f), ramMb = 2048, realtimeBlur = true))
+        assertEquals(BALANCED to MAXIMUM, LevelAdvisor.advise(jank(1f, 0f, 0f), ramMb = 2048, realtimeBlur = true))
     }
 
     @Test
     fun `without realtime blur the ceiling is balanced`() {
-        assertEquals(BALANCED to BALANCED, LevelAdvisor.advise(result(12f, 9f, 7f), ramMb = 6000, realtimeBlur = false))
+        assertEquals(BALANCED to BALANCED, LevelAdvisor.advise(jank(1f, 0f, 0f), ramMb = 6000, realtimeBlur = false))
     }
 
     @Test
-    fun `summarize computes p90 and jank`() {
-        val frames = List(90) { 10f } + List(10) { 30f }
+    fun `summarize counts as slow only frames over twice their deadline`() {
+        val frames =
+            List(80) { FrameSample(totalMs = 12f, deadlineMs = 16.7f) } +
+                List(10) { FrameSample(totalMs = 25f, deadlineMs = 16.7f) } + // sopra 1 vsync ma non perso
+                List(10) { FrameSample(totalMs = 40f, deadlineMs = 16.7f) } // perso
         val (p90, jank) = LevelAdvisor.summarize(frames)
-        assertEquals(10f, p90)
+        assertEquals(25f, p90)
         assertEquals(10f, jank)
         assertEquals(Float.MAX_VALUE to 100f, LevelAdvisor.summarize(emptyList()))
+    }
+
+    @Test
+    fun `profiles measured with the old method are discarded`() {
+        val old = SAMPLE.copy(benchmark = jank(50f, 50f, 50f), ceiling = PERFORMANCE, startLevel = PERFORMANCE, benchmarkMethod = 1)
+        val cleaned = old.withoutStaleBenchmark()
+        assertEquals(null, cleaned.benchmark)
+        assertEquals(MAXIMUM, cleaned.ceiling)
+        val fresh = old.copy(benchmarkMethod = LevelAdvisor.METHOD)
+        assertEquals(fresh, fresh.withoutStaleBenchmark())
+    }
+
+    private companion object {
+        val SAMPLE =
+            DeviceProfile(
+                manufacturer = "UJJ",
+                model = "U6_EEA",
+                soc = "Allwinner A523",
+                androidSdk = 34,
+                cpuCores = 8,
+                cpuClustersMhz = listOf(1800, 1416),
+                ramMb = 5980,
+                freeStorageMb = 98000,
+                screenWidthPx = 1280,
+                screenHeightPx = 800,
+                densityDpi = 160,
+                refreshRatesHz = listOf(60f),
+                supportsRealtimeBlur = true,
+                supportsFreeform = false,
+                supportsMultipleUsers = false,
+                hasStylusDigitizer = false,
+            )
     }
 }

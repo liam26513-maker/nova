@@ -30,4 +30,17 @@
     <string name="benchmark_title">Misuro le prestazioni</string>
     <string name="benchmark_subtitle">Prova del livello %1$s…</string>
     <string name="benchmark_hint">Non toccare lo schermo per qualche secondo.</string>
+    <string name="graphics_explain_maximum">Sfocatura in tempo reale: il vetro segue ciò che passa dietro. È il più bello e il più pesante.</string>
+    <string name="graphics_explain_balanced">Sfocatura calcolata una volta: aspetto quasi identico, costo quasi nullo. Il vetro non segue il movimento.</string>
+    <string name="graphics_explain_performance">Pannelli pieni, nessuna sfocatura: la massima fluidità.</string>
+    <string name="device_report">Vedi il resoconto dell\'ultima misura</string>
+    <string name="report_title">Resoconto</string>
+    <string name="report_verdict">Il tuo tablet resta fluido fino al livello %1$s. Automatico userà questo livello.</string>
+    <string name="report_verdict_start">Il tuo tablet resta fluido fino al livello %1$s. Automatico partirà da %2$s per lasciare memoria libera.</string>
+    <string name="report_levels">Fluidità per livello</string>
+    <string name="report_recommended">consigliato</string>
+    <string name="report_level_value">Fluido nel %1$d%% dei fotogrammi · 9 su 10 entro %2$d ms</string>
+    <string name="report_footer">Un fotogramma è lento quando arriva con più di un fotogramma di ritardo. Puoi sempre scegliere a mano qualsiasi livello: il consiglio vale solo per Automatico.</string>
+    <string name="report_done">Fatto</string>
+    <string name="report_done_summary">Torna alle impostazioni</string>
 </resources>

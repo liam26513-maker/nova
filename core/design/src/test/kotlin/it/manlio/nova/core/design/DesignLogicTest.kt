@@ -8,7 +8,7 @@ import org.junit.Test
 
 class GraphicsLevelControllerTest {
     private val second = 1_000_000_000L
-    private val slowFrame = 30_000_000L
+    private val slowFrame = 50_000_000L
     private val fastFrame = 8_000_000L
 
     private fun GraphicsLevelController.feed(
@@ -89,14 +89,26 @@ class GraphicsLevelControllerTest {
     }
 
     @Test
-    fun `configure applies the profile in automatic mode and caps a manual choice`() {
+    fun `the ceiling limits automatic mode but never a manual choice`() {
         val c = GraphicsLevelController(GraphicsLevel.BALANCED)
-        c.configure(start = GraphicsLevel.PERFORMANCE, maxLevel = GraphicsLevel.BALANCED)
+        c.configure(start = GraphicsLevel.PERFORMANCE, maxLevel = GraphicsLevel.PERFORMANCE)
         assertEquals(GraphicsState(GraphicsLevel.PERFORMANCE, automatic = true), c.state)
+        // Bug segnalato: con il tetto su Prestazioni non si poteva scegliere Massimo o Bilanciato.
         c.setManual(GraphicsLevel.MAXIMUM)
-        assertEquals(GraphicsLevel.BALANCED, c.level) // oltre il tetto del tablet non si va
-        c.configure(start = GraphicsLevel.MAXIMUM, maxLevel = GraphicsLevel.MAXIMUM)
-        assertEquals(GraphicsState(GraphicsLevel.BALANCED, automatic = false), c.state) // scelta manuale rispettata
+        assertEquals(GraphicsState(GraphicsLevel.MAXIMUM, automatic = false), c.state)
+        c.setManual(GraphicsLevel.BALANCED)
+        assertEquals(GraphicsState(GraphicsLevel.BALANCED, automatic = false), c.state)
+        c.configure(start = GraphicsLevel.PERFORMANCE, maxLevel = GraphicsLevel.PERFORMANCE)
+        assertEquals(GraphicsState(GraphicsLevel.BALANCED, automatic = false), c.state) // la scelta manuale resta
+        c.setAutomatic()
+        assertEquals(GraphicsState(GraphicsLevel.PERFORMANCE, automatic = true), c.state)
+    }
+
+    @Test
+    fun `frames slightly over one vsync are not slow`() {
+        val c = GraphicsLevelController(GraphicsLevel.MAXIMUM)
+        c.feed(0, 30, 20_000_000L) // 20 ms: normale con la coda di FrameMetrics, nessun frame perso
+        assertEquals(GraphicsLevel.MAXIMUM, c.level)
     }
 
     @Test

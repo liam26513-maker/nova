@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
             val app = application as NovaApp
             val duration = metrics.getMetric(FrameMetrics.TOTAL_DURATION)
             app.graphicsController.onFrame(metrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP), duration)
-            benchmark?.onFrame(duration)
+            benchmark?.onFrame(duration, metrics.getMetric(FrameMetrics.DEADLINE))
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,11 +52,15 @@ class MainActivity : ComponentActivity() {
             val graphics by app.graphics.collectAsStateWithLifecycle()
             val profile by app.profile.collectAsStateWithLifecycle()
             var measuring by remember { mutableStateOf<GraphicsLevel?>(null) }
+            var showReport by remember { mutableStateOf(false) }
             val scope = rememberCoroutineScope()
             NovaTheme(tokensFrom(config, graphics.level)) {
                 val current = measuring
+                val measured = profile?.takeIf { it.benchmark != null }
                 if (current != null) {
                     BenchmarkScreen(current)
+                } else if (showReport && measured != null) {
+                    BenchmarkReportScreen(measured, onDone = { showReport = false })
                 } else {
                     SettingsScreen(
                         brandName = config.brand.displayName,
@@ -74,12 +78,14 @@ class MainActivity : ComponentActivity() {
                             scope.launch {
                                 try {
                                     app.applyBenchmark(runner.run { measuring = it })
+                                    showReport = true
                                 } finally {
                                     benchmark = null
                                     measuring = null
                                 }
                             }
                         },
+                        onShowReport = { showReport = true },
                     )
                 }
             }

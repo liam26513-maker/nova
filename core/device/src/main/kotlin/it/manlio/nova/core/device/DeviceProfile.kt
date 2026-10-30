@@ -29,22 +29,48 @@ data class DeviceProfile(
     /** Il livello più ricco che il tablet regge. */
     val ceiling: GraphicsLevel = GraphicsLevel.MAXIMUM,
     val measuredAt: Long = 0,
+    /** Versione del metodo di misura: i risultati di metodi più vecchi vanno rifatti. */
+    val benchmarkMethod: Int = 0,
+) {
+    /** Il profilo senza un benchmark misurato con un metodo superato. */
+    fun withoutStaleBenchmark(): DeviceProfile =
+        if (benchmark != null && benchmarkMethod < LevelAdvisor.METHOD) {
+            copy(benchmark = null, startLevel = GraphicsLevel.BALANCED, ceiling = GraphicsLevel.MAXIMUM)
+        } else {
+            this
+        }
+}
+
+/** Un frame misurato: durata totale e scadenza (entrambe in millisecondi). */
+data class FrameSample(
+    val totalMs: Float,
+    val deadlineMs: Float,
 )
 
-/** Esito del micro-benchmark: 90° percentile dei tempi di frame per livello, in millisecondi. */
+/**
+ * Esito del micro-benchmark per livello: 90° percentile dei tempi di frame (ms) e percentuale
+ * di frame lenti (oltre il doppio della loro scadenza).
+ */
 @Serializable
 data class BenchmarkResult(
     val p90MsByLevel: Map<GraphicsLevel, Float>,
     val jankPercentByLevel: Map<GraphicsLevel, Float>,
-)
+) {
+    /** Percentuale di frame fluidi, 0–100. */
+    fun smoothPercent(level: GraphicsLevel): Float = FULL - (jankPercentByLevel[level] ?: FULL)
+}
 
 /**
  * Sceglie livello di partenza e tetto dai risultati del benchmark (SPEC §3.6, §5.3).
- * Un livello è "fluido" se il p90 resta nel budget di un frame e meno del [MAX_JANK_PERCENT] dei frame è lento.
+ * Un frame è "lento" se dura più di [JANK_MULTIPLIER] volte la sua scadenza (euristica di JankStats:
+ * FrameMetrics.TOTAL_DURATION include la coda verso lo schermo, quindi superare di poco la scadenza
+ * non significa perdere un frame). Un livello è "fluido" se meno del [MAX_JANK_PERCENT] dei frame è lento.
  * Il tetto è il livello più ricco fluido; si parte dal tetto, ma mai sopra Bilanciato se la RAM è poca.
  */
 object LevelAdvisor {
-    const val FRAME_BUDGET_MS = 16.7f
+    /** Versione del metodo di misura (1: soglia fissa 16,7 ms, troppo severa; 2: scadenza × 2). */
+    const val METHOD = 2
+    const val JANK_MULTIPLIER = 2f
     const val MAX_JANK_PERCENT = 5f
     const val LOW_RAM_MB = 3_000L
     private const val ALL_PERCENT = 100f
@@ -58,9 +84,8 @@ object LevelAdvisor {
     ): Pair<GraphicsLevel, GraphicsLevel> {
         val smooth =
             GraphicsLevel.entries.filter { level ->
-                val p90 = result.p90MsByLevel[level] ?: return@filter false
-                val jank = result.jankPercentByLevel[level] ?: ALL_PERCENT
-                p90 <= FRAME_BUDGET_MS && jank < MAX_JANK_PERCENT
+                val jank = result.jankPercentByLevel[level] ?: return@filter false
+                jank < MAX_JANK_PERCENT
             }
         var ceiling = smooth.firstOrNull() ?: GraphicsLevel.PERFORMANCE
         if (!realtimeBlur && ceiling == GraphicsLevel.MAXIMUM) ceiling = GraphicsLevel.BALANCED
@@ -68,12 +93,14 @@ object LevelAdvisor {
         return start to ceiling
     }
 
-    /** p90 e percentuale di frame oltre il budget da una lista di durate in millisecondi. */
-    fun summarize(frameMs: List<Float>): Pair<Float, Float> {
-        if (frameMs.isEmpty()) return Float.MAX_VALUE to ALL_PERCENT
-        val sorted = frameMs.sorted()
+    /** p90 delle durate (ms) e percentuale di frame lenti. */
+    fun summarize(frames: List<FrameSample>): Pair<Float, Float> {
+        if (frames.isEmpty()) return Float.MAX_VALUE to ALL_PERCENT
+        val sorted = frames.map { it.totalMs }.sorted()
         val p90 = sorted[((sorted.size - 1) * P90_NUM) / P90_DEN]
-        val jank = frameMs.count { it > FRAME_BUDGET_MS } * ALL_PERCENT / frameMs.size
+        val jank = frames.count { it.totalMs > it.deadlineMs * JANK_MULTIPLIER } * ALL_PERCENT / frames.size
         return p90 to jank
     }
 }
+
+private const val FULL = 100f

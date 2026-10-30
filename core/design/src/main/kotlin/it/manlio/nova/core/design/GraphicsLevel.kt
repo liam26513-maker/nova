@@ -36,7 +36,12 @@ data class GraphicsState(
 class GraphicsLevelController(
     startLevel: GraphicsLevel,
     ceiling: GraphicsLevel = GraphicsLevel.MAXIMUM,
-    private val frameBudgetNanos: Long = 16_666_667L,
+    /**
+     * Un secondo è "lento" se il 90° percentile supera questo valore. È il doppio di un frame a 60 Hz,
+     * come l'euristica di JankStats: FrameMetrics.TOTAL_DURATION include la coda verso lo schermo,
+     * quindi superare di poco 16,7 ms è normale anche quando nessun frame viene perso.
+     */
+    private val frameBudgetNanos: Long = 33_333_333L,
     private val onChange: (GraphicsState) -> Unit = {},
 ) {
     private val lock = Any()
@@ -75,14 +80,17 @@ class GraphicsLevelController(
         if (count < second.size) second[count++] = durationNanos
     }
 
-    /** L'utente fissa un livello: non cambierà più da solo. */
+    /**
+     * L'utente fissa un livello: non cambierà più da solo. La scelta manuale non è limitata dal
+     * tetto: il tetto vale solo per Automatico (l'utente decide sempre).
+     */
     fun setManual(newLevel: GraphicsLevel) =
         synchronized(lock) {
             resetCounters()
-            publish(GraphicsState(bounded(newLevel, ceiling), automatic = false))
+            publish(GraphicsState(newLevel, automatic = false))
         }
 
-    /** Nuovi limiti dal profilatore: se si è in automatico si riparte subito dal nuovo livello. */
+    /** Nuovi limiti dal profilatore: in automatico si riparte subito dal nuovo livello; una scelta manuale resta com'è. */
     fun configure(
         start: GraphicsLevel,
         maxLevel: GraphicsLevel,
@@ -90,14 +98,7 @@ class GraphicsLevelController(
         startLevel = start
         ceiling = maxLevel
         resetCounters()
-        val current = state
-        publish(
-            if (current.automatic) {
-                GraphicsState(bounded(start, maxLevel), automatic = true)
-            } else {
-                current.copy(level = bounded(current.level, maxLevel))
-            },
-        )
+        if (state.automatic) publish(GraphicsState(bounded(start, maxLevel), automatic = true))
     }
 
     /** Torna alla scelta automatica, ripartendo dal livello di partenza. */

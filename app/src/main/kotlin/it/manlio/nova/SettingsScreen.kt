@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import it.manlio.nova.core.design.GraphicsLevel
+import it.manlio.nova.core.design.GraphicsPreview
 import it.manlio.nova.core.design.GraphicsState
 import it.manlio.nova.core.design.Nova
 import it.manlio.nova.core.design.NovaSpacing
@@ -33,6 +34,7 @@ fun SettingsScreen(
     profile: DeviceProfile?,
     onChoose: (LevelChoice) -> Unit,
     onMeasure: () -> Unit,
+    onShowReport: () -> Unit,
 ) {
     val t = Nova.tokens
     SettingsScaffold(title = stringResource(R.string.settings_title), subtitle = brandName) { backdrop ->
@@ -48,7 +50,11 @@ fun SettingsScreen(
                     label = { stringResource(it.label()) },
                     onSelect = onChoose,
                 )
+                Spacer(Modifier.height(NovaSpacing.m))
+                GraphicsPreview(graphics.level)
                 Spacer(Modifier.height(NovaSpacing.s))
+                BasicText(stringResource(graphics.level.explanation()), style = TextStyle(t.colors.onSurface, 15.sp, lineHeight = 21.sp))
+                Spacer(Modifier.height(NovaSpacing.xxs))
                 val current = stringResource(graphics.level.label())
                 BasicText(
                     if (graphics.automatic) {
@@ -60,7 +66,7 @@ fun SettingsScreen(
                 )
             }
         }
-        DeviceSection(backdrop, profile, onMeasure)
+        DeviceSection(backdrop, profile, onMeasure, onShowReport)
         SettingsSection(backdrop, header = stringResource(R.string.status_title)) {
             SettingsRow(stringResource(R.string.status_config_title), trailing = { Value(configVersion) })
             SettingsRow(
@@ -77,6 +83,7 @@ private fun DeviceSection(
     backdrop: ImageBitmap,
     profile: DeviceProfile?,
     onMeasure: () -> Unit,
+    onShowReport: () -> Unit,
 ) {
     SettingsSection(
         backdrop,
@@ -106,6 +113,9 @@ private fun DeviceSection(
                     stringResource(profile.ceiling.label())
                 }
             SettingsRow(stringResource(R.string.device_ceiling), showDivider = true, trailing = { Value(advice) })
+            if (profile.benchmark != null) {
+                SettingsRow(stringResource(R.string.device_report), showDivider = true, onClick = onShowReport)
+            }
         }
         SettingsRow(
             stringResource(if (profile?.benchmark == null) R.string.device_measure else R.string.device_measure_again),
@@ -127,6 +137,13 @@ private fun LevelChoice.label() =
     when (this) {
         LevelChoice.Automatic -> R.string.graphics_level_auto
         is LevelChoice.Fixed -> level.label()
+    }
+
+private fun GraphicsLevel.explanation() =
+    when (this) {
+        GraphicsLevel.MAXIMUM -> R.string.graphics_explain_maximum
+        GraphicsLevel.BALANCED -> R.string.graphics_explain_balanced
+        GraphicsLevel.PERFORMANCE -> R.string.graphics_explain_performance
     }
 
 internal fun GraphicsLevel.label() =
