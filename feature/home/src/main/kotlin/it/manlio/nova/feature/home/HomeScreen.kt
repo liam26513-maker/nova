@@ -373,7 +373,8 @@ private const val CASCADE_STIFFNESS = 260f
 private const val TINT_TO_BLACK = 0.7f
 private const val SIDE_ALPHA = 0.35f
 private const val DOT_ALPHA = 0.7f
-private val LEFT_CENTRE = TransformOrigin(0f, 0.5f)
+private const val HALF_HEIGHT = 0.5f
+private val LEFT_CENTRE = TransformOrigin(pivotFractionX = 0f, pivotFractionY = HALF_HEIGHT)
 
 @Suppress("MagicNumber") // opacità in alto e in basso della sfumatura
 private val BLURRED_ALPHA = 0.30f to 0.62f
