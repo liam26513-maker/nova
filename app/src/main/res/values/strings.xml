@@ -190,4 +190,6 @@
     <string name="customize_blur_light">Leggera</string>
     <string name="customize_blur_strong">Forte</string>
     <string name="customize_blur_max">Massima</string>
+    <string name="system_onboarding">Configurazione guidata</string>
+    <string name="system_onboarding_summary">Rifai i passi del primo avvio: Home, Shizuku, aggiornamenti, prestazioni, aspetto</string>
 </resources>

@@ -187,4 +187,6 @@
     <string name="customize_blur_light">Light</string>
     <string name="customize_blur_strong">Strong</string>
     <string name="customize_blur_max">Maximum</string>
+    <string name="system_onboarding">Guided setup</string>
+    <string name="system_onboarding_summary">Redo the first-run steps: Home, Shizuku, updates, performance, look</string>
 </resources>

@@ -62,6 +62,8 @@ data class SystemActions(
     val onChooseHome: () -> Unit = {},
     /** Apre la personalizzazione della Home. */
     val onCustomizeHome: () -> Unit = {},
+    /** Riapre la procedura guidata. */
+    val onRedoOnboarding: () -> Unit = {},
 )
 
 @Composable
@@ -230,6 +232,12 @@ fun SystemToolsSection(
             }
         SettingsRow("Shizuku", trailing = { Muted(stringResource(label)) })
         if (action != null) SettingsRow(stringResource(action), showDivider = true, onClick = actions.onShizukuAction)
+        SettingsRow(
+            stringResource(R.string.system_onboarding),
+            summary = stringResource(R.string.system_onboarding_summary),
+            showDivider = true,
+            onClick = actions.onRedoOnboarding,
+        )
         if (state.systemChanges > 0) {
             SettingsRow(
                 stringResource(R.string.system_revert, state.systemChanges),

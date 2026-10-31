@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ob_next">Avanti</string>
+    <string name="ob_back">Indietro</string>
+    <string name="ob_skip">Più tardi</string>
+    <string name="ob_done_badge">Fatto</string>
+    <string name="ob_step_of">Passo %1$d di %2$d</string>
+    <string name="ob_welcome_title">Benvenuto in NOVA</string>
+    <string name="ob_welcome_body">In pochi passi rendiamo il tablet tuo: la Home, gli strumenti di sistema, gli aggiornamenti automatici, le prestazioni e l\'aspetto. Ogni passo si può saltare e rifare quando vuoi dalle Impostazioni.</string>
+    <string name="ob_welcome_action">Iniziamo</string>
+    <string name="ob_home_title">NOVA come Home</string>
+    <string name="ob_home_body">La Home di NOVA diventa la prima schermata del tablet: tutte le app in ordine alfabetico, i preferiti, l\'alfabeto a onda. Il launcher di prima resta installato e puoi tornarci quando vuoi.</string>
+    <string name="ob_home_action">Scegli NOVA come Home</string>
+    <string name="ob_shizuku_title">Strumenti di sistema</string>
+    <string name="ob_shizuku_body">Shizuku dà a NOVA i permessi di sistema senza root: aggiornamenti senza conferme, ottimizzazioni, spegnimento dello schermo dalla Home. Ogni modifica viene registrata e si può annullare.</string>
+    <string name="ob_shizuku_open">Apri Shizuku</string>
+    <string name="ob_shizuku_grant">Concedi il permesso a NOVA</string>
+    <string name="ob_shizuku_hint">Se Shizuku non è attivo: Opzioni sviluppatore → Debug wireless, poi segui la notifica di Shizuku.</string>
+    <string name="ob_updates_title">Aggiornamenti automatici</string>
+    <string name="ob_updates_body">Con il token GitHub NOVA riceve da sola ogni miglioramento e può tornare a una versione precedente. Il token resta cifrato sul tablet e va solo a GitHub.</string>
+    <string name="ob_updates_help">Come si crea il token</string>
+    <string name="ob_updates_save">Salva il token</string>
+    <string name="ob_updates_placeholder">Incolla qui il token (github_pat_…)</string>
+    <string name="ob_perf_title">Prestazioni</string>
+    <string name="ob_perf_body">NOVA misura in pochi secondi quanto è veloce il tablet e sceglie da sola il livello grafico migliore: belle animazioni senza scatti.</string>
+    <string name="ob_perf_action">Misura le prestazioni</string>
+    <string name="ob_look_title">Aspetto</string>
+    <string name="ob_look_body">Scegli un tema per iniziare. Poi in Impostazioni → Home → Personalizza puoi cambiare sfondo, colori, caratteri, icone e gesti.</string>
+    <string name="ob_finish_title">Tutto pronto</string>
+    <string name="ob_finish_body">NOVA è configurata. Per chiedere un miglioramento o segnalare un problema usa i pulsanti Migliora e Ripara nelle Impostazioni.</string>
+    <string name="ob_finish_pending">Da completare quando vuoi:</string>
+    <string name="ob_finish_action">Vai alla Home</string>
+</resources>
