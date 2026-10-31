@@ -34,11 +34,11 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 | Workflow | Quando parte | Cosa pubblica |
 |---|---|---|
-| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti) | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`; note dal `CHANGELOG.md` |
+| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti) | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente; note dal `CHANGELOG.md` |
 | `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
 | `rollback.yml` | dal tablet: Impostazioni → Aggiornamenti → "Torna a una versione precedente" (oppure a mano da Actions) | ricompila il codice di un tag passato con un `versionCode` più alto, così si installa sopra |
 
-- **versionCode:** il più alto tra le release esistenti + 1, partendo da 101 (`tools/next_version.py`). Le anteprime di sviluppo hanno 1, quindi qualsiasi release le sostituisce.
+- **versionCode:** vedi la tabella "Numeri di versione" più sotto. Le anteprime di sviluppo hanno 1, quindi qualsiasi release le sostituisce.
 - **Firma:** la chiave sta solo nei segreti del repository (`NOVA_KEYSTORE_BASE64`, `NOVA_KEYSTORE_PASSWORD`, `NOVA_KEY_ALIAS`, `NOVA_KEY_PASSWORD`) e in una copia offline del proprietario. Il file viene creato nel runner solo per la build e poi cancellato. **Non cambiarla mai:** con un'altra firma il tablet rifiuta gli aggiornamenti.
 - **Budget:** CI e rilascio falliscono se l'APK supera `launcherApkMb` di `perf-budget.json` (`tools/check_budget.py`). I budget dinamici (avvio, fotogrammi) verranno misurati con Macrobenchmark quando ci sarà un dispositivo in CI; per ora si verificano a mano (docs/TEST-MANUALE.md).
 
@@ -46,10 +46,20 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 Da usare solo quando un aggiornamento ha creato un problema che le versioni successive non risolvono.
 
-1. Impostazioni → Aggiornamenti → **Torna a una versione precedente**: NOVA mostra le versioni più vecchie di quella installata (al massimo 10, dalla più recente).
+1. Impostazioni → Aggiornamenti → **Torna a una versione precedente**: NOVA mostra le versioni più vecchie di quella installata (al massimo 10, dalla più recente). Quella marcata **"immediato"** è già pronta.
 2. Si sceglie la versione e si conferma (senza conferma non parte nulla).
-3. NOVA salva un punto di ripristino e avvia `rollback.yml` con l'API di GitHub (`POST /actions/workflows/rollback.yml/dispatches`, input `tag`). Serve il permesso del token **Actions: Read and write**; se manca, NOVA lo dice.
-4. Dopo 10 minuti NOVA controlla da sola gli aggiornamenti: la nuova release (codice vecchio, `versionCode` più alto) si installa come qualsiasi aggiornamento, in silenzio se Shizuku è attivo.
+3. **Versione immediatamente precedente → immediato (pochi secondi).** Ogni release porta allegato `nova-ripristino-<code>-<tag>.apk` + `.sha256`: il codice della versione precedente, firmato, con `versionCode` = release + 1. NOVA lo scarica, ne verifica impronta, pacchetto, numero di versione e firma, e lo installa come un aggiornamento (in silenzio con Shizuku). Questo file non viene mai installato in automatico: solo dal ritorno d'emergenza.
+4. **Versioni più vecchie → 3–5 minuti.** NOVA salva un punto di ripristino e avvia `rollback.yml` con l'API di GitHub (`POST /actions/workflows/rollback.yml/dispatches`, input `tag`; serve il permesso del token **Actions: Read and write**). Poi ricontrolla ogni 30 secondi (per al massimo 15 minuti) e installa la nuova release appena è pubblicata. Il tempo è quello della build su GitHub: non si può accorciare dal tablet.
 5. La prima correzione pubblicata dopo avrà un `versionCode` ancora più alto e sostituirà il ripristino in automatico.
 
-Android non permette di installare una versione più vecchia sopra una più nuova senza perdere i dati: per questo il ritorno passa sempre da una nuova build.
+Android non permette di installare una versione più vecchia sopra una più nuova senza perdere i dati: per questo il ritorno usa sempre lo stesso codice con un numero di versione più alto.
+
+### Numeri di versione (`tools/next_version.py`)
+
+| Cosa | versionCode | Esempio |
+|---|---|---|
+| Release normale | decina successiva al tag più alto | 110, 120, … |
+| Ripristino immediato allegato | release + 1 (dispari, mai un tag) | 111 |
+| Ricompilazione da `rollback.yml` | tag più alto + 2 (pari) | 112 |
+
+Tutti i numeri crescono sempre e non si sovrappongono. Il tag creato da `rollback.yml` punta al commit del codice ripristinato, non a `main`.

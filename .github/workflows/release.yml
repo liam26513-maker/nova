@@ -35,10 +35,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tags=$(gh release list --limit 200 --json tagName --jq '.[].tagName')
-          read code name < <(python tools/next_version.py $tags)
+          read code name standby < <(python tools/next_version.py $tags)
+          # Versione dell'app precedente: il suo codice viene preparato come ritorno immediato.
+          previous=$(printf '%s\n' $tags | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -t. -k3 -n | tail -1 || true)
           echo "NOVA_VERSION_CODE=$code" >> "$GITHUB_ENV"
           echo "NOVA_VERSION_NAME=$name" >> "$GITHUB_ENV"
-          echo "Versione $name ($code)"
+          echo "NOVA_STANDBY_CODE=$standby" >> "$GITHUB_ENV"
+          echo "NOVA_PREVIOUS_TAG=$previous" >> "$GITHUB_ENV"
+          echo "Versione $name ($code), ripristino di ${previous:-nessuna} come $standby"
 
       - name: Chiave di firma
         env:
@@ -57,19 +61,37 @@ jobs:
 
       - name: Verifica firma e budget
         run: |
-          apk=app/build/outputs/apk/release/app-release.apk
-          apksigner=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner
-          # Impronta pubblica della chiave di NOVA: una firma diversa romperebbe gli aggiornamenti sul tablet.
-          "$apksigner" verify --print-certs "$apk" | tee firma.txt
-          grep -q "SHA-256 digest: $NOVA_CERT_SHA256" firma.txt || { echo "Firma inattesa"; exit 1; }
+          mkdir -p out
+          apk=out/nova-$NOVA_VERSION_CODE.apk
+          cp app/build/outputs/apk/release/app-release.apk "$apk"
+          tools/verify_apk.sh "$apk"
           python tools/check_budget.py "$apk"
+
+      # Ritorno immediato (SPEC §4.6): lo stesso codice della versione precedente, con un numero più
+      # alto, allegato a questa release. Se non si riesce a preparare, la release esce lo stesso.
+      - name: Ripristino immediato della versione precedente
+        if: env.NOVA_PREVIOUS_TAG != ''
+        continue-on-error: true
+        env:
+          NOVA_KEYSTORE_PASSWORD: ${{ secrets.NOVA_KEYSTORE_PASSWORD }}
+          NOVA_KEY_ALIAS: ${{ secrets.NOVA_KEY_ALIAS }}
+          NOVA_KEY_PASSWORD: ${{ secrets.NOVA_KEY_PASSWORD }}
+        run: |
+          git fetch --depth=1 origin "refs/tags/$NOVA_PREVIOUS_TAG:refs/tags/$NOVA_PREVIOUS_TAG"
+          git worktree add "$RUNNER_TEMP/precedente" "$NOVA_PREVIOUS_TAG"
+          cd "$RUNNER_TEMP/precedente"
+          chmod +x gradlew
+          NOVA_VERSION_CODE=$NOVA_STANDBY_CODE NOVA_VERSION_NAME="0.1.$NOVA_STANDBY_CODE" ./gradlew :app:assembleRelease
+          cd "$GITHUB_WORKSPACE"
+          standby="out/nova-ripristino-$NOVA_STANDBY_CODE-$NOVA_PREVIOUS_TAG.apk"
+          cp "$RUNNER_TEMP/precedente/app/build/outputs/apk/release/app-release.apk" "$standby"
+          tools/verify_apk.sh "$standby" || { rm -f "$standby"; exit 1; }
+          (cd out && sha256sum "$(basename "$standby")" > "$(basename "$standby").sha256")
 
       - name: Pubblica
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p out
-          cp app/build/outputs/apk/release/app-release.apk "out/nova-$NOVA_VERSION_CODE.apk"
           (cd out && sha256sum "nova-$NOVA_VERSION_CODE.apk" > "nova-$NOVA_VERSION_CODE.apk.sha256")
           python tools/release_notes.py CHANGELOG.md > out/note.md
           gh release create "v$NOVA_VERSION_NAME" out/nova-*.apk out/nova-*.apk.sha256 \
@@ -77,4 +99,4 @@ jobs:
 
       - name: Pulizia
         if: always()
-        run: rm -f "$RUNNER_TEMP/nova.jks"
+        run: rm -rf "$RUNNER_TEMP/nova.jks" "$RUNNER_TEMP/precedente"

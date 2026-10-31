@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Ritorno alla versione precedente in pochi secondi
+- Richiesta: "10 minuti è troppo, fallo con un massimo di attesa di 1 minuto".
+- **Versione appena precedente:** ogni nuova versione porta con sé, già pronta, quella di prima. Tornarci è immediato: si scarica e si installa in pochi secondi. Nella lista è segnata come "immediato".
+- **Versioni più vecchie:** GitHub deve prepararle e ci mette 3–5 minuti. NOVA controlla ogni 30 secondi e la installa appena è pronta, senza i 10 minuti fissi di prima.
+- Il ritorno immediato funziona dalla prossima versione in poi: la 0.1.102 non ha ancora con sé la versione precedente.
+
 ### Tornare a una versione precedente dalle Impostazioni
 - Richiesta: "lo vorrei direttamente nelle impostazioni che si usera solo nei casi dove una versione succesiva non riesca a risolvere i possibili problemi della attuale".
 - In **Impostazioni → Aggiornamenti** c'è ora l'ultima voce **"Torna a una versione precedente"**, pensata solo per le emergenze. Si sceglie la versione, si conferma, e dopo circa 10 minuti arriva sul tablet come un aggiornamento normale. Le impostazioni restano; quando arriva una correzione NOVA si aggiorna di nuovo da sola.

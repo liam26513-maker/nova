@@ -80,9 +80,37 @@ class UpdatePlannerTest {
                 config("0.2.0"),
             )
         val previous = UpdatePlanner.previousVersions(releases, installedVersionCode = 104)
-        assertEquals(listOf(103, 101), previous.map { it.versionCode })
-        assertEquals(listOf(103), UpdatePlanner.previousVersions(releases, 104, limit = 1).map { it.versionCode })
+        assertEquals(listOf(103, 101), previous.map { it.update.versionCode })
+        assertTrue(previous.all { it.standby == null })
+        assertEquals(listOf(103), UpdatePlanner.previousVersions(releases, 104, limit = 1).map { it.update.versionCode })
         assertTrue(UpdatePlanner.previousVersions(releases, 101).isEmpty())
+    }
+
+    @Test
+    fun `the standby APK of the installed release makes going back to that version instant`() {
+        fun withStandby(
+            release: Release,
+            name: String,
+            checksum: Boolean = true,
+        ) = release.copy(assets = release.assets + listOfNotNull(asset(name), if (checksum) asset("$name.sha256") else null))
+        val installed = withStandby(app("v0.1.110", 110), "nova-ripristino-111-v0.1.102.apk")
+        val releases = listOf(app("v0.1.101", 101), app("v0.1.102", 102), installed)
+
+        val previous = UpdatePlanner.previousVersions(releases, installedVersionCode = 110)
+        assertEquals(listOf("v0.1.102", "v0.1.101"), previous.map { it.update.tag })
+        val standby = previous.first().standby!!
+        assertEquals(111, standby.versionCode)
+        assertEquals("nova-ripristino-111-v0.1.102.apk", standby.apk.name)
+        assertNull(previous[1].standby)
+
+        // Il ripristino non diventa mai un aggiornamento automatico.
+        assertNull(UpdatePlanner.plan(releases, 110, "0.0.0").app)
+        // Senza impronta non si usa.
+        val noChecksum =
+            listOf(app("v0.1.102", 102), withStandby(app("v0.1.110", 110), "nova-ripristino-111-v0.1.102.apk", checksum = false))
+        assertNull(UpdatePlanner.previousVersions(noChecksum, 110).first().standby)
+        // Il ripristino allegato a un'altra release (non quella installata) non conta.
+        assertNull(UpdatePlanner.previousVersions(releases + app("v0.1.120", 120), 120).first { it.update.tag == "v0.1.102" }.standby)
     }
 
     @Test

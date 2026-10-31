@@ -43,6 +43,16 @@ data class ConfigUpdate(
     val checksum: Asset,
 )
 
+/**
+ * Una versione precedente a cui si può tornare. [standby] è l'APK già pronto (stesso codice di
+ * [update], numero di versione più alto) allegato alla release installata: c'è solo per la versione
+ * immediatamente precedente e rende il ritorno immediato, senza aspettare una nuova build.
+ */
+data class PreviousVersion(
+    val update: AppUpdate,
+    val standby: AppUpdate? = null,
+)
+
 data class UpdatePlan(
     val app: AppUpdate?,
     val config: ConfigUpdate?,
@@ -58,6 +68,7 @@ data class UpdatePlan(
  */
 object UpdatePlanner {
     private val APK = Regex("^nova-(\\d+)\\.apk$")
+    private val STANDBY = Regex("^nova-ripristino-(\\d+)-(v\\d+\\.\\d+\\.\\d+)\\.apk$")
     private val CONFIG_TAG = Regex("^config-v(\\d+\\.\\d+\\.\\d+)$")
     const val CONFIG_ASSET = "nova-config.json"
 
@@ -88,11 +99,27 @@ object UpdatePlanner {
         releases: List<Release>,
         installedVersionCode: Int,
         limit: Int = 10,
-    ): List<AppUpdate> =
-        appReleases(releases.filter { !it.draft && !it.prerelease })
+    ): List<PreviousVersion> {
+        val published = releases.filter { !it.draft && !it.prerelease }
+        val standby = standby(published, installedVersionCode)
+        return appReleases(published)
             .filter { it.versionCode < installedVersionCode }
             .sortedByDescending { it.versionCode }
             .take(limit)
+            .map { v -> PreviousVersion(v, standby?.takeIf { it.tag == v.tag && it.versionCode > installedVersionCode }) }
+    }
+
+    /** APK di ripristino allegato alla release installata (`nova-ripristino-<code>-<tag>.apk` + `.sha256`). */
+    private fun standby(
+        published: List<Release>,
+        installedVersionCode: Int,
+    ): AppUpdate? {
+        val installed = published.firstOrNull { r -> r.assets.any { it.name == "nova-$installedVersionCode.apk" } } ?: return null
+        val apk = installed.assets.firstOrNull { STANDBY.matches(it.name) } ?: return null
+        val checksum = installed.assets.firstOrNull { it.name == "${apk.name}.sha256" } ?: return null
+        val (code, tag) = STANDBY.find(apk.name)!!.destructured
+        return AppUpdate(code.toInt(), tag, apk, checksum, null)
+    }
 
     private fun appReleases(published: List<Release>): List<AppUpdate> =
         published.mapNotNull { r ->

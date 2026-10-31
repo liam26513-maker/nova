@@ -80,10 +80,13 @@
     <string name="rollback_none">Non ci sono versioni precedenti a cui tornare</string>
     <string name="rollback_cancel">Annulla</string>
     <string name="rollback_close">Chiudi</string>
-    <string name="rollback_confirm_text">NOVA tornerà al funzionamento della versione %1$s. GitHub la prepara in qualche minuto e il tablet la riceve come un aggiornamento normale: le tue impostazioni restano. Quando arriverà una correzione, si aggiornerà di nuovo da sola.</string>
+    <string name="rollback_confirm_text">NOVA tornerà al funzionamento della versione %1$s. GitHub la prepara in 3–5 minuti; NOVA controlla ogni 30 secondi e la installa appena è pronta. Le tue impostazioni restano. Quando arriverà una correzione, si aggiornerà di nuovo da sola.</string>
     <string name="rollback_confirm">Sì, torna a %1$s</string>
     <string name="rollback_sending">Invio la richiesta a GitHub…</string>
     <string name="rollback_done_title">Richiesta inviata</string>
-    <string name="rollback_done">Tra circa 10 minuti la versione %1$s arriva come aggiornamento</string>
+    <string name="rollback_done">GitHub sta preparando %1$s: arriva tra 3–5 minuti e si installa da sola (NOVA controlla ogni 30 secondi)</string>
     <string name="rollback_failed">Ritorno non avviato</string>
+    <string name="rollback_instant">immediato</string>
+    <string name="rollback_confirm_instant">NOVA tornerà al funzionamento della versione %1$s. È già pronta: si installa subito, in pochi secondi. Le tue impostazioni restano. Quando arriverà una correzione, si aggiornerà di nuovo da sola.</string>
+    <string name="rollback_done_instant">Installo %1$s: segui lo stato qui sopra</string>
 </resources>

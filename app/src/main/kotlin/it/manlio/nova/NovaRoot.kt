@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.core.update.RollbackResult
 import it.manlio.nova.core.update.UpdateState
 import it.manlio.nova.core.update.UpdateWorker
 import kotlinx.coroutines.CoroutineScope
@@ -106,7 +107,7 @@ private fun systemActions(
         app.updater.previousVersions().recoverCatching { throw IllegalStateException(app.updater.reasonFor(it)) }
     },
     onRollbackApp = { target ->
-        app.updater.requestRollback(target).also { if (it == null) UpdateWorker.checkSoon(app) }
+        app.updater.requestRollback(target).also { if (it == RollbackResult.Requested) UpdateWorker.watchRollback(app) }
     },
     onRevertSystem = {
         scope.launch {
