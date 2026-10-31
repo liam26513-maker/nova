@@ -33,6 +33,7 @@
         <activity
             android:name=".HomeActivity"
             android:exported="true"
+            android:theme="@style/Theme.Nova.Home"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"

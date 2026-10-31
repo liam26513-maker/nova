@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.foundation)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.kotlinx.coroutines.core)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
