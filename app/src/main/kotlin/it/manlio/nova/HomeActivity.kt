@@ -15,9 +15,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,37 +26,45 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.safemode.SafeModeActivity
+import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.system.SystemCommand
 import it.manlio.nova.feature.home.AppCatalog
 import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.Favorites
 import it.manlio.nova.feature.home.HomeActions
-import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
+import it.manlio.nova.feature.home.PreparedWallpaper
 import it.manlio.nova.feature.home.TILE_ICON
+import it.manlio.nova.feature.home.WallpaperLoader
+import it.manlio.nova.feature.home.WallpaperSource
 import it.manlio.nova.feature.home.rememberMinuteClock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.function.Consumer
 
 /**
- * NOVA come app Home (Fase 0, punto 11). L'elenco delle app, i colori dello sfondo e la sfocatura
- * vivono solo mentre la home è visibile (onStart/onStop). Indietro non chiude la home; premere Home
- * quando si è già qui riporta ai preferiti.
+ * NOVA come app Home (Fase 0, punto 11). Elenco delle app, sfondo, colori e sfocatura vivono solo
+ * mentre la home è visibile (onStart/onStop). Indietro non chiude la home; premere Home quando si è
+ * già qui riporta ai preferiti.
  */
 class HomeActivity : ComponentActivity() {
     private lateinit var catalog: AppCatalog
     private lateinit var favorites: Favorites
+    private lateinit var wallpaperLoader: WallpaperLoader
     private var homePresses by mutableIntStateOf(0)
     private var style by mutableStateOf(HomeStyle())
+    private var wallpaper by mutableStateOf<PreparedWallpaper?>(null)
     private var blurSupported = false
     private val app get() = application as NovaApp
+    private val prefs get() = app.homePrefs.prefs.value
     private val wallpapers by lazy { WallpaperManager.getInstance(this) }
     private val frameThread = HandlerThread("nova-home-frames").apply { start() }
     private val frameListener =
@@ -68,15 +74,17 @@ class HomeActivity : ComponentActivity() {
     private val blurListener =
         Consumer<Boolean> { enabled ->
             blurSupported = enabled
-            applyBlur()
+            applyWindow()
         }
     private val colorsListener =
         WallpaperManager.OnColorsChangedListener { colors, which ->
-            if (which and WallpaperManager.FLAG_SYSTEM != 0) applyColors(colors)
+            if (which and WallpaperManager.FLAG_SYSTEM != 0) {
+                applyColors(colors)
+                if (prefs.wallpaper == WallpaperSource.SYSTEM) reloadWallpaper()
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge(SystemBarStyle.dark(android.graphics.Color.TRANSPARENT), SystemBarStyle.dark(android.graphics.Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         app.safeModeReason?.let { reason ->
             startActivity(SafeModeActivity.intent(this, reason))
@@ -85,15 +93,14 @@ class HomeActivity : ComponentActivity() {
         }
         catalog = AppCatalog(this)
         favorites = Favorites(File(filesDir, "home-favorites.txt"))
+        wallpaperLoader = WallpaperLoader(this)
         onBackPressedDispatcher.addCallback(
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() = Unit // la home è la base: Indietro non la chiude
             },
         )
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) { combine(app.graphics, app.homePrefs.prefs) { _, _ -> }.collect { applyBlur() } }
-        }
+        observe()
         setContent {
             val config by app.config.current.collectAsStateWithLifecycle()
             val graphics by app.graphics.collectAsStateWithLifecycle()
@@ -101,40 +108,61 @@ class HomeActivity : ComponentActivity() {
             val favoriteKeys by favorites.keys.collectAsStateWithLifecycle()
             val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
             val iconPx = with(LocalDensity.current) { TILE_ICON.roundToPx() }
+            val spec = HomeSystem.iconSpec(this, prefs)
             NovaTheme(tokensFrom(config, graphics.level)) {
                 HomeScreen(
                     apps = apps,
                     favoriteKeys = favoriteKeys,
                     nowMillis = rememberMinuteClock(),
-                    actions =
-                        HomeActions(
-                            icon = { catalog.icon(it, iconPx) },
-                            onLaunch = ::launch,
-                            onToggleFavorite = { entry -> lifecycleScope.launch { favorites.toggle(entry.key) } },
-                            onOpenSettings = { startActivity(Intent(this, MainActivity::class.java)) },
-                            onReorderFavorites = { order -> lifecycleScope.launch { favorites.reorder(order) } },
-                            onHide = { entry -> updatePrefs { it.copy(hidden = it.hidden + (entry.key to entry.label)) } },
-                            onRename = { entry, name ->
-                                updatePrefs {
-                                    it.copy(
-                                        renamed = if (name.isBlank()) it.renamed - entry.key else it.renamed + (entry.key to name),
-                                    )
-                                }
-                            },
-                            onAppInfo = { entry -> catalog.openInfo(entry) },
-                            onUninstall = { entry ->
-                                runCatching {
-                                    startActivity(Intent(Intent.ACTION_DELETE, Uri.fromParts("package", entry.component.packageName, null)))
-                                }
-                            },
-                        ),
+                    actions = actions { catalog.icon(it, iconPx, spec) },
                     style = style,
                     prefs = prefs,
+                    wallpaper = wallpaper?.image,
                     scrollToTop = homePresses,
                 )
             }
         }
     }
+
+    /** Riapplica finestra e sfondo quando cambiano livello grafico o preferenze (solo mentre la home è visibile). */
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                combine(app.graphics, app.homePrefs.prefs) { _, _ -> }.collect { applyWindow() }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Riparte a ogni ritorno nella home: così lo sfondo si rilegge anche dopo aver scelto
+                // una foto o concesso il permesso nelle Impostazioni.
+                app.homePrefs.prefs
+                    .map { it.wallpaper to it.blurLevel }
+                    .distinctUntilChanged()
+                    .collect { reloadWallpaper() }
+            }
+        }
+    }
+
+    private fun actions(icon: suspend (AppEntry) -> androidx.compose.ui.graphics.ImageBitmap?) =
+        HomeActions(
+            icon = icon,
+            onLaunch = ::launch,
+            onToggleFavorite = { entry -> lifecycleScope.launch { favorites.toggle(entry.key) } },
+            onOpenSettings = { startActivity(Intent(this, MainActivity::class.java)) },
+            onReorderFavorites = { order -> lifecycleScope.launch { favorites.reorder(order) } },
+            onHide = { entry -> app.homePrefs.updateIn(lifecycleScope) { it.copy(hidden = it.hidden + (entry.key to entry.label)) } },
+            onRename = { entry, name ->
+                app.homePrefs.updateIn(lifecycleScope) {
+                    it.copy(renamed = if (name.isBlank()) it.renamed - entry.key else it.renamed + (entry.key to name))
+                }
+            },
+            onAppInfo = { entry -> catalog.openInfo(entry) },
+            onUninstall = { entry ->
+                runCatching { startActivity(Intent(Intent.ACTION_DELETE, Uri.fromParts("package", entry.component.packageName, null))) }
+            },
+            onSwipeDown = { HomeSystem.expandNotifications(this) },
+            onSleep = ::sleep,
+        )
 
     /** Apre l'app facendola "crescere" dal punto toccato. */
     private fun launch(
@@ -150,26 +178,40 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
-    /** Sfocatura reale dello sfondo, solo se il dispositivo la supporta e il livello grafico la consente. */
-    private fun applyBlur() {
-        val radius =
-            when {
-                !blurSupported || !app.homePrefs.prefs.value.blur -> 0
-                app.graphics.value.level == GraphicsLevel.MAXIMUM -> BLUR_MAXIMUM_DP
-                app.graphics.value.level == GraphicsLevel.BALANCED -> BLUR_BALANCED_DP
-                else -> 0
-            }
-        window.setBackgroundBlurRadius((radius * resources.displayMetrics.density).toInt())
-        style = style.copy(blurred = radius > 0)
+    /** Spegne lo schermo tramite Shizuku (senza Shizuku, Android non lo permette a un'app normale). */
+    private fun sleep() {
+        if (app.shizuku.status.value != ShizukuStatus.READY) {
+            Toast.makeText(this, R.string.home_sleep_needs_shizuku, Toast.LENGTH_SHORT).show()
+            return
+        }
+        lifecycleScope.launch { app.shizuku.run(SystemCommand.Sleep) }
     }
 
-    private fun updatePrefs(change: (HomePrefs) -> HomePrefs) {
-        lifecycleScope.launch { app.homePrefs.update(change) }
+    private fun applyWindow() {
+        val dark = HomeSystem.isDark(this, prefs)
+        val blurred = HomeWindow.apply(this, prefs, wallpaper != null, blurSupported, app.graphics.value.level, dark)
+        style = style.copy(blurred = blurred)
+    }
+
+    /** Prepara fuori dal thread principale lo sfondo che la home disegna da sé (sfondo di sistema o foto). */
+    private fun reloadWallpaper() {
+        val current = prefs
+        lifecycleScope.launch {
+            val prepared =
+                when (current.wallpaper) {
+                    WallpaperSource.SYSTEM -> wallpaperLoader.system(current.blurLevel)
+                    WallpaperSource.PHOTO -> wallpaperLoader.photo(current.blurLevel)
+                    else -> null
+                }
+            wallpaper = prepared
+            prepared?.primaryColor?.let { style = style.copy(tint = Color(it)) }
+            applyWindow()
+        }
     }
 
     private fun applyColors(colors: WallpaperColors?) {
         val primary = colors?.primaryColor?.toArgb() ?: return
-        style = style.copy(tint = Color(primary))
+        if (prefs.wallpaper == WallpaperSource.SYSTEM) style = style.copy(tint = Color(primary))
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -212,10 +254,5 @@ class HomeActivity : ComponentActivity() {
     override fun onDestroy() {
         frameThread.quitSafely()
         super.onDestroy()
-    }
-
-    private companion object {
-        const val BLUR_MAXIMUM_DP = 40
-        const val BLUR_BALANCED_DP = 22
     }
 }

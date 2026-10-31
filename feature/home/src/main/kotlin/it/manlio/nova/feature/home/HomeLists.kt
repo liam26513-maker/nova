@@ -103,7 +103,13 @@ internal fun FavoritesList(
                         BasicText(
                             stringResource(R.string.home_favorites_empty),
                             Modifier.padding(vertical = 12.dp),
-                            style = TextStyle(HomeMuted, 17.sp, lineHeight = 24.sp, fontFamily = LocalHomeLook.current.family),
+                            style =
+                                TextStyle(
+                                    LocalHomeLook.current.muted,
+                                    17.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = LocalHomeLook.current.family,
+                                ),
                         )
                     }
                     TextAction(stringResource(R.string.home_show_all), onShowAll)
@@ -163,7 +169,7 @@ internal fun AllAppsList(
                         BasicText(
                             row.letter.toString(),
                             Modifier.padding(top = 18.dp, bottom = 4.dp),
-                            style = TextStyle(HomeMuted, 15.sp, FontWeight.SemiBold, fontFamily = family),
+                            style = TextStyle(LocalHomeLook.current.muted, 15.sp, FontWeight.SemiBold, fontFamily = family),
                         )
                     is AllRow.App ->
                         AppRow(
@@ -243,7 +249,7 @@ private fun RowScope.RowContent(
 ) {
     val look = LocalHomeLook.current
     if (look.showIcons) {
-        AppIcon(app, actions.icon, if (big) BIG_ICON else SMALL_ICON)
+        AppIcon(app, actions.icon, if (big) look.bigIcon else look.smallIcon)
         Spacer(Modifier.width(if (big) 18.dp else 14.dp))
     }
     BasicText(
@@ -251,9 +257,9 @@ private fun RowScope.RowContent(
         Modifier.weight(1f, fill = false),
         style =
             TextStyle(
-                HomeInk,
+                LocalHomeLook.current.ink,
                 if (big) look.bigLabel else look.smallLabel,
-                if (big) FontWeight.Light else FontWeight.Normal,
+                if (big || look.weight != FontWeight.Light) look.weight else FontWeight.Normal,
                 fontFamily = look.family,
             ),
         maxLines = 1,
@@ -265,7 +271,7 @@ private fun RowScope.RowContent(
         Box(
             Modifier
                 .size(6.dp)
-                .background(HomeInk.copy(alpha = DOT_ALPHA), CircleShape)
+                .background(look.accent, CircleShape)
                 .semantics { contentDescription = favoriteMark },
         )
     }
@@ -285,7 +291,14 @@ internal fun TextAction(
                 view.perform(NovaHaptic.TAP)
                 onClick()
             }.padding(vertical = 14.dp),
-        style = TextStyle(HomeMuted, 17.sp, FontWeight.Medium, letterSpacing = 0.3.sp, fontFamily = LocalHomeLook.current.family),
+        style =
+            TextStyle(
+                LocalHomeLook.current.muted,
+                17.sp,
+                FontWeight.Medium,
+                letterSpacing = 0.3.sp,
+                fontFamily = LocalHomeLook.current.family,
+            ),
     )
 }
 
@@ -301,7 +314,12 @@ internal fun AppIcon(
         if (loaded != null) {
             Image(loaded, contentDescription = null, modifier = Modifier.fillMaxSize())
         } else {
-            Box(Modifier.fillMaxSize().background(HomeInk.copy(alpha = PLACEHOLDER_ALPHA), SquircleShape(size * PLACEHOLDER_RADIUS)))
+            Box(
+                Modifier.fillMaxSize().background(
+                    LocalHomeLook.current.ink.copy(alpha = PLACEHOLDER_ALPHA),
+                    SquircleShape(size * PLACEHOLDER_RADIUS),
+                ),
+            )
         }
     }
 }
@@ -320,8 +338,6 @@ private fun Modifier.cascade(index: Int): Modifier {
     }
 }
 
-private val BIG_ICON = 44.dp
-private val SMALL_ICON = 34.dp
 private val CASCADE_RISE = 18.dp
 private const val PLACEHOLDER_RADIUS = 0.28f
 private const val PLACEHOLDER_ALPHA = 0.1f
@@ -336,6 +352,5 @@ private const val CASCADE_STEP_MS = 28L
 private const val CASCADE_MAX_STEPS = 10
 private const val CASCADE_DAMPING = 0.8f
 private const val CASCADE_STIFFNESS = 260f
-private const val DOT_ALPHA = 0.7f
 private const val HALF_HEIGHT = 0.5f
 private val LEFT_CENTRE = TransformOrigin(pivotFractionX = 0f, pivotFractionY = HALF_HEIGHT)

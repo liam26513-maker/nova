@@ -19,10 +19,13 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -50,6 +53,7 @@ import kotlin.math.roundToInt
 internal fun Alphabet(
     letters: List<Char>,
     onLetter: (Char) -> Unit,
+    onDoubleTap: (() -> Unit)? = null,
     side: Side = Side.RIGHT,
     modifier: Modifier = Modifier,
 ) {
@@ -67,37 +71,30 @@ internal fun Alphabet(
         label = "alphabet-presence",
     )
 
+    // Le azioni cambiano a ogni ricomposizione: il gesto legge sempre le ultime senza ripartire.
+    val currentOnLetter by rememberUpdatedState(onLetter)
+    val currentOnDoubleTap by rememberUpdatedState(onDoubleTap)
+
     fun track(y: Float) {
         fingerY = y.coerceIn(0f, height.toFloat())
         val letter = letters[(fingerY / height * letters.size).toInt().coerceIn(0, letters.lastIndex)]
         if (letter != current || !touching) {
             current = letter
             view.perform(NovaHaptic.SELECTION)
-            onLetter(letter)
+            currentOnLetter(letter)
         }
     }
 
     Box(
         modifier
             .onSizeChanged { height = it.height.coerceAtLeast(1) }
-            .pointerInput(letters) {
-                awaitEachGesture {
-                    val down = awaitFirstDown()
-                    track(down.position.y)
-                    touching = true
-                    down.consume()
-                    do {
-                        val event = awaitPointerEvent()
-                        event.changes.forEach { change ->
-                            if (change.pressed) {
-                                track(change.position.y)
-                                change.consume()
-                            }
-                        }
-                    } while (event.changes.any { it.pressed })
-                    touching = false
-                }
-            },
+            .alphabetGesture(
+                letters = letters,
+                hasDoubleTap = onDoubleTap != null,
+                onTrack = ::track,
+                onTouching = { touching = it },
+                doubleTap = { currentOnDoubleTap },
+            ),
     ) {
         Column(Modifier.fillMaxSize()) {
             letters.forEachIndexed { i, letter ->
@@ -113,6 +110,46 @@ internal fun Alphabet(
         LetterBubble(current, side, { fingerY }, { presence })
     }
 }
+
+/** Tocco e trascinamento sull'alfabeto, con il doppio tocco opzionale. */
+private fun Modifier.alphabetGesture(
+    letters: List<Char>,
+    hasDoubleTap: Boolean,
+    onTrack: (Float) -> Unit,
+    onTouching: (Boolean) -> Unit,
+    doubleTap: () -> (() -> Unit)?,
+): Modifier =
+    pointerInput(letters, hasDoubleTap) {
+        var lastTapAt = 0L
+        awaitEachGesture {
+            val down = awaitFirstDown()
+            onTrack(down.position.y)
+            onTouching(true)
+            down.consume()
+            var moved = false
+            do {
+                val event = awaitPointerEvent()
+                event.changes.forEach { change ->
+                    if (change.pressed) {
+                        onTrack(change.position.y)
+                        change.consume()
+                    }
+                }
+                if (event.changes.any { (it.position - down.position).getDistance() > viewConfiguration.touchSlop }) moved = true
+            } while (event.changes.any { it.pressed })
+            onTouching(false)
+            // Doppio tocco veloce senza trascinare: azione del doppio tocco (spegni schermo).
+            val action = doubleTap()
+            if (!moved && action != null) {
+                if (down.uptimeMillis - lastTapAt < viewConfiguration.doubleTapTimeoutMillis) {
+                    lastTapAt = 0L
+                    action()
+                } else {
+                    lastTapAt = down.uptimeMillis
+                }
+            }
+        }
+    }
 
 /** Una lettera: [influence] (0–1, letta solo in disegno) la ingrandisce e la spinge a sinistra. */
 @Composable
@@ -141,7 +178,7 @@ private fun WaveLetter(
                     true
                 }
             },
-        style = TextStyle(HomeInk, 12.sp, FontWeight.Medium),
+        style = TextStyle(LocalHomeLook.current.ink, 12.sp, FontWeight.Medium),
     )
 }
 
@@ -171,10 +208,14 @@ private fun LetterBubble(
                 val scale = BUBBLE_MIN_SCALE + (1f - BUBBLE_MIN_SCALE) * p
                 scaleX = scale
                 scaleY = scale
-            }.background(HomeInk.copy(alpha = BUBBLE_ALPHA), CircleShape),
+            }.background(LocalHomeLook.current.accent.copy(alpha = BUBBLE_ALPHA), CircleShape),
         contentAlignment = Alignment.Center,
     ) {
-        BasicText(letter.toString(), style = TextStyle(HomeInk, 34.sp, FontWeight.Light))
+        val accent = LocalHomeLook.current.accent
+        BasicText(
+            letter.toString(),
+            style = TextStyle(if (accent.luminance() > LIGHT_ACCENT) DARK_INK else Color.White, 34.sp, FontWeight.Light),
+        )
     }
 }
 
@@ -186,7 +227,11 @@ private val ALPHABET_STRIP = 44.dp
 private const val HALF = 0.5f
 private const val WAVE_GROWTH = 1.4f
 private const val REST_ALPHA = 0.55f
-private const val BUBBLE_ALPHA = 0.16f
+private const val BUBBLE_ALPHA = 0.92f
+private const val LIGHT_ACCENT = 0.5f
+
+@Suppress("MagicNumber")
+private val DARK_INK = Color(0xFF15171A)
 private const val BUBBLE_MIN_SCALE = 0.4f
 private const val PRESENCE_DAMPING = 0.72f
 private const val PRESENCE_STIFFNESS = 320f

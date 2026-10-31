@@ -4,6 +4,16 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App recenti senza "fantasmi" e studio di personalizzazione completo
+- Richiesta: "Quando si va nella schermata delle app aperte … ogni tanto si vede sullo sfondo l'app aperta all'ultimo, non va bene sostituisci e risolvi con lo sfondo ma più sfocato dietro. Poi aggiungi la customizzazione dello sfondo, del tema, delle icone, di tutto. Come niagara launcher".
+- **Risolto:** nelle app recenti dietro alla Home non si vede più l'app aperta prima. Ora è NOVA a disegnare lo sfondo, sfocato quanto vuoi, fino a "Massima".
+- **Temi pronti**, da applicare con un tocco e poi ritoccare: Notte, Aurora, Carta, Tramonto, Essenziale. Puoi anche salvare il tuo tema in un file e riaprirlo.
+- **Sfondo:** il tuo (sfocato se consenti a NOVA di leggerlo), una foto della galleria, una delle sfumature di NOVA o un colore; sfocatura regolabile.
+- **Colori:** tema scuro, chiaro o automatico; colore d'accento preso dallo sfondo o scelto da te.
+- **Testo e orologio:** carattere, misura e spessore; orologio sottile, marcato o su due righe; data sì o no.
+- **Icone:** misura, forma, icone monocromatiche e **pacchetti di icone** scaricati dal Play Store.
+- **Gesti:** scorri giù per le notifiche, doppio tocco sull'alfabeto per spegnere lo schermo (con Shizuku), barra di stato nascondibile.
+
 ### Personalizza la Home come in Niagara
 - Richiesta: "Va bene aggiungi la personalizzazione migliore di niagara launcher".
 - **Impostazioni → Home → Personalizza la Home:**

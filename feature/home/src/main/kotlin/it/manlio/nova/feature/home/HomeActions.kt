@@ -21,6 +21,10 @@ class HomeActions(
     val onRename: (AppEntry, String) -> Unit = { _, _ -> },
     val onAppInfo: (AppEntry) -> Unit = {},
     val onUninstall: (AppEntry) -> Unit = {},
+    /** Scorrimento verso il basso sulla home: apre le notifiche. */
+    val onSwipeDown: () -> Unit = {},
+    /** Doppio tocco sull'alfabeto: spegne lo schermo. */
+    val onSleep: () -> Unit = {},
 )
 
 /**

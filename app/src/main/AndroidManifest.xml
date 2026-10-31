@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Per sapere se Shizuku è installato e aprirlo. -->
     <!-- "Disinstalla" dal menu delle app della Home: Android chiede sempre conferma. -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <!-- Scorrere giù sulla Home apre le notifiche. -->
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <!-- Facoltativo, lo concede l'utente: serve solo a leggere lo sfondo di sistema per sfocarlo
+         dentro NOVA (da Android 13 non c'è un permesso più piccolo). Nessun altro file viene letto. -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
@@ -11,6 +19,16 @@
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <!-- Pacchetti di icone di terzi (formato appfilter.xml). -->
+        <intent>
+            <action android:name="org.adw.launcher.THEMES" />
+        </intent>
+        <intent>
+            <action android:name="com.novalauncher.THEME" />
+        </intent>
+        <intent>
+            <action android:name="com.gau.go.launcherex.theme" />
         </intent>
     </queries>
 

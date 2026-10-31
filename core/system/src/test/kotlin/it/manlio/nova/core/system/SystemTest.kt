@@ -21,6 +21,11 @@ class SystemCommandTest {
     }
 
     @Test
+    fun `sleep only sends the sleep key, with nothing to revert`() {
+        assertEquals(listOf("input", "keyevent", "KEYCODE_SLEEP"), SystemCommand.Sleep.argv)
+    }
+
+    @Test
     fun `injection attempts are rejected before reaching the shell`() {
         val bad =
             listOf(
