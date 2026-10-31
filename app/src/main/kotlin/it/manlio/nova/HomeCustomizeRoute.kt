@@ -45,8 +45,6 @@ fun HomeCustomizeRoute(
         iconPacks = withContext(Dispatchers.IO) { runCatching { IconPacks(context).installed() }.getOrDefault(emptyList()) }
     }
 
-    fun toast(id: Int) = Toast.makeText(context, context.getString(id), Toast.LENGTH_SHORT).show()
-
     val pickPhoto =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
@@ -54,7 +52,7 @@ fun HomeCustomizeRoute(
                 if (WallpaperLoader.savePhoto(context, uri)) {
                     app.homePrefs.update { it.copy(wallpaper = WallpaperSource.PHOTO) }
                 } else {
-                    toast(R.string.customize_photo_failed)
+                    toast(context, R.string.customize_photo_failed)
                 }
             }
         }
@@ -63,7 +61,7 @@ fun HomeCustomizeRoute(
             if (uri == null) return@rememberLauncherForActivityResult
             scope.launch {
                 val ok = withContext(Dispatchers.IO) { writeText(context, uri, app.homePrefs.exportTheme()) }
-                if (ok) toast(R.string.customize_theme_saved)
+                if (ok) toast(context, R.string.customize_theme_saved)
             }
         }
     val importTheme =
@@ -72,7 +70,7 @@ fun HomeCustomizeRoute(
             scope.launch {
                 val text = withContext(Dispatchers.IO) { readText(context, uri) }
                 val applied = text != null && app.homePrefs.importTheme(text)
-                toast(if (applied) R.string.customize_theme_imported else R.string.customize_theme_invalid)
+                toast(context, if (applied) R.string.customize_theme_imported else R.string.customize_theme_invalid)
             }
         }
 
@@ -96,6 +94,11 @@ fun HomeCustomizeRoute(
         ),
     )
 }
+
+private fun toast(
+    context: android.content.Context,
+    id: Int,
+) = Toast.makeText(context, context.getString(id), Toast.LENGTH_SHORT).show()
 
 /** Un tema è un piccolo file di testo: si legge al massimo 64 KB, per sicurezza. */
 private fun readText(
