@@ -10,6 +10,7 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.Base64
 
 /**
  * Legge le release del repository privato con un token a permessi minimi (SPEC §13.4).
@@ -49,6 +50,25 @@ class GitHubClient(
         conn.doOutput = true
         conn.setRequestProperty("Content-Type", "application/json")
         conn.outputStream.use { it.write(body.toByteArray()) }
+        conn.read()
+        Unit
+    }
+
+    /**
+     * Carica un report di "Ripara" nella cartella `reports/` del repository (SPEC §4.3). Solo quel
+     * percorso è ammesso, e il testo deve essere già anonimizzato da chi chiama.
+     */
+    suspend fun putReport(
+        path: String,
+        text: String,
+        message: String,
+    ) = withContext(Dispatchers.IO) {
+        require(REPORT_PATH.matches(path)) { "Percorso del report non ammesso: $path" }
+        val conn = open("https://api.github.com/repos/$repo/contents/$path", "application/vnd.github+json")
+        conn.requestMethod = "PUT"
+        conn.doOutput = true
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.outputStream.use { it.write(contentsBody(text, message).toByteArray()) }
         conn.read()
         Unit
     }
@@ -117,12 +137,29 @@ class GitHubClient(
         return inputStream.bufferedReader().use { it.readText() }
     }
 
-    private companion object {
-        val JSON = Json { ignoreUnknownKeys = true }
-        val REDIRECTS = setOf(301, 302, 303, 307, 308)
-        val OK_RANGE = 200..299
-        const val UNAUTHORIZED = 401
-        const val TIMEOUT_MS = 20_000
-        const val BUFFER = 64 * 1024
+    companion object {
+        /** Solo file Markdown direttamente dentro `reports/`, con nomi semplici. */
+        val REPORT_PATH = Regex("^reports/[A-Za-z0-9._-]{1,120}\\.md$")
+
+        /** Corpo della richiesta dell'API "contents": testo in base64 sul ramo principale. */
+        fun contentsBody(
+            text: String,
+            message: String,
+        ): String =
+            JSON.encodeToString(
+                JsonObject.serializer(),
+                buildJsonObject {
+                    put("message", message)
+                    put("content", Base64.getEncoder().encodeToString(text.toByteArray(Charsets.UTF_8)))
+                    put("branch", "main")
+                },
+            )
+
+        private val JSON = Json { ignoreUnknownKeys = true }
+        private val REDIRECTS = setOf(301, 302, 303, 307, 308)
+        private val OK_RANGE = 200..299
+        private const val UNAUTHORIZED = 401
+        private const val TIMEOUT_MS = 20_000
+        private const val BUFFER = 64 * 1024
     }
 }

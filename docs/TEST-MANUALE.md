@@ -87,3 +87,11 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] **Aspetto:** scegli un tema; la Home lo usa subito.
 - [ ] **Tutto pronto:** elenca i passi rimasti; "Vai alla Home" chiude e apre la Home. Riaprendo NOVA, la procedura non ricompare.
 - [ ] Impostazioni → Strumenti di sistema → **Configurazione guidata** la riapre.
+
+## Migliora e Ripara (Fase 0, punto 9)
+- [ ] Impostazioni → **Migliora**: scrivi "cambia il colore d'accento in viola" e "Invia a Claude Code". Si apre Claude Code (app o sito) con la richiesta già scritta e il repository nova scelto. Tocca Invia.
+- [ ] Dopo qualche minuto arriva l'aggiornamento: la configurazione in silenzio, oppure una nuova versione.
+- [ ] Impostazioni → **Ripara**:
+  - [ ] "Guarda il report": non ci devono essere email, numeri di telefono o token;
+  - [ ] invia: con il token compare "Report caricato in reports/" e Claude Code si apre con "Leggi reports/…";
+  - [ ] senza token compare il messaggio sugli appunti.

@@ -77,6 +77,7 @@ dependencies {
     implementation(project(":core:update"))
     implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
+    implementation(project(":feature:improve"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

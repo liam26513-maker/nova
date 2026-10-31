@@ -34,3 +34,24 @@ fun HomeSection(
         )
     }
 }
+
+/** In cima alle Impostazioni: chiedere un miglioramento o segnalare un problema (SPEC §4.2-4.3). */
+@Composable
+fun ImproveSection(
+    backdrop: ImageBitmap,
+    actions: SystemActions,
+) {
+    SettingsSection(backdrop, header = stringResource(R.string.improve_section), footer = stringResource(R.string.improve_section_footer)) {
+        SettingsRow(
+            stringResource(R.string.improve_row),
+            summary = stringResource(R.string.improve_row_summary),
+            onClick = actions.onImprove,
+        )
+        SettingsRow(
+            stringResource(R.string.repair_row),
+            summary = stringResource(R.string.repair_row_summary),
+            showDivider = true,
+            onClick = actions.onRepair,
+        )
+    }
+}

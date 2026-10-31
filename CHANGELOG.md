@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Migliora e Ripara (Fase 0, punto 9: Fase 0 completata)
+- Richiesta: "Per adesso continua con i passaggi successivi".
+- **Impostazioni → Migliora:** scrivi cosa vuoi con parole tue. NOVA apre Claude Code con la richiesta già scritta, completa dei dettagli tecnici: tu tocchi solo Invia.
+- **Impostazioni → Ripara:** NOVA prepara un report del problema (crash, eventi, versioni). Prima di uscire dal tablet lo rende **anonimo** (niente email, numeri, token) e te lo fa vedere. Poi lo salva nel tuo repository e chiede a Claude Code di correggere il problema e aggiungere un test.
+
 ### Configurazione guidata al primo avvio (Fase 0, punto 12)
 - Richiesta: "continua con i restanti passaggi".
 - Alla prima apertura NOVA ti accompagna in pochi passi:

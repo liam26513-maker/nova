@@ -32,3 +32,4 @@ Il tetto sarà calcolato dal profilatore dispositivo (Fase 0, punto 6).
 
 - `feature/home`: Home (vedi `docs/modules/home.md`).
 - `feature/onboarding`: procedura guidata (vedi `docs/modules/onboarding.md`).
+- `feature/improve`: Migliora e Ripara (vedi `docs/modules/improve.md`).

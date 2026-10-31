@@ -157,6 +157,9 @@ class Updater(
         )
     }
 
+    /** C'è un token salvato (serve anche per caricare i report di Ripara). */
+    fun hasToken(): Boolean = tokens.isSet()
+
     fun setToken(token: String): String? =
         runCatching { tokens.set(token) }
             .fold(
