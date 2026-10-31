@@ -45,17 +45,7 @@ fun HomeCustomizeRoute(
         iconPacks = withContext(Dispatchers.IO) { runCatching { IconPacks(context).installed() }.getOrDefault(emptyList()) }
     }
 
-    val pickPhoto =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-            scope.launch {
-                if (WallpaperLoader.savePhoto(context, uri)) {
-                    app.homePrefs.update { it.copy(wallpaper = WallpaperSource.PHOTO) }
-                } else {
-                    toast(context, R.string.customize_photo_failed)
-                }
-            }
-        }
+    val pickPhoto = rememberPhotoPicker(app)
     val exportTheme =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
@@ -79,7 +69,7 @@ fun HomeCustomizeRoute(
         CustomizeActions(
             onChange = { change -> scope.launch { app.homePrefs.update(change) } },
             onDone = onDone,
-            onPickPhoto = { pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+            onPickPhoto = pickPhoto,
             onExportTheme = { exportTheme.launch("tema.novatheme") },
             onImportTheme = { importTheme.launch(arrayOf("*/*")) },
             onGrantWallpaperAccess = {
@@ -93,6 +83,25 @@ fun HomeCustomizeRoute(
             canReadWallpaper = canRead,
         ),
     )
+}
+
+/** Galleria di Android: la foto scelta diventa lo sfondo della Home. */
+@Composable
+private fun rememberPhotoPicker(app: NovaApp): () -> Unit {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            scope.launch {
+                if (WallpaperLoader.savePhoto(context, uri)) {
+                    app.homePrefs.update { it.copy(wallpaper = WallpaperSource.PHOTO) }
+                } else {
+                    toast(context, R.string.customize_photo_failed)
+                }
+            }
+        }
+    return { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) }
 }
 
 private fun toast(
