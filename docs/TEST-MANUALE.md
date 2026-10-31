@@ -39,3 +39,21 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Ruota il tablet in verticale: la disposizione resta ordinata.
 - [ ] Il pulsante tondo accanto all'alfabeto apre le Impostazioni di NOVA.
 - [ ] Per tornare al launcher di sistema: Impostazioni → Home → "Cambia app Home".
+
+## Personalizzazione della Home
+- [ ] Impostazioni → Home → **Personalizza la Home**. Prova le opzioni e torna alla Home: devono essersi applicate.
+  - [ ] Icone nascoste: restano solo i nomi.
+  - [ ] Testo grande e carattere Elegante.
+  - [ ] Ora e data nascoste.
+  - [ ] Alfabeto a sinistra.
+  - [ ] Sfumatura Forte, poi Leggera.
+  - [ ] Sfocatura No.
+- [ ] Nella Home, tieni premuta un'app in "Tutte le app": compare il menu.
+  - [ ] "Rinomina" → nuovo nome → "Salva il nome": l'app compare col nuovo nome, sotto la nuova lettera.
+  - [ ] "Nascondi": l'app sparisce. In Personalizza → App nascoste toccala: torna.
+  - [ ] "Informazioni sull'app" apre la scheda di Android.
+  - [ ] "Disinstalla" chiede conferma ad Android.
+- [ ] Tieni premuto un preferito e trascinalo su o giù:
+  - [ ] la riga si solleva, le altre si spostano e senti un tic a ogni scambio;
+  - [ ] lasciandola l'ordine resta, anche dopo aver riavviato il tablet;
+  - [ ] tenendo premuto senza muoverti si apre il menu, e non si apre l'app.
