@@ -136,7 +136,7 @@ private fun ColorsSection(
 ) {
     SettingsSection(backdrop, header = stringResource(R.string.customize_colors)) {
         Choice(R.string.customize_theme_mode, ThemeMode.entries, prefs.theme, {
-            stringResource(it.label())
+            stringResource(labelOf(it))
         }) { v -> onChange { it.copy(theme = v) } }
         val auto = stringResource(R.string.customize_accent_auto)
         Swatches(
@@ -155,7 +155,7 @@ private fun TextSection(
 ) {
     SettingsSection(backdrop, header = stringResource(R.string.customize_text_and_clock)) {
         Choice(R.string.customize_text, TextSize.entries, prefs.textSize, {
-            stringResource(it.label())
+            stringResource(labelOf(it))
         }) { v -> onChange { it.copy(textSize = v) } }
         Choice(R.string.customize_font, HomeFont.entries, prefs.font, { stringResource(labelOf(it)) }, divider = true) { v ->
             onChange { it.copy(font = v) }
