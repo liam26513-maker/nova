@@ -28,25 +28,37 @@ La prima schermata del tablet quando NOVA è l'app Home predefinita. Versione mi
   - Indietro → torna ai preferiti, oppure non fa nulla se sei già lì.
 - **Ordine** italiano (`Collator`): maiuscole e accenti ignorati, "É" sotto "E", numeri e simboli in fondo sotto "#".
 
-## Personalizzazione (le opzioni migliori di Niagara)
-**Impostazioni → Home → Personalizza la Home.** Ogni scelta si applica subito, anche alla Home già aperta:
-- **Icone:** mostra o nascondi (modalità "solo testo").
-- **Testo:** misura (piccolo 22 sp, medio 28 sp, grande 34 sp) e carattere (Moderno = sans-serif, Elegante = serif, Tecnico = monospace). Si usano solo i caratteri di sistema, nessun font di terzi.
-- **Ora e data:** mostrate o nascoste.
-- **Sfondo:** sfumatura leggera, media o forte; sfocatura sì o no.
-- **Alfabeto:** a destra o a sinistra. L'onda e la bolla si girano verso il contenuto.
-- **App nascoste:** l'elenco, con un tocco per farle tornare; e un pulsante per ripristinare tutti i nomi originali.
+## Personalizzazione ("studio" sul modello di Niagara)
+Analisi di partenza: le pagine di aiuto di Niagara (funzioni Pro, temi) e gli articoli sull'aggiornamento "Studio". NOVA riprende le **funzioni**, non la grafica, i nomi o le icone.
+
+**Impostazioni → Home → Personalizza la Home.** Ogni scelta si applica subito:
+
+| Area | Opzioni | Come in Niagara |
+|---|---|---|
+| **Temi** | 5 temi pronti (Notte, Aurora, Carta, Tramonto, Essenziale); salva il tema in un file `.novatheme` e aprilo su un altro tablet. Il tema porta solo l'aspetto, non le app nascoste o i nomi | temi pronti, condivisione dei temi |
+| **Sfondo** | Il mio (sfondo di sistema), NOVA (8 sfumature originali), Foto (dalla galleria), Colore (8 tinte); sfocatura No, Leggera, Forte o Massima; sfumatura Leggera, Media o Forte | raccolta di sfondi, sfondo nel tema |
+| **Colori** | Tema scuro, chiaro o automatico; colore d'accento preso dallo sfondo o scelto (8) | colore del tema |
+| **Testo e orologio** | Misura, carattere (Moderno, Elegante, Tecnico: solo caratteri di sistema), spessore; orologio Sottile, Marcato o Su due righe; data sì o no | caratteri, stili dell'orologio |
+| **Icone** | Sì o no; misura; forma (Originale, Cerchio, Morbido = superellisse, Quadrato); a colori o **monocromatiche** (icona tematica di Android 13+, altrimenti in grigio); **pacchetti di icone** di terzi (`appfilter.xml`) | pacchetti di icone, stili delle icone |
+| **Disposizione e gesti** | Alfabeto a destra o a sinistra; barra di stato sì o no; **scorri giù per le notifiche**; **doppio tocco sull'alfabeto per spegnere lo schermo** (tramite Shizuku) | nascondi la barra di stato, doppio tocco per spegnere |
+| **App** | App nascoste (con un tocco tornano) e ripristino dei nomi | nascondi o rinomina app |
 
 **Dalla Home, tenendo premuta un'app:** un menu che compare con una molla.
 - Aggiungi ai preferiti o togli dai preferiti.
-- Rinomina, oppure torna al nome originale. L'app rinominata si riordina sotto la nuova lettera.
+- Rinomina, oppure torna al nome originale.
 - Nascondi.
-- Informazioni sull'app (scheda di Android).
-- Disinstalla: Android chiede conferma; serve il permesso `REQUEST_DELETE_PACKAGES`.
+- Informazioni sull'app.
+- Disinstalla, con la conferma di Android (`REQUEST_DELETE_PACKAGES`).
 
-**Riordino dei preferiti:** tieni premuto un preferito e trascinalo. La riga si solleva e segue il dito, e le altre si spostano con una molla, con un tic a ogni scambio. Se tieni premuto senza muoverti si apre il menu. Il dito si misura in coordinate dello schermo e il rilascio viene consumato, quindi una pressione lunga non apre anche l'app. La logica degli scambi è in `ReorderState` ed è provata dai test.
+**Riordino dei preferiti:** tieni premuto un preferito e trascinalo. La logica degli scambi è in `ReorderState`.
 
-Le scelte sono salvate in `files/home-prefs.properties` (`HomePrefsStore`, scrittura atomica fuori dal thread principale). Restano sul tablet: sono preferenze personali, non configurazione del progetto.
+**Non incluso:** widget, pop-up e cartelle, notifiche sotto le app, meteo e agenda, timer d'uso, icone generate automaticamente per le app senza icona nel pacchetto. Sono nella Fase 1 o successive della SPEC; alcune richiedono servizi esterni o permessi che non vanno chiesti adesso.
+
+## Sfondo e app recenti
+- **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.
+- **Sfondo disegnato da NOVA:** quando NOVA disegna lo sfondo da sé (foto, NOVA, colore, oppure il tuo sfondo se le consenti di leggerlo), la finestra è opaca.
+- **Preparazione dell'immagine:** `WallpaperLoader` rimpicciolisce l'immagine e la sfoca una volta sola, fuori dal thread principale. Più sfocatura significa un'immagine più piccola, quindi anche più leggera. Il colore principale si ricava con `WallpaperColors.fromBitmap`.
+- **Leggere il tuo sfondo:** da Android 13 un'app può leggerlo solo con l'accesso a tutti i file (`MANAGE_EXTERNAL_STORAGE`). È **facoltativo**: lo concedi tu, da una voce chiara, e serve solo a quello. Senza il permesso resta lo sfondo di Android dietro la finestra, sfocato da Android se il tablet lo supporta (`setBackgroundBlurRadius`, spento a Prestazioni). Con «Foto» la sfocatura funziona sempre senza permessi.
 
 ## Come è fatto
 | File | Ruolo |
@@ -54,9 +66,9 @@ Le scelte sono salvate in `files/home-prefs.properties` (`HomePrefsStore`, scrit
 | `AppCatalog` | elenco delle app da `LauncherApps` (tutti i profili utente), aggiornato dai callback di sistema su installazione, rimozione e modifica: niente polling. Icone caricate fuori dal thread principale, una sola misura (56 dp), cache LRU di 300. Attivo solo tra `start()` e `stop()`. |
 | `AppIndex` | lettera e ordinamento italiano (testato). |
 | `Favorites` | preferiti in `files/home-favorites.txt`, una chiave per riga, scrittura atomica fuori dal thread principale (testato). |
-| `HomeScreen`, `HomeLists`, `HomeRows`, `AppMenu`, `ReorderState`, `HomePrefs`, `HomeLook`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
+| `HomeScreen`, `HomeLists`, `HomeRows`, `AppMenu`, `ReorderState`, `HomePrefs` (+ `PrefsCodec`), `HomeLook`, `ThemePresets`, `NovaWallpapers`, `WallpaperLoader`, `IconStyler`, `IconPacks`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
 | `app/HomeActivity` | attività `HOME` (`singleTask`, tema traslucido con lo sfondo di sistema); collega catalogo, preferiti, colori dello sfondo, sfocatura e livello grafico; passa i tempi dei fotogrammi al livello automatico. |
-| `app/HomeSection`, `app/HomeCustomizeScreen` | in Impostazioni: quale app fa da Home, il pulsante per cambiarla (`Settings.ACTION_HOME_SETTINGS`) e la personalizzazione. |
+| `app/HomeSection`, `app/HomeCustomizeScreen` (+ `HomeCustomizeParts`, `HomeCustomizeRoute`), `app/HomeWindow`, `app/HomeSystem` | in Impostazioni: quale app fa da Home, il pulsante per cambiarla (`Settings.ACTION_HOME_SETTINGS`) e la personalizzazione. |
 
 **Chiave di un'app:** `pacchetto/attività#seriale-utente`, stabile tra un riavvio e l'altro.
 

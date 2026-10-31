@@ -171,12 +171,12 @@
     <string name="customize_icon_shape">Shape</string>
     <string name="customize_shape_original">Original</string>
     <string name="customize_shape_circle">Circle</string>
-    <string name="customize_shape_squircle">Squircle</string>
+    <string name="customize_shape_squircle">Soft</string>
     <string name="customize_shape_square">Square</string>
     <string name="customize_icon_style">Style</string>
     <string name="customize_icon_color">Colour</string>
     <string name="customize_icon_mono">Monochrome</string>
-    <string name="customize_icon_pack_none">App icons</string>
+    <string name="customize_icon_pack_none">No pack: original icons</string>
     <string name="customize_icon_pack_empty">No icon pack installed</string>
     <string name="customize_layout">Layout and gestures</string>
     <string name="customize_layout_footer">Double-tap to turn the screen off uses Shizuku.</string>

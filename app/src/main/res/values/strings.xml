@@ -174,12 +174,12 @@
     <string name="customize_icon_shape">Forma</string>
     <string name="customize_shape_original">Originale</string>
     <string name="customize_shape_circle">Cerchio</string>
-    <string name="customize_shape_squircle">Squircle</string>
+    <string name="customize_shape_squircle">Morbido</string>
     <string name="customize_shape_square">Quadrato</string>
     <string name="customize_icon_style">Stile</string>
     <string name="customize_icon_color">A colori</string>
     <string name="customize_icon_mono">Monocromatiche</string>
-    <string name="customize_icon_pack_none">Icone delle app</string>
+    <string name="customize_icon_pack_none">Nessun pacchetto: icone originali</string>
     <string name="customize_icon_pack_empty">Nessun pacchetto di icone installato</string>
     <string name="customize_layout">Disposizione e gesti</string>
     <string name="customize_layout_footer">Lo spegnimento dello schermo col doppio tocco usa Shizuku.</string>

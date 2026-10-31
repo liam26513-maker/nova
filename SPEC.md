@@ -405,6 +405,9 @@ Tre stili commutabili in un tocco, anche per profilo/modalità:
 2. **Lista** (Niagara puro): solo lista verticale + alfabeto a onda.
 3. **Griglia** (stile iPadOS): pagine di icone, cartelle, widget, dock.
 
+### 6.1.1 Studio di personalizzazione (fatto in Fase 0)
+Temi pronti e condivisibili, sfondo (sistema, raccolta di NOVA, foto, colore) con sfocatura propria, tema scuro/chiaro/automatico, colore d'accento, carattere, misura e spessore del testo, stili dell'orologio, icone (forma, misura, monocromatiche, pacchetti `appfilter.xml`), barra di stato, gesti (scorri giù per le notifiche, doppio tocco per spegnere tramite Shizuku), app nascoste e rinominate. Finestra della home opaca: nessuna trasparenza nelle app recenti. Dettagli in `docs/modules/home.md`.
+
 ### 6.2 Lista dei preferiti
 
 - Elementi grandi, raggiungibili col pollice; riordinabili col trascinamento.

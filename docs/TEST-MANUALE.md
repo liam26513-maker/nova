@@ -57,3 +57,23 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
   - [ ] la riga si solleva, le altre si spostano e senti un tic a ogni scambio;
   - [ ] lasciandola l'ordine resta, anche dopo aver riavviato il tablet;
   - [ ] tenendo premuto senza muoverti si apre il menu, e non si apre l'app.
+
+## Studio della Home (temi, sfondo, icone, gesti)
+- [ ] **App recenti:** apri un'app, torna alla Home, premi il tasto quadrato più volte. Dietro alla Home non deve mai comparire l'app aperta prima.
+- [ ] **Temi:** applica Aurora, Carta, Tramonto, Essenziale e Notte. Ognuno cambia insieme sfondo, colori, testo e icone.
+- [ ] **Salva il tema in un file**, poi cambia qualcosa e **Apri un tema da un file**: torna com'era. Le app nascoste restano nascoste.
+- [ ] **Sfondo:**
+  - [ ] "Il mio" con "Sfoca il tuo sfondo": concedi il permesso e torna alla Home; lo sfondo è molto sfocato.
+  - [ ] "Foto": scegli un'immagine; appare sfocata.
+  - [ ] Cambia la sfocatura da No a Massima.
+  - [ ] "NOVA" e "Colore" funzionano.
+- [ ] **Colori:** tema Chiaro (testo scuro, barra di stato scura) e Automatico (segue il tema di Android). L'accento colora la bolla dell'alfabeto e i puntini dei preferiti.
+- [ ] **Testo e orologio:** carattere, spessore e i tre stili dell'orologio; la data si può nascondere.
+- [ ] **Icone:**
+  - [ ] le forme e le icone monocromatiche;
+  - [ ] con un pacchetto di icone installato dal Play Store, sceglilo e controlla che le icone cambino;
+  - [ ] "Nessun pacchetto" torna alle icone originali.
+- [ ] **Gesti:**
+  - [ ] scorri giù sulla Home e si aprono le notifiche;
+  - [ ] con Shizuku attivo e "Doppio tocco" acceso, due tocchi rapidi sull'alfabeto spengono lo schermo;
+  - [ ] barra di stato nascosta: riappare scorrendo dall'alto.

@@ -83,7 +83,7 @@ class HomeCustomizeScreenTest {
         assertEquals(ThemeMode.LIGHT, prefs.theme)
         compose.onNodeWithText("Icone di prova").performScrollTo().performClick()
         assertEquals("com.example.icons", prefs.iconPack)
-        compose.onNodeWithText("Squircle").performScrollTo().performClick()
+        compose.onNodeWithText("Morbido").performScrollTo().performClick()
         assertEquals(IconShape.SQUIRCLE, prefs.iconShape)
         compose.onRoot().captureRoboImage("screenshots/personalizza_home_studio.png")
     }
