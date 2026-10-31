@@ -47,7 +47,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tags=$(gh release list --limit 200 --json tagName --jq '.[].tagName')
-          read code name < <(python main-tools/tools/next_version.py $tags)
+          read code name < <(python main-tools/tools/next_version.py --rollback $tags)
           echo "NOVA_VERSION_CODE=$code" >> "$GITHUB_ENV"
           echo "NOVA_VERSION_NAME=$name" >> "$GITHUB_ENV"
 
@@ -58,6 +58,8 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/nova.jks"
           echo "NOVA_KEYSTORE_FILE=$RUNNER_TEMP/nova.jks" >> "$GITHUB_ENV"
 
+      # Il tag della nuova release punta al codice di $TAG: così un ritorno successivo a questa
+      # versione ricompila davvero quel codice e non quello di main.
       - name: Build firmata
         env:
           NOVA_KEYSTORE_PASSWORD: ${{ secrets.NOVA_KEYSTORE_PASSWORD }}
@@ -76,7 +78,7 @@ jobs:
           gh release create "v$NOVA_VERSION_NAME" out/nova-*.apk out/nova-*.apk.sha256 \
             --title "NOVA $NOVA_VERSION_NAME (ripristino di $TAG)" \
             --notes "Ritorno al codice di $TAG, ricompilato con un numero di versione più alto per poterlo installare sopra." \
-            --target main
+            --target "$(git rev-parse HEAD)"
 
       - name: Pulizia
         if: always()

@@ -11,6 +11,8 @@ import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.update.AppUpdate
 import it.manlio.nova.core.update.Asset
+import it.manlio.nova.core.update.PreviousVersion
+import it.manlio.nova.core.update.RollbackResult
 import it.manlio.nova.core.update.UpdateState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -37,12 +39,14 @@ class RollbackAppTest {
             title = "NOVA 0.1.101",
             publishedAt = "2026-10-30T22:15:00Z",
         )
-    private val requested = mutableListOf<AppUpdate>()
+    private val previous = PreviousVersion(old)
+    private val instant = PreviousVersion(old, standby = old.copy(versionCode = 111, apk = Asset(3, "nova-ripristino-111-v0.1.101.apk")))
+    private val requested = mutableListOf<PreviousVersion>()
 
     private fun render(
         update: UpdateState = UpdateState.UpToDate(0),
-        load: Result<List<AppUpdate>> = Result.success(listOf(old)),
-        rollback: String? = null,
+        load: Result<List<PreviousVersion>> = Result.success(listOf(previous)),
+        rollback: RollbackResult = RollbackResult.Requested,
     ) {
         val actions =
             SystemActions(
@@ -69,11 +73,25 @@ class RollbackAppTest {
         render()
         compose.onNodeWithText("Torna a una versione precedente").performClick()
         compose.onNodeWithText("v0.1.101").performClick()
-        assertEquals(emptyList<AppUpdate>(), requested) // nessuna richiesta senza conferma
+        assertEquals(emptyList<PreviousVersion>(), requested) // nessuna richiesta senza conferma
         compose.onNodeWithText("Sì, torna a v0.1.101").performClick()
         compose.waitForIdle()
-        assertEquals(listOf(old), requested)
+        assertEquals(listOf(previous), requested)
         compose.onNodeWithText("Richiesta inviata").assertExists()
+        compose.onNodeWithText("arriva tra 3–5 minuti", substring = true).assertExists()
+    }
+
+    @Test
+    fun `the prepared previous version is marked instant and installs right away`() {
+        render(load = Result.success(listOf(instant)), rollback = RollbackResult.Installing)
+        compose.onNodeWithText("Torna a una versione precedente").performClick()
+        compose.onNodeWithText("immediato", substring = true).assertExists()
+        compose.onNodeWithText("v0.1.101").performClick()
+        compose.onNodeWithText("si installa subito", substring = true).assertExists()
+        compose.onNodeWithText("Sì, torna a v0.1.101").performClick()
+        compose.waitForIdle()
+        assertEquals(listOf(instant), requested)
+        compose.onNodeWithText("Installo v0.1.101", substring = true).assertExists()
     }
 
     @Test
@@ -83,12 +101,12 @@ class RollbackAppTest {
         compose.onNodeWithText("v0.1.101").performClick()
         compose.onNodeWithText("Annulla").performClick()
         compose.onNodeWithText("Torna a una versione precedente").assertExists()
-        assertEquals(emptyList<AppUpdate>(), requested)
+        assertEquals(emptyList<PreviousVersion>(), requested)
     }
 
     @Test
     fun `errors are shown in plain words`() {
-        render(rollback = "Il token non ha il permesso")
+        render(rollback = RollbackResult.Failed("Il token non ha il permesso"))
         compose.onNodeWithText("Torna a una versione precedente").performClick()
         compose.onNodeWithText("v0.1.101").performClick()
         compose.onNodeWithText("Sì, torna a v0.1.101").performClick()

@@ -27,7 +27,8 @@ import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
 import it.manlio.nova.core.design.SquircleShape
 import it.manlio.nova.core.system.ShizukuStatus
-import it.manlio.nova.core.update.AppUpdate
+import it.manlio.nova.core.update.PreviousVersion
+import it.manlio.nova.core.update.RollbackResult
 import it.manlio.nova.core.update.UpdateState
 import java.text.DateFormat
 import java.util.Date
@@ -52,9 +53,9 @@ data class SystemActions(
     val onShizukuAction: () -> Unit,
     val onRevertSystem: () -> Unit,
     /** Versioni precedenti dell'app; in caso di errore l'eccezione porta il motivo leggibile. */
-    val onLoadPrevious: suspend () -> Result<List<AppUpdate>> = { Result.success(emptyList()) },
-    /** Chiede il ritorno a una versione precedente; restituisce il motivo se non è partito. */
-    val onRollbackApp: suspend (AppUpdate) -> String? = { null },
+    val onLoadPrevious: suspend () -> Result<List<PreviousVersion>> = { Result.success(emptyList()) },
+    /** Chiede il ritorno a una versione precedente. */
+    val onRollbackApp: suspend (PreviousVersion) -> RollbackResult = { RollbackResult.Requested },
 )
 
 @Composable
@@ -102,13 +103,13 @@ private sealed interface RollbackStep {
 
     data object Loading : RollbackStep
 
-    data class Choose(val versions: List<AppUpdate>) : RollbackStep
+    data class Choose(val versions: List<PreviousVersion>) : RollbackStep
 
-    data class Confirm(val target: AppUpdate) : RollbackStep
+    data class Confirm(val target: PreviousVersion) : RollbackStep
 
-    data class Sending(val target: AppUpdate) : RollbackStep
+    data class Sending(val target: PreviousVersion) : RollbackStep
 
-    data class Done(val target: AppUpdate) : RollbackStep
+    data class Done(val target: PreviousVersion, val instant: Boolean) : RollbackStep
 
     data class Error(val reason: String) : RollbackStep
 }
@@ -121,18 +122,7 @@ private sealed interface RollbackStep {
 private fun RollbackApp(actions: SystemActions) {
     var step by remember { mutableStateOf<RollbackStep>(RollbackStep.Closed) }
     val close = { step = RollbackStep.Closed }
-    LaunchedEffect(step) {
-        when (val s = step) {
-            RollbackStep.Loading ->
-                step =
-                    actions.onLoadPrevious().fold(
-                        onSuccess = { RollbackStep.Choose(it) },
-                        onFailure = { RollbackStep.Error(it.message.orEmpty()) },
-                    )
-            is RollbackStep.Sending -> step = actions.onRollbackApp(s.target)?.let(RollbackStep::Error) ?: RollbackStep.Done(s.target)
-            else -> Unit
-        }
-    }
+    LaunchedEffect(step) { advance(step, actions)?.let { step = it } }
     when (val s = step) {
         RollbackStep.Closed ->
             SettingsRow(
@@ -142,38 +132,70 @@ private fun RollbackApp(actions: SystemActions) {
                 onClick = { step = RollbackStep.Loading },
             )
         RollbackStep.Loading -> SettingsRow(stringResource(R.string.rollback_loading), showDivider = true)
-        is RollbackStep.Choose -> {
-            if (s.versions.isEmpty()) SettingsRow(stringResource(R.string.rollback_none), showDivider = true)
-            s.versions.forEach { v ->
-                SettingsRow(
-                    v.tag,
-                    summary = listOfNotNull(v.publishedAt?.take(DATE_LENGTH), v.title).joinToString(" · ").ifEmpty { null },
-                    showDivider = true,
-                    onClick = { step = RollbackStep.Confirm(v) },
-                )
-            }
-            SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = close)
-        }
+        is RollbackStep.Choose -> ChooseVersion(s.versions, onPick = { step = RollbackStep.Confirm(it) }, onCancel = close)
         is RollbackStep.Confirm -> ConfirmRollback(s.target, onConfirm = { step = RollbackStep.Sending(s.target) }, onCancel = close)
         is RollbackStep.Sending -> SettingsRow(stringResource(R.string.rollback_sending), showDivider = true)
-        is RollbackStep.Done -> Outcome(R.string.rollback_done_title, stringResource(R.string.rollback_done, s.target.tag), close)
+        is RollbackStep.Done -> {
+            val text = if (s.instant) R.string.rollback_done_instant else R.string.rollback_done
+            Outcome(R.string.rollback_done_title, stringResource(text, s.target.update.tag), close)
+        }
         is RollbackStep.Error -> Outcome(R.string.rollback_failed, s.reason, close)
     }
 }
 
+/** Passi che lavorano in rete: caricare la lista e inviare la richiesta. */
+private suspend fun advance(
+    step: RollbackStep,
+    actions: SystemActions,
+): RollbackStep? =
+    when (step) {
+        RollbackStep.Loading ->
+            actions.onLoadPrevious().fold(
+                onSuccess = { RollbackStep.Choose(it) },
+                onFailure = { RollbackStep.Error(it.message.orEmpty()) },
+            )
+        is RollbackStep.Sending ->
+            when (val r = actions.onRollbackApp(step.target)) {
+                RollbackResult.Installing -> RollbackStep.Done(step.target, instant = true)
+                RollbackResult.Requested -> RollbackStep.Done(step.target, instant = false)
+                is RollbackResult.Failed -> RollbackStep.Error(r.reason)
+            }
+        else -> null
+    }
+
+@Composable
+private fun ChooseVersion(
+    versions: List<PreviousVersion>,
+    onPick: (PreviousVersion) -> Unit,
+    onCancel: () -> Unit,
+) {
+    if (versions.isEmpty()) SettingsRow(stringResource(R.string.rollback_none), showDivider = true)
+    val instant = stringResource(R.string.rollback_instant)
+    versions.forEach { v ->
+        SettingsRow(
+            v.update.tag,
+            summary = listOfNotNull(v.update.publishedAt?.take(DATE_LENGTH), instant.takeIf { v.standby != null }).joinToString(" · "),
+            showDivider = true,
+            onClick = { onPick(v) },
+        )
+    }
+    SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = onCancel)
+}
+
 @Composable
 private fun ConfirmRollback(
-    target: AppUpdate,
+    target: PreviousVersion,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
+    val tag = target.update.tag
     SettingsBlock(showDivider = true) {
         BasicText(
-            stringResource(R.string.rollback_confirm_text, target.tag),
+            stringResource(if (target.standby != null) R.string.rollback_confirm_instant else R.string.rollback_confirm_text, tag),
             style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 14.sp, lineHeight = 19.sp),
         )
     }
-    SettingsRow(stringResource(R.string.rollback_confirm, target.tag), showDivider = true, onClick = onConfirm)
+    SettingsRow(stringResource(R.string.rollback_confirm, tag), showDivider = true, onClick = onConfirm)
     SettingsRow(stringResource(R.string.rollback_cancel), showDivider = true, onClick = onCancel)
 }
 

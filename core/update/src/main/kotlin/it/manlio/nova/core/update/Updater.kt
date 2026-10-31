@@ -35,6 +35,17 @@ sealed interface UpdateState {
     data class Failed(val reason: String) : UpdateState
 }
 
+/** Esito di una richiesta di ritorno a una versione precedente. */
+sealed interface RollbackResult {
+    /** APK di ripristino già pronto: download e installazione in corso (vedi [Updater.state]). */
+    data object Installing : RollbackResult
+
+    /** GitHub sta preparando la versione: arriverà da sola come aggiornamento. */
+    data object Requested : RollbackResult
+
+    data class Failed(val reason: String) : RollbackResult
+}
+
 /** Come l'aggiornatore applica una configurazione senza dipendere dal motore dell'app. */
 interface ConfigTarget {
     /** Versione della configurazione attiva (meta.version). */
@@ -84,13 +95,13 @@ class Updater(
             val app = plan.app
             when {
                 app == null -> if (_state.value !is UpdateState.ConfigApplied) publish(UpdateState.UpToDate(clock()))
-                automatic && shizuku.status.value == ShizukuStatus.READY -> installLocked(app)
+                automatic && shizuku.status.value == ShizukuStatus.READY -> installLocked(app, "app ${app.tag}")
                 else -> publish(UpdateState.AppAvailable(app))
             }
         }
 
     /** Installa l'aggiornamento disponibile (tasto "Installa"). */
-    suspend fun install(update: AppUpdate) = mutex.withLock { installLocked(update) }
+    suspend fun install(update: AppUpdate) = mutex.withLock { installLocked(update, "app ${update.tag}") }
 
     /** Torna istantaneamente alla configurazione precedente (o ai default). */
     fun rollbackConfig(): String? {
@@ -109,22 +120,30 @@ class Updater(
     }
 
     /** Versioni dell'app più vecchie di quella installata (per il ritorno indietro d'emergenza). */
-    suspend fun previousVersions(): Result<List<AppUpdate>> = runCatching { UpdatePlanner.previousVersions(client.releases(), versionCode) }
+    suspend fun previousVersions(): Result<List<PreviousVersion>> =
+        runCatching { UpdatePlanner.previousVersions(client.releases(), versionCode) }
 
     /**
      * Ritorno d'emergenza a una versione precedente (SPEC §4.6). Android non installa versioni più
-     * vecchie sopra quelle nuove: GitHub ricompila il codice di [target] con un numero di versione più
-     * alto e lo pubblica come release normale, che poi arriva come qualsiasi aggiornamento.
-     * @return null se la richiesta è partita, altrimenti il motivo.
+     * vecchie sopra quelle nuove, quindi serve lo stesso codice con un numero di versione più alto:
+     * - se la release installata ha già pronto l'APK di ripristino ([PreviousVersion.standby]),
+     *   si scarica e si installa subito (pochi secondi);
+     * - altrimenti GitHub lo ricompila (`rollback.yml`) e [UpdateWorker.watchRollback] lo installa appena c'è.
      */
-    suspend fun requestRollback(target: AppUpdate): String? {
-        if (!TAG_FORMAT.matches(target.tag) || target.versionCode >= versionCode) return "Versione non valida: ${target.tag}"
+    suspend fun requestRollback(target: PreviousVersion): RollbackResult {
+        val tag = target.update.tag
+        if (!TAG_FORMAT.matches(tag) || target.update.versionCode >= versionCode) return RollbackResult.Failed("Versione non valida: $tag")
+        target.standby?.let { standby ->
+            log.i(TAG, "ritorno immediato a $tag (${standby.versionCode})")
+            mutex.withLock { installLocked(standby, "ritorno a $tag") }
+            return (_state.value as? UpdateState.Failed)?.let { RollbackResult.Failed(it.reason) } ?: RollbackResult.Installing
+        }
         return runCatching {
-            history.addRestorePoint(restorePoint("richiesta di ritorno a ${target.tag}"))
-            client.dispatchWorkflow(ROLLBACK_WORKFLOW, "main", mapOf("tag" to target.tag))
-            log.i(TAG, "chiesto il ritorno a ${target.tag}")
+            history.addRestorePoint(restorePoint("richiesta di ritorno a $tag"))
+            client.dispatchWorkflow(ROLLBACK_WORKFLOW, "main", mapOf("tag" to tag))
+            log.i(TAG, "chiesto il ritorno a $tag")
         }.fold(
-            onSuccess = { null },
+            onSuccess = { RollbackResult.Requested },
             onFailure = {
                 val reason =
                     if (it is GitHubClient.HttpException && it.code in FORBIDDEN_CODES) {
@@ -132,8 +151,8 @@ class Updater(
                     } else {
                         reasonFor(it)
                     }
-                log.w(TAG, "ritorno a ${target.tag} non avviato: $reason")
-                reason
+                log.w(TAG, "ritorno a $tag non avviato: $reason")
+                RollbackResult.Failed(reason)
             },
         )
     }
@@ -161,7 +180,10 @@ class Updater(
         }.onFailure { fail("Configurazione ${update.version} rifiutata", it) }
     }
 
-    private suspend fun installLocked(update: AppUpdate) {
+    private suspend fun installLocked(
+        update: AppUpdate,
+        reason: String,
+    ) {
         runCatching {
             val dir = File(context.externalCacheDir ?: error("Memoria esterna non disponibile"), "updates")
             dir.listFiles()?.forEach(File::delete) // niente avanzi di download vecchi
@@ -171,7 +193,7 @@ class Updater(
             client.download(update.apk, apk) { publish(UpdateState.Downloading(it)) }
             kotlin.check(Checksums.sha256(apk) == expected) { "L'impronta del file scaricato non corrisponde" }
             (installer.check(apk, update.versionCode) as? ApkCheck.Rejected)?.let { error(it.reason) }
-            history.addRestorePoint(restorePoint("app ${update.tag}"))
+            history.addRestorePoint(restorePoint(reason))
             publish(UpdateState.Installing)
             log.i(TAG, "installo ${update.tag} (${update.versionCode})")
             val silent = shizuku.status.value == ShizukuStatus.READY
