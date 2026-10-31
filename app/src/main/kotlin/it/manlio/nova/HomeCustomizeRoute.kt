@@ -8,9 +8,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -35,10 +38,12 @@ fun HomeCustomizeRoute(
     // Ricalcolati a ogni ritorno sulla schermata (es. dopo aver concesso il permesso o installato un pacchetto).
     val lifecycle by LocalLifecycleOwner.current.lifecycle.currentStateFlow.collectAsStateWithLifecycle()
     val resumed = lifecycle.isAtLeast(Lifecycle.State.RESUMED)
-    val iconPacks by produceState(emptyList<IconPackInfo>(), resumed) {
-        value = withContext(Dispatchers.IO) { runCatching { IconPacks(context).installed() }.getOrDefault(emptyList()) }
+    var iconPacks by remember { mutableStateOf(emptyList<IconPackInfo>()) }
+    var canRead by remember { mutableStateOf(false) }
+    LaunchedEffect(resumed) {
+        canRead = WallpaperLoader(context).canReadSystemWallpaper()
+        iconPacks = withContext(Dispatchers.IO) { runCatching { IconPacks(context).installed() }.getOrDefault(emptyList()) }
     }
-    val canRead by produceState(false, resumed) { value = WallpaperLoader(context).canReadSystemWallpaper() }
 
     fun toast(id: Int) = Toast.makeText(context, context.getString(id), Toast.LENGTH_SHORT).show()
 
