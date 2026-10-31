@@ -24,6 +24,21 @@ class Favorites(private val file: File) {
             _keys.value = next
         }
 
+    /**
+     * Nuovo ordine dei preferiti visibili (dopo un trascinamento). I preferiti non visibili (app
+     * nascoste o disinstallate) restano al loro posto; un ordine che non corrisponde viene ignorato.
+     */
+    suspend fun reorder(visibleInOrder: List<String>) =
+        mutex.withLock {
+            val current = _keys.value
+            val visible = visibleInOrder.toSet()
+            if (visible.size != visibleInOrder.size || current.count { it in visible } != visible.size) return@withLock
+            val next = visibleInOrder.iterator().let { order -> current.map { if (it in visible) order.next() else it } }
+            if (next == current) return@withLock
+            withContext(Dispatchers.IO) { write(next) }
+            _keys.value = next
+        }
+
     private fun read(): List<String> =
         runCatching { file.readLines().map(String::trim).filter(String::isNotEmpty).distinct() }.getOrDefault(emptyList())
 

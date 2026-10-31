@@ -28,15 +28,35 @@ La prima schermata del tablet quando NOVA è l'app Home predefinita. Versione mi
   - Indietro → torna ai preferiti, oppure non fa nulla se sei già lì.
 - **Ordine** italiano (`Collator`): maiuscole e accenti ignorati, "É" sotto "E", numeri e simboli in fondo sotto "#".
 
+## Personalizzazione (le opzioni migliori di Niagara)
+**Impostazioni → Home → Personalizza la Home.** Ogni scelta si applica subito, anche alla Home già aperta:
+- **Icone:** mostra o nascondi (modalità "solo testo").
+- **Testo:** misura (piccolo 22 sp, medio 28 sp, grande 34 sp) e carattere (Moderno = sans-serif, Elegante = serif, Tecnico = monospace). Si usano solo i caratteri di sistema, nessun font di terzi.
+- **Ora e data:** mostrate o nascoste.
+- **Sfondo:** sfumatura leggera, media o forte; sfocatura sì o no.
+- **Alfabeto:** a destra o a sinistra. L'onda e la bolla si girano verso il contenuto.
+- **App nascoste:** l'elenco, con un tocco per farle tornare; e un pulsante per ripristinare tutti i nomi originali.
+
+**Dalla Home, tenendo premuta un'app:** un menu che compare con una molla.
+- Aggiungi ai preferiti o togli dai preferiti.
+- Rinomina, oppure torna al nome originale. L'app rinominata si riordina sotto la nuova lettera.
+- Nascondi.
+- Informazioni sull'app (scheda di Android).
+- Disinstalla: Android chiede conferma; serve il permesso `REQUEST_DELETE_PACKAGES`.
+
+**Riordino dei preferiti:** tieni premuto un preferito e trascinalo. La riga si solleva e segue il dito, e le altre si spostano con una molla, con un tic a ogni scambio. Se tieni premuto senza muoverti si apre il menu. Il dito si misura in coordinate dello schermo e il rilascio viene consumato, quindi una pressione lunga non apre anche l'app. La logica degli scambi è in `ReorderState` ed è provata dai test.
+
+Le scelte sono salvate in `files/home-prefs.properties` (`HomePrefsStore`, scrittura atomica fuori dal thread principale). Restano sul tablet: sono preferenze personali, non configurazione del progetto.
+
 ## Come è fatto
 | File | Ruolo |
 |---|---|
 | `AppCatalog` | elenco delle app da `LauncherApps` (tutti i profili utente), aggiornato dai callback di sistema su installazione, rimozione e modifica: niente polling. Icone caricate fuori dal thread principale, una sola misura (56 dp), cache LRU di 300. Attivo solo tra `start()` e `stop()`. |
 | `AppIndex` | lettera e ordinamento italiano (testato). |
 | `Favorites` | preferiti in `files/home-favorites.txt`, una chiave per riga, scrittura atomica fuori dal thread principale (testato). |
-| `HomeScreen`, `HomeRows`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
+| `HomeScreen`, `HomeLists`, `HomeRows`, `AppMenu`, `ReorderState`, `HomePrefs`, `HomeLook`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
 | `app/HomeActivity` | attività `HOME` (`singleTask`, tema traslucido con lo sfondo di sistema); collega catalogo, preferiti, colori dello sfondo, sfocatura e livello grafico; passa i tempi dei fotogrammi al livello automatico. |
-| `app/HomeSection` | in Impostazioni: quale app fa da Home, e il pulsante per cambiarla (`Settings.ACTION_HOME_SETTINGS`). |
+| `app/HomeSection`, `app/HomeCustomizeScreen` | in Impostazioni: quale app fa da Home, il pulsante per cambiarla (`Settings.ACTION_HOME_SETTINGS`) e la personalizzazione. |
 
 **Chiave di un'app:** `pacchetto/attività#seriale-utente`, stabile tra un riavvio e l'altro.
 

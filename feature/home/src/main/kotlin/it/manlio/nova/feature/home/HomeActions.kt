@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 
 /** Azioni della home: le fornisce l'app, così la schermata resta provabile con dati finti. */
+@Suppress("LongParameterList") // raccolta di callback: ognuna è un'azione distinta della home
 @Immutable
 class HomeActions(
     val icon: suspend (AppEntry) -> ImageBitmap?,
@@ -13,6 +14,13 @@ class HomeActions(
     val onLaunch: (entry: AppEntry, bounds: Rect?) -> Unit,
     val onToggleFavorite: (AppEntry) -> Unit,
     val onOpenSettings: () -> Unit,
+    /** Nuovo ordine dei preferiti visibili, dopo averli riordinati trascinando. */
+    val onReorderFavorites: (List<String>) -> Unit = {},
+    val onHide: (AppEntry) -> Unit = {},
+    /** Nome vuoto = torna al nome originale. */
+    val onRename: (AppEntry, String) -> Unit = { _, _ -> },
+    val onAppInfo: (AppEntry) -> Unit = {},
+    val onUninstall: (AppEntry) -> Unit = {},
 )
 
 /**

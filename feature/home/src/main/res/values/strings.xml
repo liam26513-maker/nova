@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_favorites_empty">Nessun preferito. Apri «Tutte le app» o scorri il dito sull\'alfabeto, poi tieni premuta un\'app per aggiungerla qui.</string>
+    <string name="home_favorites_empty">Nessun preferito. Apri «Tutte le app» o scorri il dito sull\'alfabeto, poi tieni premuta un\'app e scegli «Aggiungi ai preferiti».</string>
     <string name="home_settings">Impostazioni di NOVA</string>
     <string name="home_favorite_mark">preferita</string>
     <string name="home_show_all">Tutte le app</string>
     <string name="home_back_to_favorites">Preferiti</string>
+    <string name="home_menu_favorite">Aggiungi ai preferiti</string>
+    <string name="home_menu_unfavorite">Togli dai preferiti</string>
+    <string name="home_menu_rename">Rinomina</string>
+    <string name="home_menu_rename_save">Salva il nome</string>
+    <string name="home_menu_rename_reset">Torna al nome originale</string>
+    <string name="home_menu_cancel">Annulla</string>
+    <string name="home_menu_hide">Nascondi</string>
+    <string name="home_menu_hide_summary">La ritrovi in Impostazioni → Home → Personalizza</string>
+    <string name="home_menu_info">Informazioni sull\'app</string>
+    <string name="home_menu_uninstall">Disinstalla</string>
 </resources>

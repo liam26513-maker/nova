@@ -4,6 +4,20 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Personalizza la Home come in Niagara
+- Richiesta: "Va bene aggiungi la personalizzazione migliore di niagara launcher".
+- **Impostazioni → Home → Personalizza la Home:**
+  - icone sì o no;
+  - misura del testo;
+  - carattere (Moderno, Elegante, Tecnico);
+  - ora e data;
+  - sfumatura leggera, media o forte;
+  - sfocatura sì o no;
+  - alfabeto a destra o a sinistra;
+  - elenco delle app nascoste.
+- **Tenendo premuta un'app** si apre un menu: preferiti, rinomina, nascondi, informazioni, disinstalla.
+- **Riordino dei preferiti trascinando**, con le righe che si spostano morbide.
+
 ### Home rifatta: più fluida, in stile Niagara
 - Richiesta: "E' brutta, fallo più dinamico e fluido con lo sfondo sfumato opaco piu simile a niagara launcher".
 - **Sfondo:** si vede il tuo sfondo, coperto da una sfumatura scura e opaca che prende il suo colore. Se il tablet lo supporta, lo sfondo è anche sfocato.

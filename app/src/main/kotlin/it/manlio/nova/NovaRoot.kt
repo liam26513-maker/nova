@@ -34,6 +34,7 @@ fun NovaRoot(
     val profile by app.profile.collectAsStateWithLifecycle()
     var measuring by remember { mutableStateOf<GraphicsLevel?>(null) }
     var showReport by remember { mutableStateOf(false) }
+    var customizingHome by remember { mutableStateOf(false) }
     val update by app.updater.state.collectAsStateWithLifecycle()
     val shizukuStatus by app.shizuku.status.collectAsStateWithLifecycle()
     var changesVersion by remember { mutableIntStateOf(0) }
@@ -44,6 +45,12 @@ fun NovaRoot(
         val measured = profile?.takeIf { it.benchmark != null }
         if (current != null) {
             BenchmarkScreen(current)
+        } else if (customizingHome) {
+            val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
+            HomeCustomizeScreen(prefs, onChange = {
+                    change ->
+                scope.launch { app.homePrefs.update(change) }
+            }, onDone = { customizingHome = false })
         } else if (showReport && measured != null) {
             BenchmarkReportScreen(measured, onDone = { showReport = false })
         } else {
@@ -72,7 +79,9 @@ fun NovaRoot(
                 },
                 onShowReport = { showReport = true },
                 system = system,
-                systemActions = systemActions(app, update, scope, onChanged = { changesVersion++ }, openShizuku),
+                systemActions =
+                    systemActions(app, update, scope, onChanged = { changesVersion++ }, openShizuku)
+                        .copy(onCustomizeHome = { customizingHome = true }),
             )
         }
     }

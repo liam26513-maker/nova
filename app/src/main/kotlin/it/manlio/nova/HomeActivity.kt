@@ -5,6 +5,7 @@ import android.app.WallpaperColors
 import android.app.WallpaperManager
 import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -34,11 +35,13 @@ import it.manlio.nova.feature.home.AppCatalog
 import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.Favorites
 import it.manlio.nova.feature.home.HomeActions
+import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.TILE_ICON
 import it.manlio.nova.feature.home.rememberMinuteClock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -88,12 +91,15 @@ class HomeActivity : ComponentActivity() {
                 override fun handleOnBackPressed() = Unit // la home è la base: Indietro non la chiude
             },
         )
-        lifecycleScope.launch { repeatOnLifecycle(Lifecycle.State.STARTED) { app.graphics.collect { applyBlur() } } }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) { combine(app.graphics, app.homePrefs.prefs) { _, _ -> }.collect { applyBlur() } }
+        }
         setContent {
             val config by app.config.current.collectAsStateWithLifecycle()
             val graphics by app.graphics.collectAsStateWithLifecycle()
             val apps by catalog.apps.collectAsStateWithLifecycle()
             val favoriteKeys by favorites.keys.collectAsStateWithLifecycle()
+            val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
             val iconPx = with(LocalDensity.current) { TILE_ICON.roundToPx() }
             NovaTheme(tokensFrom(config, graphics.level)) {
                 HomeScreen(
@@ -106,8 +112,24 @@ class HomeActivity : ComponentActivity() {
                             onLaunch = ::launch,
                             onToggleFavorite = { entry -> lifecycleScope.launch { favorites.toggle(entry.key) } },
                             onOpenSettings = { startActivity(Intent(this, MainActivity::class.java)) },
+                            onReorderFavorites = { order -> lifecycleScope.launch { favorites.reorder(order) } },
+                            onHide = { entry -> updatePrefs { it.copy(hidden = it.hidden + (entry.key to entry.label)) } },
+                            onRename = { entry, name ->
+                                updatePrefs {
+                                    it.copy(
+                                        renamed = if (name.isBlank()) it.renamed - entry.key else it.renamed + (entry.key to name),
+                                    )
+                                }
+                            },
+                            onAppInfo = { entry -> catalog.openInfo(entry) },
+                            onUninstall = { entry ->
+                                runCatching {
+                                    startActivity(Intent(Intent.ACTION_DELETE, Uri.fromParts("package", entry.component.packageName, null)))
+                                }
+                            },
                         ),
                     style = style,
+                    prefs = prefs,
                     scrollToTop = homePresses,
                 )
             }
@@ -132,13 +154,17 @@ class HomeActivity : ComponentActivity() {
     private fun applyBlur() {
         val radius =
             when {
-                !blurSupported -> 0
+                !blurSupported || !app.homePrefs.prefs.value.blur -> 0
                 app.graphics.value.level == GraphicsLevel.MAXIMUM -> BLUR_MAXIMUM_DP
                 app.graphics.value.level == GraphicsLevel.BALANCED -> BLUR_BALANCED_DP
                 else -> 0
             }
         window.setBackgroundBlurRadius((radius * resources.displayMetrics.density).toInt())
         style = style.copy(blurred = radius > 0)
+    }
+
+    private fun updatePrefs(change: (HomePrefs) -> HomePrefs) {
+        lifecycleScope.launch { app.homePrefs.update(change) }
     }
 
     private fun applyColors(colors: WallpaperColors?) {

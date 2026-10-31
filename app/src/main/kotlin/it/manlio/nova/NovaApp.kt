@@ -28,6 +28,7 @@ import it.manlio.nova.core.update.TokenStore
 import it.manlio.nova.core.update.UpdateWorker
 import it.manlio.nova.core.update.Updater
 import it.manlio.nova.core.update.UpdaterProvider
+import it.manlio.nova.feature.home.HomePrefsStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -56,6 +57,9 @@ class NovaApp :
 
     lateinit var config: ConfigEngine
         private set
+
+    /** Personalizzazione della home: la legge la Home e la modificano le Impostazioni. */
+    val homePrefs by lazy { HomePrefsStore(File(filesDir, "home-prefs.properties")) }
 
     // Nessun modulo funzionale ancora: arriveranno dalla Fase 1 in poi.
     val modules = ModuleRegistry(emptyList())

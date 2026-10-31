@@ -26,5 +26,11 @@ fun HomeSection(
                 onClick = actions.onChooseHome,
             )
         }
+        SettingsRow(
+            stringResource(R.string.home_customize),
+            summary = stringResource(R.string.home_customize_summary),
+            showDivider = true,
+            onClick = actions.onCustomizeHome,
+        )
     }
 }
