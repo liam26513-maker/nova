@@ -69,6 +69,7 @@ fun SettingsScreen(
             }
         }
         DeviceSection(backdrop, profile, onMeasure, onShowReport)
+        HomeSection(backdrop, system, systemActions)
         UpdatesSection(backdrop, system, systemActions)
         SystemToolsSection(backdrop, system, systemActions)
         SettingsSection(backdrop, header = stringResource(R.string.status_title)) {

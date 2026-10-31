@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_all_apps">App</string>
+    <string name="home_favorites">Preferiti</string>
+    <string name="home_favorites_empty">Tieni premuta un\'app nella lista per aggiungerla qui. Tienila premuta di nuovo per toglierla.</string>
+    <string name="home_settings">Impostazioni di NOVA</string>
+    <string name="home_loading">Carico le app…</string>
+    <string name="home_favorite_mark">preferita</string>
+</resources>

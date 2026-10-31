@@ -26,4 +26,5 @@ include(
     ":core:device",
     ":core:system",
     ":core:update",
+    ":feature:home",
 )
