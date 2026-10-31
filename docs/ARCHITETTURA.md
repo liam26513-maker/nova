@@ -29,3 +29,6 @@ Un livello non valido viene rifiutato con un motivo leggibile e la configurazion
 `MainActivity` inoltra i tempi di frame (`FrameMetrics`) a `GraphicsLevelController`:
 5 secondi consecutivi con p90 oltre 16,6 ms → livello più leggero; 10 minuti stabili → un livello più ricco, fino al tetto.
 Il tetto sarà calcolato dal profilatore dispositivo (Fase 0, punto 6).
+
+- `feature/home`: Home (vedi `docs/modules/home.md`).
+- `feature/onboarding`: procedura guidata (vedi `docs/modules/onboarding.md`).

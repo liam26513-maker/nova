@@ -58,6 +58,13 @@ class NovaApp :
     lateinit var config: ConfigEngine
         private set
 
+    private val firstRun by lazy { KeyValueFile(File(filesDir, "onboarding.properties")) }
+
+    /** La procedura guidata è stata completata (o chiusa) almeno una volta. */
+    var onboardingDone: Boolean
+        get() = firstRun.getBoolean(ONBOARDING_DONE)
+        set(value) = firstRun.edit { put(ONBOARDING_DONE, value) }
+
     /** Personalizzazione della home: la legge la Home e la modificano le Impostazioni. */
     val homePrefs by lazy { HomePrefsStore(File(filesDir, "home-prefs.properties")) }
 
@@ -192,6 +199,7 @@ class NovaApp :
 
     companion object {
         private const val TAG = "nova"
+        private const val ONBOARDING_DONE = "done"
 
         /** Dopo questo tempo senza crash l'avvio è considerato riuscito. */
         private const val HEALTHY_AFTER_MS = 20_000L

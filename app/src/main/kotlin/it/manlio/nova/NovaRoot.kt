@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +20,7 @@ import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.update.RollbackResult
 import it.manlio.nova.core.update.UpdateState
 import it.manlio.nova.core.update.UpdateWorker
+import it.manlio.nova.feature.onboarding.OnboardingStep
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,47 +42,57 @@ fun NovaRoot(
     var changesVersion by remember { mutableIntStateOf(0) }
     val system = rememberSystemUiState(app, update, shizukuStatus, changesVersion)
     val scope = rememberCoroutineScope()
+    var onboardingStep by rememberSaveable { mutableStateOf(if (app.onboardingDone) null else OnboardingStep.WELCOME) }
+    val actions =
+        systemActions(app, update, scope, onChanged = { changesVersion++ }, openShizuku)
+            .copy(onCustomizeHome = { customizingHome = true }, onRedoOnboarding = { onboardingStep = OnboardingStep.WELCOME })
+    val measure = {
+        val runner = BenchmarkRunner(app.graphicsController).also(setBenchmark)
+        scope.launch {
+            try {
+                app.applyBenchmark(runner.run { measuring = it })
+                showReport = true
+            } finally {
+                setBenchmark(null)
+                measuring = null
+            }
+        }
+        Unit
+    }
     NovaTheme(tokensFrom(config, graphics.level)) {
         val current = measuring
         val measured = profile?.takeIf { it.benchmark != null }
-        if (current != null) {
-            BenchmarkScreen(current)
-        } else if (customizingHome) {
-            HomeCustomizeRoute(app, onDone = { customizingHome = false })
-        } else if (showReport && measured != null) {
-            BenchmarkReportScreen(measured, onDone = { showReport = false })
-        } else {
-            SettingsScreen(
-                brandName = config.brand.displayName,
-                configVersion = config.meta.version,
-                graphics = graphics,
-                profile = profile,
-                onChoose = { choice ->
-                    when (choice) {
-                        LevelChoice.Automatic -> app.graphicsController.setAutomatic()
-                        is LevelChoice.Fixed -> app.graphicsController.setManual(choice.level)
-                    }
-                },
-                onMeasure = {
-                    val runner = BenchmarkRunner(app.graphicsController).also(setBenchmark)
-                    scope.launch {
-                        try {
-                            app.applyBenchmark(runner.run { measuring = it })
-                            showReport = true
-                        } finally {
-                            setBenchmark(null)
-                            measuring = null
-                        }
-                    }
-                },
-                onShowReport = { showReport = true },
-                system = system,
-                systemActions =
-                    systemActions(app, update, scope, onChanged = { changesVersion++ }, openShizuku)
-                        .copy(onCustomizeHome = { customizingHome = true }),
-            )
+        val step = onboardingStep
+        when {
+            current != null -> BenchmarkScreen(current)
+            showReport && measured != null -> BenchmarkReportScreen(measured, onDone = { showReport = false })
+            customizingHome -> HomeCustomizeRoute(app, onDone = { customizingHome = false })
+            step != null ->
+                OnboardingRoute(app, step, onStep = { onboardingStep = it }, system, actions, onMeasure = measure) {
+                    onboardingStep = null
+                }
+            else ->
+                SettingsScreen(
+                    brandName = config.brand.displayName,
+                    configVersion = config.meta.version,
+                    graphics = graphics,
+                    profile = profile,
+                    onChoose = { choice -> chooseLevel(app, choice) },
+                    onMeasure = measure,
+                    onShowReport = { showReport = true },
+                    system = system,
+                    systemActions = actions,
+                )
         }
     }
+}
+
+private fun chooseLevel(
+    app: NovaApp,
+    choice: LevelChoice,
+) = when (choice) {
+    LevelChoice.Automatic -> app.graphicsController.setAutomatic()
+    is LevelChoice.Fixed -> app.graphicsController.setManual(choice.level)
 }
 
 /** Azioni delle sezioni Aggiornamenti e Strumenti di sistema. */

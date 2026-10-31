@@ -77,3 +77,13 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
   - [ ] scorri giù sulla Home e si aprono le notifiche;
   - [ ] con Shizuku attivo e "Doppio tocco" acceso, due tocchi rapidi sull'alfabeto spengono lo schermo;
   - [ ] barra di stato nascosta: riappare scorrendo dall'alto.
+
+## Procedura guidata (Fase 0, punto 12)
+- [ ] Al primo avvio dopo l'aggiornamento NOVA apre "Benvenuto in NOVA". Tocca "Iniziamo".
+- [ ] **NOVA come Home:** "Scegli NOVA come Home" apre la scelta di Android; tornando, il passo mostra "Fatto".
+- [ ] **Strumenti di sistema:** il pulsante apre Shizuku o chiede il permesso; con Shizuku pronto compare "Fatto".
+- [ ] **Aggiornamenti:** incolla il token e "Salva il token". Con un token sbagliato compare l'errore; con quello giusto compare "Fatto". "Come si crea il token" apre GitHub nel browser.
+- [ ] **Prestazioni:** "Misura le prestazioni" fa la misura e mostra il resoconto; con "Fatto" si torna alla procedura.
+- [ ] **Aspetto:** scegli un tema; la Home lo usa subito.
+- [ ] **Tutto pronto:** elenca i passi rimasti; "Vai alla Home" chiude e apre la Home. Riaprendo NOVA, la procedura non ricompare.
+- [ ] Impostazioni → Strumenti di sistema → **Configurazione guidata** la riapre.

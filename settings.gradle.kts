@@ -27,4 +27,5 @@ include(
     ":core:system",
     ":core:update",
     ":feature:home",
+    ":feature:onboarding",
 )
