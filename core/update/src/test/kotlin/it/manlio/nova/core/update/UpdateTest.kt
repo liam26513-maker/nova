@@ -166,3 +166,21 @@ class LocalHistoryTest {
         LocalHistory(tmp.root).saveBundle("../../evil", "{}")
     }
 }
+
+class ReportUploadTest {
+    @Test
+    fun `only markdown files directly inside reports are allowed`() {
+        assertTrue(GitHubClient.REPORT_PATH.matches("reports/2026-10-31_1530_la-home-si-blocca.md"))
+        listOf("reports/../app/build.gradle.kts", "reports/a/b.md", "config/meta.json", "reports/x.md.exe", "reports/.md", "/reports/x.md")
+            .forEach { assertTrue("Ammesso per errore: $it", !GitHubClient.REPORT_PATH.matches(it)) }
+    }
+
+    @Test
+    fun `request body carries the text in base64 on main`() {
+        val body = GitHubClient.contentsBody("Ciao è", "Ripara: prova")
+        assertTrue(body.contains("\"branch\":\"main\""))
+        assertTrue(body.contains("\"message\":\"Ripara: prova\""))
+        val content = Regex("\"content\":\"([^\"]+)\"").find(body)!!.groupValues[1]
+        assertEquals("Ciao è", String(java.util.Base64.getDecoder().decode(content), Charsets.UTF_8))
+    }
+}

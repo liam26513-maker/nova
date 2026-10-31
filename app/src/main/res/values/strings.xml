@@ -192,4 +192,19 @@
     <string name="customize_blur_max">Massima</string>
     <string name="system_onboarding">Configurazione guidata</string>
     <string name="system_onboarding_summary">Rifai i passi del primo avvio: Home, Shizuku, aggiornamenti, prestazioni, aspetto</string>
+    <string name="improve_empty">Scrivi prima cosa vuoi migliorare</string>
+    <string name="improve_not_opened">Non riesco ad aprire Claude Code: la richiesta è negli appunti, incollala in claude.ai/code</string>
+    <string name="improve_sent">Claude Code è aperto con la richiesta già scritta: tocca Invia</string>
+    <string name="repair_sent">Report caricato in reports/ e Claude Code aperto: tocca Invia</string>
+    <string name="repair_sent_clipboard">Senza token il report non si può caricare: è negli appunti. In Claude Code incollalo sotto la richiesta e tocca Invia</string>
+    <string name="repair_includes_crashes">Ultimi crash: %1$d</string>
+    <string name="repair_includes_log">Eventi di NOVA: %1$d</string>
+    <string name="repair_includes_system">Righe del log di sistema di NOVA: %1$d</string>
+    <string name="repair_includes_context">Versioni, dispositivo e stato di Shizuku</string>
+    <string name="improve_section">Migliora NOVA</string>
+    <string name="improve_section_footer">Chiedi una modifica o segnala un problema con parole tue: Claude Code prepara l\'aggiornamento e il tablet lo riceve da solo.</string>
+    <string name="improve_row">Migliora</string>
+    <string name="improve_row_summary">Chiedi una funzione nuova o un cambiamento</string>
+    <string name="repair_row">Ripara</string>
+    <string name="repair_row_summary">Segnala un problema: NOVA allega un report anonimo</string>
 </resources>

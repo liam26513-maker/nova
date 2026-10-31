@@ -64,6 +64,9 @@ data class SystemActions(
     val onCustomizeHome: () -> Unit = {},
     /** Riapre la procedura guidata. */
     val onRedoOnboarding: () -> Unit = {},
+    /** Apre Migliora o Ripara. */
+    val onImprove: () -> Unit = {},
+    val onRepair: () -> Unit = {},
 )
 
 @Composable

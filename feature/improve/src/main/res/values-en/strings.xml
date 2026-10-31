@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="improve_title">Improve NOVA</string>
+    <string name="repair_title">Repair NOVA</string>
+    <string name="improve_subtitle">Write in your own words. NOVA adds the technical details and opens Claude Code with the request ready: you just tap Send.</string>
+    <string name="improve_tab">Improve</string>
+    <string name="repair_tab">Repair</string>
+    <string name="improve_hint">What do you want to change or add? E.g. “make the dock more transparent”</string>
+    <string name="repair_hint">What is wrong? E.g. “Home freezes when I open Krita” (optional)</string>
+    <string name="improve_example_1">Change the accent colour to purple</string>
+    <string name="improve_example_2">Add a clock widget to Home</string>
+    <string name="improve_example_3">Make the alphabet bigger</string>
+    <string name="repair_report">Attached report</string>
+    <string name="repair_report_footer">The report is anonymised before it leaves the tablet: no emails, phone numbers, tokens, addresses or names in paths. It is saved in the reports folder of your private repository.</string>
+    <string name="repair_show_preview">See the report</string>
+    <string name="repair_hide_preview">Hide the report</string>
+    <string name="improve_send">Send to Claude Code</string>
+    <string name="improve_sending">Preparing the request…</string>
+    <string name="improve_close">Close</string>
+    <string name="improve_footer">If Claude Code does not show the text, it is on the clipboard anyway: long-press the field and paste. No API key: your Claude subscription is used.</string>
+</resources>

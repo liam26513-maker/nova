@@ -189,4 +189,19 @@
     <string name="customize_blur_max">Maximum</string>
     <string name="system_onboarding">Guided setup</string>
     <string name="system_onboarding_summary">Redo the first-run steps: Home, Shizuku, updates, performance, look</string>
+    <string name="improve_empty">First write what you want to improve</string>
+    <string name="improve_not_opened">Cannot open Claude Code: the request is on the clipboard, paste it in claude.ai/code</string>
+    <string name="improve_sent">Claude Code is open with the request written: tap Send</string>
+    <string name="repair_sent">Report uploaded to reports/ and Claude Code open: tap Send</string>
+    <string name="repair_sent_clipboard">Without a token the report cannot be uploaded: it is on the clipboard. In Claude Code paste it below the request and tap Send</string>
+    <string name="repair_includes_crashes">Recent crashes: %1$d</string>
+    <string name="repair_includes_log">NOVA events: %1$d</string>
+    <string name="repair_includes_system">NOVA system log lines: %1$d</string>
+    <string name="repair_includes_context">Versions, device and Shizuku state</string>
+    <string name="improve_section">Improve NOVA</string>
+    <string name="improve_section_footer">Ask for a change or report a problem in your own words: Claude Code prepares the update and the tablet receives it on its own.</string>
+    <string name="improve_row">Improve</string>
+    <string name="improve_row_summary">Ask for a new feature or a change</string>
+    <string name="repair_row">Repair</string>
+    <string name="repair_row_summary">Report a problem: NOVA attaches an anonymous report</string>
 </resources>

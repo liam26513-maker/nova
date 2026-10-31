@@ -91,6 +91,10 @@ class NovaApp :
     lateinit var systemChanges: SystemChangeLog
         private set
 
+    /** Accesso al repository (aggiornamenti e report di Ripara), con il token cifrato. */
+    lateinit var github: GitHubClient
+        private set
+
     override lateinit var updater: Updater
         private set
 
@@ -165,12 +169,13 @@ class NovaApp :
             }
         }
         val tokens = TokenStore(File(filesDir, "github-token.bin"))
+        github = GitHubClient(BuildConfig.GITHUB_REPO, tokens::get)
         updater =
             Updater(
                 context = this,
                 versionCode = BuildConfig.VERSION_CODE,
                 versionName = BuildConfig.VERSION_NAME,
-                client = GitHubClient(BuildConfig.GITHUB_REPO, tokens::get),
+                client = github,
                 tokens = tokens,
                 installer = ApkInstaller(this, shizuku),
                 shizuku = shizuku,

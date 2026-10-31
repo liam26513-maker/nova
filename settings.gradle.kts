@@ -28,4 +28,5 @@ include(
     ":core:update",
     ":feature:home",
     ":feature:onboarding",
+    ":feature:improve",
 )

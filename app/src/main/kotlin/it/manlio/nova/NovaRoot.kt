@@ -20,6 +20,7 @@ import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.update.RollbackResult
 import it.manlio.nova.core.update.UpdateState
 import it.manlio.nova.core.update.UpdateWorker
+import it.manlio.nova.feature.improve.ImproveMode
 import it.manlio.nova.feature.onboarding.OnboardingStep
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -42,28 +43,24 @@ fun NovaRoot(
     var changesVersion by remember { mutableIntStateOf(0) }
     val system = rememberSystemUiState(app, update, shizukuStatus, changesVersion)
     val scope = rememberCoroutineScope()
+    var improving by rememberSaveable { mutableStateOf<ImproveMode?>(null) }
     var onboardingStep by rememberSaveable { mutableStateOf(if (app.onboardingDone) null else OnboardingStep.WELCOME) }
     val actions =
         systemActions(app, update, scope, onChanged = { changesVersion++ }, openShizuku)
-            .copy(onCustomizeHome = { customizingHome = true }, onRedoOnboarding = { onboardingStep = OnboardingStep.WELCOME })
-    val measure = {
-        val runner = BenchmarkRunner(app.graphicsController).also(setBenchmark)
-        scope.launch {
-            try {
-                app.applyBenchmark(runner.run { measuring = it })
-                showReport = true
-            } finally {
-                setBenchmark(null)
-                measuring = null
-            }
-        }
-        Unit
-    }
+            .copy(
+                onCustomizeHome = { customizingHome = true },
+                onRedoOnboarding = { onboardingStep = OnboardingStep.WELCOME },
+                onImprove = { improving = ImproveMode.IMPROVE },
+                onRepair = { improving = ImproveMode.REPAIR },
+            )
+    val measure = { startMeasure(app, scope, setBenchmark, onLevel = { measuring = it }, onDone = { showReport = true }) }
     NovaTheme(tokensFrom(config, graphics.level)) {
         val current = measuring
         val measured = profile?.takeIf { it.benchmark != null }
         val step = onboardingStep
+        val improve = improving
         when {
+            improve != null -> ImproveRoute(app, improve, onDone = { improving = null })
             current != null -> BenchmarkScreen(current)
             showReport && measured != null -> BenchmarkReportScreen(measured, onDone = { showReport = false })
             customizingHome -> HomeCustomizeRoute(app, onDone = { customizingHome = false })
@@ -83,6 +80,26 @@ fun NovaRoot(
                     system = system,
                     systemActions = actions,
                 )
+        }
+    }
+}
+
+/** Avvia la misura delle prestazioni; al termine mostra il resoconto. */
+private fun startMeasure(
+    app: NovaApp,
+    scope: CoroutineScope,
+    setBenchmark: (BenchmarkRunner?) -> Unit,
+    onLevel: (GraphicsLevel?) -> Unit,
+    onDone: () -> Unit,
+) {
+    val runner = BenchmarkRunner(app.graphicsController).also(setBenchmark)
+    scope.launch {
+        try {
+            app.applyBenchmark(runner.run { onLevel(it) })
+            onDone()
+        } finally {
+            setBenchmark(null)
+            onLevel(null)
         }
     }
 }

@@ -40,6 +40,7 @@ fun SettingsScreen(
 ) {
     val t = Nova.tokens
     SettingsScaffold(title = stringResource(R.string.settings_title), subtitle = brandName) { backdrop ->
+        ImproveSection(backdrop, systemActions)
         SettingsSection(
             backdrop,
             header = stringResource(R.string.graphics_level_title),
