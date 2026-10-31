@@ -4,6 +4,17 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Configurazione guidata al primo avvio (Fase 0, punto 12)
+- Richiesta: "continua con i restanti passaggi".
+- Alla prima apertura NOVA ti accompagna in pochi passi:
+  - sceglierla come Home;
+  - attivare Shizuku;
+  - inserire il token per gli aggiornamenti;
+  - misurare le prestazioni;
+  - scegliere un tema.
+- Ogni passo si può saltare. Alla fine vedi cosa resta da fare.
+- Si rifà quando vuoi da Impostazioni → Strumenti di sistema → Configurazione guidata.
+
 ### App recenti senza "fantasmi" e studio di personalizzazione completo
 - Richiesta: "Quando si va nella schermata delle app aperte … ogni tanto si vede sullo sfondo l'app aperta all'ultimo, non va bene sostituisci e risolvi con lo sfondo ma più sfocato dietro. Poi aggiungi la customizzazione dello sfondo, del tema, delle icone, di tutto. Come niagara launcher".
 - **Risolto:** nelle app recenti dietro alla Home non si vede più l'app aperta prima. Ora è NOVA a disegnare lo sfondo, sfocato quanto vuoi, fino a "Massima".
