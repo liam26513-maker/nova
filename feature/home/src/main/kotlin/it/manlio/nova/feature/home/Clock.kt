@@ -32,6 +32,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -78,11 +79,27 @@ internal fun ClockHeader(nowMillis: Long) {
         remember(nowMillis, locale) {
             SimpleDateFormat("EEEE d MMMM", locale).format(Date(nowMillis)).replaceFirstChar { it.titlecase(locale) }
         }
-    val family = LocalHomeLook.current.family
+    val look = LocalHomeLook.current
     Column {
-        BasicText(time, style = TextStyle(HomeInk, 88.sp, FontWeight.Thin, letterSpacing = (-3).sp, fontFamily = family))
-        BasicText(date, style = TextStyle(HomeMuted, 20.sp, FontWeight.Light, fontFamily = family))
+        when (look.clockStyle) {
+            ClockStyle.THIN -> ClockText(time, 88.sp, FontWeight.Thin)
+            ClockStyle.BOLD -> ClockText(time, 80.sp, FontWeight.SemiBold)
+            ClockStyle.STACKED ->
+                time.split(':', '.', limit = 2).forEach { part -> ClockText(part.trim(), 72.sp, FontWeight.Light, lineHeight = 70.sp) }
+        }
+        if (look.showDate) BasicText(date, style = TextStyle(look.muted, 20.sp, FontWeight.Light, fontFamily = look.family))
     }
+}
+
+@Composable
+private fun ClockText(
+    text: String,
+    size: TextUnit,
+    weight: FontWeight,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+) {
+    val look = LocalHomeLook.current
+    BasicText(text, style = TextStyle(look.ink, size, weight, letterSpacing = (-2).sp, lineHeight = lineHeight, fontFamily = look.family))
 }
 
 /** Pulsante tondo con tre cursori disegnati (nessuna icona di terzi). */
@@ -96,20 +113,21 @@ internal fun SettingsButton(
     Box(
         modifier
             .size(BUTTON)
-            .background(HomeInk.copy(alpha = BUTTON_ALPHA), CircleShape)
+            .background(LocalHomeLook.current.ink.copy(alpha = BUTTON_ALPHA), CircleShape)
             .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
                 view.perform(NovaHaptic.TAP)
                 onClick()
             }.semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
     ) {
-        val ink = HomeInk
+        val ink = LocalHomeLook.current.ink
+        val knob = if (LocalHomeLook.current.dark) KNOB_FILL else KNOB_FILL_LIGHT
         Canvas(Modifier.size(GLYPH)) {
             val stroke = 1.6.dp.toPx()
             SLIDERS.forEach { (y, knob) ->
                 val yy = size.height * y
                 drawLine(ink, Offset(0f, yy), Offset(size.width, yy), stroke, StrokeCap.Round)
-                drawCircle(KNOB_FILL, radius = 3.2.dp.toPx(), center = Offset(size.width * knob, yy))
+                drawCircle(knob, radius = 3.2.dp.toPx(), center = Offset(size.width * knob, yy))
                 drawCircle(
                     ink,
                     radius = 3.2.dp.toPx(),
@@ -129,4 +147,7 @@ private const val BUTTON_ALPHA = 0.12f
 
 @Suppress("MagicNumber")
 private val KNOB_FILL = Color(0xFF3A3F47)
+
+@Suppress("MagicNumber")
+private val KNOB_FILL_LIGHT = Color(0xFFE8E6E1)
 private val GLYPH = 22.dp

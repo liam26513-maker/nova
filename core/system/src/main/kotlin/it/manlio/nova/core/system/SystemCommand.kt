@@ -59,6 +59,11 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "force-stop", packageName)
     }
 
+    /** Spegne lo schermo (come il tasto di accensione). Non cambia impostazioni: niente da annullare. */
+    data object Sleep : SystemCommand {
+        override val argv = listOf("input", "keyevent", "KEYCODE_SLEEP")
+    }
+
     /**
      * Installa un aggiornamento di NOVA. Il file deve stare nella cartella esterna privata dell'app
      * (leggibile dalla shell), mai altrove: [ownPackage] è il pacchetto dell'app stessa.

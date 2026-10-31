@@ -4,10 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +13,6 @@ import android.os.UserManager
 import android.util.LruCache
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -38,6 +34,19 @@ data class AppEntry(
     val letter: Char = AppIndex.letterOf(label)
 }
 
+/** Stile delle icone (vedi [IconStyler]); [ink] e [plate] sono colori ARGB del tema della home. */
+data class IconSpec(
+    val shape: IconShape = IconShape.ORIGINAL,
+    val style: IconStyle = IconStyle.COLOR,
+    val iconPack: String? = null,
+    val ink: Int = android.graphics.Color.WHITE,
+    val plate: Int = DEFAULT_PLATE,
+) {
+    companion object {
+        const val DEFAULT_PLATE = 0x33FFFFFF
+    }
+}
+
 /**
  * Elenco delle app installate, aggiornato dalle notifiche di sistema di [LauncherApps] (niente polling).
  * Consuma qualcosa solo tra [start] e [stop], cioè mentre la home è visibile.
@@ -50,6 +59,11 @@ class AppCatalog(context: Context) {
     /** null finché il primo caricamento non è finito. */
     val apps: StateFlow<List<AppEntry>?> = _apps.asStateFlow()
     private val icons = LruCache<String, ImageBitmap>(ICON_CACHE)
+    private var lastSpec: IconSpec? = null
+    private val densityDpi = context.resources.displayMetrics.densityDpi
+
+    /** Pacchetti di icone installati (lettura su richiesta, solo per le impostazioni). */
+    val iconPacks = IconPacks(context)
     private var scope: CoroutineScope? = null
 
     private val callback =
@@ -95,19 +109,32 @@ class AppCatalog(context: Context) {
         scope = null
     }
 
-    /** Icona dell'app a [sizePx], caricata fuori dal thread principale e tenuta in memoria. */
+    /**
+     * Icona dell'app a [sizePx] nello stile [spec], caricata fuori dal thread principale e tenuta in
+     * memoria. Se cambia lo stile la memoria si svuota.
+     */
     suspend fun icon(
         entry: AppEntry,
         sizePx: Int,
-    ): ImageBitmap? =
-        icons[entry.key] ?: withContext(Dispatchers.IO) {
+        spec: IconSpec = IconSpec(),
+    ): ImageBitmap? {
+        synchronized(icons) {
+            if (spec != lastSpec) {
+                icons.evictAll()
+                lastSpec = spec
+            }
+        }
+        return icons[entry.key] ?: withContext(Dispatchers.IO) {
             runCatching {
-                launcherApps
-                    .resolveActivity(Intent(Intent.ACTION_MAIN).setComponent(entry.component), entry.user)
-                    ?.getBadgedIcon(0)
-                    ?.toImageBitmap(sizePx)
+                val packIcon = spec.iconPack?.let { iconPacks.icon(it, entry.component.flattenToString(), densityDpi) }
+                val drawable =
+                    packIcon ?: launcherApps
+                        .resolveActivity(Intent(Intent.ACTION_MAIN).setComponent(entry.component), entry.user)
+                        ?.getBadgedIcon(densityDpi)
+                drawable?.let { IconStyler.render(it, sizePx, spec.shape, spec.style, spec.ink, spec.plate) }
             }.getOrNull()
         }?.also { icons.put(entry.key, it) }
+    }
 
     /** @return false se l'app non si può aprire (disinstallata nel frattempo, disattivata…). */
     fun launch(
@@ -140,13 +167,6 @@ class AppCatalog(context: Context) {
                 }
             }
         return AppIndex.sort(entries) { it.label }
-    }
-
-    private fun Drawable.toImageBitmap(size: Int): ImageBitmap {
-        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        setBounds(0, 0, size, size)
-        draw(Canvas(bitmap))
-        return bitmap.asImageBitmap()
     }
 
     private companion object {

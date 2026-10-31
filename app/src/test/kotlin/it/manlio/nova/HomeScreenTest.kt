@@ -30,14 +30,18 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.feature.home.AppEntry
+import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
+import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
 import it.manlio.nova.feature.home.TextSize
+import it.manlio.nova.feature.home.ThemeMode
+import it.manlio.nova.feature.home.WallpaperSource
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -197,6 +201,20 @@ class HomeScreenTest {
         compose.onNodeWithText("Krita").assertDoesNotExist()
         compose.onNodeWithText("Navigare").assertExists()
         compose.onRoot().captureRoboImage("screenshots/home_personalizzata.png")
+    }
+
+    @Test
+    fun light_theme_with_nova_wallpaper_and_monochrome_squircle_icons() {
+        val prefs =
+            HomePrefs(
+                theme = ThemeMode.LIGHT,
+                wallpaper = WallpaperSource.NOVA,
+                novaWallpaper = 3,
+                iconShape = IconShape.SQUIRCLE,
+                clockStyle = ClockStyle.STACKED,
+            )
+        render(prefs = prefs)
+        compose.onRoot().captureRoboImage("screenshots/home_tema_chiaro.png")
     }
 
     @Test

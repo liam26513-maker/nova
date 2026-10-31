@@ -69,7 +69,21 @@ class HomePrefsTest {
                     showClock = false,
                     alphabetSide = Side.LEFT,
                     scrim = ScrimStrength.STRONG,
-                    blur = false,
+                    blurLevel = BlurLevel.MAX,
+                    theme = ThemeMode.LIGHT,
+                    accent = 0xFF66C2A5.toInt(),
+                    wallpaper = WallpaperSource.NOVA,
+                    novaWallpaper = 3,
+                    weight = TextWeight.BOLD,
+                    clockStyle = ClockStyle.STACKED,
+                    showDate = false,
+                    iconSize = IconSize.LARGE,
+                    iconShape = IconShape.SQUIRCLE,
+                    iconStyle = IconStyle.MONO,
+                    iconPack = "com.example.icons",
+                    showStatusBar = false,
+                    swipeDownNotifications = false,
+                    doubleTapSleep = true,
                     hidden = mapOf("com.a/.Main#0" to "Caffè = è: #1"),
                     renamed = mapOf("com.b/.X#10" to "Il mio disegno"),
                 )
@@ -85,6 +99,58 @@ class HomePrefsTest {
         assertEquals(true, prefs.showIcons)
         assertEquals(Side.LEFT, prefs.alphabetSide)
         assertEquals(HomePrefs(), HomePrefsStore(tmp.root.resolve("none.properties")).prefs.value)
+    }
+
+    @Test
+    fun `old settings keep working (blur=false becomes no blur) and out-of-range wallpapers are clamped`() {
+        val file = tmp.root.resolve("old.properties").apply { writeText("blur=false\nnovaWallpaper=999\n") }
+        val prefs = HomePrefsStore(file).prefs.value
+        assertEquals(BlurLevel.NONE, prefs.blurLevel)
+        assertEquals(NovaWallpapers.all.lastIndex, prefs.novaWallpaper)
+    }
+
+    @Test
+    fun `a theme carries only the look and keeps your hidden and renamed apps`() =
+        runTest {
+            val source = HomePrefsStore(tmp.root.resolve("a.properties"))
+            source.update { ThemePresets.all[1].prefs.copy(hidden = mapOf("x" to "X"), renamed = mapOf("y" to "Y")) }
+            val theme = source.exportTheme()
+            assertEquals(false, theme.contains("hidden."))
+
+            val target = HomePrefsStore(tmp.root.resolve("b.properties"))
+            target.update { it.copy(hidden = mapOf("mine" to "Mia")) }
+            assertEquals(true, target.importTheme(theme))
+            assertEquals(ThemePresets.all[1].prefs.look(), target.prefs.value.look())
+            assertEquals(mapOf("mine" to "Mia"), target.prefs.value.hidden)
+
+            assertEquals(false, target.importTheme("ciao=1"))
+            assertEquals(false, target.importTheme("\u0000 non è un tema"))
+        }
+
+    @Test
+    fun `every preset is different and valid`() {
+        assertEquals(ThemePresets.all.size, ThemePresets.all.map { it.prefs.look() }.toSet().size)
+        ThemePresets.all.forEach { assertEquals(it.prefs, PrefsCodec.read(PrefsCodec.write(it.prefs))) }
+    }
+}
+
+class IconsAndWallpaperTest {
+    @Test
+    fun `icon pack components are read in both long and relative form`() {
+        assertEquals("com.app/com.app.Main", IconPackParser.componentKey("ComponentInfo{com.app/com.app.Main}"))
+        assertEquals("com.app/com.app.Main", IconPackParser.componentKey("ComponentInfo{com.app/.Main}"))
+        assertEquals(null, IconPackParser.componentKey(":LAUNCHER_ACTION_APP_DRAWER"))
+        assertEquals(null, IconPackParser.componentKey("ComponentInfo{}"))
+    }
+
+    @Test
+    fun `more blur means a smaller image and a larger radius`() {
+        val plans = BlurLevel.entries.map { WallpaperLoader.blurPlan(it) }
+        assertEquals(0, plans.first().second)
+        plans.zipWithNext().forEach { (a, b) ->
+            assertEquals(true, b.first < a.first)
+            assertEquals(true, b.second > a.second)
+        }
     }
 }
 

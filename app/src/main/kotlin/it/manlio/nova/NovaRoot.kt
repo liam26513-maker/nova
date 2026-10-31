@@ -46,11 +46,7 @@ fun NovaRoot(
         if (current != null) {
             BenchmarkScreen(current)
         } else if (customizingHome) {
-            val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
-            HomeCustomizeScreen(prefs, onChange = {
-                    change ->
-                scope.launch { app.homePrefs.update(change) }
-            }, onDone = { customizingHome = false })
+            HomeCustomizeRoute(app, onDone = { customizingHome = false })
         } else if (showReport && measured != null) {
             BenchmarkReportScreen(measured, onDone = { showReport = false })
         } else {

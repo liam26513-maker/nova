@@ -78,7 +78,7 @@ internal fun AppMenu(
                             exit = scaleOut(spring(stiffness = FADE_STIFFNESS), targetScale = POP_FROM),
                         ).widthIn(max = CARD_WIDTH)
                         .padding(24.dp)
-                        .background(CARD, SquircleShape(26.dp))
+                        .background(if (LocalHomeLook.current.dark) CARD else CARD_LIGHT, SquircleShape(26.dp))
                         // Toccare la scheda non deve chiudere il menu.
                         .clickable(remember { MutableInteractionSource() }, indication = null) {},
                 ) {
@@ -103,7 +103,7 @@ private fun MenuContent(
             Spacer(Modifier.width(14.dp))
             BasicText(
                 app.label,
-                style = TextStyle(HomeInk, 22.sp, FontWeight.Light, fontFamily = LocalHomeLook.current.family),
+                style = TextStyle(LocalHomeLook.current.ink, 22.sp, FontWeight.Light, fontFamily = LocalHomeLook.current.family),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -149,13 +149,13 @@ private fun RenameField(
             value = text,
             onValueChange = { text = it.take(MAX_NAME) },
             singleLine = true,
-            textStyle = TextStyle(HomeInk, 18.sp),
-            cursorBrush = SolidColor(HomeInk),
+            textStyle = TextStyle(LocalHomeLook.current.ink, 18.sp),
+            cursorBrush = SolidColor(LocalHomeLook.current.ink),
             modifier =
                 Modifier
                     .padding(horizontal = 22.dp, vertical = 8.dp)
                     .fillMaxWidth()
-                    .background(HomeInk.copy(alpha = FIELD_ALPHA), SquircleShape(12.dp))
+                    .background(LocalHomeLook.current.ink.copy(alpha = FIELD_ALPHA), SquircleShape(12.dp))
                     .padding(12.dp),
         )
         MenuItem(stringResource(R.string.home_menu_rename_save)) { onDone(text.trim()) }
@@ -179,13 +179,16 @@ private fun MenuItem(
                 onClick()
             }.padding(horizontal = 22.dp, vertical = 11.dp),
     ) {
-        BasicText(title, style = TextStyle(HomeInk, 17.sp))
-        if (summary != null) BasicText(summary, style = TextStyle(HomeMuted, 13.sp))
+        BasicText(title, style = TextStyle(LocalHomeLook.current.ink, 17.sp))
+        if (summary != null) BasicText(summary, style = TextStyle(LocalHomeLook.current.muted, 13.sp))
     }
 }
 
 @Suppress("MagicNumber") // grafite quasi opaca
 private val CARD = Color(0xF21D2127)
+
+@Suppress("MagicNumber")
+private val CARD_LIGHT = Color(0xF5F7F6F3)
 private val CARD_WIDTH = 420.dp
 private const val DIM_ALPHA = 0.45f
 private const val FIELD_ALPHA = 0.1f
