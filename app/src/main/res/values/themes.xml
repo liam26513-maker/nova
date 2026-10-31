@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home: si vede lo sfondo di sistema dietro (la sfumatura la disegna NOVA). Finestra
+         traslucida, così Android può sfocare lo sfondo dove il dispositivo lo supporta. -->
+    <style name="Theme.Nova.Home" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+</resources>

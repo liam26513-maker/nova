@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Home rifatta: più fluida, in stile Niagara
+- Richiesta: "E' brutta, fallo più dinamico e fluido con lo sfondo sfumato opaco piu simile a niagara launcher".
+- **Sfondo:** si vede il tuo sfondo, coperto da una sfumatura scura e opaca che prende il suo colore. Se il tablet lo supporta, lo sfondo è anche sfocato.
+- **Niente più riquadri:** ora grande e i preferiti come lista di nomi grandi, direttamente sullo sfondo.
+- **Alfabeto a onda:** trascinando il dito le lettere si gonfiano e accanto al dito compare una bolla con la lettera. Si apre "Tutte le app" esattamente lì.
+- **Animazioni a molla ovunque:** ingresso a cascata, rimbalzo leggero al tocco, passaggio morbido tra Preferiti e Tutte le app, app che si aprono dal punto toccato.
+
 ### NOVA diventa la Home del tablet (Fase 0, punto 11)
 - Richiesta: "Va bene continua con i passaggi successivi".
 - **Nuova Home:** a sinistra tutte le app in ordine alfabetico, con l'alfabeto sul bordo per saltare a una lettera trascinando il dito; a destra ora, data e i tuoi **Preferiti**.

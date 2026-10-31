@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.UserHandle
@@ -112,7 +113,8 @@ class AppCatalog(context: Context) {
     fun launch(
         entry: AppEntry,
         sourceBounds: Rect? = null,
-    ): Boolean = runCatching { launcherApps.startMainActivity(entry.component, entry.user, sourceBounds, null) }.isSuccess
+        options: Bundle? = null,
+    ): Boolean = runCatching { launcherApps.startMainActivity(entry.component, entry.user, sourceBounds, options) }.isSuccess
 
     private fun changed(packageName: String) {
         icons.snapshot().keys.filter { it.startsWith("$packageName/") }.forEach(icons::remove)

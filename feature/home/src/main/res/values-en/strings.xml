@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_all_apps">Apps</string>
-    <string name="home_favorites">Favourites</string>
-    <string name="home_favorites_empty">Long-press an app in the list to add it here. Long-press it again to remove it.</string>
+    <string name="home_favorites_empty">No favourites yet. Open “All apps” or slide along the alphabet, then long-press an app to add it here.</string>
     <string name="home_settings">NOVA settings</string>
-    <string name="home_loading">Loading apps…</string>
     <string name="home_favorite_mark">favourite</string>
+    <string name="home_show_all">All apps</string>
+    <string name="home_back_to_favorites">Favourites</string>
 </resources>

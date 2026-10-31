@@ -24,12 +24,18 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 
 ## Home (Fase 0, punto 11)
 - [ ] Impostazioni → **Home** → "Usa NOVA come Home": nell'elenco di Android scegli NOVA e conferma. Tornando nelle Impostazioni, "App Home" dice "NOVA".
-- [ ] Premendo il tasto Home compare la home di NOVA: a sinistra la lista delle app con l'alfabeto, a destra ora, data e "Preferiti".
-- [ ] Tocca un'app: si apre. Torna alla home con il tasto Home.
-- [ ] Tieni premuta un'app nella lista: compare nei Preferiti (e un puntino accanto al nome). Tienila premuta di nuovo: sparisce.
-- [ ] Trascina il dito sull'alfabeto: le lettere vicine si ingrandiscono, senti un tic a ogni lettera e la lista salta alla lettera.
-- [ ] Installa o disinstalla un'app: la lista si aggiorna da sola entro un secondo.
-- [ ] Il tasto Indietro nella home non fa nulla; il tasto Home premuto nella home riporta la lista in cima.
-- [ ] Ruota il tablet in verticale: ora, preferiti e lista si impilano.
-- [ ] Il pulsante tondo in alto a destra apre le Impostazioni di NOVA.
+- [ ] Premendo Home si vede **il tuo sfondo** sotto una sfumatura scura, con ora grande, data, preferiti e "Tutte le app".
+- [ ] Con il livello **Massimo** o **Bilanciato**, se il tablet lo supporta, lo sfondo appare anche **sfocato**. Con **Prestazioni** resta solo la sfumatura.
+- [ ] Cambiando sfondo di sistema, la sfumatura prende il nuovo colore.
+- [ ] I preferiti entrano a cascata. Toccando un'app, la riga si rimpicciolisce e l'app si apre "crescendo" dal punto toccato.
+- [ ] Trascina il dito sull'alfabeto a destra:
+  - [ ] le lettere si gonfiano a onda e accanto al dito compare la bolla con la lettera;
+  - [ ] senti un tic a ogni lettera;
+  - [ ] si apre "Tutte le app" alla lettera giusta.
+- [ ] Tieni premuta un'app: entra nei preferiti o ne esce, e la lista si riordina con un'animazione.
+- [ ] In "Tutte le app", Indietro o "‹ Preferiti" riportano ai preferiti. Nei preferiti, Indietro non fa nulla.
+- [ ] Il tasto Home premuto nella home riporta ai preferiti, in cima.
+- [ ] Installa o disinstalla un'app: gli elenchi si aggiornano da soli.
+- [ ] Ruota il tablet in verticale: la disposizione resta ordinata.
+- [ ] Il pulsante tondo accanto all'alfabeto apre le Impostazioni di NOVA.
 - [ ] Per tornare al launcher di sistema: Impostazioni → Home → "Cambia app Home".
