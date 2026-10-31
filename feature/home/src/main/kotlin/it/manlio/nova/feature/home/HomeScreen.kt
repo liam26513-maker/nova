@@ -116,7 +116,7 @@ fun HomeScreen(
                         .fillMaxHeight()
                         .padding(start = if (wide) WIDE_MARGIN else NARROW_MARGIN, top = TOP_MARGIN),
                 ) {
-                    Box(Modifier.widthIn(max = CONTENT_WIDTH)) { ClockHeader(nowMillis, actions.onOpenSettings) }
+                    ClockHeader(nowMillis)
                     Spacer(Modifier.height(32.dp))
                     AnimatedContent(
                         targetState = mode,
@@ -131,6 +131,7 @@ fun HomeScreen(
                         }
                     }
                 }
+                SettingsButton(actions.onOpenSettings, Modifier.padding(top = TOP_MARGIN, end = 8.dp))
                 Alphabet(
                     letters = remember(headerIndex) { headerIndex.keys.toList() },
                     onLetter = { letter ->
@@ -379,4 +380,4 @@ private val LEFT_CENTRE = TransformOrigin(pivotFractionX = 0f, pivotFractionY = 
 private val BLURRED_ALPHA = 0.30f to 0.62f
 
 @Suppress("MagicNumber")
-private val SOLID_ALPHA = 0.58f to 0.86f
+private val SOLID_ALPHA = 0.46f to 0.82f

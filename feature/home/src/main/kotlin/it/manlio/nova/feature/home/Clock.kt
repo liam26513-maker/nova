@@ -10,8 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
@@ -70,12 +68,9 @@ fun rememberMinuteClock(): Long {
     return now
 }
 
-/** Ora grande e leggera, data per esteso e, a destra, il pulsante delle impostazioni di NOVA. */
+/** Ora grande e leggera e data per esteso. */
 @Composable
-internal fun ClockHeader(
-    nowMillis: Long,
-    onOpenSettings: () -> Unit,
-) {
+internal fun ClockHeader(nowMillis: Long) {
     val context = LocalContext.current
     val locale = LocalConfiguration.current.locales[0]
     val time = remember(nowMillis, locale) { android.text.format.DateFormat.getTimeFormat(context).format(Date(nowMillis)) }
@@ -83,22 +78,22 @@ internal fun ClockHeader(
         remember(nowMillis, locale) {
             SimpleDateFormat("EEEE d MMMM", locale).format(Date(nowMillis)).replaceFirstChar { it.titlecase(locale) }
         }
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-        Column(Modifier.weight(1f)) {
-            BasicText(time, style = TextStyle(HomeInk, 88.sp, FontWeight.Thin, letterSpacing = (-3).sp))
-            BasicText(date, style = TextStyle(HomeMuted, 20.sp, FontWeight.Light))
-        }
-        SettingsButton(onOpenSettings)
+    Column {
+        BasicText(time, style = TextStyle(HomeInk, 88.sp, FontWeight.Thin, letterSpacing = (-3).sp))
+        BasicText(date, style = TextStyle(HomeMuted, 20.sp, FontWeight.Light))
     }
 }
 
 /** Pulsante tondo con tre cursori disegnati (nessuna icona di terzi). */
 @Composable
-private fun SettingsButton(onClick: () -> Unit) {
+internal fun SettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val view = LocalView.current
     val label = stringResource(R.string.home_settings)
     Box(
-        Modifier
+        modifier
             .size(BUTTON)
             .background(HomeInk.copy(alpha = BUTTON_ALPHA), CircleShape)
             .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
