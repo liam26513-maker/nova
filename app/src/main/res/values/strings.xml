@@ -89,4 +89,13 @@
     <string name="rollback_instant">immediato</string>
     <string name="rollback_confirm_instant">NOVA tornerà al funzionamento della versione %1$s. È già pronta: si installa subito, in pochi secondi. Le tue impostazioni restano. Quando arriverà una correzione, si aggiornerà di nuovo da sola.</string>
     <string name="rollback_done_instant">Installo %1$s: segui lo stato qui sopra</string>
+    <string name="home_launch_failed">Non riesco ad aprire %1$s</string>
+    <string name="home_section_title">Home</string>
+    <string name="home_section_footer">La Home di NOVA è la prima schermata del tablet: lista di tutte le app con l\'alfabeto e i tuoi preferiti. Il launcher di sistema resta installato: puoi tornarci quando vuoi da qui o dalla modalità provvisoria.</string>
+    <string name="home_default">App Home</string>
+    <string name="home_default_nova">NOVA</string>
+    <string name="home_default_other">Un\'altra app</string>
+    <string name="home_use_nova">Usa NOVA come Home</string>
+    <string name="home_use_nova_summary">Scegli NOVA nell\'elenco di Android e conferma</string>
+    <string name="home_change">Cambia app Home</string>
 </resources>

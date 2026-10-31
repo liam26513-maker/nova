@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### NOVA diventa la Home del tablet (Fase 0, punto 11)
+- Richiesta: "Va bene continua con i passaggi successivi".
+- **Nuova Home:** a sinistra tutte le app in ordine alfabetico, con l'alfabeto sul bordo per saltare a una lettera trascinando il dito; a destra ora, data e i tuoi **Preferiti**.
+- **Preferiti:** tieni premuta un'app per aggiungerla o toglierla.
+- **Impostazioni → Home:** mostra quale app fa da Home e permette di scegliere NOVA, o di tornare al launcher di sistema quando vuoi.
+- La Home consuma risorse solo quando è sullo schermo.
+
 ### Ritorno alla versione precedente in pochi secondi
 - Richiesta: "10 minuti è troppo, fallo con un massimo di attesa di 1 minuto".
 - **Versione appena precedente:** ogni nuova versione porta con sé, già pronta, quella di prima. Tornarci è immediato: si scarica e si installa in pochi secondi. Nella lista è segnata come "immediato".

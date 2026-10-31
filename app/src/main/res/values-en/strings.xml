@@ -86,4 +86,13 @@
     <string name="rollback_instant">instant</string>
     <string name="rollback_confirm_instant">NOVA will go back to how version %1$s worked. It is already prepared: it installs right away, in a few seconds. Your settings stay. When a fix arrives, it will update again on its own.</string>
     <string name="rollback_done_instant">Installing %1$s: follow the status above</string>
+    <string name="home_launch_failed">Cannot open %1$s</string>
+    <string name="home_section_title">Home</string>
+    <string name="home_section_footer">The NOVA Home is the tablet\'s first screen: every app in an alphabetical list plus your favourites. The system launcher stays installed: you can switch back any time from here or from safe mode.</string>
+    <string name="home_default">Home app</string>
+    <string name="home_default_nova">NOVA</string>
+    <string name="home_default_other">Another app</string>
+    <string name="home_use_nova">Use NOVA as Home</string>
+    <string name="home_use_nova_summary">Pick NOVA in the Android list and confirm</string>
+    <string name="home_change">Change Home app</string>
 </resources>

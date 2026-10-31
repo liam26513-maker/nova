@@ -21,3 +21,15 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] "Collega GitHub": incolla il token, "Salva il token". Lo stato diventa "Tutto aggiornato · controllato alle …" (o mostra l'errore in italiano se il token è sbagliato).
 - [ ] Dopo il primo rilascio automatico (punto 10): compare "Nuova versione disponibile" e "Installa" aggiorna l'app, senza conferme se Shizuku è attivo.
 
+
+## Home (Fase 0, punto 11)
+- [ ] Impostazioni → **Home** → "Usa NOVA come Home": nell'elenco di Android scegli NOVA e conferma. Tornando nelle Impostazioni, "App Home" dice "NOVA".
+- [ ] Premendo il tasto Home compare la home di NOVA: a sinistra la lista delle app con l'alfabeto, a destra ora, data e "Preferiti".
+- [ ] Tocca un'app: si apre. Torna alla home con il tasto Home.
+- [ ] Tieni premuta un'app nella lista: compare nei Preferiti (e un puntino accanto al nome). Tienila premuta di nuovo: sparisce.
+- [ ] Trascina il dito sull'alfabeto: le lettere vicine si ingrandiscono, senti un tic a ogni lettera e la lista salta alla lettera.
+- [ ] Installa o disinstalla un'app: la lista si aggiorna da sola entro un secondo.
+- [ ] Il tasto Indietro nella home non fa nulla; il tasto Home premuto nella home riporta la lista in cima.
+- [ ] Ruota il tablet in verticale: ora, preferiti e lista si impilano.
+- [ ] Il pulsante tondo in alto a destra apre le Impostazioni di NOVA.
+- [ ] Per tornare al launcher di sistema: Impostazioni → Home → "Cambia app Home".

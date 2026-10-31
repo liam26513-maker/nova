@@ -41,6 +41,8 @@ data class SystemUiState(
     val hasConfigHistory: Boolean,
     val shizuku: ShizukuStatus,
     val systemChanges: Int,
+    /** NOVA è l'app Home predefinita. */
+    val novaIsHome: Boolean = false,
 )
 
 /** Azioni delle sezioni di sistema. */
@@ -56,6 +58,8 @@ data class SystemActions(
     val onLoadPrevious: suspend () -> Result<List<PreviousVersion>> = { Result.success(emptyList()) },
     /** Chiede il ritorno a una versione precedente. */
     val onRollbackApp: suspend (PreviousVersion) -> RollbackResult = { RollbackResult.Requested },
+    /** Apre la scelta dell'app Home di Android. */
+    val onChooseHome: () -> Unit = {},
 )
 
 @Composable
@@ -290,7 +294,7 @@ private fun describe(state: UpdateState): String =
     }
 
 @Composable
-private fun Muted(text: String) {
+internal fun Muted(text: String) {
     BasicText(text, style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 17.sp))
 }
 
