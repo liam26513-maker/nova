@@ -50,6 +50,7 @@ import kotlin.math.roundToInt
 internal fun Alphabet(
     letters: List<Char>,
     onLetter: (Char) -> Unit,
+    side: Side = Side.RIGHT,
     modifier: Modifier = Modifier,
 ) {
     if (letters.size < 2) return
@@ -101,7 +102,7 @@ internal fun Alphabet(
         Column(Modifier.fillMaxSize()) {
             letters.forEachIndexed { i, letter ->
                 Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                    WaveLetter(letter, onClick = { onLetter(letter) }) {
+                    WaveLetter(letter, side, onClick = { onLetter(letter) }) {
                         val centre = (i + HALF) * height / letters.size
                         val d = (centre - fingerY) / sigma
                         presence * exp(-d * d)
@@ -109,7 +110,7 @@ internal fun Alphabet(
                 }
             }
         }
-        LetterBubble(current, { fingerY }, { presence })
+        LetterBubble(current, side, { fingerY }, { presence })
     }
 }
 
@@ -117,10 +118,12 @@ internal fun Alphabet(
 @Composable
 private fun WaveLetter(
     letter: Char,
+    side: Side,
     onClick: () -> Unit,
     influence: () -> Float,
 ) {
-    val popOut = with(LocalDensity.current) { POP_OUT.toPx() }
+    // L'onda sporge verso il contenuto: a sinistra se l'alfabeto è a destra, e viceversa.
+    val popOut = with(LocalDensity.current) { POP_OUT.toPx() } * if (side == Side.RIGHT) -1 else 1
     BasicText(
         letter.toString(),
         Modifier
@@ -129,7 +132,7 @@ private fun WaveLetter(
                 val scale = 1f + WAVE_GROWTH * k
                 scaleX = scale
                 scaleY = scale
-                translationX = -popOut * k
+                translationX = popOut * k
                 alpha = REST_ALPHA + (1f - REST_ALPHA) * k
             }.semantics {
                 contentDescription = letter.toString()
@@ -146,15 +149,21 @@ private fun WaveLetter(
 @Composable
 private fun LetterBubble(
     letter: Char,
+    side: Side,
     fingerY: () -> Float,
     presence: () -> Float,
 ) {
     val density = LocalDensity.current
-    val gap = with(density) { (BUBBLE_GAP + BUBBLE).toPx() }
+    val gap =
+        if (side == Side.RIGHT) {
+            -with(density) { (BUBBLE_GAP + BUBBLE).toPx() }
+        } else {
+            with(density) { (BUBBLE_GAP + ALPHABET_STRIP).toPx() }
+        }
     val radius = with(density) { BUBBLE.toPx() / 2 }
     Box(
         Modifier
-            .offset { IntOffset(-gap.roundToInt(), (fingerY() - radius).roundToInt()) }
+            .offset { IntOffset(gap.roundToInt(), (fingerY() - radius).roundToInt()) }
             .size(BUBBLE)
             .graphicsLayer {
                 val p = presence()
@@ -173,6 +182,7 @@ private val WAVE_WIDTH = 52.dp
 private val POP_OUT = 34.dp
 private val BUBBLE = 76.dp
 private val BUBBLE_GAP = 36.dp
+private val ALPHABET_STRIP = 44.dp
 private const val HALF = 0.5f
 private const val WAVE_GROWTH = 1.4f
 private const val REST_ALPHA = 0.55f

@@ -116,6 +116,12 @@ class AppCatalog(context: Context) {
         options: Bundle? = null,
     ): Boolean = runCatching { launcherApps.startMainActivity(entry.component, entry.user, sourceBounds, options) }.isSuccess
 
+    /** Apre la scheda dell'app nelle impostazioni di Android. */
+    fun openInfo(
+        entry: AppEntry,
+        sourceBounds: Rect? = null,
+    ): Boolean = runCatching { launcherApps.startAppDetailsActivity(entry.component, entry.user, sourceBounds, null) }.isSuccess
+
     private fun changed(packageName: String) {
         icons.snapshot().keys.filter { it.startsWith("$packageName/") }.forEach(icons::remove)
         refresh()

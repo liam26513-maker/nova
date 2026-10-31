@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_favorites_empty">No favourites yet. Open “All apps” or slide along the alphabet, then long-press an app to add it here.</string>
+    <string name="home_favorites_empty">No favourites yet. Open “All apps” or slide along the alphabet, then long-press an app and choose “Add to favourites”.</string>
     <string name="home_settings">NOVA settings</string>
     <string name="home_favorite_mark">favourite</string>
     <string name="home_show_all">All apps</string>
     <string name="home_back_to_favorites">Favourites</string>
+    <string name="home_menu_favorite">Add to favourites</string>
+    <string name="home_menu_unfavorite">Remove from favourites</string>
+    <string name="home_menu_rename">Rename</string>
+    <string name="home_menu_rename_save">Save name</string>
+    <string name="home_menu_rename_reset">Restore original name</string>
+    <string name="home_menu_cancel">Cancel</string>
+    <string name="home_menu_hide">Hide</string>
+    <string name="home_menu_hide_summary">Find it again in Settings → Home → Customise</string>
+    <string name="home_menu_info">App info</string>
+    <string name="home_menu_uninstall">Uninstall</string>
 </resources>

@@ -78,9 +78,10 @@ internal fun ClockHeader(nowMillis: Long) {
         remember(nowMillis, locale) {
             SimpleDateFormat("EEEE d MMMM", locale).format(Date(nowMillis)).replaceFirstChar { it.titlecase(locale) }
         }
+    val family = LocalHomeLook.current.family
     Column {
-        BasicText(time, style = TextStyle(HomeInk, 88.sp, FontWeight.Thin, letterSpacing = (-3).sp))
-        BasicText(date, style = TextStyle(HomeMuted, 20.sp, FontWeight.Light))
+        BasicText(time, style = TextStyle(HomeInk, 88.sp, FontWeight.Thin, letterSpacing = (-3).sp, fontFamily = family))
+        BasicText(date, style = TextStyle(HomeMuted, 20.sp, FontWeight.Light, fontFamily = family))
     }
 }
 

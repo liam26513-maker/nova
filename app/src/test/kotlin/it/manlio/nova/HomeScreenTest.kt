@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -22,6 +23,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -29,8 +31,13 @@ import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.HomeActions
+import it.manlio.nova.feature.home.HomeFont
+import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
+import it.manlio.nova.feature.home.ScrimStrength
+import it.manlio.nova.feature.home.Side
+import it.manlio.nova.feature.home.TextSize
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -54,14 +61,24 @@ class HomeScreenTest {
         names.map { AppEntry("pkg.${it.lowercase()}/.Main#0", it, ComponentName("pkg.${it.lowercase()}", ".Main"), Process.myUserHandle()) }
     private val launched = mutableListOf<String>()
     private val toggled = mutableListOf<String>()
+    private val hidden = mutableListOf<String>()
+    private val renamed = mutableListOf<Pair<String, String>>()
+    private val reordered = mutableListOf<List<String>>()
+    private val defaultFavorites = listOf(apps[1].key, apps[7].key, apps[15].key, apps[4].key, apps[12].key)
 
-    private fun render(favorites: List<String> = listOf(apps[1].key, apps[7].key, apps[15].key, apps[4].key, apps[12].key)) {
+    private fun render(
+        favorites: List<String> = defaultFavorites,
+        prefs: HomePrefs = HomePrefs(),
+    ) {
         val actions =
             HomeActions(
                 icon = { fakeIcon(it.label) },
                 onLaunch = { entry, _ -> launched += entry.label },
                 onToggleFavorite = { toggled += it.label },
                 onOpenSettings = { launched += "settings" },
+                onReorderFavorites = { reordered += it },
+                onHide = { hidden += it.label },
+                onRename = { entry, name -> renamed += entry.label to name },
             )
         compose.setContent {
             NovaTheme(NovaTokens.Fallback) {
@@ -77,6 +94,7 @@ class HomeScreenTest {
                         nowMillis = 1_793_443_500_000,
                         actions = actions,
                         style = HomeStyle(tint = Color(0xFF3E6E8E)),
+                        prefs = prefs,
                     )
                 }
             }
@@ -115,12 +133,78 @@ class HomeScreenTest {
     }
 
     @Test
-    fun tap_opens_and_long_press_toggles_favorite() {
+    fun tap_opens_and_long_press_opens_the_menu() {
         render()
         compose.onNodeWithText("Chrome").performClick()
-        compose.onNodeWithText("Chrome").performTouchInput { longClick() }
         assertEquals(listOf("Chrome"), launched)
+        compose.onNodeWithText("Chrome").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Togli dai preferiti").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_menu.png")
+        compose.onNodeWithText("Togli dai preferiti").performClick()
         assertEquals(listOf("Chrome"), toggled)
+        compose.waitForIdle()
+        compose.onNodeWithText("Rinomina").assertDoesNotExist()
+    }
+
+    @Test
+    fun menu_hides_and_renames_from_all_apps() {
+        render()
+        compose.onNodeWithText("Tutte le app", substring = true).performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Calendario").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Aggiungi ai preferiti").assertExists()
+        compose.onNodeWithText("Nascondi").performClick()
+        assertEquals(listOf("Calendario"), hidden)
+
+        compose.waitForIdle()
+        compose.onNodeWithText("Disegno").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Rinomina").performClick()
+        compose.onNode(hasSetTextAction()).performTextReplacement("Arte")
+        compose.onNodeWithText("Salva il nome").performClick()
+        assertEquals(listOf("Disegno" to "Arte"), renamed)
+    }
+
+    @Test
+    fun long_press_and_drag_reorders_favorites() {
+        render()
+        compose.onNodeWithText("Chrome").performTouchInput {
+            down(center)
+            advanceEventTime(1_000)
+            repeat(4) { moveBy(Offset(0f, 35f)) }
+            up()
+        }
+        compose.waitForIdle()
+        assertEquals(1, reordered.size)
+        assertEquals("pkg.chrome/.Main#0", reordered.single()[2])
+    }
+
+    @Test
+    fun prefs_hide_rename_and_restyle() {
+        val prefs =
+            HomePrefs(
+                showIcons = false,
+                textSize = TextSize.LARGE,
+                font = HomeFont.ELEGANT,
+                alphabetSide = Side.LEFT,
+                scrim = ScrimStrength.STRONG,
+                hidden = mapOf(apps[7].key to "Krita"),
+                renamed = mapOf(apps[1].key to "Navigare"),
+            )
+        render(prefs = prefs)
+        compose.onNodeWithText("Krita").assertDoesNotExist()
+        compose.onNodeWithText("Navigare").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_personalizzata.png")
+    }
+
+    @Test
+    fun hidden_apps_disappear_and_renamed_ones_are_sorted_by_their_new_name() {
+        val prefs = HomePrefs(hidden = mapOf(apps[1].key to "Chrome"), renamed = mapOf(apps[0].key to "Zaino"))
+        val shown = prefs.apply(apps)!!
+        assertEquals(false, shown.any { it.label == "Chrome" })
+        assertEquals(listOf("YouTube", "Zaino", "Zoom"), shown.takeLast(3).map { it.label })
     }
 
     @Test

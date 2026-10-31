@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Per sapere se Shizuku è installato e aprirlo. -->
+    <!-- "Disinstalla" dal menu delle app della Home: Android chiede sempre conferma. -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
         <!-- La Home deve vedere tutte le app avviabili (visibilità dei pacchetti, Android 11+). -->

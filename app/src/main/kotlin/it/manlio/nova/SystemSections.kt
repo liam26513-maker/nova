@@ -60,6 +60,8 @@ data class SystemActions(
     val onRollbackApp: suspend (PreviousVersion) -> RollbackResult = { RollbackResult.Requested },
     /** Apre la scelta dell'app Home di Android. */
     val onChooseHome: () -> Unit = {},
+    /** Apre la personalizzazione della Home. */
+    val onCustomizeHome: () -> Unit = {},
 )
 
 @Composable
