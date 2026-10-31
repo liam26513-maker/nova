@@ -59,7 +59,7 @@ private fun ThemesSection(
         footer = stringResource(R.string.customize_themes_footer),
     ) {
         ThemePresets.all.forEachIndexed { i, preset ->
-            val active = prefs.look() == preset.prefs.look()
+            val active = prefs.appearance() == preset.prefs.appearance()
             SettingsRow(
                 preset.name,
                 summary = preset.description,

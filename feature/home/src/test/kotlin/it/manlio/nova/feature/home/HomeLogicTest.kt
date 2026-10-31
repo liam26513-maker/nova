@@ -120,7 +120,7 @@ class HomePrefsTest {
             val target = HomePrefsStore(tmp.root.resolve("b.properties"))
             target.update { it.copy(hidden = mapOf("mine" to "Mia")) }
             assertEquals(true, target.importTheme(theme))
-            assertEquals(ThemePresets.all[1].prefs.look(), target.prefs.value.look())
+            assertEquals(ThemePresets.all[1].prefs.appearance(), target.prefs.value.appearance())
             assertEquals(mapOf("mine" to "Mia"), target.prefs.value.hidden)
 
             assertEquals(false, target.importTheme("ciao=1"))
@@ -129,7 +129,7 @@ class HomePrefsTest {
 
     @Test
     fun `every preset is different and valid`() {
-        assertEquals(ThemePresets.all.size, ThemePresets.all.map { it.prefs.look() }.toSet().size)
+        assertEquals(ThemePresets.all.size, ThemePresets.all.map { it.prefs.appearance() }.toSet().size)
         ThemePresets.all.forEach { assertEquals(it.prefs, PrefsCodec.read(PrefsCodec.write(it.prefs))) }
     }
 }

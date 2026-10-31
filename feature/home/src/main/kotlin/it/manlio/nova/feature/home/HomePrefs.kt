@@ -87,7 +87,7 @@ data class HomePrefs(
         }
 
     /** Solo l'aspetto (per i temi): senza app nascoste e nomi. */
-    fun look(): HomePrefs = copy(hidden = emptyMap(), renamed = emptyMap())
+    fun appearance(): HomePrefs = copy(hidden = emptyMap(), renamed = emptyMap())
 
     /** Applica l'aspetto di [theme] tenendo app nascoste e nomi di queste preferenze. */
     fun withLookOf(theme: HomePrefs): HomePrefs = theme.copy(hidden = hidden, renamed = renamed)
@@ -115,7 +115,7 @@ class HomePrefsStore(private val file: File) {
         }
 
     /** Tema da condividere: solo l'aspetto, in testo leggibile. */
-    fun exportTheme(): String = PrefsCodec.write(_prefs.value.look())
+    fun exportTheme(): String = PrefsCodec.write(_prefs.value.appearance())
 
     /** @return false se il file non è un tema di NOVA. */
     suspend fun importTheme(text: String): Boolean {
