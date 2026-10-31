@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -154,7 +153,7 @@ private fun modeTransition(target: HomeMode): ContentTransform {
     val exit =
         fadeOut(spring(stiffness = FADE_OUT_STIFFNESS)) +
             slideOutVertically(spring(stiffness = FADE_OUT_STIFFNESS)) { -it / SLIDE_FRACTION * direction }
-    return enter.togetherWith(exit).using(SizeTransform(clip = false))
+    return ContentTransform(enter, exit, sizeTransform = SizeTransform(clip = false))
 }
 
 /** Sfumatura scura e opaca, tinta col colore dello sfondo: più scura a sinistra e in basso, dove c'è il testo. */
