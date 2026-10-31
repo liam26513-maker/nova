@@ -121,13 +121,13 @@ internal fun SettingsButton(
         contentAlignment = Alignment.Center,
     ) {
         val ink = LocalHomeLook.current.ink
-        val knob = if (LocalHomeLook.current.dark) KNOB_FILL else KNOB_FILL_LIGHT
+        val knobFill = if (LocalHomeLook.current.dark) KNOB_FILL else KNOB_FILL_LIGHT
         Canvas(Modifier.size(GLYPH)) {
             val stroke = 1.6.dp.toPx()
             SLIDERS.forEach { (y, knob) ->
                 val yy = size.height * y
                 drawLine(ink, Offset(0f, yy), Offset(size.width, yy), stroke, StrokeCap.Round)
-                drawCircle(knob, radius = 3.2.dp.toPx(), center = Offset(size.width * knob, yy))
+                drawCircle(knobFill, radius = 3.2.dp.toPx(), center = Offset(size.width * knob, yy))
                 drawCircle(
                     ink,
                     radius = 3.2.dp.toPx(),
