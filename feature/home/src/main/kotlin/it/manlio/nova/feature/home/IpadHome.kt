@@ -135,6 +135,7 @@ private fun novaWidgetChoices(
             WidgetKind.NOTE to stringResource(R.string.widget_note),
             WidgetKind.WEATHER to stringResource(R.string.widget_weather),
             WidgetKind.POMODORO to stringResource(R.string.widget_pomodoro),
+            WidgetKind.MUSIC to stringResource(R.string.widget_music),
         )
     return labels.map { (kind, label) ->
         WidgetChoice(kind.name, label, "${kind.cols} × ${kind.rows}") {
@@ -371,20 +372,32 @@ private fun ItemContent(
                     remove()
                 },
             ) {
-                when (item.kind) {
-                    WidgetKind.CLOCK -> ClockWidget(nowMillis)
-                    WidgetKind.CALENDAR -> CalendarWidget(nowMillis)
-                    WidgetKind.BATTERY -> BatteryWidget()
-                    WidgetKind.NOTE -> NoteWidget(item.text) { text -> ipad.onLayout { it.setNote(item.id, text) } }
-                    WidgetKind.WEATHER -> WeatherWidget(item.text, actions.weather) { city -> ipad.onLayout { it.setNote(item.id, city) } }
-                    WidgetKind.POMODORO -> PomodoroWidget(item.text) { state -> ipad.onLayout { it.setNote(item.id, state) } }
-                    WidgetKind.EXTERNAL ->
-                        AndroidView(
-                            factory = { ctx -> actions.widgets?.view(ctx, item.ref) ?: android.view.View(ctx) },
-                            modifier = Modifier.fillMaxSize(),
-                        )
-                }
+                WidgetContent(item, nowMillis, actions, ipad)
             }
+    }
+}
+
+/** Il contenuto di un widget, secondo il suo tipo. */
+@Composable
+private fun WidgetContent(
+    item: WidgetItem,
+    nowMillis: Long,
+    actions: HomeActions,
+    ipad: IpadActions,
+) {
+    when (item.kind) {
+        WidgetKind.CLOCK -> ClockWidget(nowMillis)
+        WidgetKind.CALENDAR -> CalendarWidget(nowMillis)
+        WidgetKind.BATTERY -> BatteryWidget()
+        WidgetKind.NOTE -> NoteWidget(item.text) { text -> ipad.onLayout { it.setNote(item.id, text) } }
+        WidgetKind.WEATHER -> WeatherWidget(item.text, actions.weather) { city -> ipad.onLayout { it.setNote(item.id, city) } }
+        WidgetKind.MUSIC -> MusicWidget(actions.media)
+        WidgetKind.POMODORO -> PomodoroWidget(item.text) { state -> ipad.onLayout { it.setNote(item.id, state) } }
+        WidgetKind.EXTERNAL ->
+            AndroidView(
+                factory = { ctx -> actions.widgets?.view(ctx, item.ref) ?: android.view.View(ctx) },
+                modifier = Modifier.fillMaxSize(),
+            )
     }
 }
 

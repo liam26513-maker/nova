@@ -211,4 +211,7 @@
     <string name="customize_layout_ipad">Icone e dock</string>
     <string name="customize_layout_list">Elenco</string>
     <string name="customize_layout_hybrid">Ibrido</string>
+    <string name="home_notifications">Notifiche e musica sulla Home</string>
+    <string name="home_notifications_on">Attivo: numeri sulle icone e musica nell\'isola</string>
+    <string name="home_notifications_off">Non attivo: tocca e consenti l\'accesso alle notifiche a NOVA</string>
 </resources>

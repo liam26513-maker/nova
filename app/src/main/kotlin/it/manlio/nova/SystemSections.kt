@@ -43,6 +43,8 @@ data class SystemUiState(
     val systemChanges: Int,
     /** NOVA è l'app Home predefinita. */
     val novaIsHome: Boolean = false,
+    /** L'utente ha dato a NOVA l'accesso alle notifiche (notifiche sotto le icone, musica nell'isola). */
+    val notificationAccess: Boolean = false,
 )
 
 /** Azioni delle sezioni di sistema. */
@@ -67,6 +69,8 @@ data class SystemActions(
     /** Apre Migliora o Ripara. */
     val onImprove: () -> Unit = {},
     val onRepair: () -> Unit = {},
+    /** Apre la schermata di Android dove si dà l'accesso alle notifiche. */
+    val onNotificationAccess: () -> Unit = {},
 )
 
 @Composable

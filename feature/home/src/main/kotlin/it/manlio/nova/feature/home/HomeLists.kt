@@ -260,19 +260,33 @@ private fun RowScope.RowContent(
         AppIcon(app, actions.icon, if (big) look.bigIcon else look.smallIcon)
         Spacer(Modifier.width(if (big) 18.dp else 14.dp))
     }
-    BasicText(
-        app.label,
-        Modifier.weight(1f, fill = false),
-        style =
-            TextStyle(
-                LocalHomeLook.current.ink,
-                if (big) look.bigLabel else look.smallLabel,
-                if (big || look.weight != FontWeight.Light) look.weight else FontWeight.Normal,
-                fontFamily = look.family,
-            ),
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-    )
+    val preview = LocalNotifications.current[app.component.packageName]
+    Column(Modifier.weight(1f, fill = false)) {
+        BasicText(
+            app.label,
+            style =
+                TextStyle(
+                    LocalHomeLook.current.ink,
+                    if (big) look.bigLabel else look.smallLabel,
+                    if (big || look.weight != FontWeight.Light) look.weight else FontWeight.Normal,
+                    fontFamily = look.family,
+                ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        if (preview != null && big) {
+            BasicText(
+                NotificationIndex.line(preview),
+                style = TextStyle(look.muted, 15.sp, fontFamily = look.family),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+    if (preview != null) {
+        Spacer(Modifier.width(10.dp))
+        CountBadge(preview.count)
+    }
     if (favorite && !big) {
         val favoriteMark = stringResource(R.string.home_favorite_mark)
         Spacer(Modifier.width(10.dp))

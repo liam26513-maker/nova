@@ -27,6 +27,12 @@ fun HomeSection(
             )
         }
         SettingsRow(
+            stringResource(R.string.home_notifications),
+            summary = stringResource(if (state.notificationAccess) R.string.home_notifications_on else R.string.home_notifications_off),
+            showDivider = true,
+            onClick = actions.onNotificationAccess,
+        )
+        SettingsRow(
             stringResource(R.string.home_customize),
             summary = stringResource(R.string.home_customize_summary),
             showDivider = true,

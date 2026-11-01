@@ -4,6 +4,15 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Notifiche sulle icone, isola dinamica e widget Musica (Fase 1, blocco B)
+- Richiesta: "Continua con il blocco B non appena la nuova versione è pronta" (dal piano: notifiche in linea, isola dinamica, widget).
+- **Prima di tutto, un passo tuo:** Impostazioni → Home → **«Notifiche e musica sulla Home»** → consenti a NOVA l'accesso alle notifiche. È un permesso speciale di Android, non lo si può dare da dentro l'app. Se Android lo nega ("impostazione con restrizioni"), vai su Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni», poi riprova.
+- **Notifiche sulle icone:** un numero rosso sull'icona (griglia e dock) con quante notifiche ci sono. Nello stile Elenco, sotto il nome dell'app compare l'ultima («Anna: Ci sei stasera?»). Tenendo premuta l'app, «Cancella la notifica».
+- **Isola dinamica:** una pillola in alto al centro della Home che compare **solo mentre suona della musica**: titolo e copertina; toccandola si allarga con precedente, pausa e successiva. È una parte della Home, non resta sopra le altre app.
+- **Widget Musica** («+» → Musica): copertina, titolo, artista e comandi; funziona anche in pausa, per riprendere.
+- **Privacy:** le notifiche restano **solo in memoria**, non vengono salvate, registrate né inviate. Quelle di servizio (in corso, riassunti, comandi della musica) non vengono contate.
+- Non ci sono ancora: rispondere a un messaggio dall'icona e il «segna come letto».
+
 ### Meteo, Pomodoro, centro di controllo e calcolatrice (Fase 1, primo blocco del resto del piano)
 - Richiesta: "Inizia con il resto del piano. E le cose con i limiti trova un modo per togliere questi limiti e hai i miei consensi".
 - **Meteo** (widget «+» → Meteo): scrivi il nome della città, vedi temperatura, minima e massima, un simbolo del tempo. Il limite che c'era (servivano Internet e la posizione) è tolto così: **niente posizione**, solo il nome della città; i dati vengono da Open-Meteo, gratuito e senza account. Si aggiorna al massimo ogni 30 minuti; senza rete mostra l'ultimo tempo conosciuto.

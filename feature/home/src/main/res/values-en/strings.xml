@@ -75,4 +75,12 @@
     <string name="control_volume">Volume</string>
     <string name="control_brightness">Brightness</string>
     <string name="control_brightness_grant">Allow permission to adjust brightness</string>
+    <string name="widget_music">Music</string>
+    <string name="music_none">Nothing is playing</string>
+    <string name="music_previous">Previous</string>
+    <string name="music_play">Play</string>
+    <string name="music_pause">Pause</string>
+    <string name="music_next">Next</string>
+    <string name="island_label">Now playing: %1$s</string>
+    <string name="home_menu_clear_notification">Clear notification</string>
 </resources>

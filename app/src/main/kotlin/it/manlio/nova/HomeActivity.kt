@@ -62,6 +62,7 @@ class HomeActivity : ComponentActivity() {
     private lateinit var layoutStore: HomeLayoutStore
     private lateinit var widgets: WidgetHostBridge
     private lateinit var controls: HomeControls
+    private lateinit var mediaHub: MediaHub
     private val weather = WeatherClient()
     private var controlsTick by mutableIntStateOf(0)
     private lateinit var wallpaperLoader: WallpaperLoader
@@ -102,6 +103,8 @@ class HomeActivity : ComponentActivity() {
         layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))
         widgets = WidgetHostBridge(this)
         controls = HomeControls(this, app)
+        NotificationHub.init(this)
+        mediaHub = MediaHub(this)
         wallpaperLoader = WallpaperLoader(this)
         onBackPressedDispatcher.addCallback(
             this,
@@ -180,6 +183,8 @@ class HomeActivity : ComponentActivity() {
             widgets = widgets,
             weather = weather::load,
             controls = controls.actions(),
+            notifications = NotificationHub,
+            media = mediaHub,
         )
 
     /** Apre l'app facendola "crescere" dal punto toccato. */
@@ -243,6 +248,7 @@ class HomeActivity : ComponentActivity() {
         catalog.start()
         widgets.start()
         controls.start()
+        mediaHub.start()
         controlsTick++ // il permesso della luminosità può essere cambiato mentre la Home non c'era
         getSystemService(WindowManager::class.java).addCrossWindowBlurEnabledListener(mainExecutor, blurListener)
         wallpapers.addOnColorsChangedListener(colorsListener, Handler(mainLooper))
@@ -258,6 +264,7 @@ class HomeActivity : ComponentActivity() {
             catalog.stop()
             widgets.stop()
             controls.stop()
+            mediaHub.stop()
             getSystemService(WindowManager::class.java).removeCrossWindowBlurEnabledListener(blurListener)
             wallpapers.removeOnColorsChangedListener(colorsListener)
         }

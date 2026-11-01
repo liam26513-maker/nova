@@ -6,4 +6,6 @@ internal data class MenuExtras(
     val onTakeOut: (() -> Unit)? = null,
     val onRemove: (() -> Unit)? = null,
     val onAddToHome: (() -> Unit)? = null,
+    /** Chiude la notifica di quest'app (solo se ce n'è una). */
+    val onClearNotification: (() -> Unit)? = null,
 )

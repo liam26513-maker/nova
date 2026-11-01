@@ -52,6 +52,10 @@ import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.Level
+import it.manlio.nova.feature.home.MediaSource
+import it.manlio.nova.feature.home.NotificationPreview
+import it.manlio.nova.feature.home.NotificationSource
+import it.manlio.nova.feature.home.NowPlaying
 import it.manlio.nova.feature.home.Pomodoro
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
@@ -100,6 +104,8 @@ class HomeScreenTest {
         list: List<AppEntry> = apps,
         controls: ControlActions? = null,
         weather: (suspend (String) -> Result<Weather>)? = null,
+        notifications: NotificationSource? = null,
+        media: MediaSource? = null,
     ) {
         val actions =
             HomeActions(
@@ -113,6 +119,8 @@ class HomeScreenTest {
                 onWebSearch = { webSearches += it },
                 controls = controls,
                 weather = weather,
+                notifications = notifications,
+                media = media,
             )
         compose.setContent {
             NovaTheme(NovaTokens.Fallback) {
@@ -735,6 +743,127 @@ class HomeScreenTest {
         compose.onAllNodesWithText("Modifica la Home").onLast().performClick()
         compose.waitForIdle()
         compose.onNodeWithText("Fine").assertExists()
+    }
+
+    // ---- Notifiche in linea, isola dinamica, widget Musica ----
+
+    private class FakeNotifications(initial: Map<String, NotificationPreview>) : NotificationSource {
+        override val previews = kotlinx.coroutines.flow.MutableStateFlow(initial)
+        val dismissed = mutableListOf<String>()
+
+        override fun isEnabled() = true
+
+        override fun dismiss(key: String) {
+            dismissed += key
+        }
+    }
+
+    private class FakeMedia(initial: NowPlaying?) : MediaSource {
+        override val nowPlaying = kotlinx.coroutines.flow.MutableStateFlow(initial)
+        val calls = mutableListOf<String>()
+
+        override fun previous() {
+            calls += "previous"
+        }
+
+        override fun toggle() {
+            calls += "toggle"
+            nowPlaying.value = nowPlaying.value?.let { it.copy(playing = !it.playing) }
+        }
+
+        override fun next() {
+            calls += "next"
+        }
+
+        override fun open() {
+            calls += "open"
+        }
+    }
+
+    private val chatPreview = NotificationPreview("pkg.gmail", "key-1", "Anna", "Ci sei stasera?", 3, 1)
+
+    @Test
+    fun notification_count_shows_on_grid_icons_and_in_the_dock() {
+        val source = FakeNotifications(mapOf("pkg.gmail" to chatPreview, "pkg.chrome" to chatPreview.copy(pkg = "pkg.chrome", count = 120)))
+        render(prefs = HomePrefs(), notifications = source)
+        compose.onNodeWithContentDescription("3").assertExists() // Gmail, nella griglia
+        compose.onNodeWithContentDescription("99+").assertExists() // Chrome, nel dock
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_notifiche.png")
+        source.previews.value = emptyMap()
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription("3").assertDoesNotExist()
+    }
+
+    @Test
+    fun the_list_style_shows_the_notification_under_the_app() {
+        val source = FakeNotifications(mapOf("pkg.chrome" to chatPreview.copy(pkg = "pkg.chrome")))
+        render(notifications = source) // stile Elenco: Chrome è tra i preferiti grandi
+        compose.onNodeWithText("Anna: Ci sei stasera?").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_elenco_notifiche.png")
+    }
+
+    @Test
+    fun the_menu_can_clear_an_apps_notification() {
+        val source = FakeNotifications(mapOf("pkg.gmail" to chatPreview))
+        render(prefs = HomePrefs(), notifications = source)
+        compose.onNodeWithText("Gmail").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Cancella la notifica").performClick()
+        assertEquals(listOf("key-1"), source.dismissed)
+    }
+
+    @Test
+    fun the_menu_has_no_clear_entry_without_a_notification() {
+        render(prefs = HomePrefs(), notifications = FakeNotifications(emptyMap()))
+        compose.onNodeWithText("Gmail").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Cancella la notifica").assertDoesNotExist()
+    }
+
+    private val song = NowPlaying("pkg.musica", "Notte stellata", "Ensemble", playing = true)
+
+    @Test
+    fun the_island_shows_the_music_while_it_plays_and_expands_with_controls() {
+        val media = FakeMedia(song)
+        render(prefs = HomePrefs(), media = media)
+        compose.onNodeWithContentDescription("In riproduzione: Notte stellata").assertExists()
+        compose.onNodeWithText("Metti in pausa").assertDoesNotExist() // chiusa: niente comandi
+        compose.onNodeWithContentDescription("In riproduzione: Notte stellata").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Ensemble").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_isola.png")
+        compose.onNodeWithContentDescription("Successiva").performClick()
+        compose.onNodeWithContentDescription("Precedente").performClick()
+        compose.onNodeWithContentDescription("Metti in pausa").performClick()
+        assertEquals(listOf("next", "previous", "toggle"), media.calls)
+        compose.waitForIdle()
+        // In pausa l'isola sparisce: si riprende dal widget.
+        compose.onNodeWithContentDescription("In riproduzione: Notte stellata").assertDoesNotExist()
+    }
+
+    @Test
+    fun no_island_without_music() {
+        render(prefs = HomePrefs(), media = FakeMedia(null))
+        compose.onNodeWithContentDescription("In riproduzione", substring = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun the_music_widget_shows_the_song_and_controls_even_when_paused() {
+        val media = FakeMedia(song.copy(playing = false))
+        layout = HomeLayout(listOf(WidgetItem("m", WidgetKind.MUSIC)))
+        render(prefs = HomePrefs(), media = media)
+        compose.onNodeWithText("Notte stellata").assertExists()
+        compose.onNodeWithText("Ensemble").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_musica.png")
+        compose.onNodeWithContentDescription("Riproduci").performClick()
+        assertEquals(listOf("toggle"), media.calls)
+    }
+
+    @Test
+    fun the_music_widget_says_when_nothing_plays() {
+        layout = HomeLayout(listOf(WidgetItem("m", WidgetKind.MUSIC)))
+        render(prefs = HomePrefs(), media = FakeMedia(null))
+        compose.onNodeWithText("Nessuna musica in riproduzione").assertExists()
     }
 
     private fun fakeIcon(label: String): ImageBitmap {

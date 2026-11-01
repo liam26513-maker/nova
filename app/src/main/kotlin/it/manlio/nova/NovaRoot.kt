@@ -50,6 +50,9 @@ fun NovaRoot(
             .copy(
                 onCustomizeHome = { customizingHome = true },
                 onRedoOnboarding = { onboardingStep = OnboardingStep.WELCOME },
+                onNotificationAccess = {
+                    app.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                },
                 onImprove = { improving = ImproveMode.IMPROVE },
                 onRepair = { improving = ImproveMode.REPAIR },
             )
@@ -169,6 +172,7 @@ private fun rememberSystemUiState(
             shizuku = shizukuStatus,
             systemChanges = app.systemChanges.entries().size,
             novaIsHome = isDefaultHome(app),
+            notificationAccess = NotificationHub.isListenerEnabled(app),
         )
     }
 }

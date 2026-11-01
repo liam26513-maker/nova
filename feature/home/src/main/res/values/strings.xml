@@ -75,4 +75,12 @@
     <string name="control_volume">Volume</string>
     <string name="control_brightness">Luminosità</string>
     <string name="control_brightness_grant">Concedi il permesso per regolare la luminosità</string>
+    <string name="widget_music">Musica</string>
+    <string name="music_none">Nessuna musica in riproduzione</string>
+    <string name="music_previous">Precedente</string>
+    <string name="music_play">Riproduci</string>
+    <string name="music_pause">Metti in pausa</string>
+    <string name="music_next">Successiva</string>
+    <string name="island_label">In riproduzione: %1$s</string>
+    <string name="home_menu_clear_notification">Cancella la notifica</string>
 </resources>
