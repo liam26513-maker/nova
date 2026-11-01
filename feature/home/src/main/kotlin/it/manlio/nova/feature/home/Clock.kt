@@ -69,9 +69,12 @@ fun rememberMinuteClock(): Long {
     return now
 }
 
-/** Ora grande e leggera e data per esteso. */
+/** Ora grande e leggera e data per esteso; [compact] la riduce per l'intestazione della home a icone. */
 @Composable
-internal fun ClockHeader(nowMillis: Long) {
+internal fun ClockHeader(
+    nowMillis: Long,
+    compact: Boolean = false,
+) {
     val context = LocalContext.current
     val locale = LocalConfiguration.current.locales[0]
     val time = remember(nowMillis, locale) { android.text.format.DateFormat.getTimeFormat(context).format(Date(nowMillis)) }
@@ -81,6 +84,12 @@ internal fun ClockHeader(nowMillis: Long) {
         }
     val look = LocalHomeLook.current
     Column {
+        if (compact) {
+            val weight = if (look.clockStyle == ClockStyle.BOLD) FontWeight.SemiBold else FontWeight.Light
+            ClockText(time, COMPACT_TIME, weight)
+            if (look.showDate) BasicText(date, style = TextStyle(look.muted, COMPACT_DATE, FontWeight.Normal, fontFamily = look.family))
+            return@Column
+        }
         when (look.clockStyle) {
             ClockStyle.THIN -> ClockText(time, 88.sp, FontWeight.Thin)
             ClockStyle.BOLD -> ClockText(time, 80.sp, FontWeight.SemiBold)
@@ -138,6 +147,9 @@ internal fun SettingsButton(
         }
     }
 }
+
+private val COMPACT_TIME = 52.sp
+private val COMPACT_DATE = 17.sp
 
 /** Tre cursori: altezza della riga e posizione della manopola, in frazioni del disegno. */
 @Suppress("MagicNumber") // geometria del disegno

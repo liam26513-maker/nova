@@ -7,6 +7,8 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
@@ -59,6 +61,7 @@ import androidx.compose.ui.unit.dp
  * [prefs] (icone, testo, carattere, orologio, lato dell'alfabeto, sfumatura, app nascoste e rinominate).
  * [apps] null = caricamento in corso. Quando [scrollToTop] cambia (tasto Home) si torna ai preferiti.
  */
+@Suppress("LongMethod", "CyclomaticComplexMethod") // radice della composizione: coordina stato, sfondo e disposizioni
 @Composable
 fun HomeScreen(
     apps: List<AppEntry>?,
@@ -69,14 +72,30 @@ fun HomeScreen(
     prefs: HomePrefs = HomePrefs(),
     wallpaper: ImageBitmap? = null,
     scrollToTop: Int = 0,
+    /** Disposizione di icone, cartelle e widget dello stile iPad; [onLayoutChange] la modifica (e la salva). */
+    layout: HomeLayout = HomeLayout(),
+    onLayoutChange: ((HomeLayout) -> HomeLayout) -> Unit = {},
+    /** Falso con «Rimuovi animazioni» di Android: niente ondeggiamento in modifica. */
+    animate: Boolean = true,
 ) {
-    val visible = remember(apps, prefs.hidden, prefs.renamed) { prefs.apply(apps) }
-    val favorites = remember(visible, favoriteKeys) { favoritesOf(visible, favoriteKeys) }
-    val favoriteSet = remember(favoriteKeys) { favoriteKeys.toSet() }
-    val rows = remember(visible) { allRows(visible.orEmpty()) }
-    val headerIndex = remember(rows) { headerIndexOf(rows) }
+    val data = rememberHomeData(apps, favoriteKeys, prefs, layout)
+    val visible = data.visible
+    val favorites = data.favorites
     var mode by rememberSaveable { mutableStateOf(HomeMode.FAVORITES) }
     var menuFor by remember { mutableStateOf<AppEntry?>(null) }
+    var editing by rememberSaveable { mutableStateOf(false) }
+    var searching by rememberSaveable { mutableStateOf(false) }
+    val latestData by rememberUpdatedState(data)
+    val ipadActions =
+        remember(onLayoutChange, favorites) {
+            IpadActions(
+                onEditing = { editing = it },
+                onLayout = { change -> onLayoutChange { current -> change(current.reconcile(latestData.keys, latestData.dockKeys)) } },
+                onMenu = { menuFor = it },
+                onSearch = { searching = true },
+                onReorderDock = { order -> actions.onReorderFavorites(order + favorites.drop(DOCK_MAX).map { it.key }) },
+            )
+        }
     val favoritesState = rememberLazyListState()
     val allState = rememberLazyListState()
     LaunchedEffect(scrollToTop) {
@@ -86,43 +105,106 @@ fun HomeScreen(
             favoritesState.animateScrollToItem(0)
         }
     }
-    BackHandler(enabled = mode == HomeMode.ALL && menuFor == null) { mode = HomeMode.FAVORITES }
+    BackHandler(enabled = editing && menuFor == null) { editing = false }
+    BackHandler(enabled = mode == HomeMode.ALL && menuFor == null && !editing && !searching) { mode = HomeMode.FAVORITES }
 
     val tint = backgroundTint(prefs, style)
     val systemDark = isSystemInDarkTheme()
     val look = remember(prefs, systemDark, tint) { prefs.look(systemDark, tint) }
     val swipeDown = rememberSwipeDown(prefs.swipeDownNotifications, actions.onSwipeDown)
     CompositionLocalProvider(LocalHomeLook provides look) {
-        Box(Modifier.fillMaxSize().then(swipeDown)) {
+        BoxWithConstraints(Modifier.fillMaxSize().then(swipeDown)) {
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
             Scrim(tint, blurred, prefs.scrim, look.dark)
-            HomeLayout(
-                prefs = prefs,
-                nowMillis = nowMillis,
-                onOpenSettings = actions.onOpenSettings,
-                letters = remember(headerIndex) { headerIndex.keys.toList() },
-                onLetter = { letter ->
-                    mode = HomeMode.ALL
-                    headerIndex[letter]?.let { allState.requestScrollToItem(it) }
-                },
-                onDoubleTapAlphabet = actions.onSleep.takeIf { prefs.doubleTapSleep },
-            ) {
-                AnimatedContent(
-                    targetState = mode,
-                    transitionSpec = { modeTransition(targetState) },
-                    modifier = Modifier.weight(1f).widthIn(max = CONTENT_WIDTH),
-                    label = "home-mode",
-                ) { shown ->
-                    when (shown) {
-                        HomeMode.FAVORITES ->
-                            FavoritesList(favorites, visible != null, favoritesState, actions, { menuFor = it }) { mode = HomeMode.ALL }
-                        HomeMode.ALL ->
-                            AllAppsList(rows, favoriteSet, allState, actions, { menuFor = it }) { mode = HomeMode.FAVORITES }
-                    }
-                }
+            val ipad = prefs.layout == HomeLayoutStyle.IPAD
+            val hybrid = prefs.layout == HomeLayoutStyle.HYBRID && maxWidth > maxHeight
+            val lists =
+                HomeLists(favorites, data.favoriteSet, AllAppsData(data.rows, data.headerIndex, allState), visible != null, favoritesState)
+            val appList: @Composable () -> Unit = {
+                AppListHome(prefs, nowMillis, actions, lists, mode, {
+                    mode = it
+                }, { menuFor = it }, showClock = prefs.showClock && !ipad && !hybrid, showSettings = !hybrid)
             }
-            AppMenu(menuFor, menuFor?.key in favoriteSet, actions) { menuFor = null }
+            val grid: @Composable (Modifier) -> Unit = { m ->
+                IpadHome(data.arranged, data.entries, data.dock, nowMillis, prefs, actions, ipadActions, scrollToTop, editing, animate, m)
+            }
+            when {
+                ipad ->
+                    AnimatedContent(
+                        targetState = mode == HomeMode.FAVORITES,
+                        transitionSpec = { gridTransition() },
+                        modifier = Modifier.fillMaxSize(),
+                        label = "home-ipad",
+                    ) { showGrid -> if (showGrid) grid(Modifier) else appList() }
+                hybrid ->
+                    Row(Modifier.fillMaxSize()) {
+                        Box(Modifier.weight(1f)) { appList() }
+                        grid(Modifier.weight(HYBRID_GRID_WEIGHT))
+                    }
+                else -> appList()
+            }
+            if (searching) {
+                SearchScreen(
+                    visible.orEmpty(),
+                    actions,
+                    onShowAll = {
+                        searching = false
+                        mode = HomeMode.ALL
+                    },
+                    onClose = { searching = false },
+                )
+            }
+            val extras = menuExtras(menuFor, data.arranged, ipad || hybrid, ipadActions) { menuFor = null }
+            AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
+        }
+    }
+}
+
+/**
+ * La home ad elenco (stile Niagara): preferiti e tutte le app con l'alfabeto. Nello stile iPad serve solo
+ * per «Cerca app», cioè l'elenco completo, e l'ora sta nella pagina delle icone.
+ */
+@Composable
+private fun AppListHome(
+    prefs: HomePrefs,
+    nowMillis: Long,
+    actions: HomeActions,
+    lists: HomeLists,
+    mode: HomeMode,
+    onMode: (HomeMode) -> Unit,
+    onMenu: (AppEntry) -> Unit,
+    showClock: Boolean,
+    showSettings: Boolean,
+) {
+    val ipad = prefs.layout == HomeLayoutStyle.IPAD
+    HomeLayout(
+        prefs = prefs,
+        nowMillis = nowMillis,
+        onOpenSettings = actions.onOpenSettings,
+        letters = remember(lists.headerIndex) { lists.headerIndex.keys.toList() },
+        onLetter = { letter ->
+            onMode(HomeMode.ALL)
+            lists.headerIndex[letter]?.let { lists.allState.requestScrollToItem(it) }
+        },
+        onDoubleTapAlphabet = actions.onSleep.takeIf { prefs.doubleTapSleep },
+        showClock = showClock,
+        showSettings = showSettings,
+    ) {
+        AnimatedContent(
+            targetState = mode,
+            transitionSpec = { modeTransition(targetState) },
+            modifier = Modifier.weight(1f).widthIn(max = CONTENT_WIDTH),
+            label = "home-mode",
+        ) { shown ->
+            when (shown) {
+                HomeMode.FAVORITES ->
+                    FavoritesList(lists.favorites, lists.loaded, lists.favoritesState, actions, onMenu) { onMode(HomeMode.ALL) }
+                HomeMode.ALL ->
+                    AllAppsList(lists.rows, lists.favoriteSet, lists.allState, actions, onMenu, backLabel = ipad) {
+                        onMode(HomeMode.FAVORITES)
+                    }
+            }
         }
     }
 }
@@ -136,6 +218,8 @@ private fun HomeLayout(
     letters: List<Char>,
     onLetter: (Char) -> Unit,
     onDoubleTapAlphabet: (() -> Unit)?,
+    showClock: Boolean,
+    showSettings: Boolean,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding()) {
@@ -152,13 +236,13 @@ private fun HomeLayout(
         Row(Modifier.fillMaxSize()) {
             if (prefs.alphabetSide == Side.LEFT) alphabet()
             Column(Modifier.weight(1f).fillMaxHeight().padding(start = margin, top = TOP_MARGIN)) {
-                if (prefs.showClock) {
+                if (showClock) {
                     ClockHeader(nowMillis)
                     Spacer(Modifier.height(32.dp))
                 }
                 content()
             }
-            SettingsButton(onOpenSettings, Modifier.padding(top = TOP_MARGIN, end = 8.dp))
+            if (showSettings) SettingsButton(onOpenSettings, Modifier.padding(top = TOP_MARGIN, end = 8.dp))
             if (prefs.alphabetSide == Side.RIGHT) alphabet()
         }
     }
@@ -173,6 +257,14 @@ private fun modeTransition(target: HomeMode): ContentTransform {
     val exit =
         fadeOut(spring(stiffness = FADE_OUT_STIFFNESS)) +
             slideOutVertically(spring(stiffness = FADE_OUT_STIFFNESS)) { -it / SLIDE_FRACTION * direction }
+    return ContentTransform(enter, exit, sizeTransform = SizeTransform(clip = false))
+}
+
+/** Dalla griglia all'elenco completo (e ritorno): dissolvenza con un leggero ingrandimento, a molla. */
+private fun gridTransition(): ContentTransform {
+    val grow = spring<Float>(dampingRatio = SLIDE_DAMPING, stiffness = SLIDE_STIFFNESS)
+    val enter = fadeIn(spring(stiffness = FADE_STIFFNESS)) + scaleIn(grow, GRID_SCALE)
+    val exit = fadeOut(spring(stiffness = FADE_OUT_STIFFNESS)) + scaleOut(spring(stiffness = FADE_OUT_STIFFNESS), 1f / GRID_SCALE)
     return ContentTransform(enter, exit, sizeTransform = SizeTransform(clip = false))
 }
 
@@ -291,7 +383,7 @@ private fun rememberSwipeDown(
 }
 
 /** Le icone si caricano una sola volta, alla misura più grande. */
-val TILE_ICON = 56.dp
+val TILE_ICON = 88.dp
 private val CONTENT_WIDTH = 560.dp
 private val WIDE_MARGIN = 72.dp
 private val NARROW_MARGIN = 28.dp
@@ -302,6 +394,8 @@ private const val FADE_OUT_STIFFNESS = 900f
 private const val SLIDE_DAMPING = 0.86f
 private const val SLIDE_STIFFNESS = 360f
 private const val SLIDE_FRACTION = 10
+private const val GRID_SCALE = 0.94f
+private const val HYBRID_GRID_WEIGHT = 2f
 private const val TINT_TO_BLACK = 0.7f
 private const val TINT_TO_WHITE = 0.78f
 private val SWIPE_DISTANCE = 72.dp

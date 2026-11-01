@@ -4,6 +4,32 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Home ancora più simile all'iPad: icone libere, cartelle, widget e ricerca
+- Richiesta: "Falla piu simile a quella dell'ultimo modello di iPad in commercio, falla esattamente uguale a quella e togli tutti i limiti riscontati adesso".
+- **Vetro.** Dock, pulsanti, widget, cartelle e schede hanno ora l'aspetto del vetro: più chiaro in alto, con un filo di luce sul bordo. Non pesa sul tablet (niente sfocatura in tempo reale); con il livello grafico Prestazioni diventa un riempimento pieno.
+- **Modifica la Home.** Tieni premuto lo sfondo (o un'icona → «Modifica la Home»): le icone ondeggiano.
+  - **Trascina** un'icona dove vuoi, anche su un'altra pagina (portala al bordo e aspetta un attimo).
+  - Mettila **sopra un'altra icona** e nasce una **cartella** (anteprima 3×3); sopra una cartella ci entra.
+  - **«−»** toglie un'icona dalla Home: resta in «Tutte le app» e la rimetti con «Aggiungi alla Home».
+  - **«+»** aggiunge un widget, **Fine** esce (anche con Indietro).
+  - Un'app trascinata sul dock diventa un preferito; nel dock le icone si riordinano trascinandole di lato.
+- **Cartelle.** Si aprono con un tocco, hanno un nome che puoi cambiare; tenendo premuta un'app dentro c'è «Togli dalla cartella». Una cartella con una sola app si scioglie da sola.
+- **Widget di NOVA:** Orologio, Calendario, Batteria e Nota rapida. Sono leggeri e si aggiornano solo mentre la Home è visibile.
+- **Widget delle altre app** (quelli di Android): «+» → «Widget delle app». Android chiede un permesso la prima volta per ciascuno.
+- **Cerca** (la capsula sopra il dock): scrivi e trovi le app (senza badare a maiuscole e accenti), le Impostazioni di NOVA e «Cerca sul web» (si apre il browser: NOVA non ha Internet). Senza testo c'è «Tutte le app».
+- **Stile «Ibrido»** (Personalizza → Disposizione e gesti → Stile della Home): in orizzontale i preferiti a elenco a sinistra e la Home a icone a destra; in verticale resta l'elenco.
+- Resta fuori, e te lo dico chiaro: **«esattamente uguale»**. Le regole del progetto vietano di copiare marchi, icone, caratteri e grafica di Apple (e quelle di Niagara). NOVA riprende il comportamento e l'aspetto generale, con grafica sua. Vedi la nota nella richiesta di modifica.
+- Non c'è il Meteo (servirebbero Internet e la posizione, che NOVA non chiede).
+
+### Interfaccia più simile a un iPad
+- Richiesta: "rendi tutta l'interfaccia piu simile ad un iPad".
+- **Home a icone, come sull'iPad.** Ora la Home mostra pagine di icone con i nomi sotto, da scorrere di lato, con i puntini della pagina. In basso c'è il **dock**: un pannello trasparente con i tuoi primi 6 preferiti. Sopra al dock trovi «Cerca app», che apre l'elenco di tutte le app con l'alfabeto a onda. Tenendo premuta un'icona (nella griglia o nel dock) compare il solito menu: preferiti, rinomina, nascondi.
+- **Icone tutte morbide.** Le icone hanno la stessa forma arrotondata («Morbido») e sono più grandi. Se preferivi la forma originale la rimetti da Personalizza → Icone.
+- **Impostazioni con la barra laterale.** A sinistra le categorie con una pastiglia colorata (Migliora, Livello grafico, Il tuo tablet, Home, Aggiornamenti, Strumenti, Stato), a destra il dettaglio, come nelle Impostazioni dell'iPad. Titoli grandi in grassetto. Con lo schermo stretto (telefono o finestra piccola) diventa un elenco che si apre sul dettaglio, con «‹» e Indietro per tornare.
+- **Personalizza la Home** usa la stessa barra laterale (Temi, Sfondo, Colori, Testo e orologio, Icone, Disposizione e gesti, App nascoste) e ha una nuova scelta, **Stile della Home**: «Icone e dock» (nuovo) oppure «Elenco» (la Home di prima, in stile Niagara). I temi non cambiano lo stile che hai scelto.
+- Non cambia nulla per i consumi: il dock è un semplice pannello traslucido (con il livello grafico Prestazioni diventa più pieno e senza bordo luminoso), senza sfocatura in tempo reale.
+- Per ora le icone sono in ordine alfabetico: spostarle liberamente, le cartelle e i widget arrivano nella Fase 1.
+
 ### Migliora e Ripara (Fase 0, punto 9: Fase 0 completata)
 - Richiesta: "Per adesso continua con i passaggi successivi".
 - **Impostazioni → Migliora:** scrivi cosa vuoi con parole tue. NOVA apre Claude Code con la richiesta già scritta, completa dei dettagli tecnici: tu tocchi solo Invia.

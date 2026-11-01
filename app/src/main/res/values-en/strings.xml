@@ -204,4 +204,8 @@
     <string name="improve_row_summary">Ask for a new feature or a change</string>
     <string name="repair_row">Repair</string>
     <string name="repair_row_summary">Report a problem: NOVA attaches an anonymous report</string>
+    <string name="customize_home_layout">Home style</string>
+    <string name="customize_layout_ipad">Icons and dock</string>
+    <string name="customize_layout_list">List</string>
+    <string name="customize_layout_hybrid">Hybrid</string>
 </resources>

@@ -41,6 +41,7 @@ import it.manlio.nova.core.design.perform
 import it.manlio.nova.feature.home.BlurLevel
 import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.HomeFont
+import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.IconSize
 import it.manlio.nova.feature.home.IconStyle
@@ -188,6 +189,9 @@ internal fun labelOf(value: Enum<*>): Int =
         ScrimStrength.LIGHT -> R.string.customize_scrim_light
         ScrimStrength.MEDIUM -> R.string.customize_scrim_medium
         ScrimStrength.STRONG -> R.string.customize_scrim_strong
+        HomeLayoutStyle.IPAD -> R.string.customize_layout_ipad
+        HomeLayoutStyle.HYBRID -> R.string.customize_layout_hybrid
+        HomeLayoutStyle.LIST -> R.string.customize_layout_list
         Side.LEFT -> R.string.customize_side_left
         Side.RIGHT -> R.string.customize_side_right
         else -> error("Scelta senza testo: $value")

@@ -34,6 +34,7 @@ import it.manlio.nova.feature.home.AppCatalog
 import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.Favorites
 import it.manlio.nova.feature.home.HomeActions
+import it.manlio.nova.feature.home.HomeLayoutStore
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.PreparedWallpaper
@@ -58,6 +59,8 @@ import java.util.function.Consumer
 class HomeActivity : ComponentActivity() {
     private lateinit var catalog: AppCatalog
     private lateinit var favorites: Favorites
+    private lateinit var layoutStore: HomeLayoutStore
+    private lateinit var widgets: WidgetHostBridge
     private lateinit var wallpaperLoader: WallpaperLoader
     private var homePresses by mutableIntStateOf(0)
     private var style by mutableStateOf(HomeStyle())
@@ -93,6 +96,8 @@ class HomeActivity : ComponentActivity() {
         }
         catalog = AppCatalog(this)
         favorites = Favorites(File(filesDir, "home-favorites.txt"))
+        layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))
+        widgets = WidgetHostBridge(this)
         wallpaperLoader = WallpaperLoader(this)
         onBackPressedDispatcher.addCallback(
             this,
@@ -107,6 +112,7 @@ class HomeActivity : ComponentActivity() {
             val apps by catalog.apps.collectAsStateWithLifecycle()
             val favoriteKeys by favorites.keys.collectAsStateWithLifecycle()
             val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
+            val layout by layoutStore.layout.collectAsStateWithLifecycle()
             val iconPx = with(LocalDensity.current) { TILE_ICON.roundToPx() }
             val spec = HomeSystem.iconSpec(this, prefs)
             NovaTheme(tokensFrom(config, graphics.level)) {
@@ -119,6 +125,9 @@ class HomeActivity : ComponentActivity() {
                     prefs = prefs,
                     wallpaper = wallpaper?.image,
                     scrollToTop = homePresses,
+                    layout = layout,
+                    onLayoutChange = { change -> lifecycleScope.launch { layoutStore.update(change) } },
+                    animate = HomeSystem.animationsOn(this),
                 )
             }
         }
@@ -162,6 +171,8 @@ class HomeActivity : ComponentActivity() {
             },
             onSwipeDown = { HomeSystem.expandNotifications(this) },
             onSleep = ::sleep,
+            onWebSearch = { HomeSystem.webSearch(this, it) },
+            widgets = widgets,
         )
 
     /** Apre l'app facendola "crescere" dal punto toccato. */
@@ -223,6 +234,7 @@ class HomeActivity : ComponentActivity() {
         super.onStart()
         if (!::catalog.isInitialized) return
         catalog.start()
+        widgets.start()
         getSystemService(WindowManager::class.java).addCrossWindowBlurEnabledListener(mainExecutor, blurListener)
         wallpapers.addOnColorsChangedListener(colorsListener, Handler(mainLooper))
         lifecycleScope.launch {
@@ -235,6 +247,7 @@ class HomeActivity : ComponentActivity() {
     override fun onStop() {
         if (::catalog.isInitialized) {
             catalog.stop()
+            widgets.stop()
             getSystemService(WindowManager::class.java).removeCrossWindowBlurEnabledListener(blurListener)
             wallpapers.removeOnColorsChangedListener(colorsListener)
         }

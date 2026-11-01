@@ -36,6 +36,12 @@ enum class IconSize { SMALL, MEDIUM, LARGE }
 
 enum class IconShape { ORIGINAL, CIRCLE, SQUIRCLE, SQUARE }
 
+/**
+ * Disposizione della home: griglia di icone con dock (stile iPad), ibrida (elenco a sinistra e griglia a destra,
+ * solo in orizzontale) oppure solo elenco di nomi (stile Niagara).
+ */
+enum class HomeLayoutStyle { IPAD, HYBRID, LIST }
+
 /** Icone a colori o monocromatiche ("a tema", come le icone tematiche di Android 13+). */
 enum class IconStyle { COLOR, MONO }
 
@@ -66,12 +72,14 @@ data class HomePrefs(
     // Icone
     val showIcons: Boolean = true,
     val iconSize: IconSize = IconSize.MEDIUM,
-    val iconShape: IconShape = IconShape.ORIGINAL,
+    val iconShape: IconShape = IconShape.SQUIRCLE,
     val iconStyle: IconStyle = IconStyle.COLOR,
     /** Pacchetto di icone di terzi (nome del pacchetto); null = icone delle app. */
     val iconPack: String? = null,
     // Disposizione e gesti
     val alphabetSide: Side = Side.RIGHT,
+    /** Non fa parte dell'aspetto dei temi: cambiare tema non cambia la disposizione. */
+    val layout: HomeLayoutStyle = HomeLayoutStyle.IPAD,
     val showStatusBar: Boolean = true,
     val swipeDownNotifications: Boolean = true,
     val doubleTapSleep: Boolean = false,
@@ -86,11 +94,11 @@ data class HomePrefs(
             AppIndex.sort(shown) { it.label }
         }
 
-    /** Solo l'aspetto (per i temi): senza app nascoste e nomi. */
-    fun appearance(): HomePrefs = copy(hidden = emptyMap(), renamed = emptyMap())
+    /** Solo l'aspetto (per i temi): senza app nascoste, nomi e disposizione. */
+    fun appearance(): HomePrefs = copy(hidden = emptyMap(), renamed = emptyMap(), layout = HomeLayoutStyle.IPAD)
 
-    /** Applica l'aspetto di [theme] tenendo app nascoste e nomi di queste preferenze. */
-    fun withLookOf(theme: HomePrefs): HomePrefs = theme.copy(hidden = hidden, renamed = renamed)
+    /** Applica l'aspetto di [theme] tenendo app nascoste, nomi e disposizione di queste preferenze. */
+    fun withLookOf(theme: HomePrefs): HomePrefs = theme.copy(hidden = hidden, renamed = renamed, layout = layout)
 
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
     val iconSignature: String get() = "$iconShape/$iconStyle/${iconPack.orEmpty()}"
@@ -148,6 +156,9 @@ internal object PrefsCodec {
     fun read(text: String): HomePrefs {
         val p = props(text)
         val d = HomePrefs()
+        // File scritto prima dello stile iPad: l'unica forma allora predefinita era "Originale";
+        // la portiamo alle icone morbide, come il resto della nuova interfaccia (si rimette dalle impostazioni).
+        val beforeIpad = p.getProperty("layout") == null
 
         fun bool(
             key: String,
@@ -175,9 +186,14 @@ internal object PrefsCodec {
             showDate = bool("date", d.showDate),
             showIcons = bool("icons", d.showIcons),
             iconSize = enumOr(p.getProperty("iconSize"), d.iconSize),
-            iconShape = enumOr(p.getProperty("iconShape"), d.iconShape),
+            iconShape =
+                enumOr(
+                    p.getProperty("iconShape"),
+                    d.iconShape,
+                ).let { if (beforeIpad && it == IconShape.ORIGINAL) IconShape.SQUIRCLE else it },
             iconStyle = enumOr(p.getProperty("iconStyle"), d.iconStyle),
             iconPack = p.getProperty("iconPack")?.takeIf { it.isNotBlank() },
+            layout = enumOr(p.getProperty("layout"), d.layout),
             alphabetSide = enumOr(p.getProperty("side"), d.alphabetSide),
             showStatusBar = bool("statusBar", d.showStatusBar),
             swipeDownNotifications = bool("swipeDown", d.swipeDownNotifications),
@@ -213,6 +229,7 @@ internal object PrefsCodec {
         p["iconShape"] = prefs.iconShape.name
         p["iconStyle"] = prefs.iconStyle.name
         prefs.iconPack?.let { p["iconPack"] = it }
+        p["layout"] = prefs.layout.name
         p["side"] = prefs.alphabetSide.name
         p["statusBar"] = prefs.showStatusBar.toString()
         p["swipeDown"] = prefs.swipeDownNotifications.toString()

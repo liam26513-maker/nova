@@ -134,6 +134,82 @@ class HomePrefsTest {
     }
 }
 
+class IpadStyleTest {
+    @get:Rule val tmp = TemporaryFolder()
+
+    @Test
+    fun `the new home is the default, with soft icons`() {
+        val prefs = HomePrefs()
+        assertEquals(HomeLayoutStyle.IPAD, prefs.layout)
+        assertEquals(IconShape.SQUIRCLE, prefs.iconShape)
+    }
+
+    @Test
+    fun `a file saved before the iPad style gets soft icons, but only once`() =
+        runTest {
+            val file = tmp.root.resolve("before.properties").apply { writeText("nova-home=1\niconShape=ORIGINAL\ntext=LARGE\n") }
+            val store = HomePrefsStore(file)
+            assertEquals(IconShape.SQUIRCLE, store.prefs.value.iconShape)
+            assertEquals(TextSize.LARGE, store.prefs.value.textSize)
+            // Dopo il primo salvataggio la scelta è esplicita: tornare a «Originale» resta così.
+            store.update { it.copy(iconShape = IconShape.ORIGINAL) }
+            assertEquals(IconShape.ORIGINAL, HomePrefsStore(file).prefs.value.iconShape)
+        }
+
+    @Test
+    fun `an old file keeps a deliberate shape other than the old default`() {
+        val file = tmp.root.resolve("circle.properties").apply { writeText("iconShape=CIRCLE\n") }
+        assertEquals(IconShape.CIRCLE, HomePrefsStore(file).prefs.value.iconShape)
+    }
+
+    @Test
+    fun `the layout survives a restart and a broken value falls back to the iPad style`() =
+        runTest {
+            val file = tmp.root.resolve("layout.properties")
+            HomePrefsStore(file).update { it.copy(layout = HomeLayoutStyle.LIST) }
+            assertEquals(HomeLayoutStyle.LIST, HomePrefsStore(file).prefs.value.layout)
+            file.writeText("layout=MAGICO\n")
+            assertEquals(HomeLayoutStyle.IPAD, HomePrefsStore(file).prefs.value.layout)
+        }
+
+    @Test
+    fun `themes never change the layout`() =
+        runTest {
+            val store = HomePrefsStore(tmp.root.resolve("theme.properties"))
+            store.update { it.copy(layout = HomeLayoutStyle.LIST) }
+            store.update { it.withLookOf(ThemePresets.all[2].prefs) }
+            assertEquals(HomeLayoutStyle.LIST, store.prefs.value.layout)
+            assertEquals(false, store.exportTheme().contains("LIST"))
+            assertEquals(true, store.importTheme(store.exportTheme()))
+            assertEquals(HomeLayoutStyle.LIST, store.prefs.value.layout)
+            // Anche i temi si confrontano senza la disposizione: quello attivo si riconosce.
+            assertEquals(ThemePresets.all[2].prefs.appearance(), store.prefs.value.appearance())
+        }
+}
+
+class HomeGridTest {
+    @Test
+    fun `columns and rows follow the room, within limits`() {
+        // Tablet in orizzontale (1280×800 dp, margini e intestazione tolti).
+        assertEquals(GridMetrics(7, 4), GridMetrics.of(1136f, 520f))
+        // In verticale.
+        assertEquals(GridMetrics(4, 6), GridMetrics.of(744f, 800f))
+        // Spazi minuscoli o enormi non rompono la griglia.
+        assertEquals(GridMetrics(4, 2), GridMetrics.of(10f, 10f))
+        assertEquals(GridMetrics(8, 6), GridMetrics.of(9000f, 9000f))
+        assertEquals(28, GridMetrics(7, 4).perPage)
+    }
+
+    @Test
+    fun `pages are full except the last, and nothing still gives one empty page`() {
+        assertEquals(listOf(10, 10, 5), paginate((1..25).toList(), 10).map { it.size })
+        assertEquals(listOf((1..25).toList().take(10)), paginate((1..25).toList(), 10).take(1))
+        assertEquals(listOf(emptyList<Int>()), paginate(emptyList<Int>(), 10))
+        assertEquals(listOf(listOf(1), listOf(2)), paginate(listOf(1, 2), 0)) // pagina da zero: si tratta come da uno
+        assertEquals(1, paginate((1..32).toList(), 32).size)
+    }
+}
+
 class IconsAndWallpaperTest {
     @Test
     fun `icon pack components are read in both long and relative form`() {
