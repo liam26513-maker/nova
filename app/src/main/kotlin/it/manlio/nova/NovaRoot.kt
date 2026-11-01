@@ -56,6 +56,7 @@ fun NovaRoot(
                 onNotificationAccess = {
                     app.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 },
+                onControlOverlay = { HomeSystem.openAccessibilitySettings(app) },
                 onImprove = { improving = ImproveMode.IMPROVE },
                 onRepair = { improving = ImproveMode.REPAIR },
             )
@@ -177,6 +178,7 @@ private fun rememberSystemUiState(
             systemChanges = app.systemChanges.entries().size,
             novaIsHome = isDefaultHome(app),
             notificationAccess = NotificationHub.isListenerEnabled(app),
+            controlOverlay = NovaControlService.isEnabled(app),
         )
     }
 }

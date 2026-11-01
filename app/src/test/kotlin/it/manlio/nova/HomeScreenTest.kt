@@ -33,6 +33,7 @@ import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipe
 import androidx.compose.ui.test.swipeLeft
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
@@ -42,6 +43,7 @@ import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.AppItem
 import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.ControlActions
+import it.manlio.nova.feature.home.ControlTileId
 import it.manlio.nova.feature.home.FolderItem
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
@@ -53,6 +55,7 @@ import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.Level
 import it.manlio.nova.feature.home.MediaSource
+import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.NotificationPreview
 import it.manlio.nova.feature.home.NotificationSource
 import it.manlio.nova.feature.home.NowPlaying
@@ -641,6 +644,18 @@ class HomeScreenTest {
         assertEquals(Pomodoro(), Pomodoro.decode(layout.items.filterIsInstance<WidgetItem>().single().text))
     }
 
+    /** Apre il centro di controllo come TalkBack: con l'azione di accessibilità (il gesto vero è provato a parte). */
+    private fun openControl() {
+        compose.onNodeWithContentDescription("Centro di controllo").performSemanticsAction(SemanticsActions.OnClick)
+        compose.waitForIdle()
+    }
+
+    /** Apre la sezione «Altro» della tendina (a prima vista c'è solo l'essenziale). */
+    private fun openMore() {
+        compose.onNodeWithText("Altro").performClick()
+        compose.waitForIdle()
+    }
+
     private class FakeTorch : Torch {
         val state = kotlinx.coroutines.flow.MutableStateFlow(false)
         override val on = state
@@ -667,29 +682,146 @@ class HomeScreenTest {
                 onCycleGraphics = { cycled++ },
             )
         render(prefs = HomePrefs(), controls = controls)
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        openControl()
         compose.waitForIdle()
         compose.onRoot().captureRoboImage("screenshots/home_centro_di_controllo.png")
         compose.onNodeWithText("Wi-Fi e rete").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Bluetooth").assertDoesNotExist() // aprire il pannello di Android richiude la tendina
+        openControl()
         compose.onNodeWithText("Bluetooth").performClick()
+        compose.waitForIdle()
+        openControl()
         compose.onNodeWithText("Non disturbare").performClick()
+        compose.waitForIdle()
         assertEquals(listOf(SystemPanel.INTERNET, SystemPanel.BLUETOOTH, SystemPanel.DND), panels)
+        openControl()
         compose.onNodeWithText("Torcia").performClick()
         assertEquals(true, torch.state.value)
+        compose.onNodeWithText("Bilanciato").assertDoesNotExist() // sotto «Altro»
+        openMore()
         compose.onNodeWithText("Bilanciato").performClick()
         assertEquals(1, cycled)
         compose.onNodeWithContentDescription("Volume").performSemanticsAction(SemanticsActions.SetProgress) { it(0.8f) }
+        compose.waitForIdle()
         assertEquals(0.8f, vol, 0.001f)
         compose.onNodeWithContentDescription("Luminosità").performSemanticsAction(SemanticsActions.SetProgress) { it(0.9f) }
+        compose.waitForIdle()
         assertEquals(0.9f, bri, 0.001f)
+    }
+
+    @Test
+    fun control_center_shows_only_the_essentials_until_more_is_opened() {
+        val controls = ControlActions(openPanel = {}, volume = Level({ 0.5f }, {}), more = listOf(MoreItem("Posizione")))
+        render(prefs = HomePrefs(), controls = controls)
+        openControl()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+        compose.onNodeWithText("Bluetooth").assertExists()
+        compose.onNodeWithText("Non disturbare").assertExists()
+        compose.onNodeWithContentDescription("Volume").assertExists()
+        compose.onNodeWithText("Posizione").assertDoesNotExist()
+        compose.onNodeWithText("Impostazioni di NOVA").assertDoesNotExist()
+        openMore()
+        compose.onNodeWithText("Posizione").assertExists()
+        compose.onNodeWithText("Impostazioni di NOVA").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_centro_di_controllo_altro.png")
+        openMore() // di nuovo: si richiude
+        compose.onNodeWithText("Posizione").assertDoesNotExist()
+    }
+
+    @Test
+    fun control_center_first_view_follows_the_tiles_chosen_in_customize() {
+        render(
+            prefs = HomePrefs(controlTiles = listOf(ControlTileId.GRAPHICS, ControlTileId.SETTINGS)),
+            controls = ControlActions(openPanel = {}, graphicsLabel = { "Bilanciato" }),
+        )
+        openControl()
+        compose.onNodeWithText("Bilanciato").assertExists() // scelti: a prima vista, senza aprire «Altro»
+        compose.onNodeWithText("Impostazioni di NOVA").assertExists()
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist() // non scelto: sta sotto «Altro»
+        openMore()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+    }
+
+    @Test
+    fun control_center_more_items_open_android_and_close_the_sheet_while_toggles_stay_open() {
+        var opened = 0
+        var rotation = true
+        val items =
+            listOf(
+                MoreItem("Posizione") {
+                    opened++
+                    null
+                },
+                MoreItem("Rotazione automatica", "Sì") {
+                    rotation = !rotation
+                    if (rotation) "Sì" else "No"
+                },
+            )
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = items))
+        openControl()
+        openMore()
+        compose.onNodeWithText("Rotazione automatica").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("No").assertExists() // l'interruttore cambia il suo stato e la tendina resta aperta
+        compose.onNodeWithText("Posizione").performClick()
+        compose.waitForIdle()
+        assertEquals(1, opened)
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist() // una voce che porta fuori chiude la tendina
+    }
+
+    @Test
+    fun control_center_slider_follows_the_finger_along_the_line_and_ignores_vertical_drift() {
+        var vol = 0f
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, volume = Level({ vol }, { vol = it })))
+        openControl()
+        compose.onNodeWithContentDescription("Volume").performTouchInput {
+            down(Offset(width * 0.1f, centerY))
+            moveTo(Offset(width * 0.5f, centerY - 400f)) // il dito si sposta anche molto in su: conta solo la linea orizzontale
+            moveTo(Offset(width * 0.75f, centerY + 400f))
+            up()
+        }
+        compose.waitForIdle()
+        assertEquals(0.75f, vol, 0.02f)
+        compose.onNodeWithText("Wi-Fi e rete").assertExists() // trascinare il cursore non ha chiuso la tendina
+    }
+
+    @Test
+    fun control_center_volume_snaps_to_the_steps_the_system_has() {
+        var vol = 0f
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, volume = Level({ vol }, { vol = it }, steps = 10)))
+        openControl()
+        compose.onNodeWithContentDescription("Volume").performSemanticsAction(SemanticsActions.SetProgress) { it(0.34f) }
+        compose.waitForIdle()
+        assertEquals(0.3f, vol, 0.001f)
+    }
+
+    @Test
+    fun control_center_opens_with_a_pull_down_from_the_top_right_corner_and_closes_by_dragging_up() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
+        compose.onRoot().performTouchInput { swipe(Offset(width - 40f, 20f), Offset(width - 40f, height * 0.8f), 250) }
+        compose.waitForIdle()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+        compose.onNodeWithText("Wi-Fi e rete").performTouchInput { swipe(Offset(centerX, centerY), Offset(centerX, centerY - 700f), 200) }
+        compose.waitForIdle()
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
+    }
+
+    @Test
+    fun a_pull_down_away_from_the_corner_does_not_open_the_control_center() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
+        compose.onRoot().performTouchInput { swipe(Offset(60f, 20f), Offset(60f, height * 0.8f), 250) }
+        compose.waitForIdle()
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
     }
 
     @Test
     fun control_center_has_a_turbo_tile_only_when_it_is_available() {
         var turbo = 0
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, onTurbo = { turbo++ }))
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
-        compose.waitForIdle()
+        openControl()
+        openMore()
         compose.onNodeWithText("Turbo").performClick()
         assertEquals(1, turbo)
     }
@@ -697,8 +829,9 @@ class HomeScreenTest {
     @Test
     fun control_center_hides_turbo_without_shizuku() {
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        openControl()
         compose.waitForIdle()
+        openMore()
         compose.onNodeWithText("Turbo").assertDoesNotExist()
     }
 
@@ -706,7 +839,7 @@ class HomeScreenTest {
     fun control_center_asks_for_the_brightness_permission_when_it_is_missing() {
         var asked = 0
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, brightness = null, onGrantBrightness = { asked++ }))
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        openControl()
         compose.waitForIdle()
         compose.onNodeWithText("Concedi il permesso per regolare la luminosità").performClick()
         assertEquals(1, asked)
@@ -721,13 +854,14 @@ class HomeScreenTest {
     @Test
     fun control_center_back_closes_it_and_edit_home_starts_editing() {
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        openControl()
         compose.waitForIdle()
         compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
         compose.waitForIdle()
         compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
-        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        openControl()
         compose.waitForIdle()
+        openMore()
         compose.onNodeWithText("Modifica la Home").performClick()
         compose.waitForIdle()
         compose.onNodeWithText("Fine").assertExists()

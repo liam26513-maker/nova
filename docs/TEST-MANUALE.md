@@ -65,13 +65,27 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] **Cerca:** scrivi poche lettere (anche senza accenti o con le maiuscole): compaiono le app giuste; toccane una e si apre. «sfondo» o «nova» mostra «Impostazioni di NOVA». «Cerca sul web» apre il browser. Senza testo c'è «Tutte le app».
 - [ ] **Meteo:** «+» → Meteo → scrivi la tua città → «Salva»: compaiono temperatura, minima/massima e il simbolo giusto. Tocca il nome della città per cambiarla. Con il Wi-Fi spento dopo la prima volta, mostra l'ultimo tempo; mai spento e mai caricato, dice «Meteo non disponibile» e riprova toccando.
 - [ ] **Pomodoro:** «+» → Pomodoro → Avvia: il tempo scende; Pausa lo ferma; Azzera torna a 25:00. Lascia finire (o prova con un tempo breve nel test): senti un tic e passa a «Pausa». Riavvia il tablet con il timer in corso: continua da dove era.
-- [ ] **Centro di controllo** (pulsante con quattro riquadri):
-  - [ ] Torcia: si accende e si spegne (e segue se la cambi da un'altra parte).
-  - [ ] Volume: il cursore cambia il volume dei contenuti.
+- [ ] **Centro di controllo** (a tendina, nessun pulsante):
+  - [ ] Tira giù dall'angolo in alto a destra: il pannello scende **seguendo il dito**; lascia a metà e finisce da solo; uno scatto veloce lo apre anche dopo poco. Tira giù da un altro punto: si aprono le notifiche, non il pannello.
+  - [ ] Impostazioni → Home → Personalizza → «Centro di controllo»: spunta e togli riquadri. Riapri la tendina: a prima vista ci sono esattamente quelli spuntati, gli altri sono sotto «Altro» (anche sopra le altre app). Togli tutto: restano volume e luminosità. Riporta Wi-Fi, Bluetooth, Non disturbare e Torcia.
+  - [ ] Si chiude tirando su (anche con uno scatto), toccando fuori e con Indietro. Se lo apri e lo chiudi dieci volte di fila non rallenta e la Home non scatta.
+  - [ ] Volume e luminosità: il riempimento sta **sotto il dito** lungo la barra, dal primo tocco, senza salti; muovi il dito in su e in giù mentre scorri: il cursore continua e il pannello **non si chiude**. Il volume cambia a scatti (i suoi gradini), la luminosità in modo continuo e senza far scattare lo schermo.
   - [ ] Luminosità: la prima volta «Concedi il permesso…» apre la schermata di Android; concedi, torna: il cursore regola lo schermo.
-  - [ ] Wi-Fi e rete, Bluetooth, Non disturbare aprono il pannello giusto di Android.
-  - [ ] Livello grafico: ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
-  - [ ] Indietro lo chiude; «Modifica la Home» entra in modifica.
+  - [ ] Torcia: si accende e si spegne (e segue se la cambi da un'altra parte).
+  - [ ] Wi-Fi e rete, Bluetooth, Non disturbare aprono il pannello giusto di Android **e chiudono la tendina**: tornando trovi la Home pulita.
+  - [ ] Livello grafico (sotto «Altro»): ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
+  - [ ] «Modifica la Home» entra in modifica. «Cerca» → «controllo» apre la tendina.
+  - [ ] Con TalkBack acceso: «Centro di controllo» si trova e apre il pannello senza il gesto.
+- [ ] **Centro di controllo sopra le altre app:** Impostazioni di NOVA → Home → «Centro di controllo sopra le altre app» → accendi «Centro di controllo di NOVA» nell'accessibilità (se Android lo nega: App → NOVA → ⋮ → «Consenti impostazioni con restrizioni»). Torna alle Impostazioni di NOVA: dice «Attivo».
+  - [ ] Apri un'app qualsiasi (browser, YouTube) e tira giù da **qualsiasi punto della barra di stato**: compare la tendina di NOVA, non quella di Android.
+  - [ ] In un video a tutto schermo (barra di stato nascosta) il tocco in alto arriva al video; quando la barra torna visibile, la tendina si apre di nuovo.
+  - [ ] A prima vista ci sono solo Wi-Fi, Bluetooth, Non disturbare, Torcia, volume, luminosità e «Altro». Tocca «Altro»: si aprono i comandi di NOVA e la lista delle impostazioni di Android (scorre). Il colore della scheda segue il tema; cambia accento/sfondo in Personalizza la Home e controlla.
+  - [ ] Sotto «Altro»: «Notifiche di Android» apre le notifiche; «Impostazioni rapide di Android» apre il pannello originale (qui trovi i riquadri che NOVA non ha); «Rotazione automatica» cambia Sì/No senza chiudere; le altre voci aprono la schermata giusta di Android e chiudono la tendina.
+  - [ ] Torcia, volume e luminosità funzionano come sulla Home. Wi-Fi/Bluetooth/Non disturbare aprono Android e chiudono il pannello. «Impostazioni di NOVA» apre NOVA. Non c'è «Modifica la Home».
+  - [ ] Si chiude tirando su, toccando fuori, con Indietro, e da solo se premi Home o apri un'altra app. Aprilo e chiudilo dieci volte: nessun rallentamento.
+  - [ ] A schermo bloccato non si apre. Sulla Home di NOVA il gesto dall'angolo è quello della Home (segue il dito).
+  - [ ] In un gioco a tutto schermo: l'angolo in alto a destra non tocca il gioco? (se dà fastidio, spegni il servizio e segnalalo.)
+  - [ ] Spegni il servizio dall'accessibilità: l'angolo torna normale e la riga nelle Impostazioni dice «Non attivo».
 - [ ] **Cerca come calcolatrice:** «12*(3+4)» → «= 84»; «10 km in mi» → «= 6.213712 mi»; toccare il risultato lo copia (incollalo da qualche parte). «torcia» e «widget» trovano i comandi.
 - [ ] **Notifiche e musica sulla Home:** Impostazioni → Home → «Notifiche e musica sulla Home» → consenti l'accesso. (Se Android lo nega: Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni».) Torna alle Impostazioni: dice «Attivo».
   - [ ] Fatti scrivere un messaggio: sull'icona dell'app compare un numero rosso; nello stile Elenco, sotto il nome c'è l'anteprima.

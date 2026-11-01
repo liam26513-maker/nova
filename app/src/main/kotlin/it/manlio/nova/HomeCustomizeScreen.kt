@@ -60,6 +60,7 @@ fun HomeCustomizeScreen(
             CUSTOMIZE_TEXT -> TextSection(backdrop, prefs, actions.onChange)
             CUSTOMIZE_ICONS -> IconsSection(backdrop, prefs, actions)
             CUSTOMIZE_LAYOUT -> LayoutSection(backdrop, prefs, actions.onChange)
+            CUSTOMIZE_CONTROL -> ControlSection(backdrop, prefs, actions.onChange)
             else -> HiddenAndRenamed(backdrop, prefs, actions.onChange)
         }
     }
@@ -74,8 +75,9 @@ private fun customizeEntries(): List<SidebarEntry> {
     val text = stringResource(R.string.customize_text_and_clock)
     val icons = stringResource(R.string.customize_icons_section)
     val layout = stringResource(R.string.customize_layout)
+    val control = stringResource(R.string.customize_control)
     val hidden = stringResource(R.string.customize_hidden)
-    return remember(themes, background, colors, text, icons, layout, hidden) {
+    return remember(themes, background, colors, text, icons, layout, control, hidden) {
         listOf(
             SidebarEntry(CUSTOMIZE_THEMES, themes, SidebarGlyph.LAYERS, Color(0xFF7B68D8)),
             SidebarEntry(CUSTOMIZE_BACKGROUND, background, SidebarGlyph.IMAGE, Color(0xFF2FA39A)),
@@ -83,6 +85,7 @@ private fun customizeEntries(): List<SidebarEntry> {
             SidebarEntry(CUSTOMIZE_TEXT, text, SidebarGlyph.TEXT, Color(0xFF3B8BD4)),
             SidebarEntry(CUSTOMIZE_ICONS, icons, SidebarGlyph.GRID, Color(0xFFE0922F)),
             SidebarEntry(CUSTOMIZE_LAYOUT, layout, SidebarGlyph.SLIDERS, Color(0xFF6B7684)),
+            SidebarEntry(CUSTOMIZE_CONTROL, control, SidebarGlyph.SLIDERS, Color(0xFF4A7BD6)),
             SidebarEntry(CUSTOMIZE_HIDDEN, hidden, SidebarGlyph.EYE, Color(0xFF3FA34D)),
         )
     }
@@ -94,6 +97,7 @@ private const val CUSTOMIZE_COLORS = "colors"
 private const val CUSTOMIZE_TEXT = "text"
 private const val CUSTOMIZE_ICONS = "icons"
 private const val CUSTOMIZE_LAYOUT = "layout"
+private const val CUSTOMIZE_CONTROL = "control"
 private const val CUSTOMIZE_HIDDEN = "hidden"
 
 @Composable

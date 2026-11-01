@@ -38,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -88,7 +89,11 @@ fun HomeScreen(
     var menuFor by remember { mutableStateOf<AppEntry?>(null) }
     var editing by rememberSaveable { mutableStateOf(false) }
     var searching by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     var control by rememberSaveable { mutableStateOf(false) }
+    val sheet = remember { ControlSheetState(scope) }
+    // `control` è la scelta (aprire/chiudere dal codice: ricerca, Indietro, un riquadro); la tendina la segue con una molla.
+    LaunchedEffect(control) { if (sheet.target != control) sheet.settle(control) }
     val latestData by rememberUpdatedState(data)
     val ipadActions =
         remember(onLayoutChange, favorites) {
@@ -117,10 +122,12 @@ fun HomeScreen(
     val systemDark = isSystemInDarkTheme()
     val look = remember(prefs, systemDark, tint) { prefs.look(systemDark, tint) }
     val swipeDown = rememberSwipeDown(prefs.swipeDownNotifications, actions.onSwipeDown)
-    val openControl: (() -> Unit)? = if (actions.controls != null) ({ control = true }) else null
     val previews = actions.notifications?.previews?.collectAsState()?.value ?: emptyMap()
-    CompositionLocalProvider(LocalHomeLook provides look, LocalOpenControl provides openControl, LocalNotifications provides previews) {
-        BoxWithConstraints(Modifier.fillMaxSize().then(swipeDown)) {
+    CompositionLocalProvider(LocalHomeLook provides look, LocalNotifications provides previews) {
+        // pullDownControl prima di swipeDown: l'angolo in alto a destra apre il centro di controllo, il resto le notifiche.
+        BoxWithConstraints(
+            Modifier.fillMaxSize().pullDownControl(sheet, actions.controls != null) { control = it }.then(swipeDown),
+        ) {
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
             Scrim(tint, blurred, prefs.scrim, look.dark)
@@ -151,8 +158,9 @@ fun HomeScreen(
                     }
                 else -> appList()
             }
+            ControlCenterEntry(actions.controls != null, { control = true })
             ControlCenter(
-                visible = control,
+                sheet = sheet,
                 controls = actions.controls,
                 onSettings = {
                     control = false
@@ -162,7 +170,9 @@ fun HomeScreen(
                     control = false
                     editing = true
                 },
+                firstView = prefs.controlTiles,
                 onClose = { control = false },
+                onSettled = { control = it },
             )
             if (searching) {
                 SearchScreen(
@@ -299,7 +309,6 @@ private fun HomeLayout(
             if (showSettings) {
                 Column(Modifier.padding(top = TOP_MARGIN, end = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     SettingsButton(onOpenSettings)
-                    LocalOpenControl.current?.let { ControlButton(it) }
                 }
             }
             if (prefs.alphabetSide == Side.RIGHT) alphabet()

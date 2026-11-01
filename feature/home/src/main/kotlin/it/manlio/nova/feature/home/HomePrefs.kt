@@ -83,6 +83,8 @@ data class HomePrefs(
     val showStatusBar: Boolean = true,
     val swipeDownNotifications: Boolean = true,
     val doubleTapSleep: Boolean = false,
+    /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
+    val controlTiles: List<ControlTileId> = ControlTileId.DEFAULT,
     /** App nascoste: chiave → nome al momento in cui è stata nascosta (per mostrarle nelle Impostazioni). */
     val hidden: Map<String, String> = emptyMap(),
     val renamed: Map<String, String> = emptyMap(),
@@ -95,10 +97,12 @@ data class HomePrefs(
         }
 
     /** Solo l'aspetto (per i temi): senza app nascoste, nomi e disposizione. */
-    fun appearance(): HomePrefs = copy(hidden = emptyMap(), renamed = emptyMap(), layout = HomeLayoutStyle.IPAD)
+    fun appearance(): HomePrefs =
+        copy(hidden = emptyMap(), renamed = emptyMap(), layout = HomeLayoutStyle.IPAD, controlTiles = ControlTileId.DEFAULT)
 
     /** Applica l'aspetto di [theme] tenendo app nascoste, nomi e disposizione di queste preferenze. */
-    fun withLookOf(theme: HomePrefs): HomePrefs = theme.copy(hidden = hidden, renamed = renamed, layout = layout)
+    fun withLookOf(theme: HomePrefs): HomePrefs =
+        theme.copy(hidden = hidden, renamed = renamed, layout = layout, controlTiles = controlTiles)
 
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
     val iconSignature: String get() = "$iconShape/$iconStyle/${iconPack.orEmpty()}"
@@ -198,6 +202,7 @@ internal object PrefsCodec {
             showStatusBar = bool("statusBar", d.showStatusBar),
             swipeDownNotifications = bool("swipeDown", d.swipeDownNotifications),
             doubleTapSleep = bool("doubleTapSleep", d.doubleTapSleep),
+            controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
             renamed =
                 p
@@ -234,9 +239,20 @@ internal object PrefsCodec {
         p["statusBar"] = prefs.showStatusBar.toString()
         p["swipeDown"] = prefs.swipeDownNotifications.toString()
         p["doubleTapSleep"] = prefs.doubleTapSleep.toString()
+        p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
         prefs.renamed.forEach { (key, name) -> p["$RENAMED$key"] = name }
         return StringWriter().also { p.store(it, "NOVA") }.toString()
+    }
+
+    /** Chiave assente = predefiniti; presente ma vuota = nessun riquadro a prima vista; nomi sconosciuti o doppi si ignorano. */
+    private fun tiles(
+        value: String?,
+        default: List<ControlTileId>,
+    ): List<ControlTileId> {
+        value ?: return default
+        val chosen = value.split(',').mapNotNull { name -> ControlTileId.entries.firstOrNull { it.name == name.trim() } }.toSet()
+        return ControlTileId.entries.filter { it in chosen }
     }
 
     private fun props(text: String) = Properties().apply { load(StringReader(text)) }

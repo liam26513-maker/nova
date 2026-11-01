@@ -45,6 +45,8 @@ data class SystemUiState(
     val novaIsHome: Boolean = false,
     /** L'utente ha dato a NOVA l'accesso alle notifiche (notifiche sotto le icone, musica nell'isola). */
     val notificationAccess: Boolean = false,
+    /** Il servizio di accessibilità che mostra il centro di controllo sopra le altre app è acceso. */
+    val controlOverlay: Boolean = false,
 )
 
 /** Azioni delle sezioni di sistema. */
@@ -71,6 +73,8 @@ data class SystemActions(
     val onRepair: () -> Unit = {},
     /** Apre la schermata di Android dove si dà l'accesso alle notifiche. */
     val onNotificationAccess: () -> Unit = {},
+    /** Apre le impostazioni di accessibilità di Android, dove si accende il centro di controllo sopra le altre app. */
+    val onControlOverlay: () -> Unit = {},
 )
 
 @Composable

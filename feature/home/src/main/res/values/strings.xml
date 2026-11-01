@@ -83,5 +83,6 @@
     <string name="music_next">Successiva</string>
     <string name="island_label">In riproduzione: %1$s</string>
     <string name="home_menu_clear_notification">Cancella la notifica</string>
+    <string name="control_more">Altro</string>
     <string name="control_turbo">Turbo</string>
 </resources>

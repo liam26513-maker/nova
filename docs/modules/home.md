@@ -133,3 +133,33 @@ Lista, icone, colori dello sfondo e sfocatura esistono solo mentre la home è vi
 
 ## Note sulle regole
 La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi non è un `NovaModule` spegnibile: senza home non c'è launcher. Rispetta comunque la regola "da spento non consuma nulla", perché non consuma niente quando non è visibile. Il launcher di sistema resta installato e si può tornare a usarlo dalle Impostazioni o dalla modalità provvisoria.
+
+### Centro di controllo a tendina (`ControlCenter.kt`)
+
+- **Stato:** `ControlSheetState.progress` (0 chiusa … 1 aperta) è un `mutableFloatStateOf` letto **solo nella fase di disegno** (`graphicsLayer`/`drawBehind`): trascinare o animare non ricompone niente. `control` in `HomeScreen` resta la *scelta* (ricerca, Indietro, un riquadro); un `LaunchedEffect` porta lo stato lì con una molla (`animate`), partendo dalla velocità del dito quando c'è.
+- **Apertura:** `Modifier.pullDownControl` sul contenitore della Home, nel passaggio `Initial`: reagisce solo a un gesto che parte nell'angolo in alto a destra (280×120 dp) e va in giù; ogni altro tocco passa intatto, quindi non c'è nessuna zona che blocchi icone o liste. Messo **prima** di `swipeDown`: l'angolo apre il centro di controllo, il resto della Home continua ad aprire le notifiche.
+- **Chiusura:** `closeByDragging` sul pannello (soglia di tocco, velocità con `VelocityTracker`), tocco sullo sfondo, Indietro. `ControlSheetMath.shouldOpen` decide dove si ferma (metà o scatto > 1,2 pannelli/s).
+- **Da chiuso** il pannello non è nella composizione (`derivedStateOf { progress > 0 }`): costo zero. Le letture (volume, luminosità) si rifanno a ogni apertura.
+- **Cursori:** gesto proprio (`awaitEachGesture`), senza soglia di partenza, solo asse x, consuma i movimenti (il pannello non li scambia per «chiudi»). Il valore è uno stato locale; la scrittura al sistema (`Level.write`) passa da `snapshotFlow` con pausa di 40 ms (≈25 Hz, sempre l'ultimo valore) e un `commit` finale al rilascio, solo se il valore è cambiato. `Level.steps` aggancia ai gradini (volume = massimo di `AudioManager`).
+- **Accessibilità:** `ControlCenterEntry` (1 dp, invisibile) espone l'azione «Centro di controllo» a TalkBack; i cursori espongono `setProgress`.
+
+#### Sopra le altre app (`app/NovaControlService`, `PullDetector`, `ControlCenterOverlay`)
+
+- **Servizio di accessibilità** acceso dall'utente (Impostazioni di Android → Accessibilità); `accessibility_service.xml`: solo `typeWindowStateChanged`, `canRetrieveWindowContent=false`. Non legge lo schermo, non esegue gesti. Se non è acceso, nessuna finestra, nessun costo.
+- **Striscia:** `View` trasparente `TYPE_ACCESSIBILITY_OVERLAY` su **tutta la larghezza** in alto (altezza barra di stato, min 24 dp), sopra la barra di stato: sostituisce il gesto della tendina di Android. `PullDetector` (pura, testata) riconosce «giù più che di lato» oltre la soglia di tocco e apre il pannello. Un listener degli inset la rende `FLAG_NOT_TOUCHABLE` quando la barra di stato non è visibile (giochi, video a tutto schermo). Da verificare sul tablet: dipende dal fatto che gli inset di una finestra overlay seguano la barra di sistema.
+- **Pannello:** finestra a tutto schermo con `ComposeView`; `PanelHost` fornisce ciclo di vita e stato salvato (non c'è un'Activity) e riceve Indietro (finestra col fuoco). Contenuto: `ControlCenterOverlay` → lo stesso `ControlCenter` della Home (senza «Modifica la Home»). `HomeControls` è lo stesso della Home: torcia, volume, luminosità, Turbo; `start()`/`stop()` solo a pannello aperto.
+- **Chiusura:** tiro su, tocco fuori, Indietro, cambio di finestra di un'altra app (evento), `onInterrupt`; un timer di sicurezza (700 ms) toglie la finestra anche se l'animazione non finisse. A schermo bloccato (`KeyguardManager`) non si apre.
+- **Limite:** la finestra della striscia non può passare il tocco al pannello, quindi sopra le altre app la tendina **non segue il dito** nel tiro: si apre con una molla al riconoscimento del gesto.
+
+#### Prima vista e «Altro» (`ControlCenter.kt`, `HomeControls.more()`)
+
+- **Prima vista:** `essentials` (Wi-Fi, Bluetooth, Non disturbare, torcia) + cursori + `MoreToggle`. Tutto il resto è in `AnimatedVisibility` sotto «Altro» (non è nella composizione finché chiuso): i riquadri NOVA (`nova`) e `ControlActions.more` (`MoreItem`), in una colonna che scorre (max 300 dp).
+- **`MoreItem(label, state, onClick: () -> String?)`:** `onClick` dà il nuovo stato se è un interruttore (resta aperta) o `null` se porta fuori (chiude). La logica Android sta in `app/HomeControls`: rotazione con `Settings.System.ACCELEROMETER_ROTATION` (serve `WRITE_SETTINGS`, altrimenti apre lo schermo), le altre voci aprono l'azione di impostazioni giusta; alcune azioni sono stringhe perché non sono costanti pubbliche in tutte le versioni (se mancano, `runCatching` non fa nulla).
+- **Rete di sicurezza:** «Notifiche di Android» e «Impostazioni rapide di Android» (Home: `expandNotificationsPanel`/`expandSettingsPanel` via `statusbar`; servizio: `GLOBAL_ACTION_NOTIFICATIONS`/`GLOBAL_ACTION_QUICK_SETTINGS`). Sono ciò che rende sicuro sostituire la tendina: ogni riquadro di Android resta raggiungibile.
+- **Tema:** la scheda è `lerp(CARD|CARD_LIGHT, accento, 0.1)`; testo, simboli e riquadri attivi usano `HomeLook` (quindi chiaro/scuro, accento personalizzato e sfondo scelti in Personalizza la Home).
+
+#### Riquadri a prima vista scelti dall'utente
+
+- `HomePrefs.controlTiles: List<ControlTileId>` (predefinito `ControlTileId.DEFAULT`), salvato come `controlTiles=A,B,C` in `PrefsCodec`: chiave assente = predefiniti, chiave vuota = nessuno, nomi ignoti o doppi scartati, ordine sempre quello dell'enum. Non fa parte dell'aspetto dei temi (`appearance()` lo azzera, `withLookOf()` conserva quello dell'utente).
+- `ControlCenter(firstView = …)`: costruisce i riquadri disponibili (`available`: torcia solo con flash, Turbo solo con Shizuku, Modifica la Home solo sulla Home) e li divide tra prima vista e «Altro». Il servizio passa `prefs.controlTiles` tramite `ControlCenterOverlay`.
+- Schermata: categoria «Centro di controllo» in `HomeCustomizeScreen` (`ControlSection`), una riga con spunta per riquadro.

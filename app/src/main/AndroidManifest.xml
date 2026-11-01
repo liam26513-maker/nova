@@ -73,6 +73,20 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <!-- Centro di controllo sopra le altre app (SPEC §2.2, §6.8): si attiva solo se l'utente accende il servizio
+             nelle impostazioni di accessibilità di Android. Non legge lo schermo: disegna due finestre sue. -->
+        <service
+            android:name=".NovaControlService"
+            android:exported="true"
+            android:label="@string/overlay_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service" />
+        </service>
         <!-- Home di NOVA (Fase 0, punto 11): Android la propone come app Home predefinita. -->
         <activity
             android:name=".HomeActivity"

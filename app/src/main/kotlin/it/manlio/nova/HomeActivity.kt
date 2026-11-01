@@ -105,13 +105,12 @@ class HomeActivity : ComponentActivity() {
         widgets = WidgetHostBridge(this)
         performance = PerformanceUi(app, lifecycleScope)
         controls =
-            HomeControls(this, app) {
-                lifecycleScope.launch {
-                    val done = performance.runTurbo()
-                    val text = if (done == null) getString(R.string.perf_failed) else getString(R.string.perf_turbo_done, done.stopped)
-                    Toast.makeText(this@HomeActivity, text, Toast.LENGTH_SHORT).show()
-                }
-            }
+            HomeControls(
+                this,
+                app,
+                onSystemNotifications = { HomeSystem.expandNotifications(this) },
+                onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
+            ) { HomeSystem.turboWithToast(this, lifecycleScope, performance) }
         NotificationHub.init(this)
         mediaHub = MediaHub(this)
         wallpaperLoader = WallpaperLoader(this)

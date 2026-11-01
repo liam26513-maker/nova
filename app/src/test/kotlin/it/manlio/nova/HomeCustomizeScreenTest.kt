@@ -16,6 +16,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
+import it.manlio.nova.feature.home.ControlTileId
 import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.IconPackInfo
@@ -73,6 +74,24 @@ class HomeCustomizeScreenTest {
         assertEquals(emptyMap<String, String>(), prefs.renamed)
         compose.onNodeWithText("‹  Fatto").performClick()
         assertEquals(true, done)
+    }
+
+    @Test
+    fun control_center_tiles_are_chosen_from_the_customize_screen() {
+        var prefs by mutableStateOf(HomePrefs())
+        compose.setContent {
+            NovaTheme(NovaTokens.Fallback) {
+                HomeCustomizeScreen(prefs, CustomizeActions(onChange = { change -> prefs = change(prefs) }, onDone = {}))
+            }
+        }
+        open("Centro di controllo")
+        compose.onNodeWithText("Turbo").performScrollTo().performClick()
+        assertEquals(ControlTileId.DEFAULT + ControlTileId.TURBO, prefs.controlTiles)
+        compose.onNodeWithText("Torcia").performScrollTo().performClick()
+        assertEquals(listOf(ControlTileId.WIFI, ControlTileId.BLUETOOTH, ControlTileId.DND, ControlTileId.TURBO), prefs.controlTiles)
+        compose.onNodeWithText("Livello grafico").performScrollTo().performClick()
+        val expected = listOf(ControlTileId.WIFI, ControlTileId.BLUETOOTH, ControlTileId.DND, ControlTileId.GRAPHICS, ControlTileId.TURBO)
+        assertEquals(expected, prefs.controlTiles)
     }
 
     @Test
