@@ -67,23 +67,46 @@ class SettingsScreenshotTest {
         compose.onRoot().captureRoboImage("screenshots/impostazioni_chiaro_automatico.png")
     }
 
-    /** Pagina intera (finestra molto alta) per vedere anche Aggiornamenti e Strumenti di sistema. */
+    /** Le altre categorie della barra laterale (Aggiornamenti e Strumenti di sistema sono le più lunghe). */
     @Test
-    @Config(qualifiers = "it-w1280dp-h2400dp-port-mdpi")
-    fun full_page() {
+    fun updates_and_tools_categories() {
         render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
-        compose.onRoot().captureRoboImage("screenshots/impostazioni_pagina_intera.png")
+        compose.onNodeWithText("Aggiornamenti").performClick()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_aggiornamenti.png")
+        compose.onNodeWithText("Strumenti di sistema").performClick()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_strumenti.png")
+    }
+
+    /** Schermo stretto: prima l'elenco delle categorie, poi il dettaglio con «‹» per tornare. */
+    @Test
+    @Config(qualifiers = "it-w411dp-h891dp-port-xhdpi")
+    fun narrow_screen_shows_the_list_then_the_detail() {
+        render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_stretto_elenco.png")
+        compose.onNodeWithText("Il tuo tablet").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Processore", substring = true).assertExists()
+        compose.onRoot().captureRoboImage("screenshots/impostazioni_stretto_dettaglio.png")
+        compose.onNodeWithText("‹  Impostazioni").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Aggiornamenti").assertExists()
     }
 
     @Test
     fun light_fixed_maximum() {
         render("theme/light.json", GraphicsState(GraphicsLevel.MAXIMUM, automatic = false))
+        compose.onNodeWithText("Livello grafico").performClick()
+        compose.waitForIdle()
         compose.onRoot().captureRoboImage("screenshots/impostazioni_chiaro_massimo.png")
     }
 
     @Test
     fun dark_performance() {
         render("theme/dark.json", GraphicsState(GraphicsLevel.PERFORMANCE, automatic = false))
+        compose.onNodeWithText("Livello grafico").performClick()
+        compose.waitForIdle()
         compose.onRoot().captureRoboImage("screenshots/impostazioni_scuro_prestazioni.png")
     }
 
@@ -107,6 +130,8 @@ class SettingsScreenshotTest {
     fun tapping_maximum_is_allowed_even_when_the_ceiling_is_lower() {
         var chosen: LevelChoice? = null
         render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true)) { chosen = it }
+        compose.onNodeWithText("Livello grafico").performClick()
+        compose.waitForIdle()
         compose.onNodeWithText("Massimo").performClick()
         assertEquals(LevelChoice.Fixed(GraphicsLevel.MAXIMUM), chosen)
     }
@@ -115,6 +140,8 @@ class SettingsScreenshotTest {
     fun tapping_automatic_reports_the_choice() {
         var chosen: LevelChoice? = null
         render("theme/light.json", GraphicsState(GraphicsLevel.MAXIMUM, automatic = false)) { chosen = it }
+        compose.onNodeWithText("Livello grafico").performClick()
+        compose.waitForIdle()
         compose.onNodeWithText("Automatico").performClick()
         assertEquals(LevelChoice.Automatic, chosen)
     }

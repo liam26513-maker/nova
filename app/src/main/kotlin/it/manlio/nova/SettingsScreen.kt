@@ -4,7 +4,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -17,8 +23,10 @@ import it.manlio.nova.core.design.NovaSpacing
 import it.manlio.nova.core.design.SegmentedChoice
 import it.manlio.nova.core.design.SettingsBlock
 import it.manlio.nova.core.design.SettingsRow
-import it.manlio.nova.core.design.SettingsScaffold
 import it.manlio.nova.core.design.SettingsSection
+import it.manlio.nova.core.design.SidebarEntry
+import it.manlio.nova.core.design.SidebarGlyph
+import it.manlio.nova.core.design.SplitSettings
 import it.manlio.nova.core.device.DeviceProfile
 import kotlin.math.roundToInt
 
@@ -38,9 +46,74 @@ fun SettingsScreen(
     system: SystemUiState,
     systemActions: SystemActions,
 ) {
+    var selected by rememberSaveable { mutableStateOf<String?>(null) }
+    SplitSettings(
+        title = stringResource(R.string.settings_title),
+        subtitle = brandName,
+        entries = settingsEntries(),
+        selectedId = selected,
+        onSelect = { selected = it },
+    ) { entry, backdrop ->
+        when (entry.id) {
+            CAT_IMPROVE -> ImproveSection(backdrop, systemActions)
+            CAT_GRAPHICS -> GraphicsSection(backdrop, graphics, onChoose)
+            CAT_DEVICE -> DeviceSection(backdrop, profile, onMeasure, onShowReport)
+            CAT_HOME -> HomeSection(backdrop, system, systemActions)
+            CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
+            CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
+            else ->
+                SettingsSection(backdrop, header = stringResource(R.string.status_title)) {
+                    SettingsRow(stringResource(R.string.status_config_title), trailing = { Value(configVersion) })
+                    SettingsRow(
+                        stringResource(R.string.status_modules_title),
+                        showDivider = true,
+                        trailing = { Value(stringResource(R.string.status_modules_none)) },
+                    )
+                }
+        }
+    }
+}
+
+/** Le categorie della barra laterale, nell'ordine in cui compaiono. */
+@Suppress("MagicNumber") // tavolozza delle pastiglie
+@Composable
+private fun settingsEntries(): List<SidebarEntry> {
+    val improve = stringResource(R.string.improve_section)
+    val graphics = stringResource(R.string.graphics_level_title)
+    val device = stringResource(R.string.device_title)
+    val home = stringResource(R.string.home_section_title)
+    val updates = stringResource(R.string.updates_title)
+    val tools = stringResource(R.string.system_title)
+    val status = stringResource(R.string.status_title)
+    return remember(improve, graphics, device, home, updates, tools, status) {
+        listOf(
+            SidebarEntry(CAT_IMPROVE, improve, SidebarGlyph.SPARKLE, Color(0xFF7B68D8)),
+            SidebarEntry(CAT_GRAPHICS, graphics, SidebarGlyph.LAYERS, Color(0xFF2FA39A)),
+            SidebarEntry(CAT_DEVICE, device, SidebarGlyph.TABLET, Color(0xFF6B7684)),
+            SidebarEntry(CAT_HOME, home, SidebarGlyph.HOUSE, Color(0xFFE0922F)),
+            SidebarEntry(CAT_UPDATES, updates, SidebarGlyph.DOWNLOAD, Color(0xFF3B8BD4)),
+            SidebarEntry(CAT_TOOLS, tools, SidebarGlyph.SLIDERS, Color(0xFF8A8F98)),
+            SidebarEntry(CAT_STATUS, status, SidebarGlyph.CHECK, Color(0xFF3FA34D)),
+        )
+    }
+}
+
+private const val CAT_IMPROVE = "improve"
+private const val CAT_GRAPHICS = "graphics"
+private const val CAT_DEVICE = "device"
+private const val CAT_HOME = "home"
+private const val CAT_UPDATES = "updates"
+private const val CAT_TOOLS = "tools"
+private const val CAT_STATUS = "status"
+
+@Composable
+private fun GraphicsSection(
+    backdrop: ImageBitmap,
+    graphics: GraphicsState,
+    onChoose: (LevelChoice) -> Unit,
+) {
     val t = Nova.tokens
-    SettingsScaffold(title = stringResource(R.string.settings_title), subtitle = brandName) { backdrop ->
-        ImproveSection(backdrop, systemActions)
+    run {
         SettingsSection(
             backdrop,
             header = stringResource(R.string.graphics_level_title),
@@ -68,18 +141,6 @@ fun SettingsScreen(
                     style = TextStyle(t.colors.onSurfaceMuted, 14.sp),
                 )
             }
-        }
-        DeviceSection(backdrop, profile, onMeasure, onShowReport)
-        HomeSection(backdrop, system, systemActions)
-        UpdatesSection(backdrop, system, systemActions)
-        SystemToolsSection(backdrop, system, systemActions)
-        SettingsSection(backdrop, header = stringResource(R.string.status_title)) {
-            SettingsRow(stringResource(R.string.status_config_title), trailing = { Value(configVersion) })
-            SettingsRow(
-                stringResource(R.string.status_modules_title),
-                showDivider = true,
-                trailing = { Value(stringResource(R.string.status_modules_none)) },
-            )
         }
     }
 }

@@ -121,6 +121,8 @@ private data class CalmPalette(
 fun SettingsScaffold(
     title: String,
     subtitle: String? = null,
+    backLabel: String? = null,
+    onBack: (() -> Unit)? = null,
     content: @Composable ColumnScope.(backdrop: ImageBitmap) -> Unit,
 ) {
     val t = Nova.tokens
@@ -136,7 +138,8 @@ fun SettingsScaffold(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(Modifier.widthIn(max = READABLE_WIDTH).fillMaxWidth()) {
-                BasicText(title, style = TextStyle(t.colors.onSurface, 34.sp, FontWeight.Light, letterSpacing = (-0.5).sp))
+                if (backLabel != null && onBack != null) BackAction(backLabel, onBack)
+                BasicText(title, style = largeTitle(t.colors.onSurface))
                 if (subtitle != null) {
                     Spacer(Modifier.height(NovaSpacing.xs))
                     BasicText(subtitle, style = TextStyle(t.colors.onSurfaceMuted, 15.sp, lineHeight = 22.sp))
@@ -146,6 +149,29 @@ fun SettingsScaffold(
             }
         }
     }
+}
+
+/** Titolo grande e marcato, come nelle schermate delle Impostazioni dell'iPad. */
+internal fun largeTitle(color: Color) = TextStyle(color, 34.sp, FontWeight.Bold, letterSpacing = (-0.4).sp)
+
+/** «‹ Indietro» in alto: voce di navigazione nel colore d'accento. */
+@Composable
+internal fun BackAction(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val t = Nova.tokens
+    val view = LocalView.current
+    BasicText(
+        "‹  $label",
+        modifier
+            .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
+                view.perform(NovaHaptic.TAP)
+                onClick()
+            }.padding(vertical = NovaSpacing.s),
+        style = TextStyle(t.colors.accent, 17.sp, FontWeight.Medium),
+    )
 }
 
 /** Gruppo di voci con intestazione discreta, su pannello traslucido. */
@@ -188,6 +214,7 @@ fun SettingsRow(
     summary: String? = null,
     showDivider: Boolean = false,
     onClick: (() -> Unit)? = null,
+    leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val t = Nova.tokens
@@ -200,7 +227,7 @@ fun SettingsRow(
         label = "row-press",
     )
     Column {
-        if (showDivider) Hairline(Modifier.padding(start = NovaSpacing.m))
+        if (showDivider) Hairline(Modifier.padding(start = if (leading != null) DIVIDER_AFTER_BADGE else NovaSpacing.m))
         Row(
             Modifier
                 .fillMaxWidth()
@@ -217,6 +244,10 @@ fun SettingsRow(
                 ).padding(horizontal = NovaSpacing.m, vertical = NovaSpacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            if (leading != null) {
+                leading()
+                Spacer(Modifier.width(NovaSpacing.s))
+            }
             Column(Modifier.weight(1f)) {
                 BasicText(title, style = TextStyle(t.colors.onSurface, 17.sp))
                 if (summary != null) {
@@ -320,6 +351,9 @@ fun <T> SegmentedChoice(
 }
 
 private val READABLE_WIDTH = 640.dp
+
+/** La linea tra le voci con pastiglia parte dal testo, non dal bordo. */
+private val DIVIDER_AFTER_BADGE = NovaSpacing.m + NovaSpacing.s + 30.dp
 private val HAIRLINE = 0.5.dp
 private val SEGMENT_HEIGHT = 40.dp
 private val SEGMENT_INSET = 3.dp
