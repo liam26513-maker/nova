@@ -38,8 +38,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -47,9 +45,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -74,13 +70,10 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -94,8 +87,6 @@ import it.manlio.nova.core.design.SquircleShape
 import it.manlio.nova.core.design.perform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -363,23 +354,27 @@ private suspend fun AwaitPointerEventScope.dragDown(
     var dx = 0f
     var dy = 0f
     var started = false
-    while (true) {
-        val change = awaitPointerEvent(PointerEventPass.Initial).changes.firstOrNull { it.id == down.id }
-        if (change == null || !change.pressed) break
+    var rejected = false // di lato o verso l'alto: non è il nostro gesto
+    var change = awaitPointerEvent(PointerEventPass.Initial).changes.firstOrNull { it.id == down.id }
+    while (change != null && change.pressed && !rejected) {
         val move = change.positionChange()
         tracker.addPosition(change.uptimeMillis, change.position)
         if (started) {
             change.consume()
             sheet.drag(move.y)
-            continue
+        } else {
+            dx += move.x
+            dy += move.y
+            if (abs(dx) > slop || abs(dy) > slop) {
+                rejected = dy <= abs(dx)
+                started = !rejected
+                if (started) {
+                    change.consume()
+                    sheet.drag(dy)
+                }
+            }
         }
-        dx += move.x
-        dy += move.y
-        if (abs(dx) <= slop && abs(dy) <= slop) continue
-        if (dy <= abs(dx)) return null
-        started = true
-        change.consume()
-        sheet.drag(dy)
+        if (!rejected) change = awaitPointerEvent(PointerEventPass.Initial).changes.firstOrNull { it.id == down.id }
     }
     return if (started) tracker.calculateVelocity().y / sheet.travel else null
 }
@@ -516,119 +511,8 @@ private fun TileView(
     }
 }
 
-/**
- * Una riga con simbolo e cursore. Il valore vive qui e si legge solo al disegno; il sistema lo riceve al massimo
- * ~25 volte al secondo mentre si trascina (e sempre l'ultimo valore al rilascio), così il dito non aspetta mai Android.
- */
-@Composable
-private fun SliderRow(
-    glyph: ControlGlyph,
-    label: String,
-    level: Level,
-) {
-    val look = LocalHomeLook.current
-    val latest by rememberUpdatedState(level) // la Home può ricostruire le azioni a metà trascinamento: il valore non deve saltare
-    val value = remember { mutableFloatStateOf(ControlSheetMath.snap(level.read(), level.steps)) }
-    val written = remember { floatArrayOf(value.floatValue) }
-    val commit = {
-        if (value.floatValue != written[0]) {
-            written[0] = value.floatValue
-            latest.write(value.floatValue)
-        }
-    }
-    LaunchedEffect(Unit) {
-        snapshotFlow { value.floatValue }.drop(1).collect {
-            commit()
-            delay(WRITE_GAP_MS)
-        }
-    }
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Canvas(Modifier.size(24.dp)) { drawControlGlyph(glyph, look.muted) }
-        GlassSlider(
-            value = value,
-            label = label,
-            steps = level.steps,
-            onRelease = { commit() },
-            modifier = Modifier.weight(1f),
-        )
-    }
-}
-
-/**
- * Cursore a barra, come quelli di iOS: il riempimento segue il dito lungo la linea orizzontale, subito, senza soglia di
- * partenza, e ignora i movimenti in su e in giù (il dito può uscire dalla barra e il cursore lo segue comunque).
- * Mentre si trascina la barra si ingrossa un poco. Anche per TalkBack (`setProgress`).
- */
-@Composable
-private fun GlassSlider(
-    value: MutableFloatState,
-    label: String,
-    steps: Int,
-    onRelease: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val look = LocalHomeLook.current
-    val pressed = remember { mutableStateOf(false) }
-    val grow = animateFloatAsState(if (pressed.value) PRESSED_SCALE else 1f, spring(stiffness = SHEET_STIFFNESS), label = "slider-grow")
-    val set = { v: Float -> value.floatValue = ControlSheetMath.snap(v, steps) }
-    Box(
-        modifier
-            .height(SLIDER)
-            .graphicsLayer {
-                scaleX = grow.value
-                scaleY = grow.value
-            }.semantics {
-                contentDescription = label
-                progressBarRangeInfo = ProgressBarRangeInfo(value.floatValue, 0f..1f)
-                setProgress {
-                    set(it)
-                    onRelease()
-                    true
-                }
-            }.pointerInput(steps) {
-                awaitEachGesture {
-                    val down = awaitFirstDown(requireUnconsumed = false)
-                    pressed.value = true
-                    try {
-                        val width = size.width.toFloat().coerceAtLeast(1f)
-                        set(down.position.x / width)
-                        down.consume()
-                        do {
-                            val event = awaitPointerEvent()
-                            event.changes.firstOrNull { it.id == down.id }?.let {
-                                set(it.position.x / width)
-                                it.consume() // il pannello non deve scambiarlo per un gesto verso l'alto
-                            }
-                        } while (event.changes.any { it.pressed })
-                    } finally {
-                        pressed.value = false
-                        onRelease()
-                    }
-                }
-            }.drawBehind {
-                val round = CornerRadius(size.height / 2f)
-                drawRoundRect(look.ink.copy(alpha = 0.16f), cornerRadius = round)
-                val fill = size.width * value.floatValue
-                if (fill > 0f) drawRoundRect(look.ink.copy(alpha = 0.85f), size = Size(fill, size.height), cornerRadius = round)
-            },
-    )
-}
-
-@Composable
-private fun GrantRow(onGrant: () -> Unit) {
-    val look = LocalHomeLook.current
-    Row(
-        Modifier.fillMaxWidth().clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) { onGrant() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Canvas(Modifier.size(24.dp)) { drawControlGlyph(ControlGlyph.SUN, look.muted) }
-        BasicText(stringResource(R.string.control_brightness_grant), style = TextStyle(look.muted, 15.sp, fontFamily = look.family))
-    }
-}
-
 @Suppress("LongMethod", "CyclomaticComplexMethod") // un ramo per simbolo: lungo ma lineare
-private fun DrawScope.drawControlGlyph(
+internal fun DrawScope.drawControlGlyph(
     glyph: ControlGlyph,
     ink: Color,
 ) {
@@ -732,7 +616,6 @@ private fun DrawScope.drawControlGlyph(
 
 private val CONTROL_WIDTH = 460.dp
 private val TILE: Dp = 76.dp
-private val SLIDER: Dp = 44.dp
 private val PANEL_MARGIN = 12.dp
 private val OFFSCREEN_MARGIN = 120.dp
 private val HANDLE_WIDTH = 44.dp
@@ -749,7 +632,5 @@ private const val CARD_TINT = 0.1f
 private const val TILES_PER_ROW = 4
 private const val DIM = 0.45f
 private const val FADE_IN_SPEED = 3f
-private const val PRESSED_SCALE = 1.04f
 private const val SHEET_DAMPING = 0.9f
-private const val SHEET_STIFFNESS = 700f
-private const val WRITE_GAP_MS = 40L
+internal const val SHEET_STIFFNESS = 700f

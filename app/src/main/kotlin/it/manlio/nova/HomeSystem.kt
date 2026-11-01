@@ -54,6 +54,11 @@ internal object HomeSystem {
         }
     }
 
+    /** Apre le impostazioni di accessibilità di Android (dove si accende il centro di controllo sopra le altre app). */
+    fun openAccessibilitySettings(context: Context) {
+        context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+
     /** Apre le Impostazioni rapide di Android (API non pubblica: se manca, non succede nulla). */
     @SuppressLint("WrongConstant")
     fun expandQuickSettings(context: Context) {
