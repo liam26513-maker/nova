@@ -208,4 +208,7 @@
     <string name="customize_layout_ipad">Icons and dock</string>
     <string name="customize_layout_list">List</string>
     <string name="customize_layout_hybrid">Hybrid</string>
+    <string name="home_notifications">Notifications and music on Home</string>
+    <string name="home_notifications_on">On: counts on icons and music in the island</string>
+    <string name="home_notifications_off">Off: tap and allow notification access for NOVA</string>
 </resources>

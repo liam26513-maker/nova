@@ -101,6 +101,15 @@ La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti �
 
 **Permessi aggiunti:** `WRITE_SETTINGS` (facoltativo, solo per la luminosità; si concede da `Settings.ACTION_MANAGE_WRITE_SETTINGS`). Nessun altro: `INTERNET` c'era già (aggiornamenti) e la torcia non ne richiede.
 
+
+### Notifiche in linea, isola dinamica, widget Musica
+- **Notifiche** (`RawNotification`, `NotificationIndex`, `NotificationSource`; app: `NotificationHub`, `NovaNotificationListener`): il servizio di sistema `NotificationListenerService` si attiva **solo se l'utente dà l'accesso** (Impostazioni → Home → «Notifiche e musica sulla Home» apre `ACTION_NOTIFICATION_LISTENER_SETTINGS`). Da ogni notifica attiva si tiene un'anteprima per app (la più recente + conteggio), scartando quelle in corso, i riassunti di gruppo, i comandi della musica e quelle vuote. Tutto in memoria: **mai salvato, registrato o inviato** (SPEC §13). Su Android 13+ per un'app installata fuori dal Play Store l'impostazione può risultare «con restrizioni»: si sblocca da Informazioni sull'app → ⋮ → «Consenti impostazioni con restrizioni».
+- **Distintivi** (`CountBadge`): in griglia, dock e (con il nome sotto) nelle righe grandi dell'elenco. Il menu dell'app ha «Cancella la notifica» (`cancelNotification`).
+- **Musica** (`MediaSource`, `NowPlaying`; app: `MediaHub`): sessioni multimediali (`MediaSessionManager`, serve lo stesso accesso). Si ascolta solo tra `onStart` e `onStop` della Home; la copertina si riduce a 256 px. Sceglie la sessione che sta suonando, altrimenti la più recente.
+- **Isola dinamica** (`DynamicIsland`): pillola in alto, visibile **solo mentre suona**; tocco = comandi. È una vista della Home (una finestra sopra le altre app richiederebbe `SYSTEM_ALERT_WINDOW`: per ora no).
+- **Widget Musica** (`MusicWidget`): sempre disponibile, anche in pausa.
+- **Permessi:** nessuno nuovo nel manifest oltre al servizio (`BIND_NOTIFICATION_LISTENER_SERVICE`, che è del sistema). Il servizio, se l'accesso è dato, resta in memoria: pesa pochi KB (una mappa di anteprime).
+
 ## Sfondo e app recenti
 - **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.
 - **Sfondo disegnato da NOVA:** quando NOVA disegna lo sfondo da sé (foto, NOVA, colore, oppure il tuo sfondo se le consenti di leggerlo), la finestra è opaca.

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -116,7 +117,12 @@ internal fun AppCell(
                 .launchable(!editing, { onMenu(app) }) { actions.onLaunch(app, it) },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AppIcon(app, actions.icon, look.gridIcon)
+            Box {
+                AppIcon(app, actions.icon, look.gridIcon)
+                LocalNotifications.current[app.component.packageName]?.let { n ->
+                    CountBadge(n.count, Modifier.align(Alignment.TopEnd).offset(BADGE_OUT, -BADGE_OUT))
+                }
+            }
             CellLabel(app.label, look.gridIcon)
         }
     }
@@ -264,3 +270,4 @@ private const val LABEL_SHADOW = 0.35f
 private const val PRESSED_SCALE = 0.92f
 private const val PRESS_DAMPING = 0.55f
 private const val PRESS_STIFFNESS = 700f
+private val BADGE_OUT = 6.dp

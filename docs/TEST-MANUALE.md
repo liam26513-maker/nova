@@ -73,6 +73,12 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
   - [ ] Livello grafico: ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
   - [ ] Indietro lo chiude; «Modifica la Home» entra in modifica.
 - [ ] **Cerca come calcolatrice:** «12*(3+4)» → «= 84»; «10 km in mi» → «= 6.213712 mi»; toccare il risultato lo copia (incollalo da qualche parte). «torcia» e «widget» trovano i comandi.
+- [ ] **Notifiche e musica sulla Home:** Impostazioni → Home → «Notifiche e musica sulla Home» → consenti l'accesso. (Se Android lo nega: Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni».) Torna alle Impostazioni: dice «Attivo».
+  - [ ] Fatti scrivere un messaggio: sull'icona dell'app compare un numero rosso; nello stile Elenco, sotto il nome c'è l'anteprima.
+  - [ ] Tieni premuta quell'app → «Cancella la notifica»: il numero sparisce (e la notifica anche da Android).
+  - [ ] Avvia della musica: in alto compare la pillola con titolo e copertina; toccala: precedente/pausa/successiva funzionano. In pausa la pillola sparisce.
+  - [ ] «+» → Musica: il widget mostra la canzone, anche in pausa, e i comandi.
+  - [ ] Togli l'accesso da Android: numeri e musica spariscono, l'app non si blocca.
 - [ ] **Stile Ibrido** (Personalizza → Stile della Home): in orizzontale preferiti a sinistra e icone a destra; in verticale solo l'elenco.
 - [ ] **Vetro:** il dock, i widget e le cartelle sembrano vetro. Con il livello Prestazioni diventano più pieni, e la Home non scatta.
 - [ ] **Impostazioni con barra laterale:** apri Impostazioni di NOVA. A sinistra le categorie con la pastiglia colorata, a destra il dettaglio. Toccare una categoria cambia il dettaglio e la voce scelta si evidenzia.

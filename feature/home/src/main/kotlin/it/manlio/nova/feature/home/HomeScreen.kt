@@ -34,12 +34,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -116,7 +118,8 @@ fun HomeScreen(
     val look = remember(prefs, systemDark, tint) { prefs.look(systemDark, tint) }
     val swipeDown = rememberSwipeDown(prefs.swipeDownNotifications, actions.onSwipeDown)
     val openControl: (() -> Unit)? = if (actions.controls != null) ({ control = true }) else null
-    CompositionLocalProvider(LocalHomeLook provides look, LocalOpenControl provides openControl) {
+    val previews = actions.notifications?.previews?.collectAsState()?.value ?: emptyMap()
+    CompositionLocalProvider(LocalHomeLook provides look, LocalOpenControl provides openControl, LocalNotifications provides previews) {
         BoxWithConstraints(Modifier.fillMaxSize().then(swipeDown)) {
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
@@ -190,7 +193,23 @@ fun HomeScreen(
                     onClose = { searching = false },
                 )
             }
-            val extras = menuExtras(menuFor, data.arranged, ipad || hybrid, ipadActions) { menuFor = null }
+            if (!editing && !searching && !control) {
+                DynamicIsland(actions.media, Modifier.align(Alignment.TopCenter).safeDrawingPadding().padding(top = 14.dp))
+            }
+            val clear =
+                menuFor?.let { previews[it.component.packageName] }?.let { p ->
+                    {
+                        actions.notifications?.dismiss(p.key)
+                        menuFor = null
+                    }
+                }
+            val extras =
+                menuExtras(
+                    menuFor,
+                    data.arranged,
+                    ipad || hybrid,
+                    ipadActions,
+                ) { menuFor = null }.copy(onClearNotification = clear)
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
         }
     }

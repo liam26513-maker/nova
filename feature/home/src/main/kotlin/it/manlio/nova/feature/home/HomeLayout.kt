@@ -41,6 +41,7 @@ enum class WidgetKind(val cols: Int, val rows: Int) {
     NOTE(2, 2),
     WEATHER(2, 2),
     POMODORO(2, 1),
+    MUSIC(2, 2),
     EXTERNAL(2, 2),
 }
 

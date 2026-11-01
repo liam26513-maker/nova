@@ -183,6 +183,9 @@ internal fun DockIcon(
             .semantics { contentDescription = app.label },
     ) {
         AppIcon(app, actions.icon, LocalHomeLook.current.gridIcon)
+        LocalNotifications.current[app.component.packageName]?.let { n ->
+            CountBadge(n.count, Modifier.align(Alignment.TopEnd).offset(BADGE_OUT, -BADGE_OUT))
+        }
         if (editing) RemoveBadge({ actions.onToggleFavorite(app) }, Modifier.align(Alignment.TopStart))
     }
 }
@@ -194,3 +197,4 @@ private val DOCK_PADDING_V = 12.dp
 private val DOCK_GAP = 18.dp
 private const val LENS_RADIUS = 0.34f
 private const val HANDLE_INSET = 0.7f
+private val BADGE_OUT = 6.dp

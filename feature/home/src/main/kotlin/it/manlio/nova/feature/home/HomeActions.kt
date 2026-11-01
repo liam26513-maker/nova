@@ -33,6 +33,10 @@ class HomeActions(
     val weather: (suspend (city: String) -> Result<Weather>)? = null,
     /** Azioni del centro di controllo; null = senza centro di controllo. */
     val controls: ControlActions? = null,
+    /** Notifiche sotto le icone (SPEC §6.2); null = senza. */
+    val notifications: NotificationSource? = null,
+    /** Musica in riproduzione per l'isola e il widget; null = senza. */
+    val media: MediaSource? = null,
 )
 
 /**

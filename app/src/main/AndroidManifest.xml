@@ -62,6 +62,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Notifiche sotto le icone e musica nell'isola (SPEC §6.2, §6.7): si attiva solo se l'utente dà l'accesso
+             alle notifiche a NOVA dalle impostazioni di Android. Le notifiche restano in memoria. -->
+        <service
+            android:name=".NovaNotificationListener"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
         <!-- Home di NOVA (Fase 0, punto 11): Android la propone come app Home predefinita. -->
         <activity
             android:name=".HomeActivity"
