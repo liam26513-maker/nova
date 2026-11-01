@@ -25,6 +25,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
 import it.manlio.nova.core.design.NovaTheme
@@ -33,6 +34,7 @@ import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
+import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
@@ -72,7 +74,8 @@ class HomeScreenTest {
 
     private fun render(
         favorites: List<String> = defaultFavorites,
-        prefs: HomePrefs = HomePrefs(),
+        prefs: HomePrefs = LIST,
+        list: List<AppEntry> = apps,
     ) {
         val actions =
             HomeActions(
@@ -93,7 +96,7 @@ class HomeScreenTest {
                     ),
                 ) {
                     HomeScreen(
-                        apps,
+                        list,
                         favorites,
                         nowMillis = 1_793_443_500_000,
                         actions = actions,
@@ -189,6 +192,7 @@ class HomeScreenTest {
     fun prefs_hide_rename_and_restyle() {
         val prefs =
             HomePrefs(
+                layout = HomeLayoutStyle.LIST,
                 showIcons = false,
                 textSize = TextSize.LARGE,
                 font = HomeFont.ELEGANT,
@@ -207,6 +211,7 @@ class HomeScreenTest {
     fun light_theme_with_nova_wallpaper_and_monochrome_squircle_icons() {
         val prefs =
             HomePrefs(
+                layout = HomeLayoutStyle.LIST,
                 theme = ThemeMode.LIGHT,
                 wallpaper = WallpaperSource.NOVA,
                 novaWallpaper = 3,
@@ -219,7 +224,7 @@ class HomeScreenTest {
 
     @Test
     fun hidden_apps_disappear_and_renamed_ones_are_sorted_by_their_new_name() {
-        val prefs = HomePrefs(hidden = mapOf(apps[1].key to "Chrome"), renamed = mapOf(apps[0].key to "Zaino"))
+        val prefs = LIST.copy(hidden = mapOf(apps[1].key to "Chrome"), renamed = mapOf(apps[0].key to "Zaino"))
         val shown = prefs.apply(apps)!!
         assertEquals(false, shown.any { it.label == "Chrome" })
         assertEquals(listOf("YouTube", "Zaino", "Zoom"), shown.takeLast(3).map { it.label })
@@ -240,6 +245,108 @@ class HomeScreenTest {
         assertEquals(listOf("settings"), launched)
     }
 
+    // ---- Stile iPad: griglia di icone, dock, «Cerca app» ----
+
+    @Test
+    fun ipad_home_has_a_grid_a_dock_and_a_search_pill() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Calendario").assertExists()
+        // I preferiti stanno nel dock (senza nome, ma con descrizione per l'accessibilità), non più nella griglia.
+        compose.onNodeWithContentDescription("Chrome").assertExists()
+        compose.onNodeWithText("Chrome").assertDoesNotExist()
+        compose.onNodeWithText("Cerca app").assertExists()
+        compose.onNodeWithText("Tutte le app", substring = true).assertDoesNotExist()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_orizzontale.png")
+    }
+
+    @Test
+    @Config(qualifiers = "it-w800dp-h1280dp-port-mdpi")
+    fun ipad_home_portrait_screenshot() {
+        render(prefs = HomePrefs())
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_verticale.png")
+    }
+
+    @Test
+    fun ipad_light_theme_screenshot() {
+        render(prefs = HomePrefs(theme = ThemeMode.LIGHT, wallpaper = WallpaperSource.NOVA, novaWallpaper = 3))
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_chiaro.png")
+    }
+
+    @Test
+    fun ipad_tap_launches_from_the_grid_and_from_the_dock() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performClick()
+        compose.onNodeWithContentDescription("Chrome").performClick()
+        assertEquals(listOf("Mappe", "Chrome"), launched)
+    }
+
+    @Test
+    fun ipad_long_press_opens_the_menu_from_grid_and_dock() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Aggiungi ai preferiti").assertExists()
+        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Aggiungi ai preferiti").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Chrome").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Togli dai preferiti").performClick()
+        assertEquals(listOf("Chrome"), toggled)
+    }
+
+    @Test
+    fun ipad_empty_dock_explains_how_to_fill_it() {
+        render(favorites = emptyList(), prefs = HomePrefs())
+        compose.onNodeWithText("Tieni premuta", substring = true).assertExists()
+    }
+
+    @Test
+    fun ipad_search_pill_opens_all_apps_and_back_returns_to_the_grid() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Calendario").assertExists()
+        compose.onNodeWithText("Home", substring = true).assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_tutte_le_app.png")
+        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Cerca app").assertExists()
+    }
+
+    @Test
+    fun ipad_pages_scroll_sideways_and_show_the_page() {
+        val many =
+            (1..120).map {
+                val name = "App %03d".format(it)
+                AppEntry("pkg.$it/.Main#0", name, ComponentName("pkg.$it", ".Main"), Process.myUserHandle())
+            }
+        render(favorites = emptyList(), prefs = HomePrefs(), list = many)
+        compose.onNodeWithText("App 001").assertExists()
+        compose.onNodeWithContentDescription("Pagina 1 di", substring = true).assertExists()
+        compose.onNodeWithText("App 120").assertDoesNotExist()
+        compose.onNodeWithText("App 001").performTouchInput { swipeLeft() }
+        compose.waitForIdle()
+        compose.onNodeWithContentDescription("Pagina 2 di", substring = true).assertExists()
+        compose.onNodeWithText("App 001").assertDoesNotExist()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_pagina_2.png")
+    }
+
+    @Test
+    fun ipad_hidden_and_renamed_apps_follow_the_prefs() {
+        render(prefs = HomePrefs(hidden = mapOf(apps[7].key to "Krita"), renamed = mapOf(apps[8].key to "Cartine")))
+        compose.onNodeWithText("Cartine").assertExists()
+        compose.onNodeWithText("Mappe").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Krita").assertDoesNotExist()
+    }
+
+    @Test
+    fun ipad_settings_button_still_opens_nova_settings() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithContentDescription("Impostazioni di NOVA").performClick()
+        assertEquals(listOf("settings"), launched)
+    }
+
     private fun fakeIcon(label: String): ImageBitmap {
         val palette = listOf(0xFF8FA7BF, 0xFFB9C7BE, 0xFFD8C3A5, 0xFFA7A3C4, 0xFFC4A3A3)
         val bitmap = ImageBitmap(ICON, ICON)
@@ -250,6 +357,8 @@ class HomeScreenTest {
     }
 
     private companion object {
+        /** Le prove sull'elenco (stile Niagara) usano questa disposizione; lo stile iPad è il predefinito. */
+        val LIST = HomePrefs(layout = HomeLayoutStyle.LIST)
         const val ICON = 56
     }
 }

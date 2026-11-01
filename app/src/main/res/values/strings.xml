@@ -207,4 +207,7 @@
     <string name="improve_row_summary">Chiedi una funzione nuova o un cambiamento</string>
     <string name="repair_row">Ripara</string>
     <string name="repair_row_summary">Segnala un problema: NOVA allega un report anonimo</string>
+    <string name="customize_home_layout">Stile della Home</string>
+    <string name="customize_layout_ipad">Icone e dock</string>
+    <string name="customize_layout_list">Elenco</string>
 </resources>

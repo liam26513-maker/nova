@@ -2,15 +2,23 @@ package it.manlio.nova
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import it.manlio.nova.core.design.SettingsRow
-import it.manlio.nova.core.design.SettingsScaffold
 import it.manlio.nova.core.design.SettingsSection
+import it.manlio.nova.core.design.SidebarEntry
+import it.manlio.nova.core.design.SidebarGlyph
+import it.manlio.nova.core.design.SplitSettings
 import it.manlio.nova.feature.home.BlurLevel
 import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.HomeFont
+import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.IconSize
@@ -35,17 +43,58 @@ fun HomeCustomizeScreen(
     actions: CustomizeActions,
 ) {
     BackHandler(onBack = actions.onDone)
-    SettingsScaffold(title = stringResource(R.string.customize_title), subtitle = stringResource(R.string.customize_subtitle)) { backdrop ->
-        ThemesSection(backdrop, prefs, actions)
-        WallpaperSection(backdrop, prefs, actions)
-        ColorsSection(backdrop, prefs, actions.onChange)
-        TextSection(backdrop, prefs, actions.onChange)
-        IconsSection(backdrop, prefs, actions)
-        LayoutSection(backdrop, prefs, actions.onChange)
-        HiddenAndRenamed(backdrop, prefs, actions.onChange)
-        SettingsSection(backdrop) { SettingsRow(stringResource(R.string.customize_done), onClick = actions.onDone) }
+    var selected by rememberSaveable { mutableStateOf<String?>(null) }
+    SplitSettings(
+        title = stringResource(R.string.customize_title),
+        subtitle = stringResource(R.string.customize_subtitle),
+        entries = customizeEntries(),
+        selectedId = selected,
+        onSelect = { selected = it },
+        backLabel = stringResource(R.string.customize_done),
+        onBack = actions.onDone,
+    ) { entry, backdrop ->
+        when (entry.id) {
+            CUSTOMIZE_THEMES -> ThemesSection(backdrop, prefs, actions)
+            CUSTOMIZE_BACKGROUND -> WallpaperSection(backdrop, prefs, actions)
+            CUSTOMIZE_COLORS -> ColorsSection(backdrop, prefs, actions.onChange)
+            CUSTOMIZE_TEXT -> TextSection(backdrop, prefs, actions.onChange)
+            CUSTOMIZE_ICONS -> IconsSection(backdrop, prefs, actions)
+            CUSTOMIZE_LAYOUT -> LayoutSection(backdrop, prefs, actions.onChange)
+            else -> HiddenAndRenamed(backdrop, prefs, actions.onChange)
+        }
     }
 }
+
+@Suppress("MagicNumber") // tavolozza delle pastiglie
+@Composable
+private fun customizeEntries(): List<SidebarEntry> {
+    val themes = stringResource(R.string.customize_themes)
+    val background = stringResource(R.string.customize_background)
+    val colors = stringResource(R.string.customize_colors)
+    val text = stringResource(R.string.customize_text_and_clock)
+    val icons = stringResource(R.string.customize_icons_section)
+    val layout = stringResource(R.string.customize_layout)
+    val hidden = stringResource(R.string.customize_hidden)
+    return remember(themes, background, colors, text, icons, layout, hidden) {
+        listOf(
+            SidebarEntry(CUSTOMIZE_THEMES, themes, SidebarGlyph.LAYERS, Color(0xFF7B68D8)),
+            SidebarEntry(CUSTOMIZE_BACKGROUND, background, SidebarGlyph.IMAGE, Color(0xFF2FA39A)),
+            SidebarEntry(CUSTOMIZE_COLORS, colors, SidebarGlyph.DROP, Color(0xFFD6537A)),
+            SidebarEntry(CUSTOMIZE_TEXT, text, SidebarGlyph.TEXT, Color(0xFF3B8BD4)),
+            SidebarEntry(CUSTOMIZE_ICONS, icons, SidebarGlyph.GRID, Color(0xFFE0922F)),
+            SidebarEntry(CUSTOMIZE_LAYOUT, layout, SidebarGlyph.SLIDERS, Color(0xFF6B7684)),
+            SidebarEntry(CUSTOMIZE_HIDDEN, hidden, SidebarGlyph.EYE, Color(0xFF3FA34D)),
+        )
+    }
+}
+
+private const val CUSTOMIZE_THEMES = "themes"
+private const val CUSTOMIZE_BACKGROUND = "background"
+private const val CUSTOMIZE_COLORS = "colors"
+private const val CUSTOMIZE_TEXT = "text"
+private const val CUSTOMIZE_ICONS = "icons"
+private const val CUSTOMIZE_LAYOUT = "layout"
+private const val CUSTOMIZE_HIDDEN = "hidden"
 
 @Composable
 private fun ThemesSection(
@@ -261,9 +310,16 @@ private fun LayoutSection(
         header = stringResource(R.string.customize_layout),
         footer = stringResource(R.string.customize_layout_footer),
     ) {
-        Choice(R.string.customize_side, listOf(Side.LEFT, Side.RIGHT), prefs.alphabetSide, { stringResource(labelOf(it)) }) { v ->
-            onChange { it.copy(alphabetSide = v) }
+        Choice(R.string.customize_home_layout, HomeLayoutStyle.entries, prefs.layout, { stringResource(labelOf(it)) }) { v ->
+            onChange { it.copy(layout = v) }
         }
+        Choice(
+            R.string.customize_side,
+            listOf(Side.LEFT, Side.RIGHT),
+            prefs.alphabetSide,
+            { stringResource(labelOf(it)) },
+            divider = true,
+        ) { v -> onChange { it.copy(alphabetSide = v) } }
         Choice(R.string.customize_status_bar, listOf(true, false), prefs.showStatusBar, { showHide(it) }, divider = true) { v ->
             onChange { it.copy(showStatusBar = v) }
         }

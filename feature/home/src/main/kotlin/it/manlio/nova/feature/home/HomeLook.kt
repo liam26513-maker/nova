@@ -21,6 +21,8 @@ internal data class HomeLook(
     val showIcons: Boolean,
     val bigIcon: Dp,
     val smallIcon: Dp,
+    /** Icone della griglia (stile iPad), più grandi di quelle dell'elenco. */
+    val gridIcon: Dp,
     val bigLabel: TextUnit,
     val smallLabel: TextUnit,
     val family: FontFamily,
@@ -44,6 +46,7 @@ internal fun HomePrefs.look(
     val ink = if (dark) Color.White else Color(0xFF15171A)
     val (big, small) = labelSizes(textSize)
     val (bigIcon, smallIcon) = iconSizes(iconSize)
+    val gridIcon = gridIconSize(iconSize)
     // Accento automatico: il colore dello sfondo, schiarito sul tema scuro e scurito su quello chiaro.
     val accentColor = accent?.let(::Color) ?: lerp(tint, if (dark) Color.White else Color.Black, 0.45f)
     return HomeLook(
@@ -54,6 +57,7 @@ internal fun HomePrefs.look(
         showIcons = showIcons,
         bigIcon = bigIcon,
         smallIcon = smallIcon,
+        gridIcon = gridIcon,
         bigLabel = big,
         smallLabel = small,
         family = family(font),
@@ -77,6 +81,14 @@ private fun iconSizes(size: IconSize): Pair<Dp, Dp> =
         IconSize.SMALL -> 34.dp to 28.dp
         IconSize.MEDIUM -> 44.dp to 34.dp
         IconSize.LARGE -> 54.dp to 42.dp
+    }
+
+@Suppress("MagicNumber")
+private fun gridIconSize(size: IconSize): Dp =
+    when (size) {
+        IconSize.SMALL -> 56.dp
+        IconSize.MEDIUM -> 72.dp
+        IconSize.LARGE -> 88.dp
     }
 
 private fun family(font: HomeFont): FontFamily =

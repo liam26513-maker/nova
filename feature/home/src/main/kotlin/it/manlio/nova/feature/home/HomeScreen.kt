@@ -7,6 +7,8 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
@@ -27,9 +29,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,32 +101,95 @@ fun HomeScreen(
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
             Scrim(tint, blurred, prefs.scrim, look.dark)
-            HomeLayout(
-                prefs = prefs,
-                nowMillis = nowMillis,
-                onOpenSettings = actions.onOpenSettings,
-                letters = remember(headerIndex) { headerIndex.keys.toList() },
-                onLetter = { letter ->
-                    mode = HomeMode.ALL
-                    headerIndex[letter]?.let { allState.requestScrollToItem(it) }
-                },
-                onDoubleTapAlphabet = actions.onSleep.takeIf { prefs.doubleTapSleep },
-            ) {
+            val ipad = prefs.layout == HomeLayoutStyle.IPAD
+            val lists = HomeLists(favorites, favoriteSet, AllAppsData(rows, headerIndex, allState), visible != null, favoritesState)
+            val appList: @Composable () -> Unit = {
+                AppListHome(prefs, nowMillis, actions, lists, mode, { mode = it }, { menuFor = it })
+            }
+            if (ipad) {
                 AnimatedContent(
-                    targetState = mode,
-                    transitionSpec = { modeTransition(targetState) },
-                    modifier = Modifier.weight(1f).widthIn(max = CONTENT_WIDTH),
-                    label = "home-mode",
-                ) { shown ->
-                    when (shown) {
-                        HomeMode.FAVORITES ->
-                            FavoritesList(favorites, visible != null, favoritesState, actions, { menuFor = it }) { mode = HomeMode.ALL }
-                        HomeMode.ALL ->
-                            AllAppsList(rows, favoriteSet, allState, actions, { menuFor = it }) { mode = HomeMode.FAVORITES }
+                    targetState = mode == HomeMode.FAVORITES,
+                    transitionSpec = { gridTransition() },
+                    modifier = Modifier.fillMaxSize(),
+                    label = "home-ipad",
+                ) { showGrid ->
+                    if (showGrid) {
+                        IpadHome(visible, favorites, nowMillis, prefs, actions, scrollToTop, { menuFor = it }) { mode = HomeMode.ALL }
+                    } else {
+                        appList()
                     }
                 }
+            } else {
+                appList()
             }
             AppMenu(menuFor, menuFor?.key in favoriteSet, actions) { menuFor = null }
+        }
+    }
+}
+
+/** Elenchi già pronti per la home ad elenco (preferiti e tutte le app) e il loro scorrimento. */
+@Immutable
+private class HomeLists(
+    val favorites: List<AppEntry>,
+    val favoriteSet: Set<String>,
+    val all: AllAppsData,
+    val loaded: Boolean,
+    val favoritesState: LazyListState,
+) {
+    val rows get() = all.rows
+    val headerIndex get() = all.headerIndex
+    val allState get() = all.state
+}
+
+/** L'elenco completo: righe, indice delle lettere e scorrimento. */
+@Immutable
+private class AllAppsData(
+    val rows: List<AllRow>,
+    val headerIndex: Map<Char, Int>,
+    val state: LazyListState,
+)
+
+/**
+ * La home ad elenco (stile Niagara): preferiti e tutte le app con l'alfabeto. Nello stile iPad serve solo
+ * per «Cerca app», cioè l'elenco completo, e l'ora sta nella pagina delle icone.
+ */
+@Composable
+private fun AppListHome(
+    prefs: HomePrefs,
+    nowMillis: Long,
+    actions: HomeActions,
+    lists: HomeLists,
+    mode: HomeMode,
+    onMode: (HomeMode) -> Unit,
+    onMenu: (AppEntry) -> Unit,
+) {
+    val ipad = prefs.layout == HomeLayoutStyle.IPAD
+    HomeLayout(
+        prefs = prefs,
+        nowMillis = nowMillis,
+        onOpenSettings = actions.onOpenSettings,
+        letters = remember(lists.headerIndex) { lists.headerIndex.keys.toList() },
+        onLetter = { letter ->
+            onMode(HomeMode.ALL)
+            lists.headerIndex[letter]?.let { lists.allState.requestScrollToItem(it) }
+        },
+        onDoubleTapAlphabet = actions.onSleep.takeIf { prefs.doubleTapSleep },
+        showClock = prefs.showClock && !ipad,
+    ) {
+        AnimatedContent(
+            targetState = mode,
+            transitionSpec = { modeTransition(targetState) },
+            modifier = Modifier.weight(1f).widthIn(max = CONTENT_WIDTH),
+            label = "home-mode",
+        ) { shown ->
+            when (shown) {
+                HomeMode.FAVORITES ->
+                    FavoritesList(lists.favorites, lists.loaded, lists.favoritesState, actions, onMenu) { onMode(HomeMode.ALL) }
+                HomeMode.ALL ->
+                    AllAppsList(lists.rows, lists.favoriteSet, lists.allState, actions, onMenu, backLabel = ipad) {
+                        onMode(HomeMode.FAVORITES)
+                    }
+            }
         }
     }
 }
@@ -136,6 +203,7 @@ private fun HomeLayout(
     letters: List<Char>,
     onLetter: (Char) -> Unit,
     onDoubleTapAlphabet: (() -> Unit)?,
+    showClock: Boolean,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding()) {
@@ -152,7 +220,7 @@ private fun HomeLayout(
         Row(Modifier.fillMaxSize()) {
             if (prefs.alphabetSide == Side.LEFT) alphabet()
             Column(Modifier.weight(1f).fillMaxHeight().padding(start = margin, top = TOP_MARGIN)) {
-                if (prefs.showClock) {
+                if (showClock) {
                     ClockHeader(nowMillis)
                     Spacer(Modifier.height(32.dp))
                 }
@@ -173,6 +241,14 @@ private fun modeTransition(target: HomeMode): ContentTransform {
     val exit =
         fadeOut(spring(stiffness = FADE_OUT_STIFFNESS)) +
             slideOutVertically(spring(stiffness = FADE_OUT_STIFFNESS)) { -it / SLIDE_FRACTION * direction }
+    return ContentTransform(enter, exit, sizeTransform = SizeTransform(clip = false))
+}
+
+/** Dalla griglia all'elenco completo (e ritorno): dissolvenza con un leggero ingrandimento, a molla. */
+private fun gridTransition(): ContentTransform {
+    val grow = spring<Float>(dampingRatio = SLIDE_DAMPING, stiffness = SLIDE_STIFFNESS)
+    val enter = fadeIn(spring(stiffness = FADE_STIFFNESS)) + scaleIn(grow, GRID_SCALE)
+    val exit = fadeOut(spring(stiffness = FADE_OUT_STIFFNESS)) + scaleOut(spring(stiffness = FADE_OUT_STIFFNESS), 1f / GRID_SCALE)
     return ContentTransform(enter, exit, sizeTransform = SizeTransform(clip = false))
 }
 
@@ -291,7 +367,7 @@ private fun rememberSwipeDown(
 }
 
 /** Le icone si caricano una sola volta, alla misura più grande. */
-val TILE_ICON = 56.dp
+val TILE_ICON = 88.dp
 private val CONTENT_WIDTH = 560.dp
 private val WIDE_MARGIN = 72.dp
 private val NARROW_MARGIN = 28.dp
@@ -302,6 +378,7 @@ private const val FADE_OUT_STIFFNESS = 900f
 private const val SLIDE_DAMPING = 0.86f
 private const val SLIDE_STIFFNESS = 360f
 private const val SLIDE_FRACTION = 10
+private const val GRID_SCALE = 0.94f
 private const val TINT_TO_BLACK = 0.7f
 private const val TINT_TO_WHITE = 0.78f
 private val SWIPE_DISTANCE = 72.dp

@@ -15,4 +15,8 @@
     <string name="home_menu_hide_summary">Find it again in Settings → Home → Customise</string>
     <string name="home_menu_info">App info</string>
     <string name="home_menu_uninstall">Uninstall</string>
+    <string name="home_search_apps">Search apps</string>
+    <string name="home_dock_empty">Press and hold an app and choose “Add to favourites”: it will appear here, in the dock.</string>
+    <string name="home_back_to_grid">Home</string>
+    <string name="home_page">Page %1$d of %2$d</string>
 </resources>

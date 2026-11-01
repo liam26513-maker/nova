@@ -15,4 +15,8 @@
     <string name="home_menu_hide_summary">La ritrovi in Impostazioni → Home → Personalizza</string>
     <string name="home_menu_info">Informazioni sull\'app</string>
     <string name="home_menu_uninstall">Disinstalla</string>
+    <string name="home_search_apps">Cerca app</string>
+    <string name="home_dock_empty">Tieni premuta un\'app e scegli «Aggiungi ai preferiti»: comparirà qui, nel dock.</string>
+    <string name="home_back_to_grid">Home</string>
+    <string name="home_page">Pagina %1$d di %2$d</string>
 </resources>

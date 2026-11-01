@@ -157,11 +157,19 @@ internal fun AllAppsList(
     state: LazyListState,
     actions: HomeActions,
     onMenu: (AppEntry) -> Unit,
+    /** Stile iPad: «Home» al posto di «Preferiti». */
+    backLabel: Boolean = false,
     onBack: () -> Unit,
 ) {
     val family = LocalHomeLook.current.family
     LazyColumn(state = state, contentPadding = PaddingValues(bottom = 24.dp)) {
-        item(key = "back") { TextAction(stringResource(R.string.home_back_to_favorites), onBack, leading = true) }
+        item(key = "back") {
+            TextAction(
+                stringResource(if (backLabel) R.string.home_back_to_grid else R.string.home_back_to_favorites),
+                onBack,
+                leading = true,
+            )
+        }
         rows.forEach { row ->
             item(key = row.key) {
                 when (row) {
