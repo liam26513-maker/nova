@@ -92,20 +92,6 @@ class HomeActivity : ComponentActivity() {
             }
         }
 
-    private fun newControls() =
-        HomeControls(
-            this,
-            app,
-            onSystemNotifications = { HomeSystem.expandNotifications(this) },
-            onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
-        ) {
-            lifecycleScope.launch {
-                val done = performance.runTurbo()
-                val text = if (done == null) getString(R.string.perf_failed) else getString(R.string.perf_turbo_done, done.stopped)
-                Toast.makeText(this@HomeActivity, text, Toast.LENGTH_SHORT).show()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app.safeModeReason?.let { reason ->
@@ -118,7 +104,13 @@ class HomeActivity : ComponentActivity() {
         layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))
         widgets = WidgetHostBridge(this)
         performance = PerformanceUi(app, lifecycleScope)
-        controls = newControls()
+        controls =
+            HomeControls(
+                this,
+                app,
+                onSystemNotifications = { HomeSystem.expandNotifications(this) },
+                onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
+            ) { HomeSystem.turboWithToast(this, lifecycleScope, performance) }
         NotificationHub.init(this)
         mediaHub = MediaHub(this)
         wallpaperLoader = WallpaperLoader(this)

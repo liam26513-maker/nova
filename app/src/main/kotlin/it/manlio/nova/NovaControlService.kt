@@ -20,7 +20,6 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 
 /**
  * Il centro di controllo sopra le altre app (SPEC §2.2, §6.8). Android non lascia sostituire la tendina di sistema:
@@ -140,7 +138,7 @@ class NovaControlService : AccessibilityService() {
                 app,
                 onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
                 onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
-                onTurbo = ::turbo,
+                onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
             ).also {
                 controls = it
                 it.start()
@@ -207,14 +205,6 @@ class NovaControlService : AccessibilityService() {
         panel = null
         host.destroy()
         runCatching { windows.removeView(host) }
-    }
-
-    private fun turbo() {
-        scope.launch {
-            val done = PerformanceUi(app, scope).runTurbo()
-            val text = if (done == null) getString(R.string.perf_failed) else getString(R.string.perf_turbo_done, done.stopped)
-            Toast.makeText(this@NovaControlService, text, Toast.LENGTH_SHORT).show()
-        }
     }
 
     /** La radice della finestra del pannello: dà a Compose ciclo di vita e stato salvato (non c'è un'Activity) e riceve Indietro. */

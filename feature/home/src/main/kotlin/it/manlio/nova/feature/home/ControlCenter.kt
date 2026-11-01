@@ -365,19 +365,34 @@ private suspend fun AwaitPointerEventScope.dragDown(
         } else {
             dx += move.x
             dy += move.y
-            if (abs(dx) > slop || abs(dy) > slop) {
-                rejected = dy <= abs(dx)
-                started = !rejected
-                if (started) {
+            when (pullVerdict(dx, dy, slop)) {
+                PullVerdict.DOWN -> {
+                    started = true
                     change.consume()
                     sheet.drag(dy)
                 }
+                PullVerdict.REJECTED -> rejected = true
+                PullVerdict.UNDECIDED -> Unit
             }
         }
         if (!rejected) change = awaitPointerEvent(PointerEventPass.Initial).changes.firstOrNull { it.id == down.id }
     }
     return if (started) tracker.calculateVelocity().y / sheet.travel else null
 }
+
+private enum class PullVerdict { UNDECIDED, DOWN, REJECTED }
+
+/** Dopo la soglia di tocco: in giù più che di lato è il nostro gesto, di lato o in su no. */
+private fun pullVerdict(
+    dx: Float,
+    dy: Float,
+    slop: Float,
+): PullVerdict =
+    when {
+        abs(dx) <= slop && abs(dy) <= slop -> PullVerdict.UNDECIDED
+        dy > abs(dx) -> PullVerdict.DOWN
+        else -> PullVerdict.REJECTED
+    }
 
 /**
  * Il modo per aprire il centro di controllo senza trascinare: TalkBack e i comandi vocali non fanno il gesto dall'angolo.

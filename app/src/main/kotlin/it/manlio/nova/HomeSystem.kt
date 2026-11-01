@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import it.manlio.nova.feature.home.HomePrefs
@@ -51,6 +52,20 @@ internal object HomeSystem {
         runCatching {
             val service = context.getSystemService("statusbar")
             service.javaClass.getMethod("expandNotificationsPanel").invoke(service)
+        }
+    }
+
+    /** Turbo da un tasto (centro di controllo): lo esegue e dice a schermo quante app ha chiuso. */
+    fun turboWithToast(
+        context: Context,
+        scope: CoroutineScope,
+        performance: PerformanceUi,
+    ) {
+        scope.launch {
+            val done = performance.runTurbo()
+            val text =
+                if (done == null) context.getString(R.string.perf_failed) else context.getString(R.string.perf_turbo_done, done.stopped)
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
         }
     }
 

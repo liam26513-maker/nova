@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
-import androidx.compose.runtime.getValue
 
 /**
  * Una riga con simbolo e cursore. Il valore vive qui e si legge solo al disegno; il sistema lo riceve al massimo
@@ -145,7 +145,7 @@ private fun GlassSlider(
 }
 
 @Composable
-private fun GrantRow(onGrant: () -> Unit) {
+internal fun GrantRow(onGrant: () -> Unit) {
     val look = LocalHomeLook.current
     Row(
         Modifier.fillMaxWidth().clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) { onGrant() },
