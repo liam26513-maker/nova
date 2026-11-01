@@ -92,6 +92,15 @@ La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti �
 
 **Non incluso:** Meteo (serve Internet e la posizione), widget Stato PC, Musica, Pomodoro, Galleria (SPEC §6.5, altre fasi), notifiche sotto le app.
 
+
+### Meteo, Pomodoro, centro di controllo, calcolatrice
+- **Meteo** (`WeatherParser`, `WeatherWidget`, `app/WeatherClient`): ricerca del luogo per nome (`geocoding-api.open-meteo.com`) e previsione (`api.open-meteo.com`), senza chiave né account. **Non si legge la posizione del tablet**: si scrive la città; verso Internet viaggiano solo il nome e, dopo la ricerca, le sue coordinate. Risposta in cache per 30 minuti (in memoria); se la rete manca si mostra l'ultimo valore. Il codice WMO diventa uno di otto simboli disegnati da NOVA.
+- **Pomodoro** (`Pomodoro`, `PomodoroWidget`): macchina a stati pura (25′ / 5′), salvata come testo nel widget. Il tic di un secondo parte solo mentre va ed è visibile.
+- **Centro di controllo** (`ControlActions`, `ControlCenter`, `app/HomeControls`): la Home riceve le azioni dall'app. Torcia (`CameraManager.setTorchMode`, ascolto solo mentre la Home è visibile), volume (`AudioManager`), luminosità (`Settings.System`, serve `WRITE_SETTINGS`), livello grafico; Wi-Fi, Bluetooth, non disturbare e schermo aprono il pannello di sistema (`Settings.Panel`/intent): da Android 10 un'app normale non può cambiarli direttamente (con Shizuku si potrà in Fase 2).
+- **Cerca** (`Calc`, `SearchCommands`): parser a discesa ricorsiva (niente `eval`) per i conti, tabella di unità per le conversioni, comandi di NOVA.
+
+**Permessi aggiunti:** `WRITE_SETTINGS` (facoltativo, solo per la luminosità; si concede da `Settings.ACTION_MANAGE_WRITE_SETTINGS`). Nessun altro: `INTERNET` c'era già (aggiornamenti) e la torcia non ne richiede.
+
 ## Sfondo e app recenti
 - **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.
 - **Sfondo disegnato da NOVA:** quando NOVA disegna lo sfondo da sé (foto, NOVA, colore, oppure il tuo sfondo se le consenti di leggerlo), la finestra è opaca.

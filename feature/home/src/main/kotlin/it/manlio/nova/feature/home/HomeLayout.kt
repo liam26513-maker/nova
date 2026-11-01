@@ -34,7 +34,15 @@ data class FolderItem(
 ) : HomeItem
 
 /** I widget: quelli di NOVA (leggeri, disegnati in Compose) e quelli di altre app ([EXTERNAL], tramite `AppWidgetHost`). */
-enum class WidgetKind(val cols: Int, val rows: Int) { CLOCK(2, 2), CALENDAR(2, 2), BATTERY(2, 1), NOTE(2, 2), EXTERNAL(2, 2) }
+enum class WidgetKind(val cols: Int, val rows: Int) {
+    CLOCK(2, 2),
+    CALENDAR(2, 2),
+    BATTERY(2, 1),
+    NOTE(2, 2),
+    WEATHER(2, 2),
+    POMODORO(2, 1),
+    EXTERNAL(2, 2),
+}
 
 /** [ref]: per i widget esterni l'identificativo di `AppWidgetHost`; per gli altri 0. */
 @Immutable
@@ -44,7 +52,7 @@ data class WidgetItem(
     override val cols: Int = kind.cols,
     override val rows: Int = kind.rows,
     val ref: Int = 0,
-    /** Testo del widget Note. */
+    /** Testo del widget: la nota (Note), la città (Meteo), lo stato del timer (Pomodoro). */
     val text: String = "",
 ) : HomeItem
 

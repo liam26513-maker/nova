@@ -61,6 +61,9 @@ class HomeActivity : ComponentActivity() {
     private lateinit var favorites: Favorites
     private lateinit var layoutStore: HomeLayoutStore
     private lateinit var widgets: WidgetHostBridge
+    private lateinit var controls: HomeControls
+    private val weather = WeatherClient()
+    private var controlsTick by mutableIntStateOf(0)
     private lateinit var wallpaperLoader: WallpaperLoader
     private var homePresses by mutableIntStateOf(0)
     private var style by mutableStateOf(HomeStyle())
@@ -98,6 +101,7 @@ class HomeActivity : ComponentActivity() {
         favorites = Favorites(File(filesDir, "home-favorites.txt"))
         layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))
         widgets = WidgetHostBridge(this)
+        controls = HomeControls(this, app)
         wallpaperLoader = WallpaperLoader(this)
         onBackPressedDispatcher.addCallback(
             this,
@@ -113,6 +117,7 @@ class HomeActivity : ComponentActivity() {
             val favoriteKeys by favorites.keys.collectAsStateWithLifecycle()
             val prefs by app.homePrefs.prefs.collectAsStateWithLifecycle()
             val layout by layoutStore.layout.collectAsStateWithLifecycle()
+            controlsTick // leggerlo fa ricomporre la Home al ritorno, così il centro di controllo rilegge i permessi
             val iconPx = with(LocalDensity.current) { TILE_ICON.roundToPx() }
             val spec = HomeSystem.iconSpec(this, prefs)
             NovaTheme(tokensFrom(config, graphics.level)) {
@@ -173,6 +178,8 @@ class HomeActivity : ComponentActivity() {
             onSleep = ::sleep,
             onWebSearch = { HomeSystem.webSearch(this, it) },
             widgets = widgets,
+            weather = weather::load,
+            controls = controls.actions(),
         )
 
     /** Apre l'app facendola "crescere" dal punto toccato. */
@@ -235,6 +242,8 @@ class HomeActivity : ComponentActivity() {
         if (!::catalog.isInitialized) return
         catalog.start()
         widgets.start()
+        controls.start()
+        controlsTick++ // il permesso della luminosità può essere cambiato mentre la Home non c'era
         getSystemService(WindowManager::class.java).addCrossWindowBlurEnabledListener(mainExecutor, blurListener)
         wallpapers.addOnColorsChangedListener(colorsListener, Handler(mainLooper))
         lifecycleScope.launch {
@@ -248,6 +257,7 @@ class HomeActivity : ComponentActivity() {
         if (::catalog.isInitialized) {
             catalog.stop()
             widgets.stop()
+            controls.stop()
             getSystemService(WindowManager::class.java).removeCrossWindowBlurEnabledListener(blurListener)
             wallpapers.removeOnColorsChangedListener(colorsListener)
         }

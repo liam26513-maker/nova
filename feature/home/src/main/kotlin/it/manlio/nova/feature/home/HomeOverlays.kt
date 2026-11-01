@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -50,7 +52,7 @@ import it.manlio.nova.core.design.perform
 
 /** Sfondo scurito a tutto schermo con una scheda di vetro al centro; toccare fuori chiude. */
 @Composable
-private fun GlassDialog(
+internal fun GlassDialog(
     visible: Boolean,
     onDismiss: () -> Unit,
     width: androidx.compose.ui.unit.Dp,
@@ -63,7 +65,8 @@ private fun GlassDialog(
             Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = DIM))
-                .clickable(remember { MutableInteractionSource() }, indication = null, onClick = onDismiss),
+                // Senza `clickable`: renderebbe un unico elemento tutta la scheda per TalkBack. Indietro chiude lo stesso.
+                .pointerInput(onDismiss) { detectTapGestures { onDismiss() } },
             contentAlignment = Alignment.Center,
         ) {
             Box(
@@ -75,7 +78,8 @@ private fun GlassDialog(
                     .padding(24.dp)
                     .background(if (look.dark) CARD else CARD_LIGHT, SquircleShape(CARD_RADIUS))
                     .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
-                    .clickable(remember { MutableInteractionSource() }, indication = null) {},
+                    // Toccare la scheda non deve chiuderla; senza `clickable`, così TalkBack vede ogni voce da sola.
+                    .pointerInput(Unit) { detectTapGestures {} },
             ) { content() }
         }
     }

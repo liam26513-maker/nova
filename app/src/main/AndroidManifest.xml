@@ -5,6 +5,10 @@
     <!-- Per sapere se Shizuku è installato e aprirlo. -->
     <!-- "Disinstalla" dal menu delle app della Home: Android chiede sempre conferma. -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <!-- Centro di controllo: regolare la luminosità. Facoltativo: si concede da una voce chiara del pannello. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <!-- Scorrere giù sulla Home apre le notifiche. -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <!-- Facoltativo, lo concede l'utente: serve solo a leggere lo sfondo di sistema per sfocarlo

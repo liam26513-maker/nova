@@ -63,6 +63,16 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] **Widget di NOVA** («+»): Orologio (l'ora è giusta), Calendario, Batteria (percentuale e «In carica» attaccando il cavo), Nota rapida (scrivi, esci e rientra: il testo resta). Il «−» li toglie.
 - [ ] **Widget di altre app** («+» → Widget delle app): scegline uno. Android chiede il permesso; se ha una configurazione si apre; il widget compare e si aggiorna. Toglilo con «−». *(Funzione non provata su un tablet vero: se qualcosa non va, segnala il nome del widget.)*
 - [ ] **Cerca:** scrivi poche lettere (anche senza accenti o con le maiuscole): compaiono le app giuste; toccane una e si apre. «sfondo» o «nova» mostra «Impostazioni di NOVA». «Cerca sul web» apre il browser. Senza testo c'è «Tutte le app».
+- [ ] **Meteo:** «+» → Meteo → scrivi la tua città → «Salva»: compaiono temperatura, minima/massima e il simbolo giusto. Tocca il nome della città per cambiarla. Con il Wi-Fi spento dopo la prima volta, mostra l'ultimo tempo; mai spento e mai caricato, dice «Meteo non disponibile» e riprova toccando.
+- [ ] **Pomodoro:** «+» → Pomodoro → Avvia: il tempo scende; Pausa lo ferma; Azzera torna a 25:00. Lascia finire (o prova con un tempo breve nel test): senti un tic e passa a «Pausa». Riavvia il tablet con il timer in corso: continua da dove era.
+- [ ] **Centro di controllo** (pulsante con quattro riquadri):
+  - [ ] Torcia: si accende e si spegne (e segue se la cambi da un'altra parte).
+  - [ ] Volume: il cursore cambia il volume dei contenuti.
+  - [ ] Luminosità: la prima volta «Concedi il permesso…» apre la schermata di Android; concedi, torna: il cursore regola lo schermo.
+  - [ ] Wi-Fi e rete, Bluetooth, Non disturbare aprono il pannello giusto di Android.
+  - [ ] Livello grafico: ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
+  - [ ] Indietro lo chiude; «Modifica la Home» entra in modifica.
+- [ ] **Cerca come calcolatrice:** «12*(3+4)» → «= 84»; «10 km in mi» → «= 6.213712 mi»; toccare il risultato lo copia (incollalo da qualche parte). «torcia» e «widget» trovano i comandi.
 - [ ] **Stile Ibrido** (Personalizza → Stile della Home): in orizzontale preferiti a sinistra e icone a destra; in verticale solo l'elenco.
 - [ ] **Vetro:** il dock, i widget e le cartelle sembrano vetro. Con il livello Prestazioni diventano più pieni, e la Home non scatta.
 - [ ] **Impostazioni con barra laterale:** apri Impostazioni di NOVA. A sinistra le categorie con la pastiglia colorata, a destra il dettaglio. Toccare una categoria cambia il dettaglio e la voce scelta si evidenzia.
