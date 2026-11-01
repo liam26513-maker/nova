@@ -67,6 +67,7 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] **Pomodoro:** «+» → Pomodoro → Avvia: il tempo scende; Pausa lo ferma; Azzera torna a 25:00. Lascia finire (o prova con un tempo breve nel test): senti un tic e passa a «Pausa». Riavvia il tablet con il timer in corso: continua da dove era.
 - [ ] **Centro di controllo** (a tendina, nessun pulsante):
   - [ ] Tira giù dall'angolo in alto a destra: il pannello scende **seguendo il dito**; lascia a metà e finisce da solo; uno scatto veloce lo apre anche dopo poco. Tira giù da un altro punto: si aprono le notifiche, non il pannello.
+  - [ ] Impostazioni → Home → Personalizza → «Centro di controllo»: spunta e togli riquadri. Riapri la tendina: a prima vista ci sono esattamente quelli spuntati, gli altri sono sotto «Altro» (anche sopra le altre app). Togli tutto: restano volume e luminosità. Riporta Wi-Fi, Bluetooth, Non disturbare e Torcia.
   - [ ] Si chiude tirando su (anche con uno scatto), toccando fuori e con Indietro. Se lo apri e lo chiudi dieci volte di fila non rallenta e la Home non scatta.
   - [ ] Volume e luminosità: il riempimento sta **sotto il dito** lungo la barra, dal primo tocco, senza salti; muovi il dito in su e in giù mentre scorri: il cursore continua e il pannello **non si chiude**. Il volume cambia a scatti (i suoi gradini), la luminosità in modo continuo e senza far scattare lo schermo.
   - [ ] Luminosità: la prima volta «Concedi il permesso…» apre la schermata di Android; concedi, torna: il cursore regola lo schermo.
