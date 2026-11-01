@@ -387,6 +387,9 @@ Ispirazione iOS/iPadOS (pulizia, gerarchia, materiali traslucidi, angoli continu
 
 Pressione lunga su un elemento in modalità modifica → pannello con controlli diretti (dimensione, raggio, trasparenza, colore, posizione) che scrivono override locali, più il tasto "Chiedi a Claude…" che apre "Migliora" con l'elemento già indicato.
 
+### 5.6.1 Impostazioni a barra laterale (fatto)
+Le schermate lunghe di impostazioni (Impostazioni, Personalizza la Home) usano `SplitSettings` di `core/design`, come l'app Impostazioni dell'iPad: a sinistra la barra laterale con le categorie (pastiglie colorate con simboli disegnati da NOVA, `SidebarGlyph`), a destra il dettaglio. Da 840 dp di larghezza sono due colonne; più stretto, un elenco che apre il dettaglio (Indietro torna all'elenco). Titoli grandi in grassetto. Le schermate corte e guidate (procedura iniziale, misura, Migliora) restano a colonna singola (`SettingsScaffold`).
+
 ### 5.7 Editor temi
 
 Editor visivo con anteprima dal vivo: palette, materiali, raggi, font, densità, sfondi. Salva temi come JSON (override locale), esportabili nel repo. Temi preimpostati: Chiaro, Scuro, Notte OLED, Studio (chiaro caldo), Gaming (scuro ad alto contrasto), Creativo (neutro, colori fedeli).
@@ -407,6 +410,9 @@ Tre stili commutabili in un tocco, anche per profilo/modalità:
 
 ### 6.1.1 Studio di personalizzazione (fatto in Fase 0)
 Temi pronti e condivisibili, sfondo (sistema, raccolta di NOVA, foto, colore) con sfocatura propria, tema scuro/chiaro/automatico, colore d'accento, carattere, misura e spessore del testo, stili dell'orologio, icone (forma, misura, monocromatiche, pacchetti `appfilter.xml`), barra di stato, gesti (scorri giù per le notifiche, doppio tocco per spegnere tramite Shizuku), app nascoste e rinominate. Finestra della home opaca: nessuna trasparenza nelle app recenti. Dettagli in `docs/modules/home.md`.
+
+### 6.1.2 Stile iPad (fatto, richiesta "rendi tutta l'interfaccia più simile ad un iPad")
+Implementata la disposizione **Griglia** (stile iPadOS) in forma essenziale ed è ora il **predefinito**: pagine di icone squircle, puntini, capsula «Cerca app» (apre l'elenco completo con l'alfabeto a onda) e dock traslucido con i primi 6 preferiti. Resta scelta **Lista** (Niagara puro). Mancano ancora: layout Ibrido, posizionamento libero, cartelle, widget, vera ricerca universale (Fase 1). Dettagli in `docs/modules/home.md`.
 
 ### 6.2 Lista dei preferiti
 

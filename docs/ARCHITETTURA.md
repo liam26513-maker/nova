@@ -6,7 +6,7 @@ Riferimento completo: `SPEC.md` §3. Qui solo ciò che esiste già nel codice.
 |---|---|---|
 | `:core:modules` | Kotlin/JVM | `NovaModule`, `ModuleRegistry` (dipendenze, permessi, sospensione dopo crash) |
 | `:core:config` | Kotlin/JVM | Modelli, `ConfigEngine` (tre strati + ricarica a caldo), `ConfigValidator` |
-| `:core:design` | Android/Compose | Token, `SquircleShape`, molle, aptica, `GraphicsLevel` + controller, `BoxBlur`, `MaterialSurface` |
+| `:core:design` | Android/Compose | Token, `SquircleShape`, molle, aptica, `GraphicsLevel` + controller, `BoxBlur`, `MaterialSurface`, impalcature delle impostazioni (`SettingsScaffold`, `SplitSettings` a barra laterale, `SidebarGlyph`) |
 | `:app` | Android app | Assemblaggio del nucleo e schermata dimostrativa |
 
 `core:modules` e `core:config` sono puro Kotlin: i loro test girano in pochi secondi senza Android.

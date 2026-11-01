@@ -3,6 +3,8 @@
 La prima schermata del tablet quando NOVA è l'app Home predefinita. Versione minima ma curata; la home completa (layout commutabili, notifiche in linea, widget, dock, cartelle, alfabeto a onda completo) arriva nella Fase 1 (SPEC §6).
 
 ## Cosa fa
+> Questa sezione descrive la disposizione **Elenco** (stile Niagara). La disposizione predefinita, a icone e dock, è descritta in «Stile iPad» più sotto.
+
 - **Stile** ispirato a Niagara, senza copiarne la grafica:
   - si vede lo **sfondo di sistema**, coperto da una sfumatura scura e opaca tinta col suo colore principale (`WallpaperColors`, letto senza permessi);
   - dove il dispositivo lo supporta (`isCrossWindowBlurEnabled`) e il livello grafico è Massimo o Bilanciato, Android **sfoca** anche lo sfondo (`setBackgroundBlurRadius`: 40 dp oppure 22 dp), e la sfumatura diventa più leggera;
@@ -54,6 +56,25 @@ Analisi di partenza: le pagine di aiuto di Niagara (funzioni Pro, temi) e gli ar
 
 **Non incluso:** widget, pop-up e cartelle, notifiche sotto le app, meteo e agenda, timer d'uso, icone generate automaticamente per le app senza icona nel pacchetto. Sono nella Fase 1 o successive della SPEC; alcune richiedono servizi esterni o permessi che non vanno chiesti adesso.
 
+## Stile iPad (predefinito)
+La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti → Stile della Home** (`HomePrefs.layout`, non fa parte del tema: cambiare tema non la cambia).
+
+| Stile | Cosa si vede |
+|---|---|
+| **Icone e dock** (`IPAD`, predefinito) | ora e data compatte in alto, pagine di icone con il nome sotto (`HorizontalPager`), puntini della pagina, capsula «Cerca app» e dock |
+| **Elenco** (`LIST`) | la Home in stile Niagara descritta sopra: ora grande, preferiti in lista, alfabeto a onda |
+
+**Come funziona lo stile iPad**
+- **Griglia:** colonne e righe si calcolano dallo spazio disponibile (`GridMetrics.of`: celle di almeno 150 × 128 dp, da 4 a 8 colonne e da 2 a 6 righe). Sul tablet 1280×800 sono 7 × 4 icone per pagina; in verticale 4 × 6. Le app in più passano alla pagina successiva (`paginate`).
+- **Ordine:** alfabetico (italiano). Le app del dock non compaiono anche nella griglia, come sull'iPad. Il posizionamento libero e le cartelle sono della Fase 1.
+- **Dock:** i primi `DOCK_MAX` = 6 preferiti, nell'ordine dei preferiti, senza nomi (restano nella descrizione per TalkBack). Senza preferiti mostra come aggiungerli. Con il livello grafico **Prestazioni** il pannello è più opaco e senza bordo luminoso; con gli altri è traslucido con un filo di luce.
+- **Gesti:** tocco = apre l'app, con l'animazione dal rettangolo dell'icona; pressione lunga = il solito menu; scorrere di lato = pagina; scorrere giù = notifiche. L'icona si rimpicciolisce sotto il dito con una molla, entro un frame.
+- **Cerca app:** apre l'elenco completo con l'alfabeto a onda; Indietro o «‹ Home» tornano alla griglia. Il tasto Home riporta alla prima pagina. La vera ricerca universale è della Fase 1.
+- **Icone:** nello stile iPad contano la misura (piccola 56, media 72, grande 88 dp), la forma e lo stile; «Icone sì/no» vale solo per l'elenco.
+- **Icone morbide di default:** `iconShape` ora parte da «Morbido». Un file di preferenze scritto prima dello stile iPad, che aveva la vecchia forma predefinita «Originale», passa a «Morbido» una sola volta (`PrefsCodec`: manca la chiave `layout`); dal primo salvataggio la scelta resta esplicita.
+
+**Consumi:** lo stile iPad non aggiunge sfocature in tempo reale: il dock e la capsula sono rettangoli traslucidi disegnati con un colore. Il pager compone solo la pagina visibile. Le icone si caricano una sola volta alla misura più grande (88 dp, 31 KB l'una a 1×), con la cache LRU di sempre.
+
 ## Sfondo e app recenti
 - **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.
 - **Sfondo disegnato da NOVA:** quando NOVA disegna lo sfondo da sé (foto, NOVA, colore, oppure il tuo sfondo se le consenti di leggerlo), la finestra è opaca.
@@ -63,10 +84,10 @@ Analisi di partenza: le pagine di aiuto di Niagara (funzioni Pro, temi) e gli ar
 ## Come è fatto
 | File | Ruolo |
 |---|---|
-| `AppCatalog` | elenco delle app da `LauncherApps` (tutti i profili utente), aggiornato dai callback di sistema su installazione, rimozione e modifica: niente polling. Icone caricate fuori dal thread principale, una sola misura (56 dp), cache LRU di 300. Attivo solo tra `start()` e `stop()`. |
+| `AppCatalog` | elenco delle app da `LauncherApps` (tutti i profili utente), aggiornato dai callback di sistema su installazione, rimozione e modifica: niente polling. Icone caricate fuori dal thread principale, una sola misura (88 dp, la più grande della griglia), cache LRU di 300. Attivo solo tra `start()` e `stop()`. |
 | `AppIndex` | lettera e ordinamento italiano (testato). |
 | `Favorites` | preferiti in `files/home-favorites.txt`, una chiave per riga, scrittura atomica fuori dal thread principale (testato). |
-| `HomeScreen`, `HomeLists`, `HomeRows`, `AppMenu`, `ReorderState`, `HomePrefs` (+ `PrefsCodec`), `HomeLook`, `ThemePresets`, `NovaWallpapers`, `WallpaperLoader`, `IconStyler`, `IconPacks`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
+| `HomeScreen`, `IpadHome`, `GridMetrics`, `HomeLists`, `HomeRows`, `AppMenu`, `ReorderState`, `HomePrefs` (+ `PrefsCodec`), `HomeLook`, `ThemePresets`, `NovaWallpapers`, `WallpaperLoader`, `IconStyler`, `IconPacks`, `Alphabet`, `Clock` | interfaccia Compose; l'ora si aggiorna col tic di sistema di ogni minuto, solo mentre la home è visibile. |
 | `app/HomeActivity` | attività `HOME` (`singleTask`, tema traslucido con lo sfondo di sistema); collega catalogo, preferiti, colori dello sfondo, sfocatura e livello grafico; passa i tempi dei fotogrammi al livello automatico. |
 | `app/HomeSection`, `app/HomeCustomizeScreen` (+ `HomeCustomizeParts`, `HomeCustomizeRoute`), `app/HomeWindow`, `app/HomeSystem` | in Impostazioni: quale app fa da Home, il pulsante per cambiarla (`Settings.ACTION_HOME_SETTINGS`) e la personalizzazione. |
 

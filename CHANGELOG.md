@@ -4,6 +4,15 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Interfaccia più simile a un iPad
+- Richiesta: "rendi tutta l'interfaccia piu simile ad un iPad".
+- **Home a icone, come sull'iPad.** Ora la Home mostra pagine di icone con i nomi sotto, da scorrere di lato, con i puntini della pagina. In basso c'è il **dock**: un pannello trasparente con i tuoi primi 6 preferiti. Sopra al dock trovi «Cerca app», che apre l'elenco di tutte le app con l'alfabeto a onda. Tenendo premuta un'icona (nella griglia o nel dock) compare il solito menu: preferiti, rinomina, nascondi.
+- **Icone tutte morbide.** Le icone hanno la stessa forma arrotondata («Morbido») e sono più grandi. Se preferivi la forma originale la rimetti da Personalizza → Icone.
+- **Impostazioni con la barra laterale.** A sinistra le categorie con una pastiglia colorata (Migliora, Livello grafico, Il tuo tablet, Home, Aggiornamenti, Strumenti, Stato), a destra il dettaglio, come nelle Impostazioni dell'iPad. Titoli grandi in grassetto. Con lo schermo stretto (telefono o finestra piccola) diventa un elenco che si apre sul dettaglio, con «‹» e Indietro per tornare.
+- **Personalizza la Home** usa la stessa barra laterale (Temi, Sfondo, Colori, Testo e orologio, Icone, Disposizione e gesti, App nascoste) e ha una nuova scelta, **Stile della Home**: «Icone e dock» (nuovo) oppure «Elenco» (la Home di prima, in stile Niagara). I temi non cambiano lo stile che hai scelto.
+- Non cambia nulla per i consumi: il dock è un semplice pannello traslucido (con il livello grafico Prestazioni diventa più pieno e senza bordo luminoso), senza sfocatura in tempo reale.
+- Per ora le icone sono in ordine alfabetico: spostarle liberamente, le cartelle e i widget arrivano nella Fase 1.
+
 ### Migliora e Ripara (Fase 0, punto 9: Fase 0 completata)
 - Richiesta: "Per adesso continua con i passaggi successivi".
 - **Impostazioni → Migliora:** scrivi cosa vuoi con parole tue. NOVA apre Claude Code con la richiesta già scritta, completa dei dettagli tecnici: tu tocchi solo Invia.
