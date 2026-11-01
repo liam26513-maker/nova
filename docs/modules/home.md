@@ -157,3 +157,9 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 - **`MoreItem(label, state, onClick: () -> String?)`:** `onClick` dà il nuovo stato se è un interruttore (resta aperta) o `null` se porta fuori (chiude). La logica Android sta in `app/HomeControls`: rotazione con `Settings.System.ACCELEROMETER_ROTATION` (serve `WRITE_SETTINGS`, altrimenti apre lo schermo), le altre voci aprono l'azione di impostazioni giusta; alcune azioni sono stringhe perché non sono costanti pubbliche in tutte le versioni (se mancano, `runCatching` non fa nulla).
 - **Rete di sicurezza:** «Notifiche di Android» e «Impostazioni rapide di Android» (Home: `expandNotificationsPanel`/`expandSettingsPanel` via `statusbar`; servizio: `GLOBAL_ACTION_NOTIFICATIONS`/`GLOBAL_ACTION_QUICK_SETTINGS`). Sono ciò che rende sicuro sostituire la tendina: ogni riquadro di Android resta raggiungibile.
 - **Tema:** la scheda è `lerp(CARD|CARD_LIGHT, accento, 0.1)`; testo, simboli e riquadri attivi usano `HomeLook` (quindi chiaro/scuro, accento personalizzato e sfondo scelti in Personalizza la Home).
+
+#### Riquadri a prima vista scelti dall'utente
+
+- `HomePrefs.controlTiles: List<ControlTileId>` (predefinito `ControlTileId.DEFAULT`), salvato come `controlTiles=A,B,C` in `PrefsCodec`: chiave assente = predefiniti, chiave vuota = nessuno, nomi ignoti o doppi scartati, ordine sempre quello dell'enum. Non fa parte dell'aspetto dei temi (`appearance()` lo azzera, `withLookOf()` conserva quello dell'utente).
+- `ControlCenter(firstView = …)`: costruisce i riquadri disponibili (`available`: torcia solo con flash, Turbo solo con Shizuku, Modifica la Home solo sulla Home) e li divide tra prima vista e «Altro». Il servizio passa `prefs.controlTiles` tramite `ControlCenterOverlay`.
+- Schermata: categoria «Centro di controllo» in `HomeCustomizeScreen` (`ControlSection`), una riga con spunta per riquadro.

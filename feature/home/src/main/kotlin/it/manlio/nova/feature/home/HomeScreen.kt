@@ -170,6 +170,7 @@ fun HomeScreen(
                     control = false
                     editing = true
                 },
+                firstView = prefs.controlTiles,
                 onClose = { control = false },
                 onSettled = { control = it },
             )

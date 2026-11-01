@@ -38,6 +38,7 @@ fun ControlCenterOverlay(
             controls = controls,
             onSettings = onSettings,
             onEditHome = null,
+            firstView = prefs.controlTiles,
             onClose = { sheet.settle(false) },
             onSettled = {},
         )

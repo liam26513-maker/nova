@@ -179,6 +179,16 @@
     <string name="customize_icon_pack_none">No pack: original icons</string>
     <string name="customize_icon_pack_empty">No icon pack installed</string>
     <string name="customize_layout">Layout and gestures</string>
+    <string name="customize_control">Control Centre</string>
+    <string name="customize_control_footer">Choose the tiles shown right away when you pull the sheet down. All the others stay under More. The order is that of this list. A tile that is not available (torch without a flash, Turbo without Shizuku) does not appear.</string>
+    <string name="ctl_wifi">Wi-Fi and network</string>
+    <string name="ctl_bluetooth">Bluetooth</string>
+    <string name="ctl_dnd">Do not disturb</string>
+    <string name="ctl_torch">Torch</string>
+    <string name="ctl_graphics">Graphics level</string>
+    <string name="ctl_turbo">Turbo</string>
+    <string name="ctl_edit_home">Edit Home</string>
+    <string name="ctl_settings">NOVA settings</string>
     <string name="customize_layout_footer">Double-tap to turn the screen off uses Shizuku.</string>
     <string name="customize_status_bar">Status bar</string>
     <string name="customize_swipe_down">Swipe down for notifications</string>

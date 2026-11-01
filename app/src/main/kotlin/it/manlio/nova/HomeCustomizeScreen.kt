@@ -1,6 +1,7 @@
 package it.manlio.nova
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import it.manlio.nova.core.design.SidebarGlyph
 import it.manlio.nova.core.design.SplitSettings
 import it.manlio.nova.feature.home.BlurLevel
 import it.manlio.nova.feature.home.ClockStyle
+import it.manlio.nova.feature.home.ControlTileId
 import it.manlio.nova.feature.home.HomeFont
 import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.HomePrefs
@@ -60,6 +62,7 @@ fun HomeCustomizeScreen(
             CUSTOMIZE_TEXT -> TextSection(backdrop, prefs, actions.onChange)
             CUSTOMIZE_ICONS -> IconsSection(backdrop, prefs, actions)
             CUSTOMIZE_LAYOUT -> LayoutSection(backdrop, prefs, actions.onChange)
+            CUSTOMIZE_CONTROL -> ControlSection(backdrop, prefs, actions.onChange)
             else -> HiddenAndRenamed(backdrop, prefs, actions.onChange)
         }
     }
@@ -74,8 +77,9 @@ private fun customizeEntries(): List<SidebarEntry> {
     val text = stringResource(R.string.customize_text_and_clock)
     val icons = stringResource(R.string.customize_icons_section)
     val layout = stringResource(R.string.customize_layout)
+    val control = stringResource(R.string.customize_control)
     val hidden = stringResource(R.string.customize_hidden)
-    return remember(themes, background, colors, text, icons, layout, hidden) {
+    return remember(themes, background, colors, text, icons, layout, control, hidden) {
         listOf(
             SidebarEntry(CUSTOMIZE_THEMES, themes, SidebarGlyph.LAYERS, Color(0xFF7B68D8)),
             SidebarEntry(CUSTOMIZE_BACKGROUND, background, SidebarGlyph.IMAGE, Color(0xFF2FA39A)),
@@ -83,6 +87,7 @@ private fun customizeEntries(): List<SidebarEntry> {
             SidebarEntry(CUSTOMIZE_TEXT, text, SidebarGlyph.TEXT, Color(0xFF3B8BD4)),
             SidebarEntry(CUSTOMIZE_ICONS, icons, SidebarGlyph.GRID, Color(0xFFE0922F)),
             SidebarEntry(CUSTOMIZE_LAYOUT, layout, SidebarGlyph.SLIDERS, Color(0xFF6B7684)),
+            SidebarEntry(CUSTOMIZE_CONTROL, control, SidebarGlyph.SLIDERS, Color(0xFF4A7BD6)),
             SidebarEntry(CUSTOMIZE_HIDDEN, hidden, SidebarGlyph.EYE, Color(0xFF3FA34D)),
         )
     }
@@ -94,6 +99,7 @@ private const val CUSTOMIZE_COLORS = "colors"
 private const val CUSTOMIZE_TEXT = "text"
 private const val CUSTOMIZE_ICONS = "icons"
 private const val CUSTOMIZE_LAYOUT = "layout"
+private const val CUSTOMIZE_CONTROL = "control"
 private const val CUSTOMIZE_HIDDEN = "hidden"
 
 @Composable
@@ -331,6 +337,48 @@ private fun LayoutSection(
         }
     }
 }
+
+/** Quali riquadri del centro di controllo stanno a prima vista; gli altri si trovano sotto «Altro». */
+@Composable
+private fun ControlSection(
+    backdrop: ImageBitmap,
+    prefs: HomePrefs,
+    onChange: ((HomePrefs) -> HomePrefs) -> Unit,
+) {
+    SettingsSection(
+        backdrop,
+        header = stringResource(R.string.customize_control),
+        footer = stringResource(R.string.customize_control_footer),
+    ) {
+        ControlTileId.entries.forEachIndexed { index, tile ->
+            val on = tile in prefs.controlTiles
+            SettingsRow(
+                stringResource(controlTileLabel(tile)),
+                showDivider = index > 0,
+                onClick = {
+                    onChange { p ->
+                        val chosen = if (on) p.controlTiles - tile else p.controlTiles + tile
+                        p.copy(controlTiles = ControlTileId.entries.filter { it in chosen })
+                    }
+                },
+                trailing = { if (on) Check() },
+            )
+        }
+    }
+}
+
+@StringRes
+private fun controlTileLabel(tile: ControlTileId): Int =
+    when (tile) {
+        ControlTileId.WIFI -> R.string.ctl_wifi
+        ControlTileId.BLUETOOTH -> R.string.ctl_bluetooth
+        ControlTileId.DND -> R.string.ctl_dnd
+        ControlTileId.TORCH -> R.string.ctl_torch
+        ControlTileId.GRAPHICS -> R.string.ctl_graphics
+        ControlTileId.TURBO -> R.string.ctl_turbo
+        ControlTileId.EDIT_HOME -> R.string.ctl_edit_home
+        ControlTileId.SETTINGS -> R.string.ctl_settings
+    }
 
 @Composable
 private fun HiddenAndRenamed(

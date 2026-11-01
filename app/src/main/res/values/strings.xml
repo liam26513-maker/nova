@@ -182,6 +182,16 @@
     <string name="customize_icon_pack_none">Nessun pacchetto: icone originali</string>
     <string name="customize_icon_pack_empty">Nessun pacchetto di icone installato</string>
     <string name="customize_layout">Disposizione e gesti</string>
+    <string name="customize_control">Centro di controllo</string>
+    <string name="customize_control_footer">Scegli i riquadri che si vedono subito quando tiri giù la tendina. Tutti gli altri restano sotto «Altro». L'ordine è quello di questa lista. Un riquadro non disponibile (la torcia senza flash, il Turbo senza Shizuku) non compare.</string>
+    <string name="ctl_wifi">Wi-Fi e rete</string>
+    <string name="ctl_bluetooth">Bluetooth</string>
+    <string name="ctl_dnd">Non disturbare</string>
+    <string name="ctl_torch">Torcia</string>
+    <string name="ctl_graphics">Livello grafico</string>
+    <string name="ctl_turbo">Turbo</string>
+    <string name="ctl_edit_home">Modifica la Home</string>
+    <string name="ctl_settings">Impostazioni di NOVA</string>
     <string name="customize_layout_footer">Lo spegnimento dello schermo col doppio tocco usa Shizuku.</string>
     <string name="customize_status_bar">Barra di stato</string>
     <string name="customize_swipe_down">Scorri giù per le notifiche</string>

@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Scegli i riquadri a prima vista della tendina
+- Richiesta: "Fai scegliere i riquadri a prima vista da Personalizza la Home".
+- **Dove:** Impostazioni di NOVA → Home → Personalizza → **«Centro di controllo»**: un elenco con tutti i riquadri (Wi-Fi e rete, Bluetooth, Non disturbare, Torcia, Livello grafico, Turbo, Modifica la Home, Impostazioni di NOVA). Spunta quelli che vuoi **subito sotto il dito**; tutti gli altri finiscono sotto **«Altro»**. Vale sia sulla Home sia sopra le altre app e si applica subito.
+- Predefiniti come prima: Wi-Fi, Bluetooth, Non disturbare, Torcia. Puoi anche toglierli tutti: a prima vista restano solo volume e luminosità.
+- L'ordine è quello della lista (non si riordina ancora). Un riquadro non disponibile (torcia senza flash, Turbo senza Shizuku) non compare né a prima vista né sotto «Altro».
+- Il tema condiviso/importato non cambia questa scelta, come per la disposizione.
+
 ### Tendina che sostituisce quella di Android, minimale, con «Altro»
 - Richiesta: "Fai la due, ma la tendina deve contenere tutte le impostazioni che ha quella attuale di android, ma nascoste perché deve avere un aspetto minimalista e elegante ma sempre corrente con il tema, anche con uno personalizzabile, a prima vista poi le restanti impostazioni si scoprono con una sezione "altro" sempre nella tendina oltre ad avere quelle nuove".
 - **Sostituisce quella di Android:** tirando giù da **qualsiasi punto della barra di stato** (non più solo dall'angolo) si apre la tendina di NOVA, in tutte le app. Se la barra di stato è nascosta (giochi, video a tutto schermo) la striscia si disattiva da sola e non ruba il tocco in alto.

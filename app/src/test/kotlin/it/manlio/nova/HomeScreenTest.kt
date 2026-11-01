@@ -42,6 +42,7 @@ import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.AppItem
 import it.manlio.nova.feature.home.ClockStyle
 import it.manlio.nova.feature.home.ControlActions
+import it.manlio.nova.feature.home.ControlTileId
 import it.manlio.nova.feature.home.FolderItem
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
@@ -724,6 +725,20 @@ class HomeScreenTest {
         compose.onRoot().captureRoboImage("screenshots/home_centro_di_controllo_altro.png")
         openMore() // di nuovo: si richiude
         compose.onNodeWithText("Posizione").assertDoesNotExist()
+    }
+
+    @Test
+    fun control_center_first_view_follows_the_tiles_chosen_in_customize() {
+        render(
+            prefs = HomePrefs(controlTiles = listOf(ControlTileId.GRAPHICS, ControlTileId.SETTINGS)),
+            controls = ControlActions(openPanel = {}, graphicsLabel = { "Bilanciato" }),
+        )
+        openControl()
+        compose.onNodeWithText("Bilanciato").assertExists() // scelti: a prima vista, senza aprire «Altro»
+        compose.onNodeWithText("Impostazioni di NOVA").assertExists()
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist() // non scelto: sta sotto «Altro»
+        openMore()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
     }
 
     @Test

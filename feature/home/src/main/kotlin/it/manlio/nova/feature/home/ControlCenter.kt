@@ -196,6 +196,7 @@ internal fun ControlCenter(
     controls: ControlActions?,
     onSettings: () -> Unit,
     onEditHome: (() -> Unit)?,
+    firstView: List<ControlTileId>,
     onClose: () -> Unit,
     onSettled: (Boolean) -> Unit,
 ) {
@@ -228,34 +229,42 @@ internal fun ControlCenter(
                 .closeByDragging(sheet, onSettled),
         ) {
             val torchOn = controls.torch?.on?.collectAsState()?.value ?: false
-            // A prima vista solo l'essenziale; tutto il resto sta sotto «Altro».
-            val essentials =
-                buildList {
-                    // I riquadri che portano alle impostazioni di Android chiudono la tendina: al ritorno la Home è pulita.
-                    val leave = { panel: SystemPanel ->
-                        controls.openPanel(panel)
-                        onClose()
-                    }
-                    add(Tile(ControlGlyph.WIFI, stringResource(R.string.control_internet)) { leave(SystemPanel.INTERNET) })
-                    add(Tile(ControlGlyph.BLUETOOTH, stringResource(R.string.control_bluetooth)) { leave(SystemPanel.BLUETOOTH) })
-                    add(Tile(ControlGlyph.MOON, stringResource(R.string.control_dnd)) { leave(SystemPanel.DND) })
+            // I riquadri disponibili, nell'ordine fisso: quelli scelti in Personalizza la Home a prima vista, gli altri sotto «Altro».
+            // I riquadri che portano alle impostazioni di Android chiudono la tendina: al ritorno la Home è pulita.
+            val leave = { panel: SystemPanel ->
+                controls.openPanel(panel)
+                onClose()
+            }
+            val available =
+                buildMap {
+                    val wifi = Tile(ControlGlyph.WIFI, stringResource(R.string.control_internet)) { leave(SystemPanel.INTERNET) }
+                    val btLabel = stringResource(R.string.control_bluetooth)
+                    val bluetooth = Tile(ControlGlyph.BLUETOOTH, btLabel) { leave(SystemPanel.BLUETOOTH) }
+                    val dnd = Tile(ControlGlyph.MOON, stringResource(R.string.control_dnd)) { leave(SystemPanel.DND) }
+                    put(ControlTileId.WIFI, wifi)
+                    put(ControlTileId.BLUETOOTH, bluetooth)
+                    put(ControlTileId.DND, dnd)
                     controls.torch?.let { torch ->
-                        add(Tile(ControlGlyph.TORCH, stringResource(R.string.control_torch), torchOn) { torch.toggle() })
+                        val label = stringResource(R.string.control_torch)
+                        put(ControlTileId.TORCH, Tile(ControlGlyph.TORCH, label, torchOn) { torch.toggle() })
                     }
+                    put(ControlTileId.GRAPHICS, Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
+                    controls.onTurbo?.let { turbo ->
+                        put(ControlTileId.TURBO, Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() })
+                    }
+                    onEditHome?.let { edit ->
+                        put(ControlTileId.EDIT_HOME, Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() })
+                    }
+                    put(ControlTileId.SETTINGS, Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
                 }
-            val nova =
-                buildList {
-                    add(Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
-                    controls.onTurbo?.let { turbo -> add(Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() }) }
-                    onEditHome?.let { edit -> add(Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() }) }
-                    add(Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
-                }
+            val essentials = ControlTileId.entries.filter { it in firstView }.mapNotNull(available::get)
+            val nova = ControlTileId.entries.filter { it !in firstView }.mapNotNull(available::get)
             var expanded by remember { mutableStateOf(false) }
             Column(
                 Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TileRows(essentials)
+                if (essentials.isNotEmpty()) TileRows(essentials)
                 controls.volume?.let { SliderRow(ControlGlyph.VOLUME, stringResource(R.string.control_volume), it) }
                 if (controls.brightness != null) {
                     SliderRow(ControlGlyph.SUN, stringResource(R.string.control_brightness), controls.brightness)
@@ -272,7 +281,7 @@ internal fun ControlCenter(
                         Modifier.heightIn(max = MORE_MAX_HEIGHT).verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        TileRows(nova)
+                        if (nova.isNotEmpty()) TileRows(nova)
                         Column { controls.more.forEach { MoreRow(it, onClose) } }
                     }
                 }

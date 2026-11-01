@@ -6,6 +6,27 @@ import kotlinx.coroutines.flow.StateFlow
 /** I simboli dei riquadri del centro di controllo, disegnati da NOVA. */
 internal enum class ControlGlyph { WIFI, BLUETOOTH, MOON, TORCH, LAYERS, SETTINGS, EDIT, VOLUME, SUN, BOLT }
 
+/**
+ * I riquadri che il centro di controllo può mostrare a prima vista (si scelgono in Personalizza la Home).
+ * Quelli non scelti stanno sotto «Altro»; un riquadro non disponibile (torcia senza flash, Turbo senza Shizuku) non c'è mai.
+ */
+enum class ControlTileId {
+    WIFI,
+    BLUETOOTH,
+    DND,
+    TORCH,
+    GRAPHICS,
+    TURBO,
+    EDIT_HOME,
+    SETTINGS,
+    ;
+
+    companion object {
+        /** A prima vista, finché non si sceglie altro. */
+        val DEFAULT: List<ControlTileId> = listOf(WIFI, BLUETOOTH, DND, TORCH)
+    }
+}
+
 /** Le schermate di sistema che il centro di controllo può aprire quando non si può agire direttamente. */
 enum class SystemPanel { INTERNET, BLUETOOTH, VOLUME, DISPLAY, DND }
 
