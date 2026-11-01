@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.content.pm.Signature
 import it.manlio.nova.core.system.ShizukuBridge
 import it.manlio.nova.core.system.ShizukuStatus
-import it.manlio.nova.core.system.SystemCommand
 import java.io.File
 import java.security.MessageDigest
 
@@ -50,14 +49,19 @@ class ApkInstaller(
     }
 
     /** @return null se avviata, altrimenti il motivo dell'errore. */
-    suspend fun install(apk: File): String? =
+    suspend fun install(apk: File): String? {
         if (shizuku.status.value == ShizukuStatus.READY) {
-            val result = shizuku.run(SystemCommand.InstallApk(apk.path, context.packageName))
-            if (result.ok) null else "Installazione non riuscita: ${result.output.trim().take(MAX_REASON)}"
-        } else {
-            installWithConfirmation(apk)
-            null
+            val result = shizuku.installApk(apk)
+            if (result.ok) return null
+            // Con Shizuku non è andata: si ripiega sull'installazione con la conferma di Android, così non si resta bloccati.
+            // (Il motivo, result.output, si perde: se anche il ripiego fallisce, l'errore mostrato è quello del ripiego.)
         }
+        return runCatching {
+            installWithConfirmation(
+                apk,
+            )
+        }.fold(onSuccess = { null }, onFailure = { "Installazione non riuscita: ${it.message}" })
+    }
 
     private fun installWithConfirmation(apk: File) {
         val installer = context.packageManager.packageInstaller
@@ -83,7 +87,7 @@ class ApkInstaller(
             .toSet()
 
     private companion object {
-        const val MAX_REASON = 200
+        const val MAX_REASON = 400
     }
 }
 
