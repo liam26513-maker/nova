@@ -62,6 +62,7 @@ class HomeActivity : ComponentActivity() {
     private lateinit var layoutStore: HomeLayoutStore
     private lateinit var widgets: WidgetHostBridge
     private lateinit var controls: HomeControls
+    private lateinit var performance: PerformanceUi
     private lateinit var mediaHub: MediaHub
     private val weather = WeatherClient()
     private var controlsTick by mutableIntStateOf(0)
@@ -102,7 +103,15 @@ class HomeActivity : ComponentActivity() {
         favorites = Favorites(File(filesDir, "home-favorites.txt"))
         layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))
         widgets = WidgetHostBridge(this)
-        controls = HomeControls(this, app)
+        performance = PerformanceUi(app, lifecycleScope)
+        controls =
+            HomeControls(this, app) {
+                lifecycleScope.launch {
+                    val done = performance.runTurbo()
+                    val text = if (done == null) getString(R.string.perf_failed) else getString(R.string.perf_turbo_done, done.stopped)
+                    Toast.makeText(this@HomeActivity, text, Toast.LENGTH_SHORT).show()
+                }
+            }
         NotificationHub.init(this)
         mediaHub = MediaHub(this)
         wallpaperLoader = WallpaperLoader(this)

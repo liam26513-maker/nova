@@ -85,6 +85,19 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] Personalizza la Home usa la stessa barra laterale; «‹ Fatto» in alto a sinistra esce. Ogni scelta si vede ancora subito.
 - [ ] In una finestra stretta (o a schermo diviso) le Impostazioni diventano un elenco; toccando una voce si apre il dettaglio e Indietro torna all'elenco.
 
+## Strumenti di sistema (Fase 2)
+Serve Shizuku attivo. Dopo ogni prova puoi usare Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche».
+- [ ] Impostazioni → **Prestazioni**: senza Shizuku dice «Serve Shizuku attivo» e apre Shizuku.
+- [ ] **Turbo** (anche dal riquadro nel centro di controllo): dice quante app ha chiuso; preferiti, musica in corso e tastiera restano; la grafica passa a Prestazioni.
+- [ ] **Animazioni** «Spente» / «Veloci»: aprendo app e menu di Android si nota la differenza; «Normali» le rimette.
+- [ ] **Dimensione degli elementi** «Grandi»: lo schermo cambia e compare «Mantieni questa dimensione?» con il conto alla rovescia.
+  - [ ] Non toccare niente: dopo 15 secondi torna com'era.
+  - [ ] Riprova e tocca «Mantieni»: resta.
+  - [ ] Riprova, chiudi NOVA dalle app recenti prima dei 15 secondi, e riaprila: la dimensione è tornata normale.
+- [ ] **Blocco pubblicità** «Sì»: Impostazioni di Android → Rete → DNS privato mostra dns.adguard.com; «No» rimette quello di prima. Se un sito non si apre, spegni.
+- [ ] **Congelamento:** scegli un'app poco importante: sparisce dalla Home; in Prestazioni compare tra le congelate; «Tocca per riattivare» la rimette. Prova a congelare le Impostazioni di Android: non è nell'elenco.
+- [ ] **Stato del sistema** (Impostazioni → Stato del sistema): memoria, spazio, batteria con salute, temperatura e cicli.
+
 ## Personalizzazione della Home
 - [ ] Impostazioni → Home → **Personalizza la Home**. Prova le opzioni e torna alla Home: devono essersi applicate.
   - [ ] Icone nascoste: restano solo i nomi.

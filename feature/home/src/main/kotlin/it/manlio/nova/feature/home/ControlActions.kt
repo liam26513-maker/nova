@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.StateFlow
 
 /** I simboli dei riquadri del centro di controllo, disegnati da NOVA. */
-internal enum class ControlGlyph { WIFI, BLUETOOTH, MOON, TORCH, LAYERS, SETTINGS, EDIT, VOLUME, SUN }
+internal enum class ControlGlyph { WIFI, BLUETOOTH, MOON, TORCH, LAYERS, SETTINGS, EDIT, VOLUME, SUN, BOLT }
 
 /** Le schermate di sistema che il centro di controllo può aprire quando non si può agire direttamente. */
 enum class SystemPanel { INTERNET, BLUETOOTH, VOLUME, DISPLAY, DND }
@@ -38,6 +38,8 @@ class ControlActions(
     val onGrantBrightness: () -> Unit = {},
     val graphicsLabel: () -> String = { "" },
     val onCycleGraphics: () -> Unit = {},
+    /** Turbo (chiude le app in secondo piano); null = senza Shizuku o non disponibile. */
+    val onTurbo: (() -> Unit)? = null,
 )
 
 /** Per far arrivare il pulsante del centro di controllo alle intestazioni senza passarlo ovunque (null = non c'è). */

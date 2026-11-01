@@ -4,6 +4,17 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Strumenti di sistema con Shizuku: Turbo, animazioni, dimensione dello schermo, pubblicità, congelamento, stato (Fase 2)
+- Richiesta: dal piano concordato, blocco C («strumenti di sistema»).
+- **Dove:** Impostazioni → **Prestazioni** (serve Shizuku attivo; se non lo è, la voce ti porta a Shizuku). Tutte le modifiche sono **registrate e reversibili**: Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche» le rimette com'erano, anche dalla modalità provvisoria.
+- **Turbo** (anche dal centro di controllo, nel riquadro «Turbo»): chiude le app in secondo piano e porta la grafica su Prestazioni per 10 minuti. Restano aperte i preferiti, la musica in corso, la tastiera e la Home; le app chiuse si riaprono quando servono.
+- **Velocità delle animazioni** di Android: Normali, Veloci, Molto veloci, Spente.
+- **Dimensione degli elementi dello schermo** (Piccoli, Normali, Grandi, Molto grandi): la nuova misura si **prova per 15 secondi** e, se non la confermi, **torna da sola com'era**; torna da sola anche se NOVA si chiude a metà o riparti il tablet.
+- **Blocco pubblicità e tracciatori:** DNS privato di Android con AdGuard (gratuito). Spento, rimette quello che c'era prima.
+- **Congelamento:** scegli un'app da congelare (non gira e sparisce finché non la riattivi); le app di sistema essenziali non si possono congelare mai.
+- **Stato del tablet** (Impostazioni → Stato del sistema): memoria, spazio, batteria (percentuale, salute, temperatura, cicli di carica). Non serve nessun permesso.
+- Non ci sono ancora: risparmio energetico intelligente automatico, debloat con elenco di app consigliate, risoluzione (solo densità).
+
 ### Notifiche sulle icone, isola dinamica e widget Musica (Fase 1, blocco B)
 - Richiesta: "Continua con il blocco B non appena la nuova versione è pronta" (dal piano: notifiche in linea, isola dinamica, widget).
 - **Prima di tutto, un passo tuo:** Impostazioni → Home → **«Notifiche e musica sulla Home»** → consenti a NOVA l'accesso alle notifiche. È un permesso speciale di Android, non lo si può dare da dentro l'app. Se Android lo nega ("impostazione con restrizioni"), vai su Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni», poi riprova.

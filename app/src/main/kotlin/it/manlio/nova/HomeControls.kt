@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import it.manlio.nova.core.design.GraphicsLevel
+import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.Level
 import it.manlio.nova.feature.home.SystemPanel
@@ -28,6 +29,7 @@ import kotlin.math.roundToInt
 class HomeControls(
     private val context: Context,
     private val app: NovaApp,
+    private val onTurbo: () -> Unit,
 ) {
     private val camera = context.getSystemService(CameraManager::class.java)
     private val audio = context.getSystemService(AudioManager::class.java)
@@ -82,6 +84,7 @@ class HomeControls(
             },
             graphicsLabel = ::graphicsLabel,
             onCycleGraphics = ::cycleGraphics,
+            onTurbo = onTurbo.takeIf { app.shizuku.status.value == ShizukuStatus.READY },
         )
 
     private fun volume() =

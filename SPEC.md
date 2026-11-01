@@ -850,7 +850,7 @@ Ogni fase si chiude solo quando: tutti i test sono verdi, i budget rispettati, l
 ### Fase 1 — Home completa e design
 Layout ibrido/lista/griglia, alfabeto a onda, notifiche in linea, swipe azioni, dock, cartelle, libreria app, widget host + widget NOVA, icone uniformate, ricerca universale, isola dinamica, centro di controllo, temi preimpostati, "Ritocco visivo", tutorial interattivo.
 
-### Fase 2 — Strumenti di sistema
+### Fase 2 — Strumenti di sistema (fatto in gran parte: vedi `docs/modules/strumenti-di-sistema.md`)
 Debloat guidato, congelamento, Turbo, densità/risoluzione con ripristino automatico, scala animazioni, stato del sistema, salute batteria, DNS anti-pubblicità, risparmio energetico intelligente.
 
 ### Fase 3 — Modalità

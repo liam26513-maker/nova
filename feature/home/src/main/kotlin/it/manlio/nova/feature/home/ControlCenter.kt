@@ -92,6 +92,7 @@ internal fun ControlCenter(
                     add(Tile(ControlGlyph.TORCH, stringResource(R.string.control_torch), torchOn) { torch.toggle() })
                 }
                 add(Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
+                controls.onTurbo?.let { turbo -> add(Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() }) }
                 add(Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { onEditHome() })
                 add(Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
             }
@@ -310,6 +311,19 @@ private fun DrawScope.drawControlGlyph(
             )
             drawArc(ink, -40f, 80f, false, p(0.45f, 0.3f), Size(0.4f * u, 0.4f * u), style = line)
         }
+        ControlGlyph.BOLT ->
+            drawPath(
+                Path().apply {
+                    moveTo(0.58f * u, 0.06f * u)
+                    lineTo(0.2f * u, 0.56f * u)
+                    lineTo(0.46f * u, 0.56f * u)
+                    lineTo(0.38f * u, 0.94f * u)
+                    lineTo(0.8f * u, 0.4f * u)
+                    lineTo(0.54f * u, 0.4f * u)
+                    close()
+                },
+                ink,
+            )
         ControlGlyph.SUN -> {
             drawCircle(ink, 0.2f * u, p(0.5f, 0.5f))
             repeat(8) { i ->
