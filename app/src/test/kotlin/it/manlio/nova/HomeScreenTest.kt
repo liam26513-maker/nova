@@ -53,8 +53,8 @@ import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.Level
-import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.MediaSource
+import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.NotificationPreview
 import it.manlio.nova.feature.home.NotificationSource
 import it.manlio.nova.feature.home.NowPlaying
@@ -747,8 +747,14 @@ class HomeScreenTest {
         var rotation = true
         val items =
             listOf(
-                MoreItem("Posizione") { opened++; null },
-                MoreItem("Rotazione automatica", "Sì") { rotation = !rotation; if (rotation) "Sì" else "No" },
+                MoreItem("Posizione") {
+                    opened++
+                    null
+                },
+                MoreItem("Rotazione automatica", "Sì") {
+                    rotation = !rotation
+                    if (rotation) "Sì" else "No"
+                },
             )
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = items))
         openControl()
