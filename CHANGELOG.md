@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Aggiornamenti pubblicati più in fretta
+- Richiesta: "Sì, riduci il tempo di rilascio" (dopo aver chiesto perché la nuova versione ci metteva così tanto).
+- Dopo ogni modifica unita al progetto, la nuova versione di NOVA arriva sul tablet in circa **4 minuti invece di 9**.
+- Come: i test non si rifanno al momento del rilascio (sono già stati fatti prima di unire la modifica), e la copia della versione precedente per il ritorno immediato si prepara **insieme** alla nuova, non dopo.
+- Non cambia niente nell'app e nel ritorno alla versione precedente. Le verifiche di firma e di peso restano.
+
 ### Home ancora più simile all'iPad: icone libere, cartelle, widget e ricerca
 - Richiesta: "Falla piu simile a quella dell'ultimo modello di iPad in commercio, falla esattamente uguale a quella e togli tutti i limiti riscontati adesso".
 - **Vetro.** Dock, pulsanti, widget, cartelle e schede hanno ora l'aspetto del vetro: più chiaro in alto, con un filo di luce sul bordo. Non pesa sul tablet (niente sfocatura in tempo reale); con il livello grafico Prestazioni diventa un riempimento pieno.
