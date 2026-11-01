@@ -75,6 +75,13 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
   - [ ] Livello grafico: ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
   - [ ] «Modifica la Home» entra in modifica. «Cerca» → «controllo» apre la tendina.
   - [ ] Con TalkBack acceso: «Centro di controllo» si trova e apre il pannello senza il gesto.
+- [ ] **Centro di controllo sopra le altre app:** Impostazioni di NOVA → Home → «Centro di controllo sopra le altre app» → accendi «Centro di controllo di NOVA» nell'accessibilità (se Android lo nega: App → NOVA → ⋮ → «Consenti impostazioni con restrizioni»). Torna alle Impostazioni di NOVA: dice «Attivo».
+  - [ ] Apri un'app qualsiasi (browser, YouTube) e tira giù dall'angolo in alto a destra, **sopra la barra di stato**: compare il pannello. Tira giù dalla parte sinistra della barra: scende quella di Android.
+  - [ ] Torcia, volume e luminosità funzionano come sulla Home. Wi-Fi/Bluetooth/Non disturbare aprono Android e chiudono il pannello. «Impostazioni di NOVA» apre NOVA. Non c'è «Modifica la Home».
+  - [ ] Si chiude tirando su, toccando fuori, con Indietro, e da solo se premi Home o apri un'altra app. Aprilo e chiudilo dieci volte: nessun rallentamento.
+  - [ ] A schermo bloccato non si apre. Sulla Home di NOVA il gesto dall'angolo è quello della Home (segue il dito).
+  - [ ] In un gioco a tutto schermo: l'angolo in alto a destra non tocca il gioco? (se dà fastidio, spegni il servizio e segnalalo.)
+  - [ ] Spegni il servizio dall'accessibilità: l'angolo torna normale e la riga nelle Impostazioni dice «Non attivo».
 - [ ] **Cerca come calcolatrice:** «12*(3+4)» → «= 84»; «10 km in mi» → «= 6.213712 mi»; toccare il risultato lo copia (incollalo da qualche parte). «torcia» e «widget» trovano i comandi.
 - [ ] **Notifiche e musica sulla Home:** Impostazioni → Home → «Notifiche e musica sulla Home» → consenti l'accesso. (Se Android lo nega: Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni».) Torna alle Impostazioni: dice «Attivo».
   - [ ] Fatti scrivere un messaggio: sull'icona dell'app compare un numero rosso; nello stile Elenco, sotto il nome c'è l'anteprima.

@@ -33,6 +33,12 @@ fun HomeSection(
             onClick = actions.onNotificationAccess,
         )
         SettingsRow(
+            stringResource(R.string.home_overlay),
+            summary = stringResource(if (state.controlOverlay) R.string.home_overlay_on else R.string.home_overlay_off),
+            showDivider = true,
+            onClick = actions.onControlOverlay,
+        )
+        SettingsRow(
             stringResource(R.string.home_customize),
             summary = stringResource(R.string.home_customize_summary),
             showDivider = true,

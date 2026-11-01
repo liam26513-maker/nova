@@ -4,6 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Centro di controllo anche sopra le altre app
+- Richiesta: "Fai comparire il centro di controllo anche sopra le altre app".
+- **Come si accende (una volta, a mano):** Impostazioni di NOVA → Home → **«Centro di controllo sopra le altre app»** apre l'accessibilità di Android; scegli **«Centro di controllo di NOVA»** e accendilo. Se Android lo nega ("impostazione con restrizioni"): Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni», poi riprova.
+- **Come si usa:** in qualunque app **tira giù dall'angolo in alto a destra**, sopra la barra di stato: compare lo stesso pannello della Home (Wi-Fi, Bluetooth, torcia, Turbo, volume, luminosità…). Si chiude tirando su, toccando fuori o con Indietro; si chiude da solo se cambi app o torni alla Home. Dal resto della barra di stato (a sinistra) continua a scendere quella di Android.
+- **Cosa fa e cosa no:** il servizio **non legge lo schermo** e non tocca niente al posto tuo; disegna solo due finestre di NOVA (una striscia invisibile nell'angolo e il pannello). Da spento non esiste e non consuma nulla. A **schermo bloccato non si apre**. Sulla Home di NOVA la striscia si spegne, perché lì c'è già il gesto dentro la Home.
+- **Differenza dalla Home:** sopra le altre app il pannello si apre con una molla appena riconosci il gesto, ma **non segue il dito durante il tiro** (una finestra non può passare il tocco a un'altra). Il riquadro «Modifica la Home» non c'è.
+- **Attenzione, giochi e app a tutto schermo:** la striscia è alta quanto la barra di stato (almeno 24 dp) e larga 280 dp nell'angolo: lì il tocco va a NOVA invece che all'app. Se in un gioco ti dà fastidio, spegni il servizio dall'accessibilità (un'uscita rapida per modalità Gaming è nel piano, non ancora fatta).
+
 ### Centro di controllo a tendina (come sull'iPad) e cursori che seguono il dito
 - Richiesta: "il centro di controllo deve sostituire quello del sistema originale sempre a tendina non a pulsante come e' adesso inoltre lo scorrimento del volume e della luminosità deve seguire la linea orizzontale come in ogni centro di controllo. fallo piu fluido e veloce, osserva sempre quello di ios."
 - **A tendina, non più a pulsante:** il pulsante con i quattro riquadri è sparito. Sulla Home **tira giù dall'angolo in alto a destra**: il pannello scende **seguendo il dito** (come sull'iPad) e, se lasci a metà, si completa da solo; uno scatto veloce basta anche a poca distanza. Si chiude **tirando su**, toccando fuori o con Indietro. Tirando giù da qualsiasi altro punto della Home continuano ad aprirsi le notifiche, come prima. «Cerca» → «controllo» o «torcia» lo apre ancora.

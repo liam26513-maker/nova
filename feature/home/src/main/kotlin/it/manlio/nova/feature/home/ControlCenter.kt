@@ -185,7 +185,7 @@ internal fun ControlCenter(
     sheet: ControlSheetState,
     controls: ControlActions?,
     onSettings: () -> Unit,
-    onEditHome: () -> Unit,
+    onEditHome: (() -> Unit)?,
     onClose: () -> Unit,
     onSettled: (Boolean) -> Unit,
 ) {
@@ -231,7 +231,7 @@ internal fun ControlCenter(
                     }
                     add(Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
                     controls.onTurbo?.let { turbo -> add(Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() }) }
-                    add(Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { onEditHome() })
+                    onEditHome?.let { edit -> add(Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() }) }
                     add(Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
                 }
             Column(

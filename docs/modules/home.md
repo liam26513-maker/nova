@@ -142,4 +142,11 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 - **Da chiuso** il pannello non è nella composizione (`derivedStateOf { progress > 0 }`): costo zero. Le letture (volume, luminosità) si rifanno a ogni apertura.
 - **Cursori:** gesto proprio (`awaitEachGesture`), senza soglia di partenza, solo asse x, consuma i movimenti (il pannello non li scambia per «chiudi»). Il valore è uno stato locale; la scrittura al sistema (`Level.write`) passa da `snapshotFlow` con pausa di 40 ms (≈25 Hz, sempre l'ultimo valore) e un `commit` finale al rilascio, solo se il valore è cambiato. `Level.steps` aggancia ai gradini (volume = massimo di `AudioManager`).
 - **Accessibilità:** `ControlCenterEntry` (1 dp, invisibile) espone l'azione «Centro di controllo» a TalkBack; i cursori espongono `setProgress`.
-- **Non fatto (limite di piattaforma, SPEC §2.2):** la tendina sopra le altre app richiede un `AccessibilityService` + finestra `TYPE_ACCESSIBILITY_OVERLAY`; oggi vale solo sulla Home.
+
+#### Sopra le altre app (`app/NovaControlService`, `PullDetector`, `ControlCenterOverlay`)
+
+- **Servizio di accessibilità** acceso dall'utente (Impostazioni di Android → Accessibilità); `accessibility_service.xml`: solo `typeWindowStateChanged`, `canRetrieveWindowContent=false`. Non legge lo schermo, non esegue gesti. Se non è acceso, nessuna finestra, nessun costo.
+- **Striscia:** `View` trasparente `TYPE_ACCESSIBILITY_OVERLAY` in alto a destra (280 dp × altezza barra di stato, min 24 dp), sopra la barra di stato. `PullDetector` (pura, testata) riconosce «giù più che di lato» oltre la soglia di tocco e apre il pannello. Si rende `FLAG_NOT_TOUCHABLE` sulla Home di NOVA (che ha il suo gesto).
+- **Pannello:** finestra a tutto schermo con `ComposeView`; `PanelHost` fornisce ciclo di vita e stato salvato (non c'è un'Activity) e riceve Indietro (finestra col fuoco). Contenuto: `ControlCenterOverlay` → lo stesso `ControlCenter` della Home (senza «Modifica la Home»). `HomeControls` è lo stesso della Home: torcia, volume, luminosità, Turbo; `start()`/`stop()` solo a pannello aperto.
+- **Chiusura:** tiro su, tocco fuori, Indietro, cambio di finestra di un'altra app (evento), `onInterrupt`; un timer di sicurezza (700 ms) toglie la finestra anche se l'animazione non finisse. A schermo bloccato (`KeyguardManager`) non si apre.
+- **Limite:** la finestra della striscia non può passare il tocco al pannello, quindi sopra le altre app la tendina **non segue il dito** nel tiro: si apre con una molla al riconoscimento del gesto.
