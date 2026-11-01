@@ -34,7 +34,7 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 | Workflow | Quando parte | Cosa pubblica |
 |---|---|---|
-| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti) | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente; note dal `CHANGELOG.md` |
+| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti). Quattro job: `versione` → `build` (firmata, **senza test**: girano già in `ci.yml`) e `ripristino` (in parallelo) → `pubblica`. Circa 4 minuti | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente; note dal `CHANGELOG.md` |
 | `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
 | `rollback.yml` | dal tablet: Impostazioni → Aggiornamenti → "Torna a una versione precedente" (oppure a mano da Actions) | ricompila il codice di un tag passato con un `versionCode` più alto, così si installa sopra |
 
