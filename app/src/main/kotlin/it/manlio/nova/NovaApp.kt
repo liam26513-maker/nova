@@ -14,7 +14,9 @@ import it.manlio.nova.core.device.LevelAdvisor
 import it.manlio.nova.core.modules.ModuleRegistry
 import it.manlio.nova.core.safemode.SafeModeActivity
 import it.manlio.nova.core.system.ShizukuBridge
+import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemChangeLog
+import it.manlio.nova.core.system.SystemTools
 import it.manlio.nova.core.telemetry.BootGuard
 import it.manlio.nova.core.telemetry.CrashReporter
 import it.manlio.nova.core.telemetry.KeyValueFile
@@ -36,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -89,7 +92,10 @@ class NovaApp :
 
     /** Modifiche di sistema fatte da NOVA, tutte annullabili (SPEC §7.1). */
     lateinit var systemChanges: SystemChangeLog
-        private set
+    lateinit var systemTools: SystemTools
+
+    /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */
+    @Volatile var nowPlayingPackage: String? = null
 
     /** Accesso al repository (aggiornamenti e report di Ripara), con il token cifrato. */
     lateinit var github: GitHubClient
@@ -142,6 +148,12 @@ class NovaApp :
         }
         shizuku = ShizukuBridge(this).also { it.start() }
         systemChanges = SystemChangeLog(SystemChangeLog.fileIn(filesDir), shizuku)
+        systemTools = SystemTools(shizuku, systemChanges)
+        appScope.launch {
+            // Una dimensione dello schermo provata e mai confermata (l'app si è chiusa a metà) torna com'era appena Shizuku risponde.
+            shizuku.status.first { it == ShizukuStatus.READY }
+            systemTools.revertUnconfirmedDensity()
+        }
         setUpUpdates()
 
         profiler = DeviceProfiler(this)

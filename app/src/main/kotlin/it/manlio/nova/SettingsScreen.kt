@@ -45,12 +45,13 @@ fun SettingsScreen(
     onShowReport: () -> Unit,
     system: SystemUiState,
     systemActions: SystemActions,
+    performance: PerformanceUi? = null,
 ) {
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
     SplitSettings(
         title = stringResource(R.string.settings_title),
         subtitle = brandName,
-        entries = settingsEntries(),
+        entries = settingsEntries(performance != null),
         selectedId = selected,
         onSelect = { selected = it },
     ) { entry, backdrop ->
@@ -60,8 +61,12 @@ fun SettingsScreen(
             CAT_DEVICE -> DeviceSection(backdrop, profile, onMeasure, onShowReport)
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
+            CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
-            else ->
+            else -> {
+                val context = androidx.compose.ui.platform.LocalContext.current
+                val health = remember(system) { SystemStatusReader.read(context) }
+                HealthSection(backdrop, health)
                 SettingsSection(backdrop, header = stringResource(R.string.status_title)) {
                     SettingsRow(stringResource(R.string.status_config_title), trailing = { Value(configVersion) })
                     SettingsRow(
@@ -70,6 +75,7 @@ fun SettingsScreen(
                         trailing = { Value(stringResource(R.string.status_modules_none)) },
                     )
                 }
+            }
         }
     }
 }
@@ -77,24 +83,35 @@ fun SettingsScreen(
 /** Le categorie della barra laterale, nell'ordine in cui compaiono. */
 @Suppress("MagicNumber") // tavolozza delle pastiglie
 @Composable
-private fun settingsEntries(): List<SidebarEntry> {
+private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     val improve = stringResource(R.string.improve_section)
     val graphics = stringResource(R.string.graphics_level_title)
     val device = stringResource(R.string.device_title)
     val home = stringResource(R.string.home_section_title)
     val updates = stringResource(R.string.updates_title)
     val tools = stringResource(R.string.system_title)
+    val performance = stringResource(R.string.perf_title)
     val status = stringResource(R.string.status_title)
-    return remember(improve, graphics, device, home, updates, tools, status) {
+    val perf =
+        if (withPerformance) {
+            listOf(
+                SidebarEntry(CAT_PERFORMANCE, performance, SidebarGlyph.SPARKLE, Color(0xFFD6537A)),
+            )
+        } else {
+            emptyList()
+        }
+    return remember(improve, graphics, device, home, updates, tools, status, performance, withPerformance) {
         listOf(
             SidebarEntry(CAT_IMPROVE, improve, SidebarGlyph.SPARKLE, Color(0xFF7B68D8)),
             SidebarEntry(CAT_GRAPHICS, graphics, SidebarGlyph.LAYERS, Color(0xFF2FA39A)),
             SidebarEntry(CAT_DEVICE, device, SidebarGlyph.TABLET, Color(0xFF6B7684)),
             SidebarEntry(CAT_HOME, home, SidebarGlyph.HOUSE, Color(0xFFE0922F)),
             SidebarEntry(CAT_UPDATES, updates, SidebarGlyph.DOWNLOAD, Color(0xFF3B8BD4)),
-            SidebarEntry(CAT_TOOLS, tools, SidebarGlyph.SLIDERS, Color(0xFF8A8F98)),
-            SidebarEntry(CAT_STATUS, status, SidebarGlyph.CHECK, Color(0xFF3FA34D)),
-        )
+        ) + perf +
+            listOf(
+                SidebarEntry(CAT_TOOLS, tools, SidebarGlyph.SLIDERS, Color(0xFF8A8F98)),
+                SidebarEntry(CAT_STATUS, status, SidebarGlyph.CHECK, Color(0xFF3FA34D)),
+            )
     }
 }
 
@@ -104,6 +121,7 @@ private const val CAT_DEVICE = "device"
 private const val CAT_HOME = "home"
 private const val CAT_UPDATES = "updates"
 private const val CAT_TOOLS = "tools"
+private const val CAT_PERFORMANCE = "performance"
 private const val CAT_STATUS = "status"
 
 @Composable

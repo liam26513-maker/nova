@@ -59,6 +59,23 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "force-stop", packageName)
     }
 
+    /** Legge la densità dello schermo: «Physical density» e, se cambiata, «Override density». */
+    data object GetDensity : SystemCommand {
+        override val argv = listOf("wm", "density")
+    }
+
+    /**
+     * Cambia la densità dello schermo (DPI). [dpi] null = torna a quella di fabbrica. Limiti stretti (da [MIN_DPI] a [MAX_DPI]):
+     * un valore fuori scala renderebbe lo schermo inutilizzabile. Si usa solo con il ripristino automatico ([SystemTools]).
+     */
+    data class SetDensity(val dpi: Int?) : SystemCommand {
+        init {
+            require(dpi == null || dpi in MIN_DPI..MAX_DPI) { "Densità non consentita: $dpi" }
+        }
+
+        override val argv = listOf("wm", "density", dpi?.toString() ?: "reset")
+    }
+
     /** Spegne lo schermo (come il tasto di accensione). Non cambia impostazioni: niente da annullare. */
     data object Sleep : SystemCommand {
         override val argv = listOf("input", "keyevent", "KEYCODE_SLEEP")
@@ -80,15 +97,17 @@ sealed interface SystemCommand {
         override val argv = listOf("pm", "install", "-r", "-i", ownPackage, path)
     }
 
-    private companion object {
-        const val MAX_PACKAGE_LENGTH = 128
-        val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
-        val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
-        val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
+    companion object {
+        const val MIN_DPI = 120
+        const val MAX_DPI = 640
+        private const val MAX_PACKAGE_LENGTH = 128
+        private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
+        private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
+        private val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
 
-        fun requireKey(key: String) = require(KEY.matches(key)) { "Chiave non consentita: $key" }
+        private fun requireKey(key: String) = require(KEY.matches(key)) { "Chiave non consentita: $key" }
 
-        fun requirePackage(name: String) =
+        private fun requirePackage(name: String) =
             require(PACKAGE.matches(name) && name.length <= MAX_PACKAGE_LENGTH) {
                 "Nome di pacchetto non valido: $name"
             }

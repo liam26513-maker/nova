@@ -59,19 +59,25 @@ class MediaHub(private val context: Context) : MediaSource {
     }
 
     private fun refresh() {
-        val c = current ?: return run { nowState.value = null }
+        val c = current ?: return run { publish(null) }
         val meta = c.metadata
         val title = meta?.getString(MediaMetadata.METADATA_KEY_TITLE).orEmpty()
-        if (title.isBlank()) return run { nowState.value = null }
+        if (title.isBlank()) return run { publish(null) }
         val art = (meta?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART) ?: meta?.getBitmap(MediaMetadata.METADATA_KEY_ART))?.let(::small)
-        nowState.value =
+        publish(
             NowPlaying(
                 pkg = c.packageName,
                 title = title,
                 artist = meta?.getString(MediaMetadata.METADATA_KEY_ARTIST).orEmpty(),
                 playing = c.playbackState?.state == PlaybackState.STATE_PLAYING,
                 art = art?.asImageBitmap(),
-            )
+            ),
+        )
+    }
+
+    private fun publish(now: NowPlaying?) {
+        nowState.value = now
+        (context.applicationContext as? NovaApp)?.nowPlayingPackage = now?.takeIf { it.playing }?.pkg
     }
 
     /** La copertina si tiene piccola: serve a 56 dp. */

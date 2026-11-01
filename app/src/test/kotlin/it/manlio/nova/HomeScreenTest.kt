@@ -685,6 +685,24 @@ class HomeScreenTest {
     }
 
     @Test
+    fun control_center_has_a_turbo_tile_only_when_it_is_available() {
+        var turbo = 0
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, onTurbo = { turbo++ }))
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Turbo").performClick()
+        assertEquals(1, turbo)
+    }
+
+    @Test
+    fun control_center_hides_turbo_without_shizuku() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Turbo").assertDoesNotExist()
+    }
+
+    @Test
     fun control_center_asks_for_the_brightness_permission_when_it_is_missing() {
         var asked = 0
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, brightness = null, onGrantBrightness = { asked++ }))

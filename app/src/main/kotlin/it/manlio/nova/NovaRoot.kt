@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,6 +44,8 @@ fun NovaRoot(
     var changesVersion by remember { mutableIntStateOf(0) }
     val system = rememberSystemUiState(app, update, shizukuStatus, changesVersion)
     val scope = rememberCoroutineScope()
+    val performance = remember { PerformanceUi(app, scope) }
+    LaunchedEffect(shizukuStatus) { performance.refresh() }
     var improving by rememberSaveable { mutableStateOf<ImproveMode?>(null) }
     var onboardingStep by rememberSaveable { mutableStateOf(if (app.onboardingDone) null else OnboardingStep.WELCOME) }
     val actions =
@@ -82,6 +85,7 @@ fun NovaRoot(
                     onShowReport = { showReport = true },
                     system = system,
                     systemActions = actions,
+                    performance = performance,
                 )
         }
     }

@@ -32,6 +32,18 @@ sealed interface SystemChange {
 
     @Serializable
     data class PackageDisabled(val packageName: String, override val time: Long) : SystemChange
+
+    /**
+     * Densità dello schermo cambiata. [previous] null = quella di fabbrica. Finché [confirmed] è falso la modifica
+     * si annulla da sola (`SystemTools`): se l'utente non vede più lo schermo, non resta così.
+     */
+    @Serializable
+    data class Density(
+        val previous: Int?,
+        val applied: Int,
+        val confirmed: Boolean = false,
+        override val time: Long,
+    ) : SystemChange
 }
 
 /**
@@ -67,6 +79,65 @@ class SystemChangeLog(
         return result
     }
 
+    /** Cambia la densità registrando quella precedente; resta «non confermata» finché non si chiama [confirmDensity]. */
+    suspend fun setDensity(
+        previous: Int?,
+        dpi: Int,
+    ): ShellResult {
+        val result = runner.run(SystemCommand.SetDensity(dpi))
+        if (result.ok) record(SystemChange.Density(previous, dpi, confirmed = false, time = clock()))
+        return result
+    }
+
+    fun confirmDensity() {
+        synchronized(changes) {
+            changes.replaceAll { if (it is SystemChange.Density && !it.confirmed) it.copy(confirmed = true) else it }
+        }
+        save()
+    }
+
+    /** Annulla le densità non confermate (anche dopo un riavvio dell'app). @return true se tutto è tornato com'era. */
+    suspend fun revertUnconfirmedDensity(): Boolean {
+        val pending = entries().filterIsInstance<SystemChange.Density>().filter { !it.confirmed }
+        if (pending.isEmpty()) return true
+        val result = runner.run(SystemCommand.SetDensity(pending.first().previous))
+        if (result.ok) {
+            synchronized(changes) { changes.removeAll(pending.toSet()) }
+            save()
+        }
+        return result.ok
+    }
+
+    /** Riattiva un pacchetto congelato e lo toglie dal registro. */
+    suspend fun enablePackage(packageName: String): ShellResult {
+        val result = runner.run(SystemCommand.EnablePackage(packageName))
+        if (result.ok) {
+            synchronized(changes) { changes.removeAll { it is SystemChange.PackageDisabled && it.packageName == packageName } }
+            save()
+        }
+        return result
+    }
+
+    /** Riporta come prima le impostazioni [keys] cambiate da NOVA (la più vecchia delle sue modifiche ha il valore originale). */
+    suspend fun revertSettings(
+        namespace: SystemCommand.Namespace,
+        keys: Set<String>,
+    ): Boolean {
+        val mine = entries().filterIsInstance<SystemChange.Setting>().filter { it.namespace == namespace && it.key in keys }
+        var allOk = true
+        for (key in mine.map { it.key }.distinct()) {
+            val original = mine.first { it.key == key }.previous
+            val result = runner.run(SystemCommand.PutSetting(namespace, key, original))
+            if (result.ok) {
+                synchronized(changes) { changes.removeAll { it is SystemChange.Setting && it.namespace == namespace && it.key == key } }
+            } else {
+                allOk = false
+            }
+        }
+        save()
+        return allOk
+    }
+
     suspend fun disablePackage(packageName: String): ShellResult {
         val result = runner.run(SystemCommand.DisablePackage(packageName))
         if (result.ok) record(SystemChange.PackageDisabled(packageName, clock()))
@@ -83,6 +154,7 @@ class SystemChangeLog(
                     when (change) {
                         is SystemChange.Setting -> runner.run(SystemCommand.PutSetting(change.namespace, change.key, change.previous))
                         is SystemChange.PackageDisabled -> runner.run(SystemCommand.EnablePackage(change.packageName))
+                        is SystemChange.Density -> runner.run(SystemCommand.SetDensity(change.previous))
                     }
                 }.getOrElse { ShellResult(-1, it.message.orEmpty()) }
             if (!result.ok) failed += change
