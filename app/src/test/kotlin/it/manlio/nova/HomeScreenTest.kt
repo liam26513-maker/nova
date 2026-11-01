@@ -712,7 +712,8 @@ class HomeScreenTest {
 
     @Test
     fun control_center_shows_only_the_essentials_until_more_is_opened() {
-        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = listOf(MoreItem("Posizione"))))
+        val controls = ControlActions(openPanel = {}, volume = Level({ 0.5f }, {}), more = listOf(MoreItem("Posizione")))
+        render(prefs = HomePrefs(), controls = controls)
         openControl()
         compose.onNodeWithText("Wi-Fi e rete").assertExists()
         compose.onNodeWithText("Bluetooth").assertExists()
