@@ -63,6 +63,27 @@ class SystemCommandTest {
         val ok = SystemCommand.InstallApk("/storage/emulated/0/Android/data/it.manlio.nova/cache/nova-12.apk", "it.manlio.nova")
         assertEquals("install", ok.argv[1])
     }
+
+    @Test
+    fun `apk install accepts the folder where the updater really downloads, and only that one`() {
+        // Percorso reale visto sul tablet: Updater scarica in externalCacheDir/updates.
+        val real = "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/nova-190.apk"
+        assertEquals(real, SystemCommand.InstallApk(real, "it.manlio.nova").argv.last())
+        SystemCommand.InstallApk("/sdcard/Android/data/it.manlio.nova/files/updates/nova-190.apk", "it.manlio.nova")
+        val bad =
+            listOf(
+                // altra sottocartella
+                "/storage/emulated/0/Android/data/it.manlio.nova/cache/altro/nova-190.apk",
+                // troppo in fondo
+                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/a/nova-190.apk",
+                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/../x.apk",
+                // pacchetto diverso
+                "/storage/emulated/0/Android/data/altra.app/cache/updates/nova-190.apk",
+                "/storage/emulated/0/Download/updates/nova-190.apk",
+                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/nova-190.sh",
+            )
+        bad.forEach { path -> assertTrue(path, runCatching { SystemCommand.InstallApk(path, "it.manlio.nova") }.isFailure) }
+    }
 }
 
 class SystemChangeLogTest {
