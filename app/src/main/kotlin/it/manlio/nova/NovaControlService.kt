@@ -29,11 +29,11 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.feature.home.ControlCenterOverlay
 import kotlinx.coroutines.CoroutineScope
@@ -224,8 +224,8 @@ class NovaControlService : AccessibilityService() {
             saved.performAttach()
             saved.performRestore(null)
             registry.currentState = Lifecycle.State.CREATED
-            ViewTreeLifecycleOwner.set(this, this)
-            ViewTreeSavedStateRegistryOwner.set(this, this)
+            setViewTreeLifecycleOwner(this)
+            setViewTreeSavedStateRegistryOwner(this)
         }
 
         fun resume() {

@@ -28,7 +28,7 @@ class ControlTilesPrefsTest {
     @Test
     fun `unknown and repeated names are ignored and the order is the fixed one`() {
         val text = PrefsCodec.write(HomePrefs()).lines().filterNot { it.startsWith("controlTiles") }.joinToString("\n")
-        val read = read(text + "\ncontrolTiles=TURBO,NOPE,WIFI,WIFI, torch\n").controlTiles
+        val read = read(text + "\ncontrolTiles=TURBO,NOPE,WIFI,WIFI, TORCH,torch\n").controlTiles
         assertEquals(listOf(ControlTileId.WIFI, ControlTileId.TORCH, ControlTileId.TURBO), read)
     }
 
