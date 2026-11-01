@@ -183,7 +183,7 @@
     <string name="customize_icon_pack_empty">Nessun pacchetto di icone installato</string>
     <string name="customize_layout">Disposizione e gesti</string>
     <string name="customize_control">Centro di controllo</string>
-    <string name="customize_control_footer">Scegli i riquadri che si vedono subito quando tiri giù la tendina. Tutti gli altri restano sotto «Altro». L'ordine è quello di questa lista. Un riquadro non disponibile (la torcia senza flash, il Turbo senza Shizuku) non compare.</string>
+    <string name="customize_control_footer">Scegli i riquadri che si vedono subito quando tiri giù la tendina. Tutti gli altri restano sotto «Altro». L\'ordine è quello di questa lista. Un riquadro non disponibile (la torcia senza flash, il Turbo senza Shizuku) non compare.</string>
     <string name="ctl_wifi">Wi-Fi e rete</string>
     <string name="ctl_bluetooth">Bluetooth</string>
     <string name="ctl_dnd">Non disturbare</string>
