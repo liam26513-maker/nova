@@ -54,6 +54,15 @@ internal object HomeSystem {
         }
     }
 
+    /** Apre le Impostazioni rapide di Android (API non pubblica: se manca, non succede nulla). */
+    @SuppressLint("WrongConstant")
+    fun expandQuickSettings(context: Context) {
+        runCatching {
+            val service = context.getSystemService("statusbar")
+            service.javaClass.getMethod("expandSettingsPanel").invoke(service)
+        }
+    }
+
     /** «Rimuovi animazioni» di Android (scala 0): niente ondeggiamento in modifica. */
     fun animationsOn(context: Context): Boolean =
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f

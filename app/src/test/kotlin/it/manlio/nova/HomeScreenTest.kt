@@ -52,6 +52,7 @@ import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.Level
+import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.MediaSource
 import it.manlio.nova.feature.home.NotificationPreview
 import it.manlio.nova.feature.home.NotificationSource
@@ -647,6 +648,12 @@ class HomeScreenTest {
         compose.waitForIdle()
     }
 
+    /** Apre la sezione «Altro» della tendina (a prima vista c'è solo l'essenziale). */
+    private fun openMore() {
+        compose.onNodeWithText("Altro").performClick()
+        compose.waitForIdle()
+    }
+
     private class FakeTorch : Torch {
         val state = kotlinx.coroutines.flow.MutableStateFlow(false)
         override val on = state
@@ -689,6 +696,8 @@ class HomeScreenTest {
         openControl()
         compose.onNodeWithText("Torcia").performClick()
         assertEquals(true, torch.state.value)
+        compose.onNodeWithText("Bilanciato").assertDoesNotExist() // sotto «Altro»
+        openMore()
         compose.onNodeWithText("Bilanciato").performClick()
         assertEquals(1, cycled)
         compose.onNodeWithContentDescription("Volume").performSemanticsAction(SemanticsActions.SetProgress) { it(0.8f) }
@@ -697,6 +706,45 @@ class HomeScreenTest {
         compose.onNodeWithContentDescription("Luminosità").performSemanticsAction(SemanticsActions.SetProgress) { it(0.9f) }
         compose.waitForIdle()
         assertEquals(0.9f, bri, 0.001f)
+    }
+
+    @Test
+    fun control_center_shows_only_the_essentials_until_more_is_opened() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = listOf(MoreItem("Posizione"))))
+        openControl()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+        compose.onNodeWithText("Bluetooth").assertExists()
+        compose.onNodeWithText("Non disturbare").assertExists()
+        compose.onNodeWithContentDescription("Volume").assertExists()
+        compose.onNodeWithText("Posizione").assertDoesNotExist()
+        compose.onNodeWithText("Impostazioni di NOVA").assertDoesNotExist()
+        openMore()
+        compose.onNodeWithText("Posizione").assertExists()
+        compose.onNodeWithText("Impostazioni di NOVA").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_centro_di_controllo_altro.png")
+        openMore() // di nuovo: si richiude
+        compose.onNodeWithText("Posizione").assertDoesNotExist()
+    }
+
+    @Test
+    fun control_center_more_items_open_android_and_close_the_sheet_while_toggles_stay_open() {
+        var opened = 0
+        var rotation = true
+        val items =
+            listOf(
+                MoreItem("Posizione") { opened++; null },
+                MoreItem("Rotazione automatica", "Sì") { rotation = !rotation; if (rotation) "Sì" else "No" },
+            )
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = items))
+        openControl()
+        openMore()
+        compose.onNodeWithText("Rotazione automatica").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("No").assertExists() // l'interruttore cambia il suo stato e la tendina resta aperta
+        compose.onNodeWithText("Posizione").performClick()
+        compose.waitForIdle()
+        assertEquals(1, opened)
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist() // una voce che porta fuori chiude la tendina
     }
 
     @Test
@@ -750,7 +798,7 @@ class HomeScreenTest {
         var turbo = 0
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, onTurbo = { turbo++ }))
         openControl()
-        compose.waitForIdle()
+        openMore()
         compose.onNodeWithText("Turbo").performClick()
         assertEquals(1, turbo)
     }
@@ -760,6 +808,7 @@ class HomeScreenTest {
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
         openControl()
         compose.waitForIdle()
+        openMore()
         compose.onNodeWithText("Turbo").assertDoesNotExist()
     }
 
@@ -789,6 +838,7 @@ class HomeScreenTest {
         compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
         openControl()
         compose.waitForIdle()
+        openMore()
         compose.onNodeWithText("Modifica la Home").performClick()
         compose.waitForIdle()
         compose.onNodeWithText("Fine").assertExists()

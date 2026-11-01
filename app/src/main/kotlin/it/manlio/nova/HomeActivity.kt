@@ -105,7 +105,12 @@ class HomeActivity : ComponentActivity() {
         widgets = WidgetHostBridge(this)
         performance = PerformanceUi(app, lifecycleScope)
         controls =
-            HomeControls(this, app) {
+            HomeControls(
+                this,
+                app,
+                onSystemNotifications = { HomeSystem.expandNotifications(this) },
+                onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
+            ) {
                 lifecycleScope.launch {
                     val done = performance.runTurbo()
                     val text = if (done == null) getString(R.string.perf_failed) else getString(R.string.perf_turbo_done, done.stopped)

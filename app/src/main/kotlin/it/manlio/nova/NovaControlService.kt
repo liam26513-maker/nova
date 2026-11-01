@@ -16,6 +16,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
@@ -67,15 +68,8 @@ class NovaControlService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
-        if (event.packageName == packageName) {
-            // Sulla Home di NOVA c'è già il gesto dentro la Home: la striscia lì toglierebbe solo spazio.
-            setStripActive(event.className?.toString() != HomeActivity::class.java.name)
-            return
-        }
-        setStripActive(true)
-        // Cambia la finestra davanti (un'app aperta da un riquadro, Home, recenti): la tendina non ha più senso.
-        requestClose()
+        // Cambia la finestra davanti (un'app aperta da una voce, Home, recenti): la tendina non ha più senso.
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.packageName != packageName) requestClose()
     }
 
     override fun onInterrupt() = requestClose()
@@ -108,6 +102,11 @@ class NovaControlService : AccessibilityService() {
                     true
                 }
             }
+        // A barra di stato nascosta (giochi, video a tutto schermo) la striscia non deve rubare il tocco in alto.
+        view.setOnApplyWindowInsetsListener { _, insets ->
+            setStripActive(insets.isVisible(WindowInsets.Type.statusBars()))
+            insets
+        }
         runCatching { windows.addView(view, stripParams(true)) }.onSuccess { strip = view }
     }
 
@@ -115,16 +114,15 @@ class NovaControlService : AccessibilityService() {
         val density = resources.displayMetrics.density
         val barId = resources.getIdentifier("status_bar_height", "dimen", "android")
         val bar = if (barId > 0) resources.getDimensionPixelSize(barId) else 0
-        val width = minOf((STRIP_WIDTH_DP * density).toInt(), resources.displayMetrics.widthPixels)
         var flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         if (!touchable) flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         return WindowManager.LayoutParams(
-            width,
+            WindowManager.LayoutParams.MATCH_PARENT,
             maxOf(bar, (STRIP_MIN_HEIGHT_DP * density).toInt()),
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
             flags,
             PixelFormat.TRANSPARENT,
-        ).apply { gravity = Gravity.TOP or Gravity.END }
+        ).apply { gravity = Gravity.TOP }
     }
 
     private fun setStripActive(active: Boolean) {
@@ -136,7 +134,17 @@ class NovaControlService : AccessibilityService() {
 
     private fun openPanel() {
         if (panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return
-        val actions = HomeControls(this, app, ::turbo).also { controls = it; it.start() }.actions()
+        val actions =
+            HomeControls(
+                this,
+                app,
+                onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
+                onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
+                onTurbo = ::turbo,
+            ).also {
+                controls = it
+                it.start()
+            }.actions()
         closing = false
         val host =
             PanelHost(this).apply {
@@ -245,7 +253,6 @@ class NovaControlService : AccessibilityService() {
     }
 
     companion object {
-        private const val STRIP_WIDTH_DP = 280
         private const val STRIP_MIN_HEIGHT_DP = 24
         private const val FORCE_REMOVE_MS = 700L
 

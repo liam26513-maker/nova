@@ -27,6 +27,18 @@ class Level(
 )
 
 /**
+ * Una voce della sezione «Altro» (le impostazioni di Android che non stanno a prima vista).
+ * [onClick] restituisce il nuovo [state] se la voce è un interruttore che resta lì (la tendina resta aperta);
+ * restituisce null se porta fuori (impostazioni di Android, notifiche): la tendina si chiude.
+ */
+@Immutable
+class MoreItem(
+    val label: String,
+    val state: String? = null,
+    val onClick: () -> String? = { null },
+)
+
+/**
  * Ciò che il centro di controllo (SPEC §6.8) sa fare, fornito dall'app così la Home resta provabile.
  * Dove Android non lascia a un'app normale cambiare un'impostazione (Wi-Fi, Bluetooth, non disturbare)
  * si apre il pannello di sistema giusto; torcia, volume e luminosità si regolano direttamente.
@@ -44,4 +56,6 @@ class ControlActions(
     val onCycleGraphics: () -> Unit = {},
     /** Turbo (chiude le app in secondo piano); null = senza Shizuku o non disponibile. */
     val onTurbo: (() -> Unit)? = null,
+    /** Le altre impostazioni di Android, sotto «Altro». */
+    val more: List<MoreItem> = emptyList(),
 )

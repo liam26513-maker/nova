@@ -2,9 +2,14 @@
 
 package it.manlio.nova.feature.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,11 +27,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +63,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -193,6 +203,8 @@ internal fun ControlCenter(
     if (!shown || controls == null) return
     val look = LocalHomeLook.current
     val flat = Nova.tokens.graphicsLevel == GraphicsLevel.PERFORMANCE
+    // La scheda prende un velo dell'accento del tema: cambiando colori o sfondo, cambia anche lei.
+    val card = remember(look) { lerp(if (look.dark) CARD else CARD_LIGHT, look.accent.copy(alpha = 1f), CARD_TINT) }
     val inset = with(LocalDensity.current) { OFFSCREEN_MARGIN.toPx() }
     Box(Modifier.fillMaxSize()) {
         Box(
@@ -211,12 +223,13 @@ internal fun ControlCenter(
                 .graphicsLayer {
                     translationY = -(1f - sheet.progress) * (size.height + inset)
                     alpha = (sheet.progress * FADE_IN_SPEED).coerceAtMost(1f)
-                }.background(if (look.dark) CARD else CARD_LIGHT, SquircleShape(CARD_RADIUS))
+                }.background(card, SquircleShape(CARD_RADIUS))
                 .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
                 .closeByDragging(sheet, onSettled),
         ) {
             val torchOn = controls.torch?.on?.collectAsState()?.value ?: false
-            val tiles =
+            // A prima vista solo l'essenziale; tutto il resto sta sotto «Altro».
+            val essentials =
                 buildList {
                     // I riquadri che portano alle impostazioni di Android chiudono la tendina: al ritorno la Home è pulita.
                     val leave = { panel: SystemPanel ->
@@ -229,26 +242,39 @@ internal fun ControlCenter(
                     controls.torch?.let { torch ->
                         add(Tile(ControlGlyph.TORCH, stringResource(R.string.control_torch), torchOn) { torch.toggle() })
                     }
+                }
+            val nova =
+                buildList {
                     add(Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
                     controls.onTurbo?.let { turbo -> add(Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() }) }
                     onEditHome?.let { edit -> add(Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() }) }
                     add(Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
                 }
+            var expanded by remember { mutableStateOf(false) }
             Column(
                 Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                tiles.chunked(TILES_PER_ROW).forEach { row ->
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        row.forEach { tile -> TileView(tile, Modifier.weight(1f)) }
-                        repeat(TILES_PER_ROW - row.size) { Spacer(Modifier.weight(1f)) }
-                    }
-                }
+                TileRows(essentials)
                 controls.volume?.let { SliderRow(ControlGlyph.VOLUME, stringResource(R.string.control_volume), it) }
                 if (controls.brightness != null) {
                     SliderRow(ControlGlyph.SUN, stringResource(R.string.control_brightness), controls.brightness)
                 } else {
                     GrantRow(controls.onGrantBrightness)
+                }
+                MoreToggle(expanded) { expanded = !expanded }
+                AnimatedVisibility(
+                    expanded,
+                    enter = expandVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeIn(),
+                    exit = shrinkVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeOut(),
+                ) {
+                    Column(
+                        Modifier.heightIn(max = MORE_MAX_HEIGHT).verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        TileRows(nova)
+                        Column { controls.more.forEach { MoreRow(it, onClose) } }
+                    }
                 }
                 // La maniglia dice "si tira su per chiudere".
                 Box(
@@ -372,6 +398,82 @@ internal fun ControlCenterEntry(
                 }
             },
     )
+}
+
+/** I riquadri a righe di [TILES_PER_ROW]; l'ultima riga si completa con spazi per tenere le colonne allineate. */
+@Composable
+private fun TileRows(tiles: List<Tile>) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        tiles.chunked(TILES_PER_ROW).forEach { row ->
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                row.forEach { tile -> TileView(tile, Modifier.weight(1f)) }
+                repeat(TILES_PER_ROW - row.size) { Spacer(Modifier.weight(1f)) }
+            }
+        }
+    }
+}
+
+/** «Altro» con una freccia che si gira: apre e chiude il resto delle impostazioni. */
+@Composable
+private fun MoreToggle(
+    expanded: Boolean,
+    onToggle: () -> Unit,
+) {
+    val look = LocalHomeLook.current
+    val label = stringResource(R.string.control_more)
+    val turn = animateFloatAsState(if (expanded) 180f else 0f, spring(stiffness = SHEET_STIFFNESS), label = "more-arrow")
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) { onToggle() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        BasicText(label, style = TextStyle(look.muted, 15.sp, FontWeight.Medium, fontFamily = look.family))
+        Spacer(Modifier.width(6.dp))
+        Canvas(Modifier.size(12.dp).graphicsLayer { rotationZ = turn.value }) {
+            val w = size.width
+            val line = Stroke(w * 0.16f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            drawPath(
+                Path().apply {
+                    moveTo(w * 0.1f, w * 0.3f)
+                    lineTo(w * 0.5f, w * 0.7f)
+                    lineTo(w * 0.9f, w * 0.3f)
+                },
+                look.muted,
+                style = line,
+            )
+        }
+    }
+}
+
+/** Una impostazione di Android sotto «Altro»: nome a sinistra, stato (se è un interruttore) a destra. */
+@Composable
+private fun MoreRow(
+    item: MoreItem,
+    onClose: () -> Unit,
+) {
+    val look = LocalHomeLook.current
+    val view = LocalView.current
+    var state by remember(item) { mutableStateOf(item.state) }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = ROW_HEIGHT)
+            .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
+                view.perform(NovaHaptic.TAP)
+                val next = item.onClick()
+                if (next == null) onClose() else state = next
+            },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicText(
+            item.label,
+            style = TextStyle(look.ink, 16.sp, fontFamily = look.family),
+            modifier = Modifier.weight(1f),
+        )
+        state?.let { BasicText(it, style = TextStyle(look.muted, 14.sp, fontFamily = look.family)) }
+    }
 }
 
 @Composable
@@ -632,6 +734,9 @@ private val DEFAULT_TRAVEL = 520.dp
 private val CARD = Color(0xE61D2127)
 private val CARD_LIGHT = Color(0xEBF7F6F3)
 private val CARD_RADIUS = 34.dp
+private val ROW_HEIGHT = 44.dp
+private val MORE_MAX_HEIGHT = 300.dp
+private const val CARD_TINT = 0.1f
 private const val TILES_PER_ROW = 4
 private const val DIM = 0.45f
 private const val FADE_IN_SPEED = 3f

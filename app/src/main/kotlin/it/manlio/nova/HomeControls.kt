@@ -8,11 +8,13 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.AlarmClock
 import android.provider.Settings
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.Level
+import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.Torch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +31,10 @@ import kotlin.math.roundToInt
 class HomeControls(
     private val context: Context,
     private val app: NovaApp,
+    /** Apre la tendina notifiche di Android (sulla Home: API di sistema; sopra le altre app: azione di accessibilità). */
+    private val onSystemNotifications: () -> Unit,
+    /** Apre le Impostazioni rapide di Android: raggiunge ogni riquadro che NOVA non ha. */
+    private val onSystemQuickSettings: () -> Unit,
     private val onTurbo: () -> Unit,
 ) {
     private val camera = context.getSystemService(CameraManager::class.java)
@@ -85,7 +91,63 @@ class HomeControls(
             graphicsLabel = ::graphicsLabel,
             onCycleGraphics = ::cycleGraphics,
             onTurbo = onTurbo.takeIf { app.shizuku.status.value == ShizukuStatus.READY },
+            more = more(),
         )
+
+    /**
+     * Le altre impostazioni del pannello di Android, sotto «Altro». Un'app normale può cambiare da sola solo la rotazione
+     * (col permesso già usato per la luminosità); le altre aprono la schermata giusta di Android. Le due in cima
+     * (notifiche e impostazioni rapide di Android) sono la rete di sicurezza: dietro c'è ogni riquadro che manca qui.
+     */
+    private fun more(): List<MoreItem> {
+        fun go(
+            label: Int,
+            action: String,
+        ) = MoreItem(context.getString(label)) {
+            startSettings(action)
+            null
+        }
+        return listOf(
+            MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
+            MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
+            rotation(),
+            go(R.string.more_airplane, Settings.ACTION_AIRPLANE_MODE_SETTINGS),
+            go(R.string.more_hotspot, Settings.ACTION_WIRELESS_SETTINGS),
+            go(R.string.more_location, Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+            go(R.string.more_battery_saver, Settings.ACTION_BATTERY_SAVER_SETTINGS),
+            go(R.string.more_data, ACTION_DATA_USAGE),
+            go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
+            go(R.string.more_night_light, ACTION_NIGHT_DISPLAY),
+            go(R.string.more_nfc, Settings.ACTION_NFC_SETTINGS),
+            go(R.string.more_cast, Settings.ACTION_CAST_SETTINGS),
+            go(R.string.more_sound, Settings.ACTION_SOUND_SETTINGS),
+            go(R.string.more_color_inversion, ACTION_COLOR_INVERSION),
+            go(R.string.more_color_correction, ACTION_COLOR_CORRECTION),
+            go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
+            go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
+        )
+    }
+
+    /** Rotazione automatica: si cambia qui se c'è il permesso, altrimenti si apre lo schermo di Android. */
+    private fun rotation(): MoreItem {
+        val resolver = context.contentResolver
+        val on = { Settings.System.getInt(resolver, Settings.System.ACCELEROMETER_ROTATION, 1) == 1 }
+        val text = { v: Boolean -> context.getString(if (v) R.string.more_on else R.string.more_off) }
+        return MoreItem(context.getString(R.string.more_rotation), text(on())) {
+            if (Settings.System.canWrite(context)) {
+                val next = !on()
+                runCatching { Settings.System.putInt(resolver, Settings.System.ACCELEROMETER_ROTATION, if (next) 1 else 0) }
+                text(on())
+            } else {
+                startSettings(Settings.ACTION_DISPLAY_SETTINGS)
+                null
+            }
+        }
+    }
+
+    private fun startSettings(action: String) {
+        runCatching { context.startActivity(Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+    }
 
     private fun volume() =
         Level(
@@ -160,5 +222,11 @@ class HomeControls(
     private companion object {
         const val MAX_BRIGHTNESS = 255f
         const val DEFAULT_BRIGHTNESS = 128
+
+        // Azioni di Android non esposte come costanti pubbliche in tutte le versioni: se mancano, il tocco non fa nulla.
+        const val ACTION_DATA_USAGE = "android.settings.DATA_USAGE_SETTINGS"
+        const val ACTION_NIGHT_DISPLAY = "android.settings.NIGHT_DISPLAY_SETTINGS"
+        const val ACTION_COLOR_INVERSION = "android.settings.COLOR_INVERSION_SETTINGS"
+        const val ACTION_COLOR_CORRECTION = "android.settings.COLOR_CORRECTION_SETTINGS"
     }
 }
