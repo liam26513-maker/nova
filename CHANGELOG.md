@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Aggiornamento dell'app: risolto "percorso apk non consentito"
+- Richiesta: "aggiornamento non riuscito: percorso apk non consentito: …/cache/updates/nova-190.apk".
+- **Risolto:** con Shizuku attivo NOVA scaricava l'aggiornamento nella sua cartella `updates`, ma la regola di sicurezza che controlla dove può stare l'APK non la riconosceva e rifiutava l'installazione. Ora accetta quella cartella (e solo quella).
+- La regola resta severa: solo la cartella privata di NOVA, nessuna altra sottocartella, nessun altro pacchetto.
+- Per installare la 0.1.190 serve comunque una volta l'installazione a mano (vedi sotto); dalla versione successiva l'aggiornamento dentro NOVA funziona.
+
 ### Aggiornamenti pubblicati più in fretta
 - Richiesta: "Sì, riduci il tempo di rilascio" (dopo aver chiesto perché la nuova versione ci metteva così tanto).
 - Dopo ogni modifica unita al progetto, la nuova versione di NOVA arriva sul tablet in circa **4 minuti invece di 9**.
