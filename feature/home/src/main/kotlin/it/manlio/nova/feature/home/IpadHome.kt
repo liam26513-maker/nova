@@ -181,7 +181,6 @@ private fun Header(
         } else {
             if (prefs.showClock) ClockHeader(nowMillis, compact = true)
             Spacer(Modifier.weight(1f))
-            LocalOpenControl.current?.let { ControlButton(it, Modifier.padding(end = 10.dp)) }
             SettingsButton(actions.onOpenSettings)
         }
     }

@@ -89,6 +89,7 @@ class HomeControls(
 
     private fun volume() =
         Level(
+            steps = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
             read = { audio.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat() / audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC) },
             write = {
                     v ->

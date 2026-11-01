@@ -452,7 +452,7 @@ Implementate tutte e tre le disposizioni di §6.1: **Griglia** (stile iPadOS, **
 
 ### 6.8 Centro di controllo
 
-- Pannello proprio a riquadri (gesto dal bordo superiore destro, configurabile): Wi-Fi, Bluetooth, luminosità, volume, rotazione, non disturbare, torcia se presente, registrazione schermo, cambio modalità, livello grafico, Turbo, accendi PC, gioca dal PC, KDE Connect, DNS anti-pubblicità on/off.
+- Pannello proprio a riquadri, **a tendina**: si tira giù dall'angolo in alto a destra e segue il dito (soglia a metà o scatto veloce), si chiude tirando su, toccando fuori o con Indietro; nessun pulsante fisso sulla Home (resta una voce invisibile per TalkBack). Cursori di volume e luminosità a barra orizzontale che seguono il dito dal primo tocco, scrivono al sistema a frequenza limitata e si agganciano ai gradini quando il sistema ne ha. Sulla Home è fatto; sopra le altre app serve il servizio di accessibilità (§2.2), non ancora fatto. Contenuto (gesto dal bordo superiore destro, configurabile): Wi-Fi, Bluetooth, luminosità, volume, rotazione, non disturbare, torcia se presente, registrazione schermo, cambio modalità, livello grafico, Turbo, accendi PC, gioca dal PC, KDE Connect, DNS anti-pubblicità on/off.
 - Le azioni che richiedono privilegi usano Shizuku; altrimenti aprono il pannello di sistema corrispondente (`Settings.Panel`).
 - Riquadri riordinabili e configurabili in `config/`.
 

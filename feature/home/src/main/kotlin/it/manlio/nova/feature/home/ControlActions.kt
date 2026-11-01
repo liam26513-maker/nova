@@ -16,10 +16,14 @@ interface Torch {
     fun toggle()
 }
 
-/** Un valore regolabile da 0 a 1 (volume, luminosità). */
+/**
+ * Un valore regolabile da 0 a 1 (volume, luminosità). [steps] > 0 se il sistema ha solo quei gradini (il volume):
+ * il cursore si aggancia ai gradini e scrive solo quando ne cambia uno.
+ */
 class Level(
     val read: () -> Float,
     val write: (Float) -> Unit,
+    val steps: Int = 0,
 )
 
 /**
@@ -41,6 +45,3 @@ class ControlActions(
     /** Turbo (chiude le app in secondo piano); null = senza Shizuku o non disponibile. */
     val onTurbo: (() -> Unit)? = null,
 )
-
-/** Per far arrivare il pulsante del centro di controllo alle intestazioni senza passarlo ovunque (null = non c'è). */
-internal val LocalOpenControl = androidx.compose.runtime.staticCompositionLocalOf<(() -> Unit)?> { null }

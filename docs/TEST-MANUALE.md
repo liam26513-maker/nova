@@ -65,13 +65,16 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] **Cerca:** scrivi poche lettere (anche senza accenti o con le maiuscole): compaiono le app giuste; toccane una e si apre. «sfondo» o «nova» mostra «Impostazioni di NOVA». «Cerca sul web» apre il browser. Senza testo c'è «Tutte le app».
 - [ ] **Meteo:** «+» → Meteo → scrivi la tua città → «Salva»: compaiono temperatura, minima/massima e il simbolo giusto. Tocca il nome della città per cambiarla. Con il Wi-Fi spento dopo la prima volta, mostra l'ultimo tempo; mai spento e mai caricato, dice «Meteo non disponibile» e riprova toccando.
 - [ ] **Pomodoro:** «+» → Pomodoro → Avvia: il tempo scende; Pausa lo ferma; Azzera torna a 25:00. Lascia finire (o prova con un tempo breve nel test): senti un tic e passa a «Pausa». Riavvia il tablet con il timer in corso: continua da dove era.
-- [ ] **Centro di controllo** (pulsante con quattro riquadri):
-  - [ ] Torcia: si accende e si spegne (e segue se la cambi da un'altra parte).
-  - [ ] Volume: il cursore cambia il volume dei contenuti.
+- [ ] **Centro di controllo** (a tendina, nessun pulsante):
+  - [ ] Tira giù dall'angolo in alto a destra: il pannello scende **seguendo il dito**; lascia a metà e finisce da solo; uno scatto veloce lo apre anche dopo poco. Tira giù da un altro punto: si aprono le notifiche, non il pannello.
+  - [ ] Si chiude tirando su (anche con uno scatto), toccando fuori e con Indietro. Se lo apri e lo chiudi dieci volte di fila non rallenta e la Home non scatta.
+  - [ ] Volume e luminosità: il riempimento sta **sotto il dito** lungo la barra, dal primo tocco, senza salti; muovi il dito in su e in giù mentre scorri: il cursore continua e il pannello **non si chiude**. Il volume cambia a scatti (i suoi gradini), la luminosità in modo continuo e senza far scattare lo schermo.
   - [ ] Luminosità: la prima volta «Concedi il permesso…» apre la schermata di Android; concedi, torna: il cursore regola lo schermo.
-  - [ ] Wi-Fi e rete, Bluetooth, Non disturbare aprono il pannello giusto di Android.
+  - [ ] Torcia: si accende e si spegne (e segue se la cambi da un'altra parte).
+  - [ ] Wi-Fi e rete, Bluetooth, Non disturbare aprono il pannello giusto di Android **e chiudono la tendina**: tornando trovi la Home pulita.
   - [ ] Livello grafico: ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
-  - [ ] Indietro lo chiude; «Modifica la Home» entra in modifica.
+  - [ ] «Modifica la Home» entra in modifica. «Cerca» → «controllo» apre la tendina.
+  - [ ] Con TalkBack acceso: «Centro di controllo» si trova e apre il pannello senza il gesto.
 - [ ] **Cerca come calcolatrice:** «12*(3+4)» → «= 84»; «10 km in mi» → «= 6.213712 mi»; toccare il risultato lo copia (incollalo da qualche parte). «torcia» e «widget» trovano i comandi.
 - [ ] **Notifiche e musica sulla Home:** Impostazioni → Home → «Notifiche e musica sulla Home» → consenti l'accesso. (Se Android lo nega: Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni».) Torna alle Impostazioni: dice «Attivo».
   - [ ] Fatti scrivere un messaggio: sull'icona dell'app compare un numero rosso; nello stile Elenco, sotto il nome c'è l'anteprima.

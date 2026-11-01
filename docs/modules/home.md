@@ -133,3 +133,13 @@ Lista, icone, colori dello sfondo e sfocatura esistono solo mentre la home è vi
 
 ## Note sulle regole
 La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi non è un `NovaModule` spegnibile: senza home non c'è launcher. Rispetta comunque la regola "da spento non consuma nulla", perché non consuma niente quando non è visibile. Il launcher di sistema resta installato e si può tornare a usarlo dalle Impostazioni o dalla modalità provvisoria.
+
+### Centro di controllo a tendina (`ControlCenter.kt`)
+
+- **Stato:** `ControlSheetState.progress` (0 chiusa … 1 aperta) è un `mutableFloatStateOf` letto **solo nella fase di disegno** (`graphicsLayer`/`drawBehind`): trascinare o animare non ricompone niente. `control` in `HomeScreen` resta la *scelta* (ricerca, Indietro, un riquadro); un `LaunchedEffect` porta lo stato lì con una molla (`animate`), partendo dalla velocità del dito quando c'è.
+- **Apertura:** `Modifier.pullDownControl` sul contenitore della Home, nel passaggio `Initial`: reagisce solo a un gesto che parte nell'angolo in alto a destra (280×120 dp) e va in giù; ogni altro tocco passa intatto, quindi non c'è nessuna zona che blocchi icone o liste. Messo **prima** di `swipeDown`: l'angolo apre il centro di controllo, il resto della Home continua ad aprire le notifiche.
+- **Chiusura:** `closeByDragging` sul pannello (soglia di tocco, velocità con `VelocityTracker`), tocco sullo sfondo, Indietro. `ControlSheetMath.shouldOpen` decide dove si ferma (metà o scatto > 1,2 pannelli/s).
+- **Da chiuso** il pannello non è nella composizione (`derivedStateOf { progress > 0 }`): costo zero. Le letture (volume, luminosità) si rifanno a ogni apertura.
+- **Cursori:** gesto proprio (`awaitEachGesture`), senza soglia di partenza, solo asse x, consuma i movimenti (il pannello non li scambia per «chiudi»). Il valore è uno stato locale; la scrittura al sistema (`Level.write`) passa da `snapshotFlow` con pausa di 40 ms (≈25 Hz, sempre l'ultimo valore) e un `commit` finale al rilascio, solo se il valore è cambiato. `Level.steps` aggancia ai gradini (volume = massimo di `AudioManager`).
+- **Accessibilità:** `ControlCenterEntry` (1 dp, invisibile) espone l'azione «Centro di controllo» a TalkBack; i cursori espongono `setProgress`.
+- **Non fatto (limite di piattaforma, SPEC §2.2):** la tendina sopra le altre app richiede un `AccessibilityService` + finestra `TYPE_ACCESSIBILITY_OVERLAY`; oggi vale solo sulla Home.
