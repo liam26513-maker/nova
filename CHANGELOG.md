@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Aggiornamento dell'app: risolta (alla radice) l'installazione che falliva con Shizuku
+- Richiesta: "Non è possibile che ogni volta che provo a fare un aggiornamento da sempre lo stesso problema, risolvi" (errore: «Failed to parse APK file … nova-210.apk»).
+- **Causa vera:** NOVA scarica e controlla l'aggiornamento, ma poi chiedeva a Shizuku di installarlo da un percorso. Shizuku lavora con l'utente «shell» di Android, che **non può leggere la cartella privata di NOVA**: per questo non riusciva nemmeno ad aprire il file. La correzione precedente (sul percorso permesso) non poteva bastare.
+- **Ora:** NOVA apre il file lei stessa e lo **passa a Shizuku in streaming** (come fanno gli installatori di app per Shizuku), quindi non serve più che la shell legga niente di privato. Il file resta controllato (impronta, firma, versione) prima.
+- **E se qualcosa va storto,** NOVA non si blocca più: ripiega da sola sull'installazione normale di Android, con la conferma a schermo.
+- **Per questa volta** serve installare a mano la nuova versione (la tua app attuale ha ancora il vecchio metodo): da GitHub, sezione release, `nova-<numero>.apk`. Dalla successiva in poi gli aggiornamenti dentro NOVA funzionano da soli.
+
 ### Strumenti di sistema con Shizuku: Turbo, animazioni, dimensione dello schermo, pubblicità, congelamento, stato (Fase 2)
 - Richiesta: dal piano concordato, blocco C («strumenti di sistema»).
 - **Dove:** Impostazioni → **Prestazioni** (serve Shizuku attivo; se non lo è, la voce ti porta a Shizuku). Tutte le modifiche sono **registrate e reversibili**: Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche» le rimette com'erano, anche dalla modalità provvisoria.

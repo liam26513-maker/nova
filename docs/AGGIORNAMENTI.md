@@ -22,7 +22,7 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 ## Sicurezza
 - Token GitHub fine-grained limitato al repository `nova`, salvato cifrato con una chiave dell'Android Keystore e inviato solo ad `api.github.com`. Nel rinvio verso lo storage dei file non viene inviato.
-- L'APK viene scaricato in `Android/data/it.manlio.nova/cache/updates/`, l'unica cartella da cui il comando consentito `InstallApk` accetta file.
+- L'APK viene scaricato in `Android/data/it.manlio.nova/cache/updates/` e verificato. **Con Shizuku** non si passa alla shell un percorso (l'utente shell non può leggere le cartelle private dell'app): `ShizukuBridge.installApk` apre il file, accetta solo quelli di quella cartella e lo manda in streaming a `pm install -S <byte>` tramite `IShellService.execWithInput`. Se non riesce, ripiego sull'installazione con conferma di Android (`PackageInstaller`).
 
 ## Quando si controlla
 - All'avvio di NOVA, ogni 6 ore (WorkManager, solo con rete) e con "Controlla ora".

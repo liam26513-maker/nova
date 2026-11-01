@@ -82,24 +82,23 @@ sealed interface SystemCommand {
     }
 
     /**
-     * Installa un aggiornamento di NOVA. Il file deve stare nella cartella esterna privata dell'app
-     * (leggibile dalla shell), in `cache` o `files`, oppure nella sola sottocartella `updates` dove
-     * l'aggiornatore scarica gli APK (`Updater`), mai altrove: [ownPackage] è il pacchetto dell'app stessa.
+     * Installa un aggiornamento di NOVA leggendo l'APK dallo standard input (`pm install -S <byte>`): il file lo apre
+     * l'app e lo passa alla shell (`ShizukuBridge.installApk`), che non potrebbe leggerlo dalle cartelle private dell'app.
+     * [size] è la dimensione esatta in byte (da 1 a [MAX_APK_BYTES]); [ownPackage] il pacchetto di NOVA, mai un altro.
      */
-    data class InstallApk(val path: String, val ownPackage: String) : SystemCommand {
+    data class InstallApk(val size: Long, val ownPackage: String) : SystemCommand {
         init {
             requirePackage(ownPackage)
-            val allowed =
-                Regex("^/(storage/emulated/0|sdcard)/Android/data/${Regex.escape(ownPackage)}/(cache|files)/(updates/)?[\\w.-]+\\.apk$")
-            require(allowed.matches(path) && ".." !in path) { "Percorso APK non consentito: $path" }
+            require(size in 1..MAX_APK_BYTES) { "Dimensione dell'APK non consentita: $size" }
         }
 
-        override val argv = listOf("pm", "install", "-r", "-i", ownPackage, path)
+        override val argv = listOf("pm", "install", "-r", "-i", ownPackage, "-S", size.toString())
     }
 
     companion object {
         const val MIN_DPI = 120
         const val MAX_DPI = 640
+        const val MAX_APK_BYTES = 200L * 1024 * 1024
         private const val MAX_PACKAGE_LENGTH = 128
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")

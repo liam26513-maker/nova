@@ -34,8 +34,8 @@ class SystemCommandTest {
                 { SystemCommand.PutSetting(GLOBAL, "ok_key", "\$(id)") },
                 { SystemCommand.DisablePackage("com.x && reboot") },
                 { SystemCommand.ForceStop("../etc") },
-                { SystemCommand.InstallApk("/sdcard/Download/evil.apk", "it.manlio.nova") },
-                { SystemCommand.InstallApk("/sdcard/Android/data/it.manlio.nova/cache/../../x.apk", "it.manlio.nova") },
+                { SystemCommand.InstallApk(0, "it.manlio.nova") },
+                { SystemCommand.InstallApk(1, "it.manlio.nova; reboot") },
             )
         bad.forEach { make -> assertTrue(runCatching(make).isFailure) }
     }
@@ -59,30 +59,20 @@ class SystemCommandTest {
     }
 
     @Test
-    fun `apk install is allowed only from the app's own external folder`() {
-        val ok = SystemCommand.InstallApk("/storage/emulated/0/Android/data/it.manlio.nova/cache/nova-12.apk", "it.manlio.nova")
-        assertEquals("install", ok.argv[1])
+    fun `apk install reads the file from standard input with its exact size`() {
+        val ok = SystemCommand.InstallApk(2_954_000, "it.manlio.nova")
+        assertEquals(listOf("pm", "install", "-r", "-i", "it.manlio.nova", "-S", "2954000"), ok.argv)
     }
 
     @Test
-    fun `apk install accepts the folder where the updater really downloads, and only that one`() {
-        // Percorso reale visto sul tablet: Updater scarica in externalCacheDir/updates.
-        val real = "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/nova-190.apk"
-        assertEquals(real, SystemCommand.InstallApk(real, "it.manlio.nova").argv.last())
-        SystemCommand.InstallApk("/sdcard/Android/data/it.manlio.nova/files/updates/nova-190.apk", "it.manlio.nova")
-        val bad =
-            listOf(
-                // altra sottocartella
-                "/storage/emulated/0/Android/data/it.manlio.nova/cache/altro/nova-190.apk",
-                // troppo in fondo
-                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/a/nova-190.apk",
-                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/../x.apk",
-                // pacchetto diverso
-                "/storage/emulated/0/Android/data/altra.app/cache/updates/nova-190.apk",
-                "/storage/emulated/0/Download/updates/nova-190.apk",
-                "/storage/emulated/0/Android/data/it.manlio.nova/cache/updates/nova-190.sh",
-            )
-        bad.forEach { path -> assertTrue(path, runCatching { SystemCommand.InstallApk(path, "it.manlio.nova") }.isFailure) }
+    fun `apk install refuses impossible sizes and bad package names`() {
+        listOf(0L, -1L, SystemCommand.MAX_APK_BYTES + 1, Long.MIN_VALUE).forEach {
+            assertTrue("$it", runCatching { SystemCommand.InstallApk(it, "it.manlio.nova") }.isFailure)
+        }
+        listOf("", "x", "it.manlio.nova -S 1", "../x").forEach {
+            assertTrue(it, runCatching { SystemCommand.InstallApk(1000, it) }.isFailure)
+        }
+        SystemCommand.InstallApk(SystemCommand.MAX_APK_BYTES, "it.manlio.nova")
     }
 }
 

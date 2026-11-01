@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.IBinder
+import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import rikka.shizuku.Shizuku
+import java.io.File
 
 /** Stato di Shizuku come lo vede l'utente. */
 enum class ShizukuStatus {
@@ -89,6 +91,32 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
         }
     }
 
+    /**
+     * Installa [apk] (che deve stare nella cartella `updates` della cache esterna di NOVA, dove l'aggiornatore lo scarica
+     * e lo verifica) passandolo alla shell in streaming: la shell non può leggere le cartelle private dell'app.
+     */
+    @Suppress("ReturnCount") // una uscita per ogni motivo per cui non si può installare
+    suspend fun installApk(apk: File): ShellResult {
+        if (_status.value != ShizukuStatus.READY) return ShellResult(NOT_READY, "Shizuku non è pronto")
+        val updates = context.externalCacheDir?.let { File(it, "updates") }?.canonicalFile
+        if (updates == null || apk.canonicalFile.parentFile != updates || !apk.name.endsWith(".apk")) {
+            return ShellResult(-1, "File non consentito per l'installazione")
+        }
+        val command =
+            runCatching {
+                SystemCommand.InstallApk(apk.length(), context.packageName)
+            }.getOrElse { return ShellResult(-1, it.message.orEmpty()) }
+        val shell = connect() ?: return ShellResult(NOT_READY, "Servizio di sistema non disponibile")
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                ParcelFileDescriptor.open(apk, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
+                    val raw = shell.execWithInput(command.argv.toTypedArray(), pfd)
+                    ShellResult(raw.substringBefore('\n').toIntOrNull() ?: -1, raw.substringAfter('\n', ""))
+                }
+            }.getOrElse { ShellResult(-1, it.message.orEmpty()) }
+        }
+    }
+
     private suspend fun connect(): IShellService? {
         service.value?.let { return it }
         withContext(Dispatchers.Main) { Shizuku.bindUserService(args, connection) }
@@ -108,7 +136,7 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
 
     private companion object {
         const val REQUEST_CODE = 4721
-        const val SERVICE_VERSION = 1
+        const val SERVICE_VERSION = 2
         const val CONNECT_TIMEOUT_MS = 5_000L
         const val NOT_READY = -100
     }
