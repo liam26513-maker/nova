@@ -25,6 +25,10 @@ class HomeActions(
     val onSwipeDown: () -> Unit = {},
     /** Doppio tocco sull'alfabeto: spegne lo schermo. */
     val onSleep: () -> Unit = {},
+    /** «Cerca sul web» dalla ricerca universale (apre il browser: NOVA non ha accesso a Internet). */
+    val onWebSearch: (String) -> Unit = {},
+    /** Widget di altre app; null se il dispositivo non li permette. */
+    val widgets: ExternalWidgets? = null,
 )
 
 /**

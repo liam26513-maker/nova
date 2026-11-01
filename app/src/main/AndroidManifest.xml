@@ -15,6 +15,14 @@
 
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
+        <!-- Widget di altre app, da mostrare nella Home (AppWidgetHost). -->
+        <intent>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent>
+        <!-- «Cerca sul web» dalla ricerca della Home: serve un browser che risponda. -->
+        <intent>
+            <action android:name="android.intent.action.WEB_SEARCH" />
+        </intent>
         <!-- La Home deve vedere tutte le app avviabili (visibilità dei pacchetti, Android 11+). -->
         <intent>
             <action android:name="android.intent.action.MAIN" />

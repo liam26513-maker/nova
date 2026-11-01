@@ -207,4 +207,5 @@
     <string name="customize_home_layout">Home style</string>
     <string name="customize_layout_ipad">Icons and dock</string>
     <string name="customize_layout_list">List</string>
+    <string name="customize_layout_hybrid">Hybrid</string>
 </resources>

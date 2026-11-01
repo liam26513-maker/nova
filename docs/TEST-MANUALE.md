@@ -53,6 +53,18 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] Con il livello grafico **Prestazioni** il dock diventa più pieno e senza bordo luminoso; con gli altri è trasparente. La Home resta fluida (nessun scatto scorrendo le pagine).
 - [ ] Personalizza → Disposizione e gesti → **Stile della Home** → «Elenco»: torna la Home di prima, con ora grande e alfabeto. Rimettendo «Icone e dock» tutto torna. Cambiare tema non cambia lo stile.
 - [ ] Personalizza → Icone → «Originale» rimette le icone com'erano; la scelta resta dopo il riavvio.
+- [ ] **Modifica la Home:** tieni premuto lo sfondo vuoto: le icone ondeggiano, compaiono «+», «Fine» e i «−». Indietro esce.
+  - [ ] Trascina un'icona in un altro posto; trascinala al bordo e aspetta: cambia pagina e la lascia lì.
+  - [ ] Mettila sopra un'altra icona: nasce una cartella con le due app; sopra una cartella ci entra.
+  - [ ] «−» su un'icona la toglie dalla Home; in Cerca → Tutte le app → pressione lunga → «Aggiungi alla Home» torna.
+  - [ ] Trascina un'icona sul dock: diventa un preferito. Nel dock trascina un'icona di lato: si riordina.
+  - [ ] Riavvia il tablet: la disposizione, le cartelle e i widget sono come li hai lasciati.
+- [ ] **Cartelle:** tocca una cartella: si apre; cambia il nome e chiudi (resta); pressione lunga su un'app → «Togli dalla cartella». Con una sola app rimasta la cartella sparisce.
+- [ ] **Widget di NOVA** («+»): Orologio (l'ora è giusta), Calendario, Batteria (percentuale e «In carica» attaccando il cavo), Nota rapida (scrivi, esci e rientra: il testo resta). Il «−» li toglie.
+- [ ] **Widget di altre app** («+» → Widget delle app): scegline uno. Android chiede il permesso; se ha una configurazione si apre; il widget compare e si aggiorna. Toglilo con «−». *(Funzione non provata su un tablet vero: se qualcosa non va, segnala il nome del widget.)*
+- [ ] **Cerca:** scrivi poche lettere (anche senza accenti o con le maiuscole): compaiono le app giuste; toccane una e si apre. «sfondo» o «nova» mostra «Impostazioni di NOVA». «Cerca sul web» apre il browser. Senza testo c'è «Tutte le app».
+- [ ] **Stile Ibrido** (Personalizza → Stile della Home): in orizzontale preferiti a sinistra e icone a destra; in verticale solo l'elenco.
+- [ ] **Vetro:** il dock, i widget e le cartelle sembrano vetro. Con il livello Prestazioni diventano più pieni, e la Home non scatta.
 - [ ] **Impostazioni con barra laterale:** apri Impostazioni di NOVA. A sinistra le categorie con la pastiglia colorata, a destra il dettaglio. Toccare una categoria cambia il dettaglio e la voce scelta si evidenzia.
 - [ ] Personalizza la Home usa la stessa barra laterale; «‹ Fatto» in alto a sinistra esce. Ogni scelta si vede ancora subito.
 - [ ] In una finestra stretta (o a schermo diviso) le Impostazioni diventano un elenco; toccando una voce si apre il dettaglio e Indietro torna all'elenco.

@@ -52,6 +52,7 @@ internal fun AppMenu(
     app: AppEntry?,
     isFavorite: Boolean,
     actions: HomeActions,
+    extras: MenuExtras = MenuExtras(),
     onDismiss: () -> Unit,
 ) {
     BackHandler(enabled = app != null, onBack = onDismiss)
@@ -82,7 +83,7 @@ internal fun AppMenu(
                         // Toccare la scheda non deve chiudere il menu.
                         .clickable(remember { MutableInteractionSource() }, indication = null) {},
                 ) {
-                    MenuContent(current, isFavorite, actions, onDismiss)
+                    MenuContent(current, isFavorite, actions, extras, onDismiss)
                 }
             }
         }
@@ -94,6 +95,7 @@ private fun MenuContent(
     app: AppEntry,
     isFavorite: Boolean,
     actions: HomeActions,
+    extras: MenuExtras,
     onDismiss: () -> Unit,
 ) {
     var renaming by remember(app.key) { mutableStateOf(false) }
@@ -120,6 +122,10 @@ private fun MenuContent(
                 actions.onToggleFavorite(app)
                 onDismiss()
             }
+            extras.onEdit?.let { MenuItem(stringResource(R.string.home_edit_enter), onClick = it) }
+            extras.onTakeOut?.let { MenuItem(stringResource(R.string.home_menu_take_out), onClick = it) }
+            extras.onRemove?.let { MenuItem(stringResource(R.string.home_edit_remove), onClick = it) }
+            extras.onAddToHome?.let { MenuItem(stringResource(R.string.home_menu_add_to_home), onClick = it) }
             MenuItem(stringResource(R.string.home_menu_rename)) { renaming = true }
             MenuItem(stringResource(R.string.home_menu_hide), stringResource(R.string.home_menu_hide_summary)) {
                 actions.onHide(app)

@@ -54,7 +54,7 @@ Analisi di partenza: le pagine di aiuto di Niagara (funzioni Pro, temi) e gli ar
 
 **Riordino dei preferiti:** tieni premuto un preferito e trascinalo. La logica degli scambi è in `ReorderState`.
 
-**Non incluso:** widget, pop-up e cartelle, notifiche sotto le app, meteo e agenda, timer d'uso, icone generate automaticamente per le app senza icona nel pacchetto. Sono nella Fase 1 o successive della SPEC; alcune richiedono servizi esterni o permessi che non vanno chiesti adesso.
+**Non incluso:** notifiche sotto le app, meteo e agenda, timer d'uso, icone generate automaticamente per le app senza icona nel pacchetto (widget, cartelle e disposizione libera sono ora inclusi: vedi sotto).*
 
 ## Stile iPad (predefinito)
 La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti → Stile della Home** (`HomePrefs.layout`, non fa parte del tema: cambiare tema non la cambia).
@@ -62,18 +62,35 @@ La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti �
 | Stile | Cosa si vede |
 |---|---|
 | **Icone e dock** (`IPAD`, predefinito) | ora e data compatte in alto, pagine di icone con il nome sotto (`HorizontalPager`), puntini della pagina, capsula «Cerca app» e dock |
+| **Ibrido** (`HYBRID`) | in orizzontale elenco dei preferiti a sinistra (un terzo) e Home a icone a destra (due terzi); in verticale come l'elenco |
 | **Elenco** (`LIST`) | la Home in stile Niagara descritta sopra: ora grande, preferiti in lista, alfabeto a onda |
 
 **Come funziona lo stile iPad**
 - **Griglia:** colonne e righe si calcolano dallo spazio disponibile (`GridMetrics.of`: celle di almeno 150 × 128 dp, da 4 a 8 colonne e da 2 a 6 righe). Sul tablet 1280×800 sono 7 × 4 icone per pagina; in verticale 4 × 6. Le app in più passano alla pagina successiva (`paginate`).
-- **Ordine:** alfabetico (italiano). Le app del dock non compaiono anche nella griglia, come sull'iPad. Il posizionamento libero e le cartelle sono della Fase 1.
+- **Ordine:** quello scelto da te (`HomeLayout`); le app nuove vanno in fondo in ordine alfabetico italiano. Le app del dock non compaiono anche nella griglia, come sull'iPad.
 - **Dock:** i primi `DOCK_MAX` = 6 preferiti, nell'ordine dei preferiti, senza nomi (restano nella descrizione per TalkBack). Senza preferiti mostra come aggiungerli. Con il livello grafico **Prestazioni** il pannello è più opaco e senza bordo luminoso; con gli altri è traslucido con un filo di luce.
 - **Gesti:** tocco = apre l'app, con l'animazione dal rettangolo dell'icona; pressione lunga = il solito menu; scorrere di lato = pagina; scorrere giù = notifiche. L'icona si rimpicciolisce sotto il dito con una molla, entro un frame.
-- **Cerca app:** apre l'elenco completo con l'alfabeto a onda; Indietro o «‹ Home» tornano alla griglia. Il tasto Home riporta alla prima pagina. La vera ricerca universale è della Fase 1.
+- **Cerca:** apre la ricerca universale (vedi sotto); da lì «Tutte le app ›» porta all'elenco completo con l'alfabeto a onda; Indietro o «‹ Home» tornano alla griglia. Il tasto Home riporta alla prima pagina.
 - **Icone:** nello stile iPad contano la misura (piccola 56, media 72, grande 88 dp), la forma e lo stile; «Icone sì/no» vale solo per l'elenco.
 - **Icone morbide di default:** `iconShape` ora parte da «Morbido». Un file di preferenze scritto prima dello stile iPad, che aveva la vecchia forma predefinita «Originale», passa a «Morbido» una sola volta (`PrefsCodec`: manca la chiave `layout`); dal primo salvataggio la scelta resta esplicita.
 
 **Consumi:** lo stile iPad non aggiunge sfocature in tempo reale: il dock e la capsula sono rettangoli traslucidi disegnati con un colore. Il pager compone solo la pagina visibile. Le icone si caricano una sola volta alla misura più grande (88 dp, 31 KB l'una a 1×), con la cache LRU di sempre.
+
+
+### Disposizione libera, cartelle e widget (`HomeLayout`)
+- **Modello** (Kotlin puro, provato con test unitari): `HomeLayout` = elementi in ordine di lettura (`AppItem`, `FolderItem`, `WidgetItem`) + app tolte dalla Home (`offHome`). Salvato in `files/home-layout.txt` (`HomeLayoutStore`, scrittura atomica fuori dal thread principale, righe illeggibili ignorate).
+- **`reconcile`:** a ogni disegno allinea la disposizione alle app che esistono (tolte le disinstallate, nascoste o nel dock; cartelle con una sola app sciolte; app nuove in fondo). Le modifiche partono sempre dalla versione allineata.
+- **`pack`:** mette gli elementi in pagine di colonne×righe, in ordine e senza tornare indietro; un widget occupa le sue caselle e non entra se non c'è posto (passa alla pagina dopo).
+- **Modifica:** si entra con la pressione lunga sullo sfondo o dal menu di un'app. Il gesto (`gridDrag`) sta sopra il pager e guarda gli eventi per primo: parte solo da un elemento e solo oltre la soglia, così scorrere di pagina sullo sfondo funziona ancora. Al rilascio `dropAction` decide: al centro di un'altra app o di una cartella = unisce; altrimenti inserisce (dopo il bersaglio se si va avanti, prima se si torna indietro); su una casella vuota = in fondo alla pagina. Sul dock = preferito. Al bordo, dopo 650 ms, si cambia pagina. L'ondeggiamento è una sola animazione condivisa, letta in fase di disegno, e si spegne con «Rimuovi animazioni» di Android.
+- **Cartelle:** anteprima 3×3 nell'icona; aperta è una scheda di vetro con il nome modificabile (si salva alla chiusura).
+- **Widget di NOVA** (`NovaWidgets`): Orologio analogico (2×2), Calendario (2×2), Batteria (2×1, il ricevitore `ACTION_BATTERY_CHANGED` esiste solo mentre la Home è visibile), Nota rapida (2×2, si salva da sola 0,7 s dopo l'ultima lettera, al massimo 500 caratteri).
+- **Widget di altre app:** `WidgetHostBridge` (nell'app) usa `AppWidgetHost`: `bindAppWidgetIdIfAllowed`, altrimenti la schermata di Android per autorizzare, poi la configurazione del widget se la prevede. Ascolta solo tra `onStart` e `onStop`; ogni chiamata ad Android è protetta, un widget difettoso viene scartato. **Non provato su un dispositivo vero** (non si può simulare in test): vedi `docs/TEST-MANUALE.md`.
+- **Vetro:** `Modifier.glass` (`Glass.kt`): riempimento a gradiente e bordo luminoso, solo disegno. Con il livello Prestazioni, riempimento pieno e niente bordo.
+
+### Ricerca universale
+`AppSearch`: senza maiuscole né accenti; prima chi inizia con il testo, poi una parola che inizia così, poi chi lo contiene. Risultati: app, «Impostazioni di NOVA» (se la ricerca le riguarda) e «Cerca sul web» (`ACTION_WEB_SEARCH`: apre il browser, NOVA non ha il permesso Internet). Non c'è polling né indice: si filtra l'elenco già in memoria.
+
+**Non incluso:** Meteo (serve Internet e la posizione), widget Stato PC, Musica, Pomodoro, Galleria (SPEC §6.5, altre fasi), notifiche sotto le app.
 
 ## Sfondo e app recenti
 - **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.

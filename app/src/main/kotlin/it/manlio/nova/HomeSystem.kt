@@ -1,8 +1,11 @@
 package it.manlio.nova
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
+import android.provider.Settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import it.manlio.nova.feature.home.HomePrefs
@@ -49,6 +52,19 @@ internal object HomeSystem {
             val service = context.getSystemService("statusbar")
             service.javaClass.getMethod("expandNotificationsPanel").invoke(service)
         }
+    }
+
+    /** «Rimuovi animazioni» di Android (scala 0): niente ondeggiamento in modifica. */
+    fun animationsOn(context: Context): Boolean =
+        Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f
+
+    /** «Cerca sul web» nel browser: NOVA non ha accesso a Internet. */
+    fun webSearch(
+        context: Context,
+        query: String,
+    ) {
+        val intent = Intent(Intent.ACTION_WEB_SEARCH).putExtra(SearchManager.QUERY, query).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        runCatching { context.startActivity(intent) }
     }
 
     private const val INK_LIGHT_THEME = 0xFF15171A

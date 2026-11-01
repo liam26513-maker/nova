@@ -7,6 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -14,15 +17,20 @@ import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
@@ -31,9 +39,12 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import it.manlio.nova.core.design.NovaTheme
 import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.feature.home.AppEntry
+import it.manlio.nova.feature.home.AppItem
 import it.manlio.nova.feature.home.ClockStyle
+import it.manlio.nova.feature.home.FolderItem
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
+import it.manlio.nova.feature.home.HomeLayout
 import it.manlio.nova.feature.home.HomeLayoutStyle
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
@@ -44,6 +55,8 @@ import it.manlio.nova.feature.home.Side
 import it.manlio.nova.feature.home.TextSize
 import it.manlio.nova.feature.home.ThemeMode
 import it.manlio.nova.feature.home.WallpaperSource
+import it.manlio.nova.feature.home.WidgetItem
+import it.manlio.nova.feature.home.WidgetKind
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -69,7 +82,9 @@ class HomeScreenTest {
     private val toggled = mutableListOf<String>()
     private val hidden = mutableListOf<String>()
     private val renamed = mutableListOf<Pair<String, String>>()
+    private val webSearches = mutableListOf<String>()
     private val reordered = mutableListOf<List<String>>()
+    private var layout by mutableStateOf(HomeLayout())
     private val defaultFavorites = listOf(apps[1].key, apps[7].key, apps[15].key, apps[4].key, apps[12].key)
 
     private fun render(
@@ -86,6 +101,7 @@ class HomeScreenTest {
                 onReorderFavorites = { reordered += it },
                 onHide = { hidden += it.label },
                 onRename = { entry, name -> renamed += entry.label to name },
+                onWebSearch = { webSearches += it },
             )
         compose.setContent {
             NovaTheme(NovaTokens.Fallback) {
@@ -102,6 +118,9 @@ class HomeScreenTest {
                         actions = actions,
                         style = HomeStyle(tint = Color(0xFF3E6E8E)),
                         prefs = prefs,
+                        layout = layout,
+                        onLayoutChange = { change -> layout = change(layout) },
+                        animate = false,
                     )
                 }
             }
@@ -302,9 +321,11 @@ class HomeScreenTest {
     }
 
     @Test
-    fun ipad_search_pill_opens_all_apps_and_back_returns_to_the_grid() {
+    fun ipad_search_pill_opens_search_and_all_apps_from_there_and_back_returns_to_the_grid() {
         render(prefs = HomePrefs())
         compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Tutte le app  ›").performClick()
         compose.waitForIdle()
         compose.onNodeWithText("Calendario").assertExists()
         compose.onNodeWithText("Home", substring = true).assertExists()
@@ -312,6 +333,206 @@ class HomeScreenTest {
         compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
         compose.waitForIdle()
         compose.onNodeWithText("Cerca app").assertExists()
+    }
+
+    @Test
+    fun search_ignores_case_and_accents_launches_and_offers_the_web() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNode(hasSetTextAction()).performTextInput("OROLO")
+        compose.waitForIdle()
+        compose.onAllNodesWithText("Orologio").onLast().assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ricerca.png")
+        compose.onNodeWithText("Cerca «OROLO» sul web").performClick()
+        assertEquals(listOf("OROLO"), webSearches)
+        compose.onAllNodesWithText("Orologio").onLast().performClick()
+        assertEquals(listOf("Orologio"), launched)
+        compose.onNodeWithText("Cerca app").assertExists() // la ricerca si è chiusa
+    }
+
+    @Test
+    fun search_finds_nova_settings_and_says_when_nothing_matches() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNode(hasSetTextAction()).performTextInput("sfondo")
+        compose.waitForIdle()
+        compose.onNodeWithText("Impostazioni di NOVA").assertExists()
+        compose.onNode(hasSetTextAction()).performTextReplacement("qqqq")
+        compose.waitForIdle()
+        compose.onNodeWithText("Nessun risultato").assertExists()
+    }
+
+    @Test
+    fun edit_mode_adds_a_widget_and_ends_with_done() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Fine").assertExists()
+        compose.onNodeWithContentDescription("Aggiungi un widget").performClick()
+        compose.waitForIdle()
+        compose.onAllNodesWithText("Orologio").onLast().performClick() // l'app Orologio sta nella griglia sotto la scheda
+        compose.waitForIdle()
+        assertEquals(WidgetKind.CLOCK, layout.items.filterIsInstance<WidgetItem>().single().kind)
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_modifica.png")
+        compose.onNodeWithText("Fine").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Fine").assertDoesNotExist()
+    }
+
+    @Test
+    fun back_leaves_edit_mode() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Fine").assertDoesNotExist()
+    }
+
+    @Test
+    fun minus_badge_and_menu_take_an_app_off_the_home_and_back() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Togli dalla Home").performClick()
+        compose.waitForIdle()
+        assertEquals(setOf(apps[8].key), layout.offHome)
+        compose.onNodeWithText("Mappe").assertDoesNotExist()
+        // Resta nell'elenco completo, da dove si rimette.
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Tutte le app  ›").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Aggiungi alla Home").performClick()
+        assertEquals(emptySet<String>(), layout.offHome)
+    }
+
+    @Test
+    fun badge_in_edit_mode_removes_the_item() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        compose.onAllNodesWithContentDescription("Togli dalla Home")[0].performClick()
+        compose.waitForIdle()
+        assertEquals(1, layout.offHome.size)
+    }
+
+    @Test
+    fun a_folder_shows_its_name_opens_and_launches_its_apps() {
+        layout = HomeLayout(listOf(FolderItem("f1", "Studio", listOf(apps[0].key, apps[8].key))))
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Studio").assertExists()
+        compose.onNodeWithText("Calendario").assertDoesNotExist() // dentro la cartella, non nella griglia
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_cartella_chiusa.png")
+        compose.onNodeWithText("Studio").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Calendario").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_cartella_aperta.png")
+        compose.onNodeWithText("Mappe").performClick()
+        assertEquals(listOf("Mappe"), launched)
+    }
+
+    @Test
+    fun an_app_in_a_folder_can_be_taken_out_from_its_menu() {
+        layout = HomeLayout(listOf(FolderItem("f1", "Studio", listOf(apps[0].key, apps[8].key, apps[9].key))))
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Studio").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Togli dalla cartella").performClick()
+        compose.waitForIdle()
+        val items = layout.items
+        assertEquals(listOf(apps[0].key, apps[9].key), (items.first() as FolderItem).keys)
+        assertEquals(apps[8].key, (items[1] as AppItem).key)
+    }
+
+    @Test
+    fun dragging_an_app_onto_another_in_edit_mode_makes_a_folder() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        val target = compose.onNodeWithText("Disegno").fetchSemanticsNode().boundsInRoot.center - Offset(0f, 32f)
+        val from = compose.onNodeWithText("Calendario").fetchSemanticsNode().boundsInRoot
+        compose.onNodeWithText("Calendario").performTouchInput {
+            down(center)
+            val end = target - from.topLeft
+            repeat(6) { moveBy((end - center) / 6f) }
+            up()
+        }
+        compose.waitForIdle()
+        val folder = layout.items.filterIsInstance<FolderItem>().single()
+        assertEquals(setOf(apps[0].key, apps[2].key), folder.keys.toSet())
+    }
+
+    @Test
+    fun dragging_an_app_in_edit_mode_reorders_the_grid() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        val label = compose.onNodeWithText("Disegno").fetchSemanticsNode().boundsInRoot
+        val from = compose.onNodeWithText("Calendario").fetchSemanticsNode().boundsInRoot
+        // Nella parte sinistra della cella di Disegno, fuori dal centro: si inserisce lì, non si unisce.
+        val target = Offset(label.center.x - 60f, label.center.y - 32f)
+        compose.onNodeWithText("Calendario").performTouchInput {
+            down(center)
+            val end = target - from.topLeft
+            repeat(6) { moveBy((end - center) / 6f) }
+            up()
+        }
+        compose.waitForIdle()
+        assertEquals(true, layout.items.none { it is FolderItem })
+        val order = layout.items.map { it.id }
+        assertEquals(true, order.indexOf(apps[0].key) > order.indexOf(apps[2].key))
+    }
+
+    @Test
+    fun widgets_show_up_with_a_folder_and_the_note_is_saved() {
+        layout =
+            HomeLayout(
+                listOf(
+                    WidgetItem("w1", WidgetKind.CLOCK),
+                    WidgetItem("w2", WidgetKind.CALENDAR),
+                    WidgetItem("w3", WidgetKind.BATTERY),
+                    WidgetItem("w4", WidgetKind.NOTE),
+                    FolderItem("f1", "Lavoro", listOf(apps[1].key, apps[3].key, apps[4].key, apps[5].key)),
+                ),
+            )
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Scrivi una nota…").assertExists()
+        compose.onNodeWithText("Lavoro").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_widget.png")
+        compose.onNode(hasSetTextAction()).performTextInput("Comprare il pane")
+        compose.mainClock.advanceTimeBy(2_000)
+        compose.waitForIdle()
+        assertEquals("Comprare il pane", layout.items.filterIsInstance<WidgetItem>().single { it.kind == WidgetKind.NOTE }.text)
+    }
+
+    @Test
+    fun hybrid_landscape_has_the_list_on_the_left_and_the_grid_on_the_right() {
+        render(prefs = HomePrefs(layout = HomeLayoutStyle.HYBRID))
+        compose.onNodeWithText("Chrome").assertExists() // preferiti a elenco
+        compose.onNodeWithText("Calendario").assertExists() // griglia
+        compose.onNodeWithText("Cerca app").assertExists()
+        compose.onRoot().captureRoboImage("screenshots/home_ibrida.png")
+    }
+
+    @Test
+    @Config(qualifiers = "it-w800dp-h1280dp-port-mdpi")
+    fun hybrid_portrait_falls_back_to_the_list() {
+        render(prefs = HomePrefs(layout = HomeLayoutStyle.HYBRID))
+        compose.onNodeWithText("Tutte le app", substring = true).assertExists()
+        compose.onNodeWithText("Cerca app").assertDoesNotExist()
     }
 
     @Test

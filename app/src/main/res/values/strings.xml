@@ -210,4 +210,5 @@
     <string name="customize_home_layout">Stile della Home</string>
     <string name="customize_layout_ipad">Icone e dock</string>
     <string name="customize_layout_list">Elenco</string>
+    <string name="customize_layout_hybrid">Ibrido</string>
 </resources>

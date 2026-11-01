@@ -411,8 +411,8 @@ Tre stili commutabili in un tocco, anche per profilo/modalità:
 ### 6.1.1 Studio di personalizzazione (fatto in Fase 0)
 Temi pronti e condivisibili, sfondo (sistema, raccolta di NOVA, foto, colore) con sfocatura propria, tema scuro/chiaro/automatico, colore d'accento, carattere, misura e spessore del testo, stili dell'orologio, icone (forma, misura, monocromatiche, pacchetti `appfilter.xml`), barra di stato, gesti (scorri giù per le notifiche, doppio tocco per spegnere tramite Shizuku), app nascoste e rinominate. Finestra della home opaca: nessuna trasparenza nelle app recenti. Dettagli in `docs/modules/home.md`.
 
-### 6.1.2 Stile iPad (fatto, richiesta "rendi tutta l'interfaccia più simile ad un iPad")
-Implementata la disposizione **Griglia** (stile iPadOS) in forma essenziale ed è ora il **predefinito**: pagine di icone squircle, puntini, capsula «Cerca app» (apre l'elenco completo con l'alfabeto a onda) e dock traslucido con i primi 6 preferiti. Resta scelta **Lista** (Niagara puro). Mancano ancora: layout Ibrido, posizionamento libero, cartelle, widget, vera ricerca universale (Fase 1). Dettagli in `docs/modules/home.md`.
+### 6.1.2 Stile iPad (fatto, richiesta "rendi tutta l'interfaccia più simile ad un iPad" e seguito)
+Implementate tutte e tre le disposizioni di §6.1: **Griglia** (stile iPadOS, **predefinita**), **Ibrido** (solo in orizzontale; in verticale è la Lista) e **Lista**. La Griglia ha pagine di icone squircle posizionabili a piacere, cartelle con anteprima 3×3, widget (Orologio, Calendario, Batteria, Nota rapida di NOVA e widget di altre app tramite `AppWidgetHost`), modalità modifica con trascinamento tra le pagine, dock di vetro con i primi 6 preferiti e ricerca universale (app, impostazioni di NOVA, web). Materiali "vetro" disegnati senza sfocatura in tempo reale (§5.3). **Non è una copia dell'iPad**: nessun asset, marchio o carattere di Apple (regola 7 e CLAUDE.md). Mancano: Meteo e gli altri widget nativi di §6.5, notifiche in linea (§6.2). Dettagli in `docs/modules/home.md`.
 
 ### 6.2 Lista dei preferiti
 

@@ -36,8 +36,11 @@ enum class IconSize { SMALL, MEDIUM, LARGE }
 
 enum class IconShape { ORIGINAL, CIRCLE, SQUIRCLE, SQUARE }
 
-/** Disposizione della home: griglia di icone con dock (stile iPad) oppure elenco di nomi (stile Niagara). */
-enum class HomeLayoutStyle { IPAD, LIST }
+/**
+ * Disposizione della home: griglia di icone con dock (stile iPad), ibrida (elenco a sinistra e griglia a destra,
+ * solo in orizzontale) oppure solo elenco di nomi (stile Niagara).
+ */
+enum class HomeLayoutStyle { IPAD, HYBRID, LIST }
 
 /** Icone a colori o monocromatiche ("a tema", come le icone tematiche di Android 13+). */
 enum class IconStyle { COLOR, MONO }

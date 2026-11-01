@@ -190,6 +190,7 @@ internal fun labelOf(value: Enum<*>): Int =
         ScrimStrength.MEDIUM -> R.string.customize_scrim_medium
         ScrimStrength.STRONG -> R.string.customize_scrim_strong
         HomeLayoutStyle.IPAD -> R.string.customize_layout_ipad
+        HomeLayoutStyle.HYBRID -> R.string.customize_layout_hybrid
         HomeLayoutStyle.LIST -> R.string.customize_layout_list
         Side.LEFT -> R.string.customize_side_left
         Side.RIGHT -> R.string.customize_side_right
