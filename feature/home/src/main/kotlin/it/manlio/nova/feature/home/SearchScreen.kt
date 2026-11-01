@@ -56,6 +56,7 @@ import it.manlio.nova.core.design.perform
 internal fun SearchScreen(
     apps: List<AppEntry>,
     actions: HomeActions,
+    commands: SearchCommands,
     onShowAll: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -66,6 +67,7 @@ internal fun SearchScreen(
     LaunchedEffect(Unit) { runCatching { focus.requestFocus() } }
     val results = remember(apps, query) { if (query.isBlank()) emptyList() else AppSearch.search(apps, query) { it.label } }
     val novaLabel = stringResource(R.string.home_search_nova_settings)
+    val calc = remember(query) { Calc.answer(query) }
     val showNova = query.isNotBlank() && (listOf(novaLabel) + NOVA_WORDS).any { AppSearch.score(query, it) != null }
     Box(
         Modifier
@@ -93,6 +95,8 @@ internal fun SearchScreen(
                 } else {
                     if (results.isNotEmpty()) item("h-apps") { SectionTitle(stringResource(R.string.home_search_apps_section)) }
                     items(results, key = { it.key }) { app -> ResultRow(app.label, app, actions) { launch(app, actions, onClose) } }
+                    commandRows(query, commands)
+                    calc?.let { answer -> item("calc") { CalcRow(answer) } }
                     if (showNova) item("nova") { ResultRow(novaLabel, null, actions) { actions.onOpenSettings() } }
                     item(
                         "web",
@@ -103,7 +107,7 @@ internal fun SearchScreen(
                             actions,
                         ) { actions.onWebSearch(query.trim()) }
                     }
-                    if (results.isEmpty() && !showNova) {
+                    if (results.isEmpty() && !showNova && calc == null) {
                         item("empty") { SectionTitle(stringResource(R.string.home_search_empty)) }
                     }
                 }
@@ -160,6 +164,58 @@ private fun SearchField(
     }
 }
 
+/** Comandi di NOVA che si trovano scrivendo: centro di controllo, modifica della Home. */
+internal class SearchCommands(
+    val onControl: (() -> Unit)?,
+    val onEditHome: () -> Unit,
+)
+
+private fun androidx.compose.foundation.lazy.LazyListScope.commandRows(
+    query: String,
+    commands: SearchCommands,
+) {
+    val control = commands.onControl
+    if (control != null && matches(query, CONTROL_WORDS)) item("cmd-control") { CommandRow(R.string.control_open, control) }
+    if (matches(query, EDIT_WORDS)) item("cmd-edit") { CommandRow(R.string.home_edit_enter, commands.onEditHome) }
+}
+
+private fun matches(
+    query: String,
+    words: List<String>,
+) = words.any { AppSearch.score(query, it) != null }
+
+@Composable
+private fun CommandRow(
+    @androidx.annotation.StringRes label: Int,
+    onClick: () -> Unit,
+) = ResultRow(
+    stringResource(label),
+    null,
+    HomeActions(icon = { null }, onLaunch = {
+            _,
+            _,
+        ->
+    }, onToggleFavorite = {}, onOpenSettings = {}),
+    onClick,
+)
+
+/** Risultato di un calcolo o di una conversione: si tocca per copiarlo. */
+@Composable
+private fun CalcRow(answer: String) {
+    val clipboard = androidx.compose.ui.platform.LocalClipboardManager.current
+    val look = LocalHomeLook.current
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
+                clipboard.setText(androidx.compose.ui.text.AnnotatedString(answer))
+            }.padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        BasicText("= $answer", style = TextStyle(look.ink, 26.sp, FontWeight.Light, fontFamily = look.family))
+    }
+}
+
 private fun launch(
     app: AppEntry,
     actions: HomeActions,
@@ -210,6 +266,9 @@ private fun ResultRow(
 private fun panel(dark: Boolean) = if (dark) Color(0xF01D2127) else Color(0xF2F7F6F3)
 
 /** Parole che portano alle Impostazioni di NOVA anche se non c'è il nome intero. */
+private val CONTROL_WORDS =
+    listOf("controllo", "centro di controllo", "torcia", "luminosità", "volume", "wifi", "bluetooth", "non disturbare")
+private val EDIT_WORDS = listOf("modifica", "widget", "cartella", "sposta icone")
 private val NOVA_WORDS = listOf("nova", "personalizza", "tema", "sfondo", "grafica", "aggiornamenti", "impostazioni")
 private val SEARCH_WIDTH = 640.dp
 private val RESULT_ICON = 40.dp

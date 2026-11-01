@@ -29,6 +29,10 @@ class HomeActions(
     val onWebSearch: (String) -> Unit = {},
     /** Widget di altre app; null se il dispositivo non li permette. */
     val widgets: ExternalWidgets? = null,
+    /** Tempo di una città (Open-Meteo); null = senza Meteo. L'app tiene la risposta in cache. */
+    val weather: (suspend (city: String) -> Result<Weather>)? = null,
+    /** Azioni del centro di controllo; null = senza centro di controllo. */
+    val controls: ControlActions? = null,
 )
 
 /**

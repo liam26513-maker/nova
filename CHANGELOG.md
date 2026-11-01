@@ -4,6 +4,18 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Meteo, Pomodoro, centro di controllo e calcolatrice (Fase 1, primo blocco del resto del piano)
+- Richiesta: "Inizia con il resto del piano. E le cose con i limiti trova un modo per togliere questi limiti e hai i miei consensi".
+- **Meteo** (widget «+» → Meteo): scrivi il nome della città, vedi temperatura, minima e massima, un simbolo del tempo. Il limite che c'era (servivano Internet e la posizione) è tolto così: **niente posizione**, solo il nome della città; i dati vengono da Open-Meteo, gratuito e senza account. Si aggiorna al massimo ogni 30 minuti; senza rete mostra l'ultimo tempo conosciuto.
+- **Pomodoro** (widget «+» → Pomodoro): 25 minuti di concentrazione e 5 di pausa, con anello, avvio/pausa e azzeramento. Il timer sopravvive al riavvio. Il conto ogni secondo c'è solo mentre il timer va e la Home è visibile.
+- **Centro di controllo** (pulsante con i quattro riquadri, accanto alle impostazioni; oppure scrivi «torcia» o «controllo» in Cerca):
+  - **Torcia, volume e luminosità** agiscono subito. Per la luminosità Android chiede un permesso (una voce chiara nel pannello: «Concedi il permesso per regolare la luminosità»).
+  - **Wi-Fi, Bluetooth e non disturbare** aprono il pannello giusto di Android: un'app normale non può cambiarli da sola.
+  - **Livello grafico** di NOVA a rotazione: Automatico, Massimo, Bilanciato, Prestazioni.
+  - Scorciatoie a «Modifica la Home» e alle Impostazioni di NOVA.
+- **Cerca** ora fa anche i conti e le conversioni: «12*(3+4)», «15% di 80», «10 km in mi», «100 c in f». Tocchi il risultato per copiarlo. Scrivendo «widget» o «modifica» trovi «Modifica la Home».
+- Le schede (centro di controllo, cartelle, widget) ora le legge meglio TalkBack: ogni voce è un elemento a parte.
+
 ### Aggiornamento dell'app: risolto "percorso apk non consentito"
 - Richiesta: "aggiornamento non riuscito: percorso apk non consentito: …/cache/updates/nova-190.apk".
 - **Risolto:** con Shizuku attivo NOVA scaricava l'aggiornamento nella sua cartella `updates`, ma la regola di sicurezza che controlla dove può stare l'APK non la riconosceva e rifiutava l'installazione. Ora accetta quella cartella (e solo quella).

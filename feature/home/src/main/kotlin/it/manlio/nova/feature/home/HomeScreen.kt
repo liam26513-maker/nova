@@ -16,6 +16,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -85,6 +86,7 @@ fun HomeScreen(
     var menuFor by remember { mutableStateOf<AppEntry?>(null) }
     var editing by rememberSaveable { mutableStateOf(false) }
     var searching by rememberSaveable { mutableStateOf(false) }
+    var control by rememberSaveable { mutableStateOf(false) }
     val latestData by rememberUpdatedState(data)
     val ipadActions =
         remember(onLayoutChange, favorites) {
@@ -105,14 +107,16 @@ fun HomeScreen(
             favoritesState.animateScrollToItem(0)
         }
     }
-    BackHandler(enabled = editing && menuFor == null) { editing = false }
+    BackHandler(enabled = control) { control = false }
+    BackHandler(enabled = editing && menuFor == null && !control) { editing = false }
     BackHandler(enabled = mode == HomeMode.ALL && menuFor == null && !editing && !searching) { mode = HomeMode.FAVORITES }
 
     val tint = backgroundTint(prefs, style)
     val systemDark = isSystemInDarkTheme()
     val look = remember(prefs, systemDark, tint) { prefs.look(systemDark, tint) }
     val swipeDown = rememberSwipeDown(prefs.swipeDownNotifications, actions.onSwipeDown)
-    CompositionLocalProvider(LocalHomeLook provides look) {
+    val openControl: (() -> Unit)? = if (actions.controls != null) ({ control = true }) else null
+    CompositionLocalProvider(LocalHomeLook provides look, LocalOpenControl provides openControl) {
         BoxWithConstraints(Modifier.fillMaxSize().then(swipeDown)) {
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
@@ -144,10 +148,41 @@ fun HomeScreen(
                     }
                 else -> appList()
             }
+            ControlCenter(
+                visible = control,
+                controls = actions.controls,
+                onSettings = {
+                    control = false
+                    actions.onOpenSettings()
+                },
+                onEditHome = {
+                    control = false
+                    editing = true
+                },
+                onClose = { control = false },
+            )
             if (searching) {
                 SearchScreen(
                     visible.orEmpty(),
                     actions,
+                    commands =
+                        SearchCommands(
+                            onControl =
+                                if (actions.controls != null) {
+                                    (
+                                        {
+                                            searching = false
+                                            control = true
+                                        }
+                                    )
+                                } else {
+                                    null
+                                },
+                            onEditHome = {
+                                searching = false
+                                editing = true
+                            },
+                        ),
                     onShowAll = {
                         searching = false
                         mode = HomeMode.ALL
@@ -242,7 +277,12 @@ private fun HomeLayout(
                 }
                 content()
             }
-            if (showSettings) SettingsButton(onOpenSettings, Modifier.padding(top = TOP_MARGIN, end = 8.dp))
+            if (showSettings) {
+                Column(Modifier.padding(top = TOP_MARGIN, end = 8.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    SettingsButton(onOpenSettings)
+                    LocalOpenControl.current?.let { ControlButton(it) }
+                }
+            }
             if (prefs.alphabetSide == Side.RIGHT) alphabet()
         }
     }

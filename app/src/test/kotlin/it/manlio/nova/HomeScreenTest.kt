@@ -41,6 +41,7 @@ import it.manlio.nova.core.design.NovaTokens
 import it.manlio.nova.feature.home.AppEntry
 import it.manlio.nova.feature.home.AppItem
 import it.manlio.nova.feature.home.ClockStyle
+import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.FolderItem
 import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeFont
@@ -50,11 +51,17 @@ import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.IconShape
+import it.manlio.nova.feature.home.Level
+import it.manlio.nova.feature.home.Pomodoro
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
+import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.TextSize
 import it.manlio.nova.feature.home.ThemeMode
+import it.manlio.nova.feature.home.Torch
 import it.manlio.nova.feature.home.WallpaperSource
+import it.manlio.nova.feature.home.Weather
+import it.manlio.nova.feature.home.WeatherKind
 import it.manlio.nova.feature.home.WidgetItem
 import it.manlio.nova.feature.home.WidgetKind
 import org.junit.Assert.assertEquals
@@ -91,6 +98,8 @@ class HomeScreenTest {
         favorites: List<String> = defaultFavorites,
         prefs: HomePrefs = LIST,
         list: List<AppEntry> = apps,
+        controls: ControlActions? = null,
+        weather: (suspend (String) -> Result<Weather>)? = null,
     ) {
         val actions =
             HomeActions(
@@ -102,6 +111,8 @@ class HomeScreenTest {
                 onHide = { hidden += it.label },
                 onRename = { entry, name -> renamed += entry.label to name },
                 onWebSearch = { webSearches += it },
+                controls = controls,
+                weather = weather,
             )
         compose.setContent {
             NovaTheme(NovaTokens.Fallback) {
@@ -566,6 +577,164 @@ class HomeScreenTest {
         render(prefs = HomePrefs())
         compose.onNodeWithContentDescription("Impostazioni di NOVA").performClick()
         assertEquals(listOf("settings"), launched)
+    }
+
+    // ---- Meteo, Pomodoro, centro di controllo, calcolatrice ----
+
+    private val rome = Weather("Roma", 19, 22, 14, WeatherKind.PARTLY, isDay = true)
+
+    @Test
+    fun weather_widget_asks_for_a_city_then_shows_the_weather() {
+        val asked = mutableListOf<String>()
+        layout = HomeLayout(listOf(WidgetItem("w", WidgetKind.WEATHER)))
+        render(prefs = HomePrefs(), weather = { city ->
+            asked += city
+            Result.success(rome)
+        })
+        compose.onNodeWithText("Di quale città vuoi il meteo?").assertExists()
+        compose.onNode(hasSetTextAction()).performTextInput("Roma")
+        compose.onNodeWithText("Salva").performClick()
+        compose.waitForIdle()
+        assertEquals("Roma", layout.items.filterIsInstance<WidgetItem>().single().text)
+        compose.onNodeWithText("19°").assertExists()
+        compose.onNodeWithText("Poco nuvoloso").assertExists()
+        compose.onNodeWithText("↑22°  ↓14°").assertExists()
+        assertEquals(true, asked.all { it == "Roma" })
+        compose.onRoot().captureRoboImage("screenshots/home_ipad_meteo.png")
+    }
+
+    @Test
+    fun weather_widget_says_when_it_fails_and_retries() {
+        var calls = 0
+        layout = HomeLayout(listOf(WidgetItem("w", WidgetKind.WEATHER, text = "Roma")))
+        render(prefs = HomePrefs(), weather = {
+            calls++
+            if (calls == 1) Result.failure(java.io.IOException("no")) else Result.success(rome)
+        })
+        compose.onNodeWithText("Meteo non disponibile").assertExists()
+        compose.onNodeWithText("Meteo non disponibile").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("19°").assertExists()
+    }
+
+    @Test
+    fun pomodoro_starts_pauses_and_resets_and_is_saved_in_the_layout() {
+        layout = HomeLayout(listOf(WidgetItem("p", WidgetKind.POMODORO)))
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("25:00").assertExists()
+        compose.onNodeWithContentDescription("Avvia").performClick()
+        compose.waitForIdle()
+        assertEquals(true, Pomodoro.decode(layout.items.filterIsInstance<WidgetItem>().single().text).running)
+        compose.onNodeWithContentDescription("Pausa").performClick()
+        compose.waitForIdle()
+        assertEquals(false, Pomodoro.decode(layout.items.filterIsInstance<WidgetItem>().single().text).running)
+        compose.onNodeWithContentDescription("Azzera").performClick()
+        compose.waitForIdle()
+        assertEquals(Pomodoro(), Pomodoro.decode(layout.items.filterIsInstance<WidgetItem>().single().text))
+    }
+
+    private class FakeTorch : Torch {
+        val state = kotlinx.coroutines.flow.MutableStateFlow(false)
+        override val on = state
+
+        override fun toggle() {
+            state.value = !state.value
+        }
+    }
+
+    @Test
+    fun control_center_opens_panels_toggles_the_torch_and_moves_the_sliders() {
+        val panels = mutableListOf<SystemPanel>()
+        val torch = FakeTorch()
+        var vol = 0.3f
+        var bri = 0.5f
+        var cycled = 0
+        val controls =
+            ControlActions(
+                openPanel = { panels += it },
+                torch = torch,
+                volume = Level({ vol }, { vol = it }),
+                brightness = Level({ bri }, { bri = it }),
+                graphicsLabel = { "Bilanciato" },
+                onCycleGraphics = { cycled++ },
+            )
+        render(prefs = HomePrefs(), controls = controls)
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.onRoot().captureRoboImage("screenshots/home_centro_di_controllo.png")
+        compose.onNodeWithText("Wi-Fi e rete").performClick()
+        compose.onNodeWithText("Bluetooth").performClick()
+        compose.onNodeWithText("Non disturbare").performClick()
+        assertEquals(listOf(SystemPanel.INTERNET, SystemPanel.BLUETOOTH, SystemPanel.DND), panels)
+        compose.onNodeWithText("Torcia").performClick()
+        assertEquals(true, torch.state.value)
+        compose.onNodeWithText("Bilanciato").performClick()
+        assertEquals(1, cycled)
+        compose.onNodeWithContentDescription("Volume").performSemanticsAction(SemanticsActions.SetProgress) { it(0.8f) }
+        assertEquals(0.8f, vol, 0.001f)
+        compose.onNodeWithContentDescription("Luminosità").performSemanticsAction(SemanticsActions.SetProgress) { it(0.9f) }
+        assertEquals(0.9f, bri, 0.001f)
+    }
+
+    @Test
+    fun control_center_asks_for_the_brightness_permission_when_it_is_missing() {
+        var asked = 0
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, brightness = null, onGrantBrightness = { asked++ }))
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Concedi il permesso per regolare la luminosità").performClick()
+        assertEquals(1, asked)
+    }
+
+    @Test
+    fun control_center_closes_with_back_and_its_button_exists_only_with_controls() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithContentDescription("Centro di controllo").assertDoesNotExist()
+    }
+
+    @Test
+    fun control_center_back_closes_it_and_edit_home_starts_editing() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.runOnUiThread { compose.activity.onBackPressedDispatcher.onBackPressed() }
+        compose.waitForIdle()
+        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Centro di controllo").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Fine").assertExists()
+    }
+
+    @Test
+    fun search_calculates_converts_and_finds_commands() {
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNode(hasSetTextAction()).performTextInput("12*(3+4)")
+        compose.waitForIdle()
+        compose.onNodeWithText("= 84").assertExists()
+        compose.onNode(hasSetTextAction()).performTextReplacement("10 km in mi")
+        compose.waitForIdle()
+        compose.onNodeWithText("= 6.213712 mi").assertExists()
+        compose.onNode(hasSetTextAction()).performTextReplacement("torcia")
+        compose.waitForIdle()
+        compose.onAllNodesWithText("Centro di controllo").onLast().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+    }
+
+    @Test
+    fun search_command_edit_home() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Cerca app").performClick()
+        compose.waitForIdle()
+        compose.onNode(hasSetTextAction()).performTextInput("widget")
+        compose.waitForIdle()
+        compose.onAllNodesWithText("Modifica la Home").onLast().performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Fine").assertExists()
     }
 
     private fun fakeIcon(label: String): ImageBitmap {
