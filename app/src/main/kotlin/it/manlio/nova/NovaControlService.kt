@@ -178,7 +178,8 @@ class NovaControlService : AccessibilityService() {
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, // con il fuoco: così Indietro arriva a noi
+                // Senza FLAG_NOT_FOCUSABLE: la finestra ha il fuoco e Indietro arriva a noi.
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 PixelFormat.TRANSLUCENT,
             )
         runCatching { windows.addView(host, params) }
