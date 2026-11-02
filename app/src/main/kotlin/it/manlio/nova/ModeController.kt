@@ -35,6 +35,9 @@ class ModeController(
     /** Quante app ha chiuso il Turbo all'ultimo ingresso (per dirlo all'utente). */
     private var turboClosed = 0
 
+    /** Cosa fa la modalità, voce per voce (scelto in Impostazioni → Modalità Gaming). */
+    val options = ModeOptions(File(app.filesDir, "mode-options.properties"))
+
     val engine = ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")))
 
     fun isActive(mode: ModeDefinition): Boolean = engine.active.value?.modeId == mode.id
@@ -55,7 +58,8 @@ class ModeController(
         scope.launch {
             val on = !isActive(mode)
             if (on) {
-                val report = engine.enter(mode)
+                // Solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
+                val report = engine.enter(mode.copy(actions = mode.actions.filter(options::enabled)))
                 say(summary(report))
             } else {
                 val report = engine.exit()
@@ -115,11 +119,14 @@ class ModeController(
     }
 
     private fun summary(report: EnterReport): String {
+        val hint = context.getString(if (options.overlayInGames) R.string.mode_exit_overlay else R.string.mode_exit_home)
+        val done = report.applied.joinToString(", ") { context.getString(label(it)) }
+        val turbo = if (ModeAction.TURBO in report.applied) " " + context.getString(R.string.mode_turbo_closed, turboClosed) else ""
         val missing = report.skipped + report.failed
-        if (missing.isEmpty()) return context.getString(R.string.mode_on, turboClosed)
+        if (missing.isEmpty()) return context.getString(R.string.mode_on, done) + turbo + " " + hint
         val names = missing.joinToString(", ") { context.getString(label(it.first)) }
         val why = missing.map { it.second }.distinct().joinToString("; ")
-        return context.getString(R.string.mode_on_partial, names, why)
+        return context.getString(R.string.mode_on_partial, done, names, why) + turbo + " " + hint
     }
 
     private fun label(action: ModeAction): Int =

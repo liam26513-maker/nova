@@ -4,6 +4,17 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Modalità Gaming: più leggera, con un interruttore per ogni voce (per far sparire lo scatto)
+- Richiesta: "Metto come esempio il gioco brawlstars ... l'esito non è positivo perché laggava (cosa da far sparire assolutamente) e non prendeva bene i comandi".
+- **Cosa non so, e lo dico:** non posso misurare Brawl Stars dal cloud, quindi non so *quale* delle cose che la modalità cambia lo faceva scattare (potrebbe anche scattare da solo su questo tablet: ti chiedo una prova di confronto, sotto). Invece di tirare a indovinare, ho tolto ciò che poteva pesare e ti ho dato il modo di trovare il colpevole in due prove.
+- **Tolto di serie:**
+  - **Il livello trasparente sul bordo alto** (la striscia della tendina sopra le altre app): durante la Gaming non c'è più, quindi nessun livello di NOVA sopra il gioco e il bordo alto è tutto del gioco. Era il sospettato principale per i comandi che non rispondevano bene e per lo scatto. Per uscire dalla modalità: Home → tira giù dall'angolo in alto a destra → Altro → Modalità Gaming. Se ti serve la tendina dentro il gioco, la riaccendi (vedi sotto).
+  - **Turbo** e **pausa della sincronizzazione**: ora sono spenti di serie (non è detto che aiutino, e non voglio rischiare di peggiorare). Li accendi tu.
+- **Resta acceso di serie, perché non può pesare sul gioco:** grafica di NOVA (riguarda solo l'aspetto di NOVA), Non disturbare, rotazione bloccata com'è, schermo acceso.
+- **Interruttori:** Impostazioni di NOVA → **Modalità Gaming**: una voce per ogni cosa che fa la modalità, più «Tendina di NOVA sopra i giochi». Cambi una voce e riprovi.
+- **Prova di confronto che mi serve (3 minuti):** 1) gioca senza la modalità; 2) gioca con la modalità così com'è; 3) se ancora scatta, spegni tutte le voci tranne una e riprova, finché trovi quella che fa la differenza. Dimmi cosa vedi e correggo il vero colpevole. Se scatta anche al punto 1, è il gioco su questo tablet: allora la modalità può solo non peggiorare, e cercheremo il ridimensionamento della risoluzione per Brawl Stars (richiede di sapere quale gioco apri: passo successivo con l'attivazione automatica).
+- L'avviso all'ingresso ora elenca solo ciò che è stato davvero fatto.
+
 ### Modalità Gaming: corretto lo schermo che andava in verticale; ora fa più cose, e le dice
 - Richiesta: "Non mi sembra che cambi tanto e poi appena la attivo la schermata si mette in verticale senza mettersi in orizzontale nella home".
 - **Errore mio, corretto:** per «bloccare la rotazione» spegnevo solo la rotazione automatica, ma Android allora torna a un orientamento salvato a parte, che sul tuo tablet è verticale. Ora **salvo l'orientamento in cui sei** (per te: orizzontale) e blocco quello; all'uscita rimetto tutti e due i valori com'erano. Anche la Home resta in orizzontale.

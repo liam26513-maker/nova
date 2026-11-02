@@ -20,6 +20,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Nessuna richiesta di accesso a Internet nelle informazioni dell'app.
 
 ## Modalità Gaming di base (Fase 3, primo passo)
+- [ ] **Confronto su un gioco che scattava (es. Brawl Stars):** 1) senza modalità; 2) con la modalità di serie; 3) se scatta ancora, Impostazioni di NOVA → Modalità Gaming: spegni le voci una alla volta e riprova. Annota quando lo scatto sparisce. Durante la Gaming il bordo alto è del gioco (nessuna striscia di NOVA); dalla Home si esce con la tendina dall'angolo in alto a destra.
 - [ ] Tendina → Altro → «Modalità Gaming» → tocca: compare un avviso («Modalità Gaming attiva…» oppure «…ma non ho potuto: … (serve Shizuku attivo)»). La riga dice «Sì».
 - [ ] **Rotazione:** sei in orizzontale sulla Home, attivi la modalità: lo schermo **resta in orizzontale** (non va in verticale) e non ruota se inclini il tablet; all'uscita la rotazione automatica torna com'era.
 - [ ] Lo schermo non si spegne da solo per 30 minuti mentre la modalità è attiva (poi torna il tempo di prima). La sincronizzazione degli account è in pausa (Impostazioni di Android → Account → «Sincronizza automaticamente i dati» spento) e torna accesa all'uscita.

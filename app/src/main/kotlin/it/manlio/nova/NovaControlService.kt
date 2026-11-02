@@ -38,6 +38,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.ControlCenterOverlay
 import it.manlio.nova.feature.home.ControlSheetState
@@ -45,6 +46,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
@@ -80,6 +84,22 @@ class NovaControlService : AccessibilityService() {
             }
         runCatching { accessibilityButtonController.registerAccessibilityButtonCallback(button) }
         app.log.i(LOG_TAG, "servizio collegato, striscia ${if (strip != null) "creata" else "NON creata"}")
+        // Durante la Modalità Gaming la striscia è un livello in più sopra il gioco (e prende il tocco in quella fascia): si toglie
+        // e si rimette all'uscita, a meno che l'utente la voglia (Impostazioni → Modalità Gaming).
+        // Per uscire dalla modalità resta la tendina della Home.
+        if (app.safeModeReason == null) {
+            scope.watchGaming(app) { suppress ->
+                if (!suppress) {
+                    addStrip()
+                } else {
+                    strip?.let { runCatching { windows.removeView(it) } }
+                    strip = null
+                    stripTouch?.recycle()
+                    stripTouch = null
+                    app.log.i(LOG_TAG, "striscia tolta durante la Modalità Gaming")
+                }
+            }
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -321,4 +341,14 @@ private object ChoreographerClock : MonotonicFrameClock {
             Choreographer.getInstance().postFrameCallback(callback)
             continuation.invokeOnCancellation { Choreographer.getInstance().removeFrameCallback(callback) }
         }
+}
+
+/** Dice quando la striscia va tolta (vero) o rimessa (falso): modalità Gaming attiva e tendina sopra i giochi non voluta. */
+private fun CoroutineScope.watchGaming(
+    app: NovaApp,
+    onChange: (suppress: Boolean) -> Unit,
+) = launch {
+    combine(app.modes.engine.active, app.modes.options.values) { active, _ ->
+        active?.modeId == Modes.GAMING.id && !app.modes.options.overlayInGames
+    }.distinctUntilChanged().collect(onChange)
 }

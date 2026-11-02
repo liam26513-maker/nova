@@ -62,6 +62,7 @@ fun SettingsScreen(
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
+            CAT_GAMING -> performance?.let { GamingSection(backdrop, it.modeOptions) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
                 val context = androidx.compose.ui.platform.LocalContext.current
@@ -91,6 +92,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     val updates = stringResource(R.string.updates_title)
     val tools = stringResource(R.string.system_title)
     val performance = stringResource(R.string.perf_title)
+    val gaming = stringResource(R.string.gaming_title)
     val status = stringResource(R.string.status_title)
     val perf =
         if (withPerformance) {
@@ -100,14 +102,15 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
         } else {
             emptyList()
         }
-    return remember(improve, graphics, device, home, updates, tools, status, performance, withPerformance) {
+    val game = if (withPerformance) listOf(SidebarEntry(CAT_GAMING, gaming, SidebarGlyph.GRID, Color(0xFFE0603A))) else emptyList()
+    return remember(improve, graphics, device, home, updates, tools, status, performance, withPerformance, gaming) {
         listOf(
             SidebarEntry(CAT_IMPROVE, improve, SidebarGlyph.SPARKLE, Color(0xFF7B68D8)),
             SidebarEntry(CAT_GRAPHICS, graphics, SidebarGlyph.LAYERS, Color(0xFF2FA39A)),
             SidebarEntry(CAT_DEVICE, device, SidebarGlyph.TABLET, Color(0xFF6B7684)),
             SidebarEntry(CAT_HOME, home, SidebarGlyph.HOUSE, Color(0xFFE0922F)),
             SidebarEntry(CAT_UPDATES, updates, SidebarGlyph.DOWNLOAD, Color(0xFF3B8BD4)),
-        ) + perf +
+        ) + perf + game +
             listOf(
                 SidebarEntry(CAT_TOOLS, tools, SidebarGlyph.SLIDERS, Color(0xFF8A8F98)),
                 SidebarEntry(CAT_STATUS, status, SidebarGlyph.CHECK, Color(0xFF3FA34D)),
@@ -122,6 +125,7 @@ private const val CAT_HOME = "home"
 private const val CAT_UPDATES = "updates"
 private const val CAT_TOOLS = "tools"
 private const val CAT_PERFORMANCE = "performance"
+private const val CAT_GAMING = "gaming"
 private const val CAT_STATUS = "status"
 
 @Composable

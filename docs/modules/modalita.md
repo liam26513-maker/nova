@@ -25,6 +25,12 @@ Le azioni che toccano le impostazioni sono in `app/ModeSettings`. L'avviso all'i
 
 Entrata e uscita: tendina di controllo → **Altro → Modalità Gaming** (`HomeControls.gaming()`). Un avviso a schermo dice com'è andata. `ModeController.start()` gira all'avvio dell'app e a ogni `HomeActivity.onStart`.
 
+## Cosa fa la modalità, voce per voce (`ModeOptions`)
+
+`app/ModeOptions` (file `filesDir/mode-options.properties`) e la schermata `GamingSection` (Impostazioni → Modalità Gaming) permettono di accendere/spegnere ogni `ModeAction` e la «tendina sopra i giochi». Predefiniti prudenti (`DEFAULT_ON`): grafica di NOVA, Non disturbare, rotazione, schermo acceso. **Spenti di serie:** `TURBO`, `PAUSE_SYNC`. `ModeController.toggle` passa al motore solo le azioni accese. Serve a isolare in poche prove cosa fa scattare un gioco (segnalazione su Brawl Stars con la 0.1.360).
+
+**Striscia della tendina durante la Gaming:** `NovaControlService.watchGaming` toglie la finestra trasparente del bordo alto quando la Gaming è attiva e `overlayInGames` è falso, e la rimette all'uscita. Ipotesi (non misurata): un livello in più sopra il gioco costa composizione e ruba il tocco nella fascia alta. L'uscita resta dalla tendina della Home (angolo in alto a destra).
+
 ## Uscite di emergenza (stato)
 
 Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato o dall'angolo); spegnimento automatico dopo 6 ore; ripristino al riavvio dell'app; tasto di accensione tenuto ~10 s (riavvio hardware, sempre disponibile).
