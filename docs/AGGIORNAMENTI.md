@@ -13,6 +13,11 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
   - la versione nel file è quella attesa;
   - **la firma è identica** a quella dell'app installata.
 
+## Tastiera di NOVA (allegata alla release dell'app)
+- Asset `nova-tastiera-<versionCode>.apk` e `nova-tastiera-<versionCode>.apk.sha256` (stesso `versionCode` dell'app della release), firmati con la stessa chiave; pacchetto `it.manlio.nova.keyboard`.
+- Il job `tastiera` di `release.yml` è **facoltativo**: se non riesce, l'app esce lo stesso. Prima di allegarla controlla firma, assenza di permessi Internet e peso (`tools/check_keyboard.py`).
+- Il nome non corrisponde a `nova-<versionCode>.apk`, quindi `UpdatePlanner` non la scambia mai per l'app. Per ora si installa a mano dalla pagina Releases; l'aggiornamento dall'app è un passo successivo.
+
 ## Configurazione (aggiornamento a caldo)
 - Release con tag `config-vX.Y.Z`.
 - Asset `nova-config.json`: documento completo `{ "meta": …, "brand": …, "theme": …, "modules": … }`, con `meta.version` uguale a `X.Y.Z`.
@@ -34,7 +39,7 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 | Workflow | Quando parte | Cosa pubblica |
 |---|---|---|
-| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti). Quattro job: `versione` → `build` (firmata, **senza test**: girano già in `ci.yml`) e `ripristino` (in parallelo) → `pubblica`. Circa 4 minuti | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente; note dal `CHANGELOG.md` |
+| `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti). Cinque job: `versione` → `build` (firmata, **senza test**: girano già in `ci.yml`), `ripristino` e `tastiera` (in parallelo, facoltativi) → `pubblica`. L'app: circa 4 minuti; la tastiera, in parallelo, circa 12 | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente e `nova-tastiera-<code>.apk` + `.sha256`; note dal `CHANGELOG.md` |
 | `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
 | `rollback.yml` | dal tablet: Impostazioni → Aggiornamenti → "Torna a una versione precedente" (oppure a mano da Actions) | ricompila il codice di un tag passato con un `versionCode` più alto, così si installa sopra |
 
