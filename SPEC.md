@@ -601,6 +601,8 @@ Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni 
 
 ### 10.1 Base
 
+> **Stato:** base inserita in `keyboard/` (fork di HeliBoard, solo ARM, dizionari it/en, nessun Internet verificato in CI). Non ancora pubblicata nelle release né installabile da NOVA. Dettagli e cose mancanti: `docs/modules/tastiera.md`.
+
 - App separata `keyboard/`: **fork di HeliBoard** (open source, GPL-3.0, derivata dalla tastiera AOSP, dizionari e correzione maturi). Valutare FlorisBoard solo se HeliBoard risultasse inadatto. Rispettare la licenza: il codice della tastiera resta GPL-3.0; documentarlo in `docs/LICENZE.md`.
 - **Nessun permesso internet** nel manifest della tastiera (verificato in CI con un test che legge il manifest unito).
 - Tema sincronizzato con NOVA: la tastiera legge i token del tema tramite un `ContentProvider` di NOVA in sola lettura.

@@ -1,0 +1,2 @@
+rootProject.name = "tastiera-nova"
+include ':app'
