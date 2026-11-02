@@ -76,6 +76,55 @@ class SystemCommandTest {
     }
 }
 
+class RestrictedSettingsTest {
+    @get:Rule val tmp = TemporaryFolder()
+
+    private class Shell : CommandRunner {
+        val sent = mutableListOf<SystemCommand>()
+        var fail = false
+
+        override suspend fun run(command: SystemCommand): ShellResult {
+            sent += command
+            return if (fail) ShellResult(1, "errore") else ShellResult(0, "")
+        }
+    }
+
+    @Test
+    fun `the command allows restricted settings only for NOVA itself`() {
+        assertEquals(
+            listOf("appops", "set", "it.manlio.nova", "ACCESS_RESTRICTED_SETTINGS", "allow"),
+            SystemCommand.SetRestrictedSettings("it.manlio.nova", true).argv,
+        )
+        assertEquals("default", SystemCommand.SetRestrictedSettings("it.manlio.nova", false).argv.last())
+        listOf("com.other.app", "it.manlio.nova.keyboard", "android", "it.manlio.nova allow", "").forEach {
+            assertTrue(it, runCatching { SystemCommand.SetRestrictedSettings(it, true) }.isFailure)
+        }
+    }
+
+    @Test
+    fun `unlocking is logged once and reverted to the default`() =
+        runTest {
+            val shell = Shell()
+            val log = SystemChangeLog(File(tmp.root, "restricted.json"), shell)
+            assertTrue(log.allowRestrictedSettings("it.manlio.nova").ok)
+            assertTrue(log.allowRestrictedSettings("it.manlio.nova").ok) // un secondo tocco non duplica la voce
+            assertEquals(1, log.entries().filterIsInstance<SystemChange.RestrictedSettings>().size)
+            shell.sent.clear()
+            assertEquals(0, log.revertAll())
+            assertEquals(listOf<SystemCommand>(SystemCommand.SetRestrictedSettings("it.manlio.nova", false)), shell.sent)
+            assertTrue(log.entries().isEmpty())
+        }
+
+    @Test
+    fun `a refused unlock is not recorded`() =
+        runTest {
+            val shell = Shell().also { it.fail = true }
+            val log = SystemChangeLog(File(tmp.root, "refused.json"), shell)
+            assertTrue(!log.allowRestrictedSettings("it.manlio.nova").ok)
+            assertTrue(log.entries().isEmpty())
+        }
+}
+
 class QuickToggleCommandTest {
     @Test
     fun `every toggle has a fixed command for on and for off`() {

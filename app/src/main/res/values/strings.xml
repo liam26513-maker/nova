@@ -227,9 +227,11 @@
     <string name="overlay_service_label">Centro di controllo di NOVA</string>
     <string name="overlay_service_description">Mostra il centro di controllo di NOVA sopra le altre app quando tiri giù dall\'angolo in alto a destra. Non legge né registra ciò che c\'è sullo schermo e non tocca nulla al posto tuo.</string>
     <string name="overlay_strip_failed">NOVA non è riuscita a mettere il gesto sulla barra di stato. Spegni e riaccendi «Centro di controllo di NOVA» nell\'accessibilità.</string>
+    <string name="overlay_unlocked">Sbloccato. Ora accendi «Centro di controllo di NOVA».</string>
+    <string name="overlay_unlock_failed">Non sono riuscita a sbloccarlo da sola. Apri Impostazioni di Android → App → NOVA → ⋮ → «Consenti impostazioni con restrizioni».</string>
     <string name="home_overlay">Centro di controllo sopra le altre app</string>
     <string name="home_overlay_on">Attivo: tira giù dall\'angolo in alto a destra, in qualunque app</string>
-    <string name="home_overlay_off">Non attivo: tocca e accendi «Centro di controllo di NOVA» nell\'accessibilità</string>
+    <string name="home_overlay_off">Non attivo: tocca (con Shizuku si sblocca da solo) e accendi «Centro di controllo di NOVA»</string>
     <string name="more_notifications">Notifiche di Android</string>
     <string name="more_quick_settings">Impostazioni rapide di Android</string>
     <string name="more_rotation">Rotazione automatica</string>

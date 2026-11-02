@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Sblocco in un tocco del centro di controllo sopra le altre app (con Shizuku)
+- Richiesta: "Non me la fa attivare e mi dice adesso con limitazioni" / "Fai il pulsante con Shizuku non farmi rifare questo passaggio ogni volta".
+- **Il problema:** Android blocca come «impostazione con restrizioni» l'accensione del servizio di accessibilità di un'app installata a mano.
+- **Ora, con Shizuku attivo:** Impostazioni di NOVA → Home → **«Centro di controllo sopra le altre app»** (un tocco): NOVA toglie da sola il blocco (`appops set … ACCESS_RESTRICTED_SETTINGS allow`, solo per sé stessa), te lo conferma con un avviso e ti porta alle impostazioni di accessibilità, dove ti resta solo da accendere «Centro di controllo di NOVA». Niente più giro dai tre puntini, e puoi ripeterlo quando vuoi (dopo un aggiornamento, se serve).
+- **Se non riesce** (o senza Shizuku): lo dice e indica la strada a mano (App → NOVA → ⋮ → «Consenti impostazioni con restrizioni»).
+- **Sicurezza:** comando fisso e tipizzato in `core/system`; il pacchetto deve essere **esattamente quello di NOVA** (qualunque altra app è rifiutata); la modifica è registrata e si annulla con «Annulla tutte le modifiche» (che rimette il blocco: basta toccare di nuovo la riga).
+
 ### Corretto: l'app si chiudeva dopo aver tirato giù la tendina sopra le altre app
 - Richiesta: "Mi dice che si continua ad interrompere l'app nova".
 - **Causa:** nella versione 0.1.280 la tendina sopra le altre app, appena lasciavi il dito, partiva con un'animazione che ha bisogno di un «orologio dei fotogrammi». Il servizio non ne aveva uno (la Home sì): Android lo considerava un errore e chiudeva NOVA a ogni gesto.

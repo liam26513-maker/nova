@@ -467,7 +467,7 @@ Implementate tutte e tre le disposizioni di §6.1: **Griglia** (stile iPadOS, **
 
 ### 7.1 Ponte Shizuku
 
-- `core/system` espone solo **comandi in lista consentita**, tipizzati (niente shell libera da input utente): `disablePackage`, `enablePackage`, `forceStop`, `setStandbyBucket`, `setAppOps`, `putSetting(namespace, key, value)`, `wmDensity`, `wmSize`, `installApk`, `setToggle(QuickToggle, on)` (Wi-Fi, Bluetooth, aereo, non disturbare, tema scuro, posizione, risparmio energetico/dati, luce notturna, inversione colori: insieme chiuso, ognuno con il suo comando fisso, registrato con lo stato precedente), `gameMode`, `logcatForPackage`, `setPackageNetworking`, ecc.
+- `core/system` espone solo **comandi in lista consentita**, tipizzati (niente shell libera da input utente): `disablePackage`, `enablePackage`, `forceStop`, `setStandbyBucket`, `setAppOps`, `putSetting(namespace, key, value)`, `wmDensity`, `wmSize`, `installApk`, `setRestrictedSettings(solo il pacchetto di NOVA, allow)` (sblocco in un tocco del servizio di accessibilità), `setToggle(QuickToggle, on)` (Wi-Fi, Bluetooth, aereo, non disturbare, tema scuro, posizione, risparmio energetico/dati, luce notturna, inversione colori: insieme chiuso, ognuno con il suo comando fisso, registrato con lo stato precedente), `gameMode`, `logcatForPackage`, `setPackageNetworking`, ecc.
 - Ogni modifica di sistema viene **registrata con il valore precedente** e reversibile da "Ripristina tutto" (impostazioni + modalità provvisoria).
 - Impostazioni critiche protette: mai disattivare package nella lista nera (launcher di sistema, impostazioni, installer, SystemUI, servizi telefonici, tastiera di sistema finché la nuova non è verificata, Shizuku, servizi di rete).
 
