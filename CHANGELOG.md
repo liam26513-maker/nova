@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina sopra le altre app: due cause per cui spariva subito, e un tasto di scorta
+- Richiesta: "Il centro di controllo non funziona in altre app".
+- **Causa 1:** quando Android apre la sua tendina insieme alla nostra, il sistema segnala un «cambio di finestra» da SystemUI. NOVA lo scambiava per «è arrivata un'altra app davanti» e richiudeva la propria tendina un attimo dopo averla aperta (e, avendo anche richiuso quella di Android, non si vedeva niente). **Ora** quel segnale viene ignorato.
+- **Causa 2:** quando Android riconosce a sua volta il gesto dalla barra di stato, di solito **annulla** il tocco alle altre finestre. NOVA lo trattava come un rilascio e richiudeva. **Ora**, se il tocco viene annullato mentre il dito stava scendendo, la tendina si **apre comunque**.
+- **Tasto di scorta, senza gesto:** NOVA chiede ad Android il **pulsante di accessibilità**. In Impostazioni di Android → Accessibilità → «Centro di controllo di NOVA», scegli come scorciatoia il **Pulsante di accessibilità** (compare un tasto tondo, o nella barra di navigazione, che puoi spostare): un tocco apre e chiude la tendina in qualunque app, anche nei giochi.
+- **Per capire cosa succede:** il servizio ora scrive nel registro interno cosa fa (striscia creata o no, gesto riconosciuto, tocco annullato dal sistema, pulsante usato). Esce soltanto con «Ripara», filtrato, e solo se lo invii tu.
+
 ### Sblocco in un tocco del centro di controllo sopra le altre app (con Shizuku)
 - Richiesta: "Non me la fa attivare e mi dice adesso con limitazioni" / "Fai il pulsante con Shizuku non farmi rifare questo passaggio ogni volta".
 - **Il problema:** Android blocca come «impostazione con restrizioni» l'accensione del servizio di accessibilità di un'app installata a mano.
