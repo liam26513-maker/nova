@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Corretto: l'app si chiudeva dopo aver tirato giù la tendina sopra le altre app
+- Richiesta: "Mi dice che si continua ad interrompere l'app nova".
+- **Causa:** nella versione 0.1.280 la tendina sopra le altre app, appena lasciavi il dito, partiva con un'animazione che ha bisogno di un «orologio dei fotogrammi». Il servizio non ne aveva uno (la Home sì): Android lo considerava un errore e chiudeva NOVA a ogni gesto.
+- **Ora:** il servizio ha il suo orologio agganciato allo schermo, e in più la tendina, se mai si trovasse senza orologio, arriva in fondo di colpo invece di far chiudere l'app.
+
 ### Tendina: solo la nostra, che segue il dito, con funzioni che si attivano subito
 - Richiesta: "1. Quando tiro giu la tendina di nova si tira giu anche quella di android, non va bene, quella di android non ci deve essere. 2. La sensazione che da non va bene e' troppo a molla, fa fatica a scendere. 3. Non ci sono tutte le funzionalità che ci sono in quella di android. 4. Non C'è fluidità e se clicco qualche funzione non si attiva subito dalla tendina di nova e vorrei che fosse cosi".
 - **1. Quella di Android non deve esserci.** Quando NOVA apre la sua tendina, chiede ad Android di richiudere la sua (ripetutamente mentre il dito scende e subito dopo il rilascio), quindi non resta visibile. Sulla Home, **scorrere giù da qualsiasi punto apre la tendina di NOVA** e non più le notifiche di Android (la voce in Personalizza la Home ora si chiama «Scorri giù per la tendina»). Le notifiche di Android restano raggiungibili solo da «Altro» → «Notifiche di Android».

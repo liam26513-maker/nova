@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
+import android.view.Choreographer
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -20,6 +21,7 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
  * Il centro di controllo sopra le altre app (SPEC §2.2, §6.8). Android non lascia sostituire la tendina di sistema:
@@ -54,7 +57,7 @@ import kotlinx.coroutines.cancel
 class NovaControlService : AccessibilityService() {
     private val windows by lazy { getSystemService(WindowManager::class.java) }
     private val handler = Handler(Looper.getMainLooper())
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + ChoreographerClock)
     private var strip: View? = null
     private var panel: PanelHost? = null
     private var controls: HomeControls? = null
@@ -283,4 +286,17 @@ class NovaControlService : AccessibilityService() {
             return enabled.split(':').any { ComponentName.unflattenFromString(it) == me }
         }
     }
+}
+
+/**
+ * L'orologio dei fotogrammi per le animazioni fuori da una finestra Compose: il servizio non ne ha uno (la Home sì), e senza
+ * le animazioni della tendina, che si fermano e si aprono con una molla, lanciano un errore. Si aggancia al ritmo dello schermo.
+ */
+private object ChoreographerClock : MonotonicFrameClock {
+    override suspend fun <R> withFrameNanos(onFrame: (Long) -> R): R =
+        suspendCancellableCoroutine { continuation ->
+            val callback = Choreographer.FrameCallback { nanos -> continuation.resumeWith(runCatching { onFrame(nanos) }) }
+            Choreographer.getInstance().postFrameCallback(callback)
+            continuation.invokeOnCancellation { Choreographer.getInstance().removeFrameCallback(callback) }
+        }
 }
