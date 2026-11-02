@@ -1,5 +1,6 @@
 package it.manlio.nova
 
+import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
@@ -69,11 +70,24 @@ class NovaControlService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         addStrip()
+        // Il pulsante di accessibilità di Android (se lo si sceglie come scorciatoia) apre la tendina senza il gesto.
+        val button =
+            object : AccessibilityButtonController.AccessibilityButtonCallback() {
+                override fun onClicked(controller: AccessibilityButtonController) {
+                    app.log.i(LOG_TAG, "pulsante di accessibilità")
+                    if (panel != null) requestClose() else openPanel()?.settle(true)
+                }
+            }
+        runCatching { accessibilityButtonController.registerAccessibilityButtonCallback(button) }
+        app.log.i(LOG_TAG, "servizio collegato, striscia ${if (strip != null) "creata" else "NON creata"}")
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        // Cambia la finestra davanti (un'app aperta da una voce, Home, recenti): la tendina non ha più senso.
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.packageName != packageName) requestClose()
+        // Cambia la finestra davanti (un'app aperta da una voce, Home, recenti): la tendina non ha più senso. Non vale per la
+        // tendina di Android (SystemUI), che si apre insieme alla nostra durante il gesto e che chiudiamo noi: scambiarla per
+        // «un'altra finestra davanti» richiudeva la tendina di NOVA un attimo dopo averla aperta.
+        val other = event.packageName != packageName && event.packageName != SYSTEM_UI
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && other) requestClose()
     }
 
     override fun onInterrupt() = requestClose()
@@ -96,14 +110,18 @@ class NovaControlService : AccessibilityService() {
     @SuppressLint("ClickableViewAccessibility") // la striscia è solo un gesto: non ha un'azione da leggere con TalkBack
     private fun addStrip() {
         if (strip != null) return
-        val touch = StripTouch(ViewConfiguration.get(this).scaledTouchSlop.toFloat(), ::openPanel, ::hideAndroidShade)
+        val slop = ViewConfiguration.get(this).scaledTouchSlop.toFloat()
+        val touch = StripTouch(slop, ::openPanel, ::hideAndroidShade) { app.log.i(LOG_TAG, it) }
         val view = View(this).apply { setOnTouchListener(touch) }
         // Sempre attiva, anche con la barra di stato nascosta (giochi, video): lì il tocco dall'alto è proprio il modo di arrivare qui.
         runCatching { windows.addView(view, stripParams()) }
             .onSuccess {
                 strip = view
                 stripTouch = touch
-            }.onFailure { Toast.makeText(this, R.string.overlay_strip_failed, Toast.LENGTH_LONG).show() }
+            }.onFailure {
+                app.log.e(LOG_TAG, "striscia non creata", it)
+                Toast.makeText(this, R.string.overlay_strip_failed, Toast.LENGTH_LONG).show()
+            }
     }
 
     /**
@@ -195,6 +213,7 @@ class NovaControlService : AccessibilityService() {
             panel = host
             host.resume()
         } else {
+            app.log.e(LOG_TAG, "finestra del pannello non creata", added.exceptionOrNull())
             controls?.stop()
         }
         return sheet.takeIf { added.isSuccess }
@@ -271,6 +290,8 @@ class NovaControlService : AccessibilityService() {
 
     companion object {
         private const val STRIP_MIN_HEIGHT_DP = 24
+        private const val LOG_TAG = "tendina"
+        private const val SYSTEM_UI = "com.android.systemui"
         private const val PANEL_TRAVEL_DP = 520
         private const val SHADE_HIDE_GAP_MS = 100L
         private val SHADE_HIDE_AFTER_MS = listOf(120L, 350L)
