@@ -17,8 +17,7 @@ class TextSessionStore(private val file: File) : SessionStore {
                     val kind = it.substringBefore('\t')
                     UndoToken(unescape(kind), unescape(it.substringAfter('\t', "")))
                 }
-            val (_, mode, started, leftover) = lines
-            Session(unescape(mode), started.toLong(), tokens, leftover.toBoolean())
+            Session(unescape(lines[LINE_MODE]), lines[LINE_STARTED].toLong(), tokens, lines[LINE_LEFTOVER].toBoolean())
         }.getOrNull()
 
     override fun save(session: Session?) {
@@ -67,5 +66,8 @@ class TextSessionStore(private val file: File) : SessionStore {
     private companion object {
         const val HEADER = "nova-modo-1"
         const val FIXED_LINES = 4
+        const val LINE_MODE = 1
+        const val LINE_STARTED = 2
+        const val LINE_LEFTOVER = 3
     }
 }
