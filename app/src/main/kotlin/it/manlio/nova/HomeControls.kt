@@ -11,12 +11,15 @@ import android.os.Looper
 import android.provider.AlarmClock
 import android.provider.Settings
 import it.manlio.nova.core.design.GraphicsLevel
+import it.manlio.nova.core.system.QuickToggle
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.Level
 import it.manlio.nova.feature.home.MoreItem
 import it.manlio.nova.feature.home.SystemPanel
+import it.manlio.nova.feature.home.Toggle
 import it.manlio.nova.feature.home.Torch
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +34,8 @@ import kotlin.math.roundToInt
 class HomeControls(
     private val context: Context,
     private val app: NovaApp,
+    /** Dove girano i comandi degli interruttori (la Home: il suo ciclo di vita; il servizio: il proprio). */
+    private val scope: CoroutineScope,
     /** Apre la tendina notifiche di Android (sulla Home: API di sistema; sopra le altre app: azione di accessibilità). */
     private val onSystemNotifications: () -> Unit,
     /** Apre le Impostazioni rapide di Android: raggiunge ogni riquadro che NOVA non ha. */
@@ -47,6 +52,7 @@ class HomeControls(
                 c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true && back
             }
         }.getOrNull()
+    private val quick = QuickToggles(context, app, scope)
     private val torchOn = MutableStateFlow(false)
     private val callback =
         object : CameraManager.TorchCallback() {
@@ -92,7 +98,20 @@ class HomeControls(
             onCycleGraphics = ::cycleGraphics,
             onTurbo = onTurbo.takeIf { app.shizuku.status.value == ShizukuStatus.READY },
             more = more(),
+            toggles = toggles(),
         )
+
+    /** Wi-Fi, Bluetooth e non disturbare cambiano subito dal riquadro se Shizuku lo permette; senza, il riquadro apre Android. */
+    private fun toggles(): Map<SystemPanel, Toggle> {
+        if (!quick.available) return emptyMap()
+
+        fun of(t: QuickToggle) = Toggle(read = { quick.isOn(t) }, set = { on, onFailed -> quick.set(t, on, onFailed) })
+        return mapOf(
+            SystemPanel.INTERNET to of(QuickToggle.WIFI),
+            SystemPanel.BLUETOOTH to of(QuickToggle.BLUETOOTH),
+            SystemPanel.DND to of(QuickToggle.DND),
+        )
+    }
 
     /**
      * Le altre impostazioni del pannello di Android, sotto «Altro». Un'app normale può cambiare da sola solo la rotazione
@@ -107,21 +126,37 @@ class HomeControls(
             startSettings(action)
             null
         }
+
+        /** Interruttore: con Shizuku cambia subito e mostra Sì/No; senza, apre la schermata di Android. */
+        fun toggle(
+            label: Int,
+            t: QuickToggle,
+            action: String,
+        ): MoreItem {
+            val text = { on: Boolean -> context.getString(if (on) R.string.more_on else R.string.more_off) }
+            if (!quick.available) return go(label, action)
+            return MoreItem(context.getString(label), text(quick.isOn(t))) { report ->
+                val next = !quick.isOn(t)
+                quick.set(t, next) { report(text(quick.isOn(t))) }
+                text(next)
+            }
+        }
         return listOf(
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
             MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
             rotation(),
-            go(R.string.more_airplane, Settings.ACTION_AIRPLANE_MODE_SETTINGS),
+            toggle(R.string.more_airplane, QuickToggle.AIRPLANE, Settings.ACTION_AIRPLANE_MODE_SETTINGS),
+            toggle(R.string.more_location, QuickToggle.LOCATION, Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+            toggle(R.string.more_battery_saver, QuickToggle.BATTERY_SAVER, Settings.ACTION_BATTERY_SAVER_SETTINGS),
+            toggle(R.string.more_data, QuickToggle.DATA_SAVER, ACTION_DATA_USAGE),
+            toggle(R.string.more_dark_theme, QuickToggle.DARK_THEME, Settings.ACTION_DISPLAY_SETTINGS),
+            toggle(R.string.more_night_light, QuickToggle.NIGHT_LIGHT, ACTION_NIGHT_DISPLAY),
+            toggle(R.string.more_color_inversion, QuickToggle.INVERSION, ACTION_COLOR_INVERSION),
             go(R.string.more_hotspot, Settings.ACTION_WIRELESS_SETTINGS),
-            go(R.string.more_location, Settings.ACTION_LOCATION_SOURCE_SETTINGS),
-            go(R.string.more_battery_saver, Settings.ACTION_BATTERY_SAVER_SETTINGS),
-            go(R.string.more_data, ACTION_DATA_USAGE),
-            go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
-            go(R.string.more_night_light, ACTION_NIGHT_DISPLAY),
             go(R.string.more_nfc, Settings.ACTION_NFC_SETTINGS),
             go(R.string.more_cast, Settings.ACTION_CAST_SETTINGS),
             go(R.string.more_sound, Settings.ACTION_SOUND_SETTINGS),
-            go(R.string.more_color_inversion, ACTION_COLOR_INVERSION),
+            go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
             go(R.string.more_color_correction, ACTION_COLOR_CORRECTION),
             go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),

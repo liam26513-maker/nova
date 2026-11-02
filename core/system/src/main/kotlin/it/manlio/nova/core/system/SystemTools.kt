@@ -81,6 +81,15 @@ class SystemTools(
 
     suspend fun revertUnconfirmedDensity(): Boolean = log.revertUnconfirmedDensity()
 
+    // ---- Interruttori del pannello rapido (§6.8) ----
+
+    /** Accende o spegne [toggle]; [wasOn] è lo stato di prima, per poterlo annullare. @return true se Android ha obbedito. */
+    suspend fun setToggle(
+        toggle: QuickToggle,
+        on: Boolean,
+        wasOn: Boolean,
+    ): Boolean = log.setToggle(toggle, on, wasOn).ok
+
     // ---- Congelamento (§7.2) ----
 
     /** I pacchetti congelati da NOVA (si riattivano con [unfreeze]). */

@@ -194,7 +194,7 @@
     <string name="ctl_settings">Impostazioni di NOVA</string>
     <string name="customize_layout_footer">Lo spegnimento dello schermo col doppio tocco usa Shizuku.</string>
     <string name="customize_status_bar">Barra di stato</string>
-    <string name="customize_swipe_down">Scorri giù per le notifiche</string>
+    <string name="customize_swipe_down">Scorri giù per la tendina</string>
     <string name="customize_double_tap">Doppio tocco sull\'alfabeto: spegni lo schermo</string>
     <string name="customize_blur_none">No</string>
     <string name="customize_blur_light">Leggera</string>
@@ -240,7 +240,8 @@
     <string name="more_location">Posizione</string>
     <string name="more_battery_saver">Risparmio energetico</string>
     <string name="more_data">Risparmio dati e uso dati</string>
-    <string name="more_display">Schermo e tema scuro</string>
+    <string name="more_dark_theme">Tema scuro di Android</string>
+    <string name="more_display">Schermo</string>
     <string name="more_night_light">Luce notturna</string>
     <string name="more_nfc">NFC</string>
     <string name="more_cast">Trasmetti schermo</string>

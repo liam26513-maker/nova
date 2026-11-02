@@ -4,18 +4,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.coroutines.flow.first
 
 /**
  * Il centro di controllo fuori dalla Home (SPEC §6.8, §2.2): lo stesso pannello a tendina, ma in una finestra che il
- * servizio di accessibilità di NOVA mette sopra le altre app. Si apre da solo con una molla; [closing] a vero lo
- * richiude (Indietro, cambio di finestra) e [onDismissed] dice quando è tornato chiuso, cioè quando si può togliere la finestra.
- * Il riquadro «Modifica la Home» non c'è: modificare la Home ha senso solo sulla Home.
+ * servizio di accessibilità di NOVA mette sopra le altre app. A guidarlo è [sheet]: chi chiama lo trascina col dito
+ * ([ControlSheetState.drag]) e lo lascia ([ControlSheetState.release]), quindi segue il tocco come sulla Home.
+ * [closing] a vero lo richiude (Indietro, cambio di finestra); [onDismissed] dice quando è tornato chiuso dopo essersi
+ * aperto, cioè quando si può togliere la finestra. Il riquadro «Modifica la Home» non c'è: ha senso solo sulla Home.
  */
 @Composable
 fun ControlCenterOverlay(
+    sheet: ControlSheetState,
     controls: ControlActions,
     prefs: HomePrefs,
     systemDark: Boolean,
@@ -23,13 +24,11 @@ fun ControlCenterOverlay(
     onSettings: () -> Unit,
     onDismissed: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-    val sheet = remember { ControlSheetState(scope) }
     val look = remember(prefs, systemDark) { prefs.look(systemDark) }
-    LaunchedEffect(closing) { sheet.settle(!closing) }
+    LaunchedEffect(closing) { if (closing) sheet.settle(false) }
     LaunchedEffect(sheet) {
-        snapshotFlow { sheet.progress }.first { it > OPENED } // prima deve essersi aperta, poi tornare a zero
-        snapshotFlow { sheet.progress }.first { it <= 0f }
+        snapshotFlow { sheet.progress }.first { it > 0f } // prima compare...
+        snapshotFlow { sheet.progress }.first { it <= 0f } // ...poi, tornata a zero, si toglie la finestra
         onDismissed()
     }
     CompositionLocalProvider(LocalHomeLook provides look) {
@@ -44,5 +43,3 @@ fun ControlCenterOverlay(
         )
     }
 }
-
-private const val OPENED = 0.5f

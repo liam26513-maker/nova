@@ -95,6 +95,15 @@ sealed interface SystemCommand {
         override val argv = listOf("pm", "install", "-r", "-i", ownPackage, "-S", size.toString())
     }
 
+    /**
+     * Accende o spegne uno degli interruttori del pannello rapido di Android (Wi-Fi, Bluetooth, aereo…). L'insieme è chiuso
+     * ([QuickToggle]): nessuna stringa dell'utente arriva alla shell, solo questi comandi fissi.
+     * Si usa sempre tramite [SystemTools.setToggle], che registra lo stato precedente.
+     */
+    data class SetToggle(val toggle: QuickToggle, val on: Boolean) : SystemCommand {
+        override val argv = toggle.argv(on)
+    }
+
     companion object {
         const val MIN_DPI = 120
         const val MAX_DPI = 640
@@ -111,6 +120,30 @@ sealed interface SystemCommand {
                 "Nome di pacchetto non valido: $name"
             }
     }
+}
+
+/**
+ * Gli interruttori che il centro di controllo può cambiare con un tocco, se Shizuku è attivo (un'app normale non può:
+ * Android lo vieta dal 10). Ognuno ha il suo comando fisso, in `argv`: nulla viene mai interpretato da una shell.
+ */
+enum class QuickToggle(private val onCommand: String, private val offCommand: String) {
+    WIFI("svc wifi enable", "svc wifi disable"),
+    BLUETOOTH("svc bluetooth enable", "svc bluetooth disable"),
+    AIRPLANE("cmd connectivity airplane-mode enable", "cmd connectivity airplane-mode disable"),
+    DND("cmd notification set_dnd priority", "cmd notification set_dnd off"),
+    DARK_THEME("cmd uimode night yes", "cmd uimode night no"),
+    LOCATION("cmd location set-location-enabled true", "cmd location set-location-enabled false"),
+    BATTERY_SAVER("settings put global low_power 1", "settings put global low_power 0"),
+    DATA_SAVER("cmd netpolicy set restrict-background true", "cmd netpolicy set restrict-background false"),
+    NIGHT_LIGHT("settings put secure night_display_activated 1", "settings put secure night_display_activated 0"),
+    INVERSION(
+        "settings put secure accessibility_display_inversion_enabled 1",
+        "settings put secure accessibility_display_inversion_enabled 0",
+    ),
+    ;
+
+    /** Gli argomenti del comando: una lista fissa, mai una stringa interpretata da una shell. */
+    internal fun argv(on: Boolean): List<String> = (if (on) onCommand else offCommand).split(' ')
 }
 
 /** Pacchetti che NOVA non disattiva né chiude mai (SPEC §7.1). */

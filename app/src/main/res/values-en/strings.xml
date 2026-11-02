@@ -191,7 +191,7 @@
     <string name="ctl_settings">NOVA settings</string>
     <string name="customize_layout_footer">Double-tap to turn the screen off uses Shizuku.</string>
     <string name="customize_status_bar">Status bar</string>
-    <string name="customize_swipe_down">Swipe down for notifications</string>
+    <string name="customize_swipe_down">Swipe down for the control sheet</string>
     <string name="customize_double_tap">Double-tap the alphabet: screen off</string>
     <string name="customize_blur_none">No</string>
     <string name="customize_blur_light">Light</string>
@@ -237,7 +237,8 @@
     <string name="more_location">Location</string>
     <string name="more_battery_saver">Battery saver</string>
     <string name="more_data">Data saver and usage</string>
-    <string name="more_display">Display and dark theme</string>
+    <string name="more_dark_theme">Dark theme</string>
+    <string name="more_display">Display</string>
     <string name="more_night_light">Night light</string>
     <string name="more_nfc">NFC</string>
     <string name="more_cast">Cast screen</string>

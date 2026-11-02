@@ -33,6 +33,15 @@ sealed interface SystemChange {
     @Serializable
     data class PackageDisabled(val packageName: String, override val time: Long) : SystemChange
 
+    /** Interruttore del pannello rapido cambiato. [previous] è lo stato originale, prima della prima modifica di NOVA. */
+    @Serializable
+    data class Toggle(
+        val toggle: QuickToggle,
+        val previous: Boolean,
+        val applied: Boolean,
+        override val time: Long,
+    ) : SystemChange
+
     /**
      * Densità dello schermo cambiata. [previous] null = quella di fabbrica. Finché [confirmed] è falso la modifica
      * si annulla da sola (`SystemTools`): se l'utente non vede più lo schermo, non resta così.
@@ -138,6 +147,27 @@ class SystemChangeLog(
         return allOk
     }
 
+    /**
+     * Cambia un interruttore registrando com'era ([wasOn]). Se lo si cambia più volte il registro tiene una sola voce,
+     * con lo stato originale; se si torna allo stato originale la voce sparisce (non c'è più niente da annullare).
+     */
+    suspend fun setToggle(
+        toggle: QuickToggle,
+        on: Boolean,
+        wasOn: Boolean,
+    ): ShellResult {
+        val result = runner.run(SystemCommand.SetToggle(toggle, on))
+        if (!result.ok) return result
+        val original =
+            synchronized(changes) {
+                val first = changes.filterIsInstance<SystemChange.Toggle>().firstOrNull { it.toggle == toggle }
+                changes.removeAll { it is SystemChange.Toggle && it.toggle == toggle }
+                first?.previous ?: wasOn
+            }
+        if (original != on) record(SystemChange.Toggle(toggle, original, on, clock())) else save()
+        return result
+    }
+
     suspend fun disablePackage(packageName: String): ShellResult {
         val result = runner.run(SystemCommand.DisablePackage(packageName))
         if (result.ok) record(SystemChange.PackageDisabled(packageName, clock()))
@@ -155,6 +185,7 @@ class SystemChangeLog(
                         is SystemChange.Setting -> runner.run(SystemCommand.PutSetting(change.namespace, change.key, change.previous))
                         is SystemChange.PackageDisabled -> runner.run(SystemCommand.EnablePackage(change.packageName))
                         is SystemChange.Density -> runner.run(SystemCommand.SetDensity(change.previous))
+                        is SystemChange.Toggle -> runner.run(SystemCommand.SetToggle(change.toggle, change.previous))
                     }
                 }.getOrElse { ShellResult(-1, it.message.orEmpty()) }
             if (!result.ok) failed += change

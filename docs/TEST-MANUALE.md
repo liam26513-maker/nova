@@ -82,6 +82,11 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
   - [ ] A prima vista ci sono solo Wi-Fi, Bluetooth, Non disturbare, Torcia, volume, luminosità e «Altro». Tocca «Altro»: si aprono i comandi di NOVA e la lista delle impostazioni di Android (scorre). Il colore della scheda segue il tema; cambia accento/sfondo in Personalizza la Home e controlla.
   - [ ] Sotto «Altro»: «Notifiche di Android» apre le notifiche; «Impostazioni rapide di Android» apre il pannello originale (qui trovi i riquadri che NOVA non ha); «Rotazione automatica» cambia Sì/No senza chiudere; le altre voci aprono la schermata giusta di Android e chiudono la tendina.
   - [ ] Torcia, volume e luminosità funzionano come sulla Home. Wi-Fi/Bluetooth/Non disturbare aprono Android e chiudono il pannello. «Impostazioni di NOVA» apre NOVA. Non c'è «Modifica la Home».
+  - [ ] **Solo la nostra tendina:** tira giù dalla barra di stato in un'app: compare quella di NOVA e **quella di Android non si vede** (al massimo un lampo che si richiude subito). Sulla Home, scorrere giù da un punto qualsiasi apre la tendina di NOVA.
+  - [ ] **Sensazione:** il pannello esce sotto il dito fin dal primo momento e lo segue senza rimbalzi; lasciando a metà si completa deciso.
+  - [ ] **Con Shizuku attivo:** Wi-Fi, Bluetooth e Non disturbare si accendono/spengono con un tocco **senza uscire dalla tendina** (il riquadro si colora subito e Android li cambia davvero). Sotto «Altro»: Rotazione, Modalità aereo, Posizione, Risparmio energetico, Risparmio dati, Tema scuro, Luce notturna, Inversione colori mostrano Sì/No e cambiano subito. Prova a metterli in uno stato e riaprire la tendina: lo stato è quello vero.
+  - [ ] Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche»: gli interruttori toccati tornano com'erano prima.
+  - [ ] **Senza Shizuku:** i riquadri e le voci aprono la schermata di Android, come prima.
   - [ ] Si chiude tirando su, toccando fuori, con Indietro, e da solo se premi Home o apri un'altra app. Aprilo e chiudilo dieci volte: nessun rallentamento.
   - [ ] A schermo bloccato non si apre. Sulla Home di NOVA il gesto dall'angolo è quello della Home (segue il dito).
   - [ ] Spegni il servizio dall'accessibilità: l'angolo torna normale e la riga nelle Impostazioni dice «Non attivo».

@@ -65,6 +65,7 @@ import it.manlio.nova.feature.home.Side
 import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.TextSize
 import it.manlio.nova.feature.home.ThemeMode
+import it.manlio.nova.feature.home.Toggle
 import it.manlio.nova.feature.home.Torch
 import it.manlio.nova.feature.home.WallpaperSource
 import it.manlio.nova.feature.home.Weather
@@ -72,6 +73,7 @@ import it.manlio.nova.feature.home.WeatherKind
 import it.manlio.nova.feature.home.WidgetItem
 import it.manlio.nova.feature.home.WidgetKind
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -809,11 +811,78 @@ class HomeScreenTest {
     }
 
     @Test
-    fun a_pull_down_away_from_the_corner_does_not_open_the_control_center() {
+    fun a_pull_down_away_from_the_corner_also_opens_our_control_sheet_not_androids() {
         render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}))
         compose.onRoot().performTouchInput { swipe(Offset(60f, 20f), Offset(60f, height * 0.8f), 250) }
         compose.waitForIdle()
-        compose.onNodeWithText("Wi-Fi e rete").assertDoesNotExist()
+        compose.onNodeWithText("Wi-Fi e rete").assertExists()
+    }
+
+    @Test
+    fun control_center_wifi_tile_switches_at_once_without_leaving_the_home() {
+        var wifi = false
+        val panels = mutableListOf<SystemPanel>()
+        val toggle = Toggle(read = { wifi }, set = { on, _ -> wifi = on })
+        val controls = ControlActions(openPanel = { panels += it }, toggles = mapOf(SystemPanel.INTERNET to toggle))
+        render(prefs = HomePrefs(), controls = controls)
+        openControl()
+        compose.onNodeWithText("Wi-Fi e rete").performClick()
+        compose.waitForIdle()
+        assertEquals(true, wifi)
+        assertTrue(panels.isEmpty()) // non apre la schermata di Android
+        compose.onNodeWithText("Wi-Fi e rete").assertExists() // e la tendina resta aperta
+        compose.onNodeWithText("Wi-Fi e rete").performClick()
+        compose.waitForIdle()
+        assertEquals(false, wifi)
+    }
+
+    @Test
+    fun control_center_tile_rereads_the_real_state_when_android_refuses() {
+        var reads = 0
+        val toggle =
+            Toggle(
+                read = {
+                    reads++
+                    false
+                },
+                set = { _, onFailed -> onFailed() },
+            )
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, toggles = mapOf(SystemPanel.BLUETOOTH to toggle)))
+        openControl()
+        val before = reads
+        compose.onNodeWithText("Bluetooth").performClick()
+        compose.waitForIdle()
+        assertTrue(reads > before) // dopo il rifiuto rilegge lo stato vero invece di lasciare quello sperato
+    }
+
+    @Test
+    fun control_center_without_a_toggle_still_opens_the_android_panel() {
+        val panels = mutableListOf<SystemPanel>()
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = { panels += it }))
+        openControl()
+        compose.onNodeWithText("Bluetooth").performClick()
+        compose.waitForIdle()
+        assertEquals(listOf(SystemPanel.BLUETOOTH), panels)
+    }
+
+    @Test
+    fun control_center_more_toggle_row_shows_its_state_and_a_late_correction() {
+        var report: (String) -> Unit = {}
+        val item =
+            MoreItem("Modalità aereo", "No") {
+                report = it
+                "Sì" // subito lo stato sperato...
+            }
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = listOf(item)))
+        openControl()
+        openMore()
+        compose.onNodeWithText("No").assertExists()
+        compose.onNodeWithText("Modalità aereo").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Sì").assertExists()
+        compose.runOnIdle { report("No") } // ...poi, se Android non ha obbedito, quello vero
+        compose.waitForIdle()
+        compose.onNodeWithText("No").assertExists()
     }
 
     @Test

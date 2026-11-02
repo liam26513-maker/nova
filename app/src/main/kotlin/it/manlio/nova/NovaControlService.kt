@@ -10,10 +10,10 @@ import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowManager
@@ -35,7 +35,9 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.ControlCenterOverlay
+import it.manlio.nova.feature.home.ControlSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,10 +46,10 @@ import kotlinx.coroutines.cancel
 /**
  * Il centro di controllo sopra le altre app (SPEC §2.2, §6.8). Android non lascia sostituire la tendina di sistema:
  * questo servizio di accessibilità, che l'utente accende a mano, disegna soltanto due finestre di NOVA.
- *  - una **striscia** sottile e invisibile sull'angolo in alto a destra, sopra la barra di stato: tirarla giù apre il pannello;
+ *  - una **striscia** invisibile su tutta la larghezza, sopra la barra di stato: tirarla giù apre il pannello, che **segue il dito**;
  *  - il **pannello**, a tutto schermo, con lo stesso centro di controllo della Home (nasce al gesto e sparisce quando si chiude).
- * Non legge lo schermo (`canRetrieveWindowContent` è falso) e non compie azioni. Da spento non esiste niente.
- * La striscia si spegne sulla Home di NOVA, che ha già il suo gesto, e non apre nulla a schermo bloccato.
+ * Se Android apre la sua tendina insieme alla nostra, il servizio la richiude. Non legge lo schermo
+ * (`canRetrieveWindowContent` è falso) e non compie azioni. Da spento non esiste niente. A schermo bloccato non apre nulla.
  */
 class NovaControlService : AccessibilityService() {
     private val windows by lazy { getSystemService(WindowManager::class.java) }
@@ -57,6 +59,8 @@ class NovaControlService : AccessibilityService() {
     private var panel: PanelHost? = null
     private var controls: HomeControls? = null
     private var closing by mutableStateOf(false)
+    private var stripTouch: StripTouch? = null
+    private var lastShadeHide = 0L
     private val app get() = application as NovaApp
 
     override fun onServiceConnected() {
@@ -80,6 +84,8 @@ class NovaControlService : AccessibilityService() {
         removePanel()
         strip?.let { runCatching { windows.removeView(it) } }
         strip = null
+        stripTouch?.recycle()
+        stripTouch = null
         scope.cancel()
         super.onDestroy()
     }
@@ -87,22 +93,30 @@ class NovaControlService : AccessibilityService() {
     @SuppressLint("ClickableViewAccessibility") // la striscia è solo un gesto: non ha un'azione da leggere con TalkBack
     private fun addStrip() {
         if (strip != null) return
-        val detector = PullDetector(ViewConfiguration.get(this).scaledTouchSlop.toFloat())
-        val view =
-            View(this).apply {
-                setOnTouchListener { _, e ->
-                    when (e.actionMasked) {
-                        MotionEvent.ACTION_DOWN -> detector.down(e.rawX, e.rawY)
-                        MotionEvent.ACTION_MOVE -> if (detector.move(e.rawX, e.rawY)) openPanel()
-                        MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> detector.cancel()
-                    }
-                    true
-                }
-            }
+        val touch = StripTouch(ViewConfiguration.get(this).scaledTouchSlop.toFloat(), ::openPanel, ::hideAndroidShade)
+        val view = View(this).apply { setOnTouchListener(touch) }
         // Sempre attiva, anche con la barra di stato nascosta (giochi, video): lì il tocco dall'alto è proprio il modo di arrivare qui.
         runCatching { windows.addView(view, stripParams()) }
-            .onSuccess { strip = view }
-            .onFailure { Toast.makeText(this, R.string.overlay_strip_failed, Toast.LENGTH_LONG).show() }
+            .onSuccess {
+                strip = view
+                stripTouch = touch
+            }.onFailure { Toast.makeText(this, R.string.overlay_strip_failed, Toast.LENGTH_LONG).show() }
+    }
+
+    /**
+     * Il sistema può aprire la sua tendina insieme alla nostra (segue lo stesso tocco): la richiudiamo subito, ogni tanto
+     * mentre il dito scende e ancora un paio di volte a gesto finito. Quella di Android non deve restare.
+     */
+    private fun dismissShade() {
+        performGlobalAction(GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE)
+    }
+
+    private fun hideAndroidShade(finished: Boolean) {
+        val now = SystemClock.uptimeMillis()
+        if (!finished && now - lastShadeHide < SHADE_HIDE_GAP_MS) return
+        lastShadeHide = now
+        dismissShade()
+        if (finished) SHADE_HIDE_AFTER_MS.forEach { handler.postDelayed(::dismissShade, it) }
     }
 
     private fun stripParams(): WindowManager.LayoutParams {
@@ -130,20 +144,12 @@ class NovaControlService : AccessibilityService() {
         layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
     }
 
-    private fun openPanel() {
-        if (panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return
-        val actions =
-            HomeControls(
-                this,
-                app,
-                onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
-                onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
-                onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
-            ).also {
-                controls = it
-                it.start()
-            }.actions()
+    /** Apre la finestra del pannello e restituisce la tendina da trascinare; null se non si può (schermo bloccato, già aperta). */
+    private fun openPanel(): ControlSheetState? {
+        if (panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return null
+        val actions = newActions()
         closing = false
+        val sheet = ControlSheetState(scope).also { it.estimate(PANEL_TRAVEL_DP * resources.displayMetrics.density) }
         val host =
             PanelHost(this).apply {
                 onBack = ::requestClose
@@ -156,6 +162,7 @@ class NovaControlService : AccessibilityService() {
                             val prefs by app.homePrefs.prefs.collectAsState()
                             NovaTheme(tokensFrom(config, graphics.level)) {
                                 ControlCenterOverlay(
+                                    sheet = sheet,
                                     controls = actions,
                                     prefs = prefs,
                                     systemDark = HomeSystem.isDark(this@NovaControlService, prefs),
@@ -180,12 +187,28 @@ class NovaControlService : AccessibilityService() {
                 OVER_SYSTEM_BARS,
                 PixelFormat.TRANSLUCENT,
             ).apply { coverSystemBars() }
-        runCatching { windows.addView(host, params) }
-            .onSuccess {
-                panel = host
-                host.resume()
-            }.onFailure { controls?.stop() }
+        val added = runCatching { windows.addView(host, params) }
+        if (added.isSuccess) {
+            panel = host
+            host.resume()
+        } else {
+            controls?.stop()
+        }
+        return sheet.takeIf { added.isSuccess }
     }
+
+    private fun newActions(): ControlActions =
+        HomeControls(
+            this,
+            app,
+            scope,
+            onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
+            onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
+            onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
+        ).also {
+            controls = it
+            it.start()
+        }.actions()
 
     /** Chiude con l'animazione; se per qualunque motivo non finisse, la finestra viene tolta comunque. */
     private fun requestClose() {
@@ -245,6 +268,9 @@ class NovaControlService : AccessibilityService() {
 
     companion object {
         private const val STRIP_MIN_HEIGHT_DP = 24
+        private const val PANEL_TRAVEL_DP = 520
+        private const val SHADE_HIDE_GAP_MS = 100L
+        private val SHADE_HIDE_AFTER_MS = listOf(120L, 350L)
         private const val OVER_SYSTEM_BARS =
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         private const val FORCE_REMOVE_MS = 700L
