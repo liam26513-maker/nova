@@ -30,7 +30,8 @@ object Modes {
      * Gaming di base (SPEC §8.2), solo manuale. Il Turbo va per ultimo perché è la parte lenta.
      * Non c'è il Wi-Fi a bassa latenza: per Android il blocco funziona solo se l'app che lo tiene è in primo piano,
      * e durante il gioco NOVA non lo è.
-     * shortcut: definita qui nel codice e non in config/modes/<nome>.json (SPEC §8.1); passare al JSON quando le modalità saranno più d'una.
+     * shortcut: definita qui nel codice e non in config/modes/<nome>.json (SPEC §8.1);
+     * passare al JSON quando le modalità saranno più d'una.
      */
     val GAMING =
         ModeDefinition(

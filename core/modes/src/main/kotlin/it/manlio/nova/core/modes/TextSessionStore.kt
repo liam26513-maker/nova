@@ -17,7 +17,8 @@ class TextSessionStore(private val file: File) : SessionStore {
                     val kind = it.substringBefore('\t')
                     UndoToken(unescape(kind), unescape(it.substringAfter('\t', "")))
                 }
-            Session(unescape(lines[1]), lines[2].toLong(), tokens, lines[3].toBoolean())
+            val (_, mode, started, leftover) = lines
+            Session(unescape(mode), started.toLong(), tokens, leftover.toBoolean())
         }.getOrNull()
 
     override fun save(session: Session?) {
