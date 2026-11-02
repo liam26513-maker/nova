@@ -31,6 +31,12 @@ jobs:
       - name: Prove degli strumenti di controllo
         run: python -m unittest tools/test_check_keyboard.py
 
+      - name: Prove della tastiera (numerazione di versione)
+        working-directory: keyboard
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:testRunTestsUnitTest --tests 'helium314.keyboard.latin.NovaUpgradeTest' --stacktrace
+
       - name: Build release (senza firma)
         working-directory: keyboard
         run: |

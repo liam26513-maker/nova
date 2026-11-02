@@ -4,6 +4,16 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera: sensazione più soddisfacente, più pulita e leggera
+- Richiesta: "L'ho installata e la sto provando e la sensazione è troppo macchinosa e non soddisfacente vorrei una tastiera più soddisfacente e leggera e fluida".
+- **Cosa ho cambiato (il profilo NOVA):**
+  - **Tasti arrotondati con bordo**, più vicini a una tastiera da iPad che al disegno piatto di prima.
+  - **Feedback al tocco:** vibrazione di sistema accesa. **Se il tuo tablet non ha il motorino della vibrazione** (molti tablet economici non ce l'hanno e allora nessuna app può farlo vibrare) accendo invece il **clic sonoro** dei tasti; si spegne da Impostazioni della tastiera → Preferenze.
+  - **Più pulita:** tolti i simbolini piccoli su ogni tasto, i suggerimenti di emoji e il testo copiato che compariva da solo nei suggerimenti. Meno lavoro a ogni parola e striscia dei suggerimenti più calma.
+  - Resta com'è: trackpad sulla barra spaziatrice (muovi il cursore trascinando), cancella a scorrimento, correzione automatica, italiano e inglese.
+- **Importante, un difetto che ho corretto:** la tastiera aveva un numero di versione molto più basso di quello della tastiera originale, e a ogni aggiornamento rieseguiva vecchie migrazioni delle impostazioni che rimettevano i vecchi valori predefiniti. Ora il numero parte da 100000 + quello di NOVA e c'è un test che lo controlla. Chi ha già installato la prima versione riceve il nuovo profilo **una volta sola**, senza perdere i dizionari personali.
+- **Cosa NON c'è, e perché:** la **scrittura a scorrimento** (swipe da lettera a lettera). Nella tastiera originale funziona solo con una libreria proprietaria di Google che non si può includere né ridistribuire; per ora non c'è. Servirebbe una libreria aperta, che è un lavoro a parte. Anche la **velocità** non l'ho misurata: dimmi quale dei tre aspetti non va (tocco, aspetto, velocità) e lavoro su quello.
+
 ### Tastiera di NOVA: base inserita e allegata alle release (primi passi)
 - Richiesta: "continua con i restanti passaggi del piano ... sottolineo l'ottimizzazione della tastiera per renderla più veloce e funzionale".
 - **Cosa c'è ora:** nella cartella `keyboard/` è entrato il codice di **HeliBoard** (tastiera open source, licenza GPL-3.0, derivata da quella di Android), come prevede il piano (SPEC §10.1), con nome **«Tastiera NOVA»** e pacchetto `it.manlio.nova.keyboard`. La licenza e le modifiche sono documentate in `docs/LICENZE.md` e `keyboard/UPSTREAM.md`.

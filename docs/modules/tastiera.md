@@ -13,6 +13,17 @@ Stato: **base inserita e allegata alle release (Fase 4, primi passi)**. Fork di 
   **manifest unito** (nessun `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`; pacchetto giusto) e del peso contro `keyboardApkMb` (15 MB).
 - **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. **Si installa a mano** dalla pagina Releases; l'installazione e l'aggiornamento dall'app sono il passo successivo.
 
+## Profilo NOVA (sensazione)
+
+Modificati in `Defaults.kt` (valgono per le installazioni nuove) e scritti una volta sola da `AppUpgrade.kt` per chi aveva la prima versione:
+tasti arrotondati con bordo (`STYLE_ROUNDED`, `PREF_THEME_KEY_BORDERS`), vibrazione di sistema accesa, **clic sonoro** acceso se il tablet non ha il
+motorino (`Defaults.hasVibrator`), niente `PREF_SHOW_HINTS`, niente suggerimenti di emoji (`PREF_SUGGEST_EMOJIS`, `PREF_INLINE_EMOJI_SEARCH`) né degli
+appunti (`PREF_SUGGEST_CLIPBOARD_CONTENT`). Il numero di versione è `NOVA_VERSION_BASE` (100000) + quello di NOVA: `upgradeKind` garantisce che le
+migrazioni di HeliBoard non si rieseguano (`NovaUpgradeTest`, girano in `tastiera.yml`).
+
+**Limite noto:** la scrittura a scorrimento (gesture typing) non c'è: in HeliBoard richiede la libreria proprietaria di Google (`libjni_latinimegoogle.so`),
+non ridistribuibile. Servirebbe una libreria aperta. **Non misurato:** la latenza; da misurare sul tablet prima di promettere numeri.
+
 ## Ottimizzazioni già fatte (a livello di costruzione)
 
 - Solo ARM a 32 e 64 bit (via x86/x86_64): meno codice nativo nell'APK e meno da caricare.

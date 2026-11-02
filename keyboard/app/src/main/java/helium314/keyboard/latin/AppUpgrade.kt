@@ -3,6 +3,7 @@ package helium314.keyboard.latin
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import helium314.keyboard.compat.isDeviceLocked
 import helium314.keyboard.compat.isUserLocked
@@ -51,11 +52,46 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
+/**
+ * NOVA: il numero di versione della tastiera è `NOVA_VERSION_BASE` + quello di NOVA. Le migrazioni di HeliBoard (`oldVersion <= 4201`…)
+ * sono pensate per i suoi numeri (da 1000 a 4300): con quelli di NOVA (330, 340…) si rieseguirebbero a ogni aggiornamento e rimetterebbero
+ * i vecchi valori predefiniti sopra le scelte. Sopra la base nessuna di esse scatta più.
+ */
+const val NOVA_VERSION_BASE = 100_000
+
+enum class UpgradeKind { NONE, FIRST_NOVA_NUMBERING, REGULAR }
+
+/** Cosa fare quando cambia il numero di versione: niente, passare dalla prima numerazione di NOVA (sotto la base), o l'aggiornamento normale. */
+fun upgradeKind(oldVersion: Int, currentVersion: Int): UpgradeKind = when {
+    oldVersion == currentVersion -> UpgradeKind.NONE
+    oldVersion in 1 until NOVA_VERSION_BASE -> UpgradeKind.FIRST_NOVA_NUMBERING
+    else -> UpgradeKind.REGULAR // 0 = prima installazione (onUpgrade la riconosce)
+}
+
 fun checkVersionUpgrade(context: Context) {
     val prefs = context.prefs()
     val oldVersion = prefs.getInt(Settings.PREF_VERSION_CODE, 0)
-    if (oldVersion != BuildConfig.VERSION_CODE)
-        AppUpgrade.onUpgrade(context)
+    when (upgradeKind(oldVersion, BuildConfig.VERSION_CODE)) {
+        UpgradeKind.NONE -> Unit
+        UpgradeKind.REGULAR -> AppUpgrade.onUpgrade(context)
+        UpgradeKind.FIRST_NOVA_NUMBERING -> {
+            // Chi aveva la prima tastiera di NOVA (versione 330) riceve il nuovo profilo "soddisfacente" una volta sola, senza vecchie migrazioni.
+            applyNovaFeel(context, prefs)
+            prefs.edit { putInt(Settings.PREF_VERSION_CODE, BuildConfig.VERSION_CODE) }
+        }
+    }
+}
+
+/** Gli stessi valori dei nuovi predefiniti di NOVA (`Defaults`), scritti esplicitamente per chi ha già usato la tastiera. */
+private fun applyNovaFeel(context: Context, prefs: SharedPreferences) = prefs.edit {
+    putString(Settings.PREF_THEME_STYLE, KeyboardTheme.STYLE_ROUNDED)
+    putBoolean(Settings.PREF_THEME_KEY_BORDERS, true)
+    putBoolean(Settings.PREF_VIBRATE_ON, true)
+    putBoolean(Settings.PREF_SHOW_HINTS, false)
+    putBoolean(Settings.PREF_SUGGEST_EMOJIS, false)
+    putBoolean(Settings.PREF_INLINE_EMOJI_SEARCH, false)
+    putBoolean(Settings.PREF_SUGGEST_CLIPBOARD_CONTENT, false)
+    if (!Defaults.hasVibrator(context)) putBoolean(Settings.PREF_SOUND_ON, true)
 }
 
 fun transferOldPinnedClips(context: Context) {
