@@ -4,6 +4,15 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Fase 3, primo passo: motore delle modalità e Modalità Gaming di base (solo manuale)
+- Richiesta: "Per adesso va bene. ora parti con le altri fasi del piano".
+- **Dove:** tendina di controllo → **Altro → «Modalità Gaming»** (Sì/No). Un tocco entra, un tocco esce e **rimette tutto com'era**. Parte solo a mano: niente attivazione automatica, per ora.
+- **Cosa fa entrando:** livello grafico di NOVA su **Prestazioni**; **Non disturbare** acceso (serve Shizuku); **rotazione bloccata** (serve il permesso di modificare le impostazioni, lo stesso della luminosità); **Turbo** (chiude le app in secondo piano; serve Shizuku). Se una di queste cose non si può fare te lo dice (es. «non ho potuto: Non disturbare (serve Shizuku attivo)»), mai finto.
+- **Uscita sicura:** il motore salva *prima di ogni cambio* come tornare indietro, e all'uscita annulla tutto **in ordine inverso**. Se l'app si chiude a metà, al riavvio **riprende e ripristina**; se una cosa non torna com'era, ci riprova a ogni avvio. In più **la modalità si spegne da sola dopo 6 ore** (se la dimentichi).
+- **Cosa NON c'è ancora della Modalità Gaming completa (SPEC §8.2):** le uscite con il **volume giù tenuto 3 secondi** e il **doppio swipe dal bordo**, il controllo che il gioco non si sia **bloccato**, il **pannello sopra il gioco** (FPS, temperatura…), l'**attivazione automatica** quando apri un gioco, il **ridimensionamento per gioco**, la **frequenza massima dello schermo**, la libreria giochi e i profili. Ci arriverò un pezzo alla volta, con le uscite di emergenza per prime.
+- **Il Wi-Fi a bassa latenza l'ho lasciato fuori di proposito:** per Android funziona solo se l'app che tiene il blocco è in primo piano, e mentre giochi NOVA non lo è; attivarlo senza effetto sarebbe una promessa falsa.
+- Altre modalità (Studio, Lavoro, Creativa, Presentazione) e le regole automatiche arrivano dopo; il motore è già fatto per ospitarle.
+
 ### Tastiera: sensazione più soddisfacente, più pulita e leggera
 - Richiesta: "L'ho installata e la sto provando e la sensazione è troppo macchinosa e non soddisfacente vorrei una tastiera più soddisfacente e leggera e fluida" e, precisando, "Leggera di sensazione intendo".
 - **Cosa ho cambiato (il profilo NOVA):**

@@ -69,6 +69,7 @@ kotlin { jvmToolchain(17) }
 dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:config"))
+    implementation(project(":core:modes"))
     implementation(project(":core:modules"))
     implementation(project(":core:telemetry"))
     implementation(project(":core:safemode"))

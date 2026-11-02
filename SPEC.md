@@ -493,6 +493,8 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.1 Motore delle modalità
 
+> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Le modalità sono ancora definite nel codice (`Modes.kt`), non in `config/modes/*.json`. Mancano attivazione automatica, uscite 2–3 e pannello di §8.2, le altre modalità. Dettagli: `docs/modules/modalita.md`.
+
 - Una modalità è un JSON in `config/modes/` che descrive: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
 - **Attivazione:** manuale (centro di controllo, ricerca, widget), automatica (app aperta, accessorio collegato, orario, rete Wi-Fi), o da ADAM.
 - **Uscita:** ripristina esattamente lo stato precedente (snapshot prima dell'ingresso).

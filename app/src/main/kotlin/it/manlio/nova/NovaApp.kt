@@ -93,6 +93,7 @@ class NovaApp :
     /** Modifiche di sistema fatte da NOVA, tutte annullabili (SPEC §7.1). */
     lateinit var systemChanges: SystemChangeLog
     lateinit var systemTools: SystemTools
+    lateinit var modes: ModeController
 
     /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */
     @Volatile var nowPlayingPackage: String? = null
@@ -155,6 +156,7 @@ class NovaApp :
             systemTools.revertUnconfirmedDensity()
         }
         setUpUpdates()
+        modes = ModeController(this, appScope).also { it.start() }
 
         profiler = DeviceProfiler(this)
         appScope.launch {
