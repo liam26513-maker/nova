@@ -15,6 +15,10 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Dopo "Misura le prestazioni" compare il **Resoconto** con tre barre di fluidità e un livello "consigliato"; "Fatto" riporta alle Impostazioni.
 - [ ] Anche se il consigliato è più basso, toccando **Massimo** o **Bilanciato** la scelta viene applicata ("Fissato da te: …").
 
+## Tastiera di NOVA (quando sarà pubblicata)
+- [ ] Impostazioni di Android → Tastiera → Tastiere sullo schermo: compare «Tastiera NOVA»; scegliendola si scrive in italiano e in inglese con suggerimenti.
+- [ ] Nessuna richiesta di accesso a Internet nelle informazioni dell'app.
+
 ## Shizuku e aggiornamenti (Fase 0, punti 7–8)
 - [ ] Senza Shizuku: "Strumenti di sistema" mostra "Non attivo" e "Apri Shizuku per attivarlo" apre Shizuku o il Play Store.
 - [ ] Con Shizuku attivo: "Concedi il permesso a NOVA" mostra la richiesta di Shizuku; dopo il sì lo stato diventa "Attivo".

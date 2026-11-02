@@ -9,3 +9,13 @@
 
 Coefficienti degli angoli continui (`SquircleShape`): costanti geometriche, nessun codice di terzi.
 Nessun font, icona o asset proprietario è incluso.
+
+## Tastiera di NOVA (`keyboard/`)
+
+| Componente | Licenza | Uso |
+|---|---|---|
+| **HeliBoard** (commit `5790f31`, Helium314 e collaboratori), derivata dalla tastiera AOSP (Android Open Source Project) | **GPL-3.0** (`keyboard/LICENSE`); parti Apache-2.0 (`keyboard/LICENSE-Apache-2.0`) e CC-BY-SA-4.0 (`keyboard/LICENSE-CC-BY-SA-4.0`) | Base della tastiera: fork modificato, distribuito con il suo codice sorgente |
+| Dizionari (`main_it.dict`, `main_en-US.dict`, `main_en-GB.dict`) | Vedi `keyboard/UPSTREAM-README.md` (dizionari della community AOSP/HeliBoard) | Correzione e suggerimenti |
+| AndroidX, Compose Material 3, kotlinx.serialization, reorderable (sh.calvin), colorpicker-compose (skydoves) | Apache-2.0 | Dipendenze di HeliBoard |
+
+Il codice della tastiera **resta GPL-3.0** (regola di CLAUDE.md): i file modificati mantengono gli avvisi di copyright originali. Cosa è stato cambiato rispetto a HeliBoard: vedi `keyboard/UPSTREAM.md`.
