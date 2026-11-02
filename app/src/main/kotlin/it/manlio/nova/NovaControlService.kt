@@ -35,6 +35,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.ControlCenterOverlay
 import it.manlio.nova.feature.home.ControlSheetState
 import kotlinx.coroutines.CoroutineScope
@@ -146,18 +147,7 @@ class NovaControlService : AccessibilityService() {
     /** Apre la finestra del pannello e restituisce la tendina da trascinare; null se non si può (schermo bloccato, già aperta). */
     private fun openPanel(): ControlSheetState? {
         if (panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return null
-        val actions =
-            HomeControls(
-                this,
-                app,
-                scope,
-                onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
-                onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
-                onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
-            ).also {
-                controls = it
-                it.start()
-            }.actions()
+        val actions = newActions()
         closing = false
         val sheet = ControlSheetState(scope).also { it.estimate(PANEL_TRAVEL_DP * resources.displayMetrics.density) }
         val host =
@@ -206,6 +196,19 @@ class NovaControlService : AccessibilityService() {
         }
         return sheet.takeIf { added.isSuccess }
     }
+
+    private fun newActions(): ControlActions =
+        HomeControls(
+            this,
+            app,
+            scope,
+            onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
+            onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
+            onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
+        ).also {
+            controls = it
+            it.start()
+        }.actions()
 
     /** Chiude con l'animazione; se per qualunque motivo non finisse, la finestra viene tolta comunque. */
     private fun requestClose() {

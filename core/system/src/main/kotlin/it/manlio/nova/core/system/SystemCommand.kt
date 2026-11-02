@@ -126,34 +126,24 @@ sealed interface SystemCommand {
  * Gli interruttori che il centro di controllo può cambiare con un tocco, se Shizuku è attivo (un'app normale non può:
  * Android lo vieta dal 10). Ognuno ha il suo comando fisso, in `argv`: nulla viene mai interpretato da una shell.
  */
-enum class QuickToggle {
-    WIFI,
-    BLUETOOTH,
-    AIRPLANE,
-    DND,
-    DARK_THEME,
-    LOCATION,
-    BATTERY_SAVER,
-    DATA_SAVER,
-    NIGHT_LIGHT,
-    INVERSION,
+enum class QuickToggle(private val onCommand: String, private val offCommand: String) {
+    WIFI("svc wifi enable", "svc wifi disable"),
+    BLUETOOTH("svc bluetooth enable", "svc bluetooth disable"),
+    AIRPLANE("cmd connectivity airplane-mode enable", "cmd connectivity airplane-mode disable"),
+    DND("cmd notification set_dnd priority", "cmd notification set_dnd off"),
+    DARK_THEME("cmd uimode night yes", "cmd uimode night no"),
+    LOCATION("cmd location set-location-enabled true", "cmd location set-location-enabled false"),
+    BATTERY_SAVER("settings put global low_power 1", "settings put global low_power 0"),
+    DATA_SAVER("cmd netpolicy set restrict-background true", "cmd netpolicy set restrict-background false"),
+    NIGHT_LIGHT("settings put secure night_display_activated 1", "settings put secure night_display_activated 0"),
+    INVERSION(
+        "settings put secure accessibility_display_inversion_enabled 1",
+        "settings put secure accessibility_display_inversion_enabled 0",
+    ),
     ;
 
-    internal fun argv(on: Boolean): List<String> {
-        val flag = if (on) "1" else "0"
-        return when (this) {
-            WIFI -> listOf("svc", "wifi", if (on) "enable" else "disable")
-            BLUETOOTH -> listOf("svc", "bluetooth", if (on) "enable" else "disable")
-            AIRPLANE -> listOf("cmd", "connectivity", "airplane-mode", if (on) "enable" else "disable")
-            DND -> listOf("cmd", "notification", "set_dnd", if (on) "priority" else "off")
-            DARK_THEME -> listOf("cmd", "uimode", "night", if (on) "yes" else "no")
-            LOCATION -> listOf("cmd", "location", "set-location-enabled", on.toString())
-            BATTERY_SAVER -> listOf("settings", "put", "global", "low_power", flag)
-            DATA_SAVER -> listOf("cmd", "netpolicy", "set", "restrict-background", on.toString())
-            NIGHT_LIGHT -> listOf("settings", "put", "secure", "night_display_activated", flag)
-            INVERSION -> listOf("settings", "put", "secure", "accessibility_display_inversion_enabled", flag)
-        }
-    }
+    /** Gli argomenti del comando: una lista fissa, mai una stringa interpretata da una shell. */
+    internal fun argv(on: Boolean): List<String> = (if (on) onCommand else offCommand).split(' ')
 }
 
 /** Pacchetti che NOVA non disattiva né chiude mai (SPEC §7.1). */
