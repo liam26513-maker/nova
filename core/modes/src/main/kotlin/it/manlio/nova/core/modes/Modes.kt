@@ -14,6 +14,12 @@ enum class ModeAction {
     /** Rotazione dello schermo bloccata com'è (serve il permesso di modificare le impostazioni). */
     LOCK_ROTATION,
 
+    /** Lo schermo non si spegne per inattività (30 minuti). Serve il permesso di modificare le impostazioni. */
+    KEEP_SCREEN_ON,
+
+    /** Sincronizzazione automatica degli account in pausa: niente lavoro in secondo piano durante il gioco. */
+    PAUSE_SYNC,
+
     /** Chiude le app in secondo piano (serve Shizuku). Non si può annullare: le app si riaprono quando servono. */
     TURBO,
 }
@@ -41,6 +47,8 @@ object Modes {
                     ModeAction.PERFORMANCE_GRAPHICS,
                     ModeAction.DO_NOT_DISTURB,
                     ModeAction.LOCK_ROTATION,
+                    ModeAction.KEEP_SCREEN_ON,
+                    ModeAction.PAUSE_SYNC,
                     ModeAction.TURBO,
                 ),
             maxMinutes = 6 * 60,

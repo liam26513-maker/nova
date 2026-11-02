@@ -21,6 +21,9 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 
 ## Modalità Gaming di base (Fase 3, primo passo)
 - [ ] Tendina → Altro → «Modalità Gaming» → tocca: compare un avviso («Modalità Gaming attiva…» oppure «…ma non ho potuto: … (serve Shizuku attivo)»). La riga dice «Sì».
+- [ ] **Rotazione:** sei in orizzontale sulla Home, attivi la modalità: lo schermo **resta in orizzontale** (non va in verticale) e non ruota se inclini il tablet; all'uscita la rotazione automatica torna com'era.
+- [ ] Lo schermo non si spegne da solo per 30 minuti mentre la modalità è attiva (poi torna il tempo di prima). La sincronizzazione degli account è in pausa (Impostazioni di Android → Account → «Sincronizza automaticamente i dati» spento) e torna accesa all'uscita.
+- [ ] L'avviso all'ingresso dice quante app ha chiuso il Turbo.
 - [ ] Con Shizuku attivo: Non disturbare si accende e le app in secondo piano si chiudono; la rotazione resta bloccata; il livello grafico è su Prestazioni.
 - [ ] Riapri la tendina → Altro → «Modalità Gaming» → tocca di nuovo: avviso «tutto com'era»; Non disturbare, rotazione e livello grafico sono tornati come prima di entrare.
 - [ ] Entra nella modalità e **chiudi NOVA a forza** (Impostazioni di Android → App → NOVA → Arresto forzato), poi riaprila: la modalità risulta ancora attiva (riga «Sì») e si può uscire.

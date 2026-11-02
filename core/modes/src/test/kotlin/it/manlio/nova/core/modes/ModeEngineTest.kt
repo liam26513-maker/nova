@@ -41,7 +41,13 @@ private class MemoryStore : SessionStore {
 }
 
 class ModeEngineTest {
-    private val gaming = Modes.GAMING
+    // Una modalità di prova fissa: i test non devono cambiare quando si aggiungono azioni a Gaming vera.
+    private val gaming =
+        ModeDefinition(
+            id = "gaming",
+            actions = listOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.TURBO),
+            maxMinutes = Modes.GAMING.maxMinutes,
+        )
 
     @Test
     fun `entering applies the actions in order and remembers how to undo each`() =
