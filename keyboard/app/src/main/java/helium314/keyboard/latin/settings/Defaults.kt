@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.util.TypedValue
+import android.os.Vibrator
 import android.view.Gravity
 import helium314.keyboard.keyboard.KeyboardActionListener
 import helium314.keyboard.keyboard.KeyboardTheme
@@ -19,11 +19,15 @@ import helium314.keyboard.latin.utils.defaultPinnedToolbarPref
 import helium314.keyboard.latin.utils.defaultToolbarPref
 
 object Defaults {
+    /** Il tablet ha il motorino della vibrazione? Molti tablet economici no: lì l'unico feedback possibile è il clic sonoro. */
+    fun hasVibrator(context: Context): Boolean = (context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator)?.hasVibrator() == true
+
     fun initDynamicDefaults(context: Context) {
+        // NOVA: senza vibrazione la tastiera sembrerebbe "morta" -> clic sonoro di sistema (si spegne dalle impostazioni).
+        PREF_SOUND_ON = !hasVibrator(context)
         PREF_GESTURE_DYNAMIC_PREVIEW_FOLLOW_SYSTEM = getTransitionAnimationScale(context) != 0.0f
-        val dm = context.resources.displayMetrics
-        val px600 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 600f, dm)
-        PREF_POPUP_ON = dm.widthPixels >= px600 || dm.heightPixels >= px600
+        // NOVA: niente fumetto su ogni tasto, come sulla tastiera dell'iPad: meno da disegnare a ogni pressione, sensazione più leggera.
+        PREF_POPUP_ON = false
     }
 
     // must correspond to a file name
@@ -44,22 +48,24 @@ object Defaults {
     }
 
     private const val DEFAULT_SIZE_SCALE = 1.0f // 100%
-    const val PREF_THEME_STYLE = KeyboardTheme.STYLE_MATERIAL
+    // NOVA: tasti arrotondati con bordo, più vicini a una tastiera da iPad che al Material piatto.
+    const val PREF_THEME_STYLE = KeyboardTheme.STYLE_ROUNDED
     fun PREF_ICON_STYLE(prefs: SharedPreferences) = prefs.getString(Settings.PREF_THEME_STYLE, PREF_THEME_STYLE)!!
     const val PREF_ACCENT_SHIFTED_ICON = false
     const val PREF_THEME_COLORS = KeyboardTheme.THEME_LIGHT
     const val PREF_THEME_COLORS_NIGHT = KeyboardTheme.THEME_DARK
-    const val PREF_THEME_KEY_BORDERS = false
+    const val PREF_THEME_KEY_BORDERS = true
     @JvmField
     val PREF_THEME_DAY_NIGHT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
     const val PREF_CUSTOM_ICON_NAMES = ""
     const val PREF_TOOLBAR_CUSTOM_KEY_CODES = ""
     const val PREF_AUTO_CAP = true
-    const val PREF_VIBRATE_ON = false
+    const val PREF_VIBRATE_ON = true // NOVA: la vibrazione di sistema (tocco di tasto) è metà della sensazione
     const val PREF_VIBRATE_IN_DND_MODE = false
-    const val PREF_SOUND_ON = false
-    const val PREF_SUGGEST_EMOJIS = true
-    const val PREF_INLINE_EMOJI_SEARCH = true
+    @JvmField
+    var PREF_SOUND_ON = false // vedi initDynamicDefaults
+    const val PREF_SUGGEST_EMOJIS = false // NOVA: striscia dei suggerimenti più pulita e meno lavoro a ogni parola
+    const val PREF_INLINE_EMOJI_SEARCH = false
     const val PREF_SHOW_EMOJI_DESCRIPTIONS = true
     @JvmField
     var PREF_POPUP_ON = true
@@ -116,10 +122,12 @@ object Defaults {
     const val PREF_ALWAYS_INCOGNITO_MODE = false
     const val PREF_BIGRAM_PREDICTIONS = true
     const val PREF_SUGGEST_PUNCTUATION = false
-    const val PREF_SUGGEST_CLIPBOARD_CONTENT = true
+    const val PREF_SUGGEST_CLIPBOARD_CONTENT = false // NOVA: niente testo copiato che compare da solo nei suggerimenti
     const val PREF_GESTURE_INPUT = true
-    const val PREF_VIBRATION_DURATION_SETTINGS = -1
-    const val PREF_KEYPRESS_SOUND_VOLUME = -0.01f
+    // NOVA: tocco leggero. Un impulso breve di 10 ms (quello "di sistema" su certi tablet è lungo e pesante).
+    const val PREF_VIBRATION_DURATION_SETTINGS = 10
+    // NOVA: clic sommesso (il volume "di sistema" è forte). Va da 0 a 1.
+    const val PREF_KEYPRESS_SOUND_VOLUME = 0.3f
     const val PREF_KEY_LONGPRESS_TIMEOUT = 300
     const val PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY = true
     // supporting hardware keyboard still has a bunch of issues
@@ -150,7 +158,7 @@ object Defaults {
     const val PREF_LOCALIZED_NUMBER_ROW = true
     const val PREF_SHOW_NUMBER_ROW_HINTS = false
     const val PREF_CUSTOM_CURRENCY_KEY = ""
-    const val PREF_SHOW_HINTS = true
+    const val PREF_SHOW_HINTS = false // NOVA: tasti puliti, senza il simbolino secondario su ogni tasto
     const val PREF_POPUP_KEYS_ORDER = POPUP_KEYS_ORDER_DEFAULT
     const val PREF_POPUP_KEYS_HINT_ORDER = POPUP_KEYS_LABEL_DEFAULT
     const val PREF_SHOW_POPUP_HINTS = false

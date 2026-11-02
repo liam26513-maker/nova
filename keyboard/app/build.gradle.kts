@@ -13,8 +13,8 @@ android {
         applicationId = "it.manlio.nova.keyboard"
         minSdk = 21
         targetSdk = 37
-        // Numero e nome di versione sono quelli di NOVA (li passa il rilascio); senza, valori di prova.
-        versionCode = System.getenv("NOVA_VERSION_CODE")?.toIntOrNull() ?: 1
+        // Numero e nome di versione sono quelli di NOVA (li passa il rilascio) più una base; senza, valori di prova.
+        versionCode = 100_000 + (System.getenv("NOVA_VERSION_CODE")?.toIntOrNull() ?: 1) // la base 100000 evita le vecchie migrazioni di HeliBoard (vedi AppUpgrade.kt)
         versionName = System.getenv("NOVA_VERSION_NAME") ?: "0.0.0-prova"
         ndk {
             abiFilters.clear()
