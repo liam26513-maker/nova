@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina sopra le altre app: la striscia ora copre davvero la barra di stato
+- Richiesta: "Ho aggiornato ma rimane sempre quella di android".
+- **Causa:** da Android 11 una finestra sopra le app, se non lo dichiara, si ferma **sotto** la barra di stato. La striscia di NOVA stava un po' più in basso: tirando giù dalla barra il tocco andava ad Android, che apriva la sua tendina.
+- **Ora:** la striscia (e il pannello) dichiarano di poter coprire la barra di stato e il bordo dello schermo, quindi il tocco sulla barra arriva a NOVA.
+- Se NOVA non riesce a creare la striscia, ora lo dice con un avviso («Spegni e riaccendi…») invece di non fare niente.
+
 ### Tendina sopra le altre app: ora risponde sempre, anche nei giochi
 - Richiesta: "Il servizio è attivo ma non succede niente. Il centro di controllo mi serve accessibile anche nei giochi ovviamente."
 - **Causa probabile:** la striscia che prende il gesto si spegneva da sola quando credeva che la barra di stato fosse nascosta; sul tuo tablet lo credeva sempre, quindi il servizio era «Attivo» ma il gesto non arrivava mai.

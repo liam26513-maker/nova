@@ -19,6 +19,7 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,7 +100,9 @@ class NovaControlService : AccessibilityService() {
                 }
             }
         // Sempre attiva, anche con la barra di stato nascosta (giochi, video): lì il tocco dall'alto è proprio il modo di arrivare qui.
-        runCatching { windows.addView(view, stripParams()) }.onSuccess { strip = view }
+        runCatching { windows.addView(view, stripParams()) }
+            .onSuccess { strip = view }
+            .onFailure { Toast.makeText(this, R.string.overlay_strip_failed, Toast.LENGTH_LONG).show() }
     }
 
     private fun stripParams(): WindowManager.LayoutParams {
@@ -110,9 +113,21 @@ class NovaControlService : AccessibilityService() {
             WindowManager.LayoutParams.MATCH_PARENT,
             maxOf(bar, (STRIP_MIN_HEIGHT_DP * density).toInt()),
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or OVER_SYSTEM_BARS,
             PixelFormat.TRANSPARENT,
-        ).apply { gravity = Gravity.TOP }
+        ).apply {
+            gravity = Gravity.TOP
+            coverSystemBars()
+        }
+    }
+
+    /**
+     * Da Android 11 una finestra, se non dice altro, si ferma sotto barra di stato e di navigazione: la striscia finiva sotto
+     * la barra e il tocco sulla barra andava ad Android. Così invece la finestra parte dal bordo vero dello schermo.
+     */
+    private fun WindowManager.LayoutParams.coverSystemBars() {
+        setFitInsetsTypes(0)
+        layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
     }
 
     private fun openPanel() {
@@ -162,9 +177,9 @@ class NovaControlService : AccessibilityService() {
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
                 // Senza FLAG_NOT_FOCUSABLE: la finestra ha il fuoco e Indietro arriva a noi.
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                OVER_SYSTEM_BARS,
                 PixelFormat.TRANSLUCENT,
-            )
+            ).apply { coverSystemBars() }
         runCatching { windows.addView(host, params) }
             .onSuccess {
                 panel = host
@@ -230,6 +245,8 @@ class NovaControlService : AccessibilityService() {
 
     companion object {
         private const val STRIP_MIN_HEIGHT_DP = 24
+        private const val OVER_SYSTEM_BARS =
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         private const val FORCE_REMOVE_MS = 700L
 
         /** L'utente ha acceso il servizio nelle impostazioni di accessibilità di Android? */

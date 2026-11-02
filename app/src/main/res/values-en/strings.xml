@@ -223,6 +223,7 @@
     <string name="home_notifications_off">Off: tap and allow notification access for NOVA</string>
     <string name="overlay_service_label">NOVA Control Centre</string>
     <string name="overlay_service_description">Shows NOVA\'s Control Centre over other apps when you pull down from the top-right corner. It does not read or record what is on screen and does not tap anything for you.</string>
+    <string name="overlay_strip_failed">NOVA could not place the gesture on the status bar. Turn NOVA Control Centre off and on again in accessibility.</string>
     <string name="home_overlay">Control Centre over other apps</string>
     <string name="home_overlay_on">On: pull down from the top-right corner in any app</string>
     <string name="home_overlay_off">Off: tap and turn on NOVA Control Centre in accessibility</string>
