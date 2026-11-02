@@ -17,7 +17,7 @@ nativo con NDK): si compila da qui (`./gradlew :app:assembleRelease`) e lo contr
 | Solo `armeabi-v7a` e `arm64-v8a` (tolti `x86`, `x86_64`) | Peso e codice nativo da caricare: sono tablet ARM. |
 | Dizionari: tenuti **italiano**, **inglese USA** e **inglese GB**; tolti gli altri 15 | Peso (budget 15 MB, SPEC §15). Si possono riaggiungere (vedi sotto). |
 | Rimossi `tools/` (generatore di emoji), `art/`, `fastlane/`, `.github/`, `.idea/`, `AI_USAGE.md`, `CONTRIBUTING.md` | Non servono per costruire la tastiera. |
-| Profilo NOVA nei predefiniti (`Defaults.kt`): tasti arrotondati con bordo, vibrazione accesa (clic sonoro se manca il motorino), niente simboli secondari sui tasti, niente suggerimenti di emoji e appunti | Sensazione più pulita e soddisfacente su tablet (richiesta di Manlio); un'unica migrazione per chi aveva la prima versione (`AppUpgrade.kt`). |
+| Profilo NOVA nei predefiniti (`Defaults.kt`): tasti arrotondati con bordo, vibrazione accesa e brevissima (10 ms), clic sommesso se manca il motorino, niente fumetto sul tasto, niente simboli secondari sui tasti, niente suggerimenti di emoji e appunti | Sensazione più pulita e soddisfacente su tablet (richiesta di Manlio); un'unica migrazione per chi aveva la prima versione (`AppUpgrade.kt`). |
 | Numero di versione = 100000 + quello di NOVA | Le migrazioni di HeliBoard (`oldVersion <= 4201`…) non devono rieseguirsi a ogni aggiornamento; test `NovaUpgradeTest`. |
 | Nessun permesso Internet | SPEC §10.1: lo verifica `tools/check_keyboard.py` sul manifest unito. |
 

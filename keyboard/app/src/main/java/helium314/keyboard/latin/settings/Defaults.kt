@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Vibrator
-import android.util.TypedValue
 import android.view.Gravity
 import helium314.keyboard.keyboard.KeyboardActionListener
 import helium314.keyboard.keyboard.KeyboardTheme
@@ -27,9 +26,8 @@ object Defaults {
         // NOVA: senza vibrazione la tastiera sembrerebbe "morta" -> clic sonoro di sistema (si spegne dalle impostazioni).
         PREF_SOUND_ON = !hasVibrator(context)
         PREF_GESTURE_DYNAMIC_PREVIEW_FOLLOW_SYSTEM = getTransitionAnimationScale(context) != 0.0f
-        val dm = context.resources.displayMetrics
-        val px600 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 600f, dm)
-        PREF_POPUP_ON = dm.widthPixels >= px600 || dm.heightPixels >= px600
+        // NOVA: niente fumetto su ogni tasto, come sulla tastiera dell'iPad: meno da disegnare a ogni pressione, sensazione più leggera.
+        PREF_POPUP_ON = false
     }
 
     // must correspond to a file name
@@ -126,8 +124,10 @@ object Defaults {
     const val PREF_SUGGEST_PUNCTUATION = false
     const val PREF_SUGGEST_CLIPBOARD_CONTENT = false // NOVA: niente testo copiato che compare da solo nei suggerimenti
     const val PREF_GESTURE_INPUT = true
-    const val PREF_VIBRATION_DURATION_SETTINGS = -1
-    const val PREF_KEYPRESS_SOUND_VOLUME = -0.01f
+    // NOVA: tocco leggero. Un impulso breve di 10 ms (quello "di sistema" su certi tablet è lungo e pesante).
+    const val PREF_VIBRATION_DURATION_SETTINGS = 10
+    // NOVA: clic sommesso (il volume "di sistema" è forte). Va da 0 a 1.
+    const val PREF_KEYPRESS_SOUND_VOLUME = 0.3f
     const val PREF_KEY_LONGPRESS_TIMEOUT = 300
     const val PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY = true
     // supporting hardware keyboard still has a bunch of issues
