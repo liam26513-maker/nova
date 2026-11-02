@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina sopra le altre app: ora risponde sempre, anche nei giochi
+- Richiesta: "Il servizio è attivo ma non succede niente. Il centro di controllo mi serve accessibile anche nei giochi ovviamente."
+- **Causa probabile:** la striscia che prende il gesto si spegneva da sola quando credeva che la barra di stato fosse nascosta; sul tuo tablet lo credeva sempre, quindi il servizio era «Attivo» ma il gesto non arrivava mai.
+- **Ora:** la striscia è **sempre attiva**, anche a schermo intero. Nei giochi basta tirare giù dal bordo in alto. Il prezzo: nella fascia in alto (circa 24 dp) il tocco va a NOVA invece che al gioco; se un gioco ha lì un tasto importante, usa quello più in basso o spegni il servizio.
+
 ### Scegli i riquadri a prima vista della tendina
 - Richiesta: "Fai scegliere i riquadri a prima vista da Personalizza la Home".
 - **Dove:** Impostazioni di NOVA → Home → Personalizza → **«Centro di controllo»**: un elenco con tutti i riquadri (Wi-Fi e rete, Bluetooth, Non disturbare, Torcia, Livello grafico, Turbo, Modifica la Home, Impostazioni di NOVA). Spunta quelli che vuoi **subito sotto il dito**; tutti gli altri finiscono sotto **«Altro»**. Vale sia sulla Home sia sopra le altre app e si applica subito.
@@ -13,7 +18,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ### Tendina che sostituisce quella di Android, minimale, con «Altro»
 - Richiesta: "Fai la due, ma la tendina deve contenere tutte le impostazioni che ha quella attuale di android, ma nascoste perché deve avere un aspetto minimalista e elegante ma sempre corrente con il tema, anche con uno personalizzabile, a prima vista poi le restanti impostazioni si scoprono con una sezione "altro" sempre nella tendina oltre ad avere quelle nuove".
-- **Sostituisce quella di Android:** tirando giù da **qualsiasi punto della barra di stato** (non più solo dall'angolo) si apre la tendina di NOVA, in tutte le app. Se la barra di stato è nascosta (giochi, video a tutto schermo) la striscia si disattiva da sola e non ruba il tocco in alto.
+- **Sostituisce quella di Android:** tirando giù da **qualsiasi punto della barra di stato** (non più solo dall'angolo) si apre la tendina di NOVA, in tutte le app. La striscia è sempre attiva, anche a barra di stato nascosta (giochi, video a tutto schermo).
 - **A prima vista, solo l'essenziale:** Wi-Fi, Bluetooth, Non disturbare, Torcia, poi volume e luminosità, e una scritta **«Altro ⌄»**.
 - **Sotto «Altro»:** prima i comandi nuovi di NOVA (livello grafico, Turbo, modifica Home, impostazioni di NOVA), poi le impostazioni di Android: **Notifiche di Android, Impostazioni rapide di Android, Rotazione automatica** (si cambia lì, con il permesso della luminosità), Modalità aereo, Hotspot, Posizione, Risparmio energetico, Risparmio dati, Schermo e tema scuro, Luce notturna, NFC, Trasmetti schermo, Suoni, Inversione e Correzione dei colori, Accessibilità, Sveglie. La lista scorre.
 - **Perché le "Notifiche di Android" e le "Impostazioni rapide di Android" sono lì:** Android non lascia a un'app cambiare da sola quasi nessun interruttore (Wi-Fi, aereo, hotspot, posizione…): NOVA apre la schermata giusta. Per i riquadri che NOVA non ha (registra schermo, scanner QR, portafoglio, dispositivi domestici…) la riga «Impostazioni rapide di Android» apre il pannello originale: **nessuna impostazione va persa**, e le notifiche restano sempre raggiungibili anche se la barra di stato ora apre NOVA.
