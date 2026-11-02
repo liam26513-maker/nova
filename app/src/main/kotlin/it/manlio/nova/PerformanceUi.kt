@@ -130,6 +130,9 @@ class PerformanceUi(
     var turboCount by mutableIntStateOf(0)
         private set
 
+    /** Cosa fa la Modalità Gaming, voce per voce (Impostazioni → Modalità Gaming). */
+    val modeOptions: ModeOptions get() = app.modes.options
+
     /** [withGraphics] falso: chiude solo le app (lo usa una modalità, che gestisce da sola la grafica e il suo ripristino). */
     suspend fun runTurbo(withGraphics: Boolean = true): TurboResult? {
         if (app.shizuku.status.value != ShizukuStatus.READY) return null
