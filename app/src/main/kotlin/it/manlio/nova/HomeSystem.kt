@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.HomePrefs
 import it.manlio.nova.feature.home.HomePrefsStore
 import it.manlio.nova.feature.home.IconSpec
@@ -66,6 +67,25 @@ internal object HomeSystem {
             val text =
                 if (done == null) context.getString(R.string.perf_failed) else context.getString(R.string.perf_turbo_done, done.stopped)
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * Prepara l'accensione del servizio di accessibilità: con Shizuku pronto toglie da sola il blocco «impostazione con
+     * restrizioni» di Android (una volta sola, senza passare dai tre puntini), poi apre le impostazioni di accessibilità.
+     * Se non riesce, lo dice e indica la strada a mano.
+     */
+    fun unlockAndOpenAccessibility(
+        app: NovaApp,
+        scope: CoroutineScope,
+    ) {
+        scope.launch {
+            if (app.shizuku.status.value == ShizukuStatus.READY) {
+                val ok = runCatching { app.systemChanges.allowRestrictedSettings(app.packageName).ok }.getOrDefault(false)
+                val text = if (ok) R.string.overlay_unlocked else R.string.overlay_unlock_failed
+                Toast.makeText(app, text, Toast.LENGTH_LONG).show()
+            }
+            openAccessibilitySettings(app)
         }
     }
 

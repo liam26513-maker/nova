@@ -76,7 +76,7 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
   - [ ] Livello grafico (sotto «Altro»): ogni tocco passa Automatico → Massimo → Bilanciato → Prestazioni → Automatico.
   - [ ] «Modifica la Home» entra in modifica. «Cerca» → «controllo» apre la tendina.
   - [ ] Con TalkBack acceso: «Centro di controllo» si trova e apre il pannello senza il gesto.
-- [ ] **Centro di controllo sopra le altre app:** Impostazioni di NOVA → Home → «Centro di controllo sopra le altre app» → accendi «Centro di controllo di NOVA» nell'accessibilità (se Android lo nega: App → NOVA → ⋮ → «Consenti impostazioni con restrizioni»). Torna alle Impostazioni di NOVA: dice «Attivo».
+- [ ] **Centro di controllo sopra le altre app:** (con Shizuku attivo) Impostazioni di NOVA → Home → «Centro di controllo sopra le altre app»: compare «Sbloccato…» e si apre l'accessibilità senza passare dai tre puntini → accendi «Centro di controllo di NOVA» nell'accessibilità (se Android lo nega: App → NOVA → ⋮ → «Consenti impostazioni con restrizioni»). Torna alle Impostazioni di NOVA: dice «Attivo».
   - [ ] Apri un'app qualsiasi (browser, YouTube) e tira giù da **qualsiasi punto della barra di stato**: compare la tendina di NOVA, non quella di Android.
   - [ ] **In un gioco o in un video a tutto schermo** (barra di stato nascosta): tira giù dal bordo in alto, compare la tendina di NOVA. Nella fascia alta (circa 24 dp) il tocco va a NOVA, non al gioco.
   - [ ] A prima vista ci sono solo Wi-Fi, Bluetooth, Non disturbare, Torcia, volume, luminosità e «Altro». Tocca «Altro»: si aprono i comandi di NOVA e la lista delle impostazioni di Android (scorre). Il colore della scheda segue il tema; cambia accento/sfondo in Personalizza la Home e controlla.

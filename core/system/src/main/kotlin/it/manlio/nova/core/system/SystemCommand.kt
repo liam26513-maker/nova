@@ -96,6 +96,20 @@ sealed interface SystemCommand {
     }
 
     /**
+     * Permette (o toglie il permesso) a NOVA di usare le impostazioni con restrizioni di Android, necessarie per accendere il
+     * servizio di accessibilità di un'app installata a mano (`appops set … ACCESS_RESTRICTED_SETTINGS`). Vale **solo per NOVA
+     * stessa** ([ownPackage] deve essere il suo pacchetto): mai per un'altra app. [allow] falso torna al valore predefinito.
+     */
+    data class SetRestrictedSettings(val ownPackage: String, val allow: Boolean) : SystemCommand {
+        init {
+            requirePackage(ownPackage)
+            require(ownPackage == OWN_PACKAGE) { "Solo NOVA può sbloccare le proprie impostazioni: $ownPackage" }
+        }
+
+        override val argv = listOf("appops", "set", ownPackage, "ACCESS_RESTRICTED_SETTINGS", if (allow) "allow" else "default")
+    }
+
+    /**
      * Accende o spegne uno degli interruttori del pannello rapido di Android (Wi-Fi, Bluetooth, aereo…). L'insieme è chiuso
      * ([QuickToggle]): nessuna stringa dell'utente arriva alla shell, solo questi comandi fissi.
      * Si usa sempre tramite [SystemTools.setToggle], che registra lo stato precedente.
@@ -108,6 +122,7 @@ sealed interface SystemCommand {
         const val MIN_DPI = 120
         const val MAX_DPI = 640
         const val MAX_APK_BYTES = 200L * 1024 * 1024
+        const val OWN_PACKAGE = "it.manlio.nova"
         private const val MAX_PACKAGE_LENGTH = 128
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")

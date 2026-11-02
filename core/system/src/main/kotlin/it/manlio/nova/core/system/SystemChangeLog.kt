@@ -33,6 +33,10 @@ sealed interface SystemChange {
     @Serializable
     data class PackageDisabled(val packageName: String, override val time: Long) : SystemChange
 
+    /** NOVA ha sbloccato le proprie impostazioni con restrizioni (si annulla riportando il valore predefinito). */
+    @Serializable
+    data class RestrictedSettings(val packageName: String, override val time: Long) : SystemChange
+
     /** Interruttore del pannello rapido cambiato. [previous] è lo stato originale, prima della prima modifica di NOVA. */
     @Serializable
     data class Toggle(
@@ -168,6 +172,16 @@ class SystemChangeLog(
         return result
     }
 
+    /** Sblocca le impostazioni con restrizioni di NOVA (una sola voce nel registro, anche se si ripete). */
+    suspend fun allowRestrictedSettings(ownPackage: String): ShellResult {
+        val result = runner.run(SystemCommand.SetRestrictedSettings(ownPackage, allow = true))
+        if (result.ok) {
+            synchronized(changes) { changes.removeAll { it is SystemChange.RestrictedSettings && it.packageName == ownPackage } }
+            record(SystemChange.RestrictedSettings(ownPackage, clock()))
+        }
+        return result
+    }
+
     suspend fun disablePackage(packageName: String): ShellResult {
         val result = runner.run(SystemCommand.DisablePackage(packageName))
         if (result.ok) record(SystemChange.PackageDisabled(packageName, clock()))
@@ -186,6 +200,8 @@ class SystemChangeLog(
                         is SystemChange.PackageDisabled -> runner.run(SystemCommand.EnablePackage(change.packageName))
                         is SystemChange.Density -> runner.run(SystemCommand.SetDensity(change.previous))
                         is SystemChange.Toggle -> runner.run(SystemCommand.SetToggle(change.toggle, change.previous))
+                        is SystemChange.RestrictedSettings ->
+                            runner.run(SystemCommand.SetRestrictedSettings(change.packageName, allow = false))
                     }
                 }.getOrElse { ShellResult(-1, it.message.orEmpty()) }
             if (!result.ok) failed += change

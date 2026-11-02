@@ -26,3 +26,7 @@ Risoluzione dello schermo (solo densità), risparmio energetico intelligente aut
 ## Interruttori del pannello rapido (centro di controllo)
 
 `SystemCommand.SetToggle(QuickToggle, on)`: Wi-Fi, Bluetooth, modalità aereo, non disturbare, tema scuro, posizione, risparmio energetico, risparmio dati, luce notturna, inversione dei colori. Insieme **chiuso**: ognuno ha il suo comando fisso (nessuna stringa dall'utente alla shell). `SystemTools.setToggle(toggle, on, wasOn)` registra lo stato originale in `SystemChange.Toggle` e si annulla con «Annulla tutte le modifiche». Lo stato si legge dalle API pubbliche dell'app (`app/QuickToggles`), non dalla shell.
+
+## Sblocco delle impostazioni con restrizioni di NOVA
+
+`SystemCommand.SetRestrictedSettings(ownPackage, allow)` → `appops set <pacchetto> ACCESS_RESTRICTED_SETTINGS allow|default`. `ownPackage` **deve essere** `SystemCommand.OWN_PACKAGE` (`it.manlio.nova`): qualunque altro pacchetto è rifiutato già nel costruttore. `SystemChangeLog.allowRestrictedSettings` registra `SystemChange.RestrictedSettings` (una sola voce) e `revertAll` riporta il valore predefinito. In app: `HomeSystem.unlockAndOpenAccessibility` (riga «Centro di controllo sopra le altre app»): con Shizuku pronto sblocca, avvisa con un Toast e apre l'accessibilità; senza, apre soltanto l'accessibilità.
