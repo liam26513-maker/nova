@@ -47,9 +47,7 @@ internal class QuickToggles(
             QuickToggle.WIFI -> context.getSystemService(WifiManager::class.java).isWifiEnabled
             QuickToggle.BLUETOOTH -> global("bluetooth_on")
             QuickToggle.AIRPLANE -> global(Settings.Global.AIRPLANE_MODE_ON)
-            QuickToggle.DND -> context.getSystemService(NotificationManager::class.java).currentInterruptionFilter.let {
-                it != NotificationManager.INTERRUPTION_FILTER_ALL && it != NotificationManager.INTERRUPTION_FILTER_UNKNOWN
-            }
+            QuickToggle.DND -> doNotDisturbOn()
             QuickToggle.DARK_THEME ->
                 Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
             QuickToggle.LOCATION -> context.getSystemService(LocationManager::class.java).isLocationEnabled
@@ -60,6 +58,11 @@ internal class QuickToggles(
             QuickToggle.NIGHT_LIGHT -> secure("night_display_activated")
             QuickToggle.INVERSION -> secure("accessibility_display_inversion_enabled")
         }
+
+    private fun doNotDisturbOn(): Boolean {
+        val filter = context.getSystemService(NotificationManager::class.java).currentInterruptionFilter
+        return filter != NotificationManager.INTERRUPTION_FILTER_ALL && filter != NotificationManager.INTERRUPTION_FILTER_UNKNOWN
+    }
 
     private fun global(key: String) = Settings.Global.getInt(context.contentResolver, key, 0) == 1
 

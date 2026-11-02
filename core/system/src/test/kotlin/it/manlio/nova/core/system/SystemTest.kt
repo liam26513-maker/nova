@@ -89,7 +89,8 @@ class QuickToggleCommandTest {
                 QuickToggle.LOCATION to ("cmd location set-location-enabled true" to "cmd location set-location-enabled false"),
                 QuickToggle.BATTERY_SAVER to ("settings put global low_power 1" to "settings put global low_power 0"),
                 QuickToggle.DATA_SAVER to ("cmd netpolicy set restrict-background true" to "cmd netpolicy set restrict-background false"),
-                QuickToggle.NIGHT_LIGHT to ("settings put secure night_display_activated 1" to "settings put secure night_display_activated 0"),
+                QuickToggle.NIGHT_LIGHT to
+                    ("settings put secure night_display_activated 1" to "settings put secure night_display_activated 0"),
                 QuickToggle.INVERSION to
                     (
                         "settings put secure accessibility_display_inversion_enabled 1" to
