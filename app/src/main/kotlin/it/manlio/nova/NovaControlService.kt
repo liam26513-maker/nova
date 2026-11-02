@@ -16,7 +16,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
@@ -57,7 +56,6 @@ class NovaControlService : AccessibilityService() {
     private var panel: PanelHost? = null
     private var controls: HomeControls? = null
     private var closing by mutableStateOf(false)
-    private var stripTouchable = true
     private val app get() = application as NovaApp
 
     override fun onServiceConnected() {
@@ -74,7 +72,7 @@ class NovaControlService : AccessibilityService() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        strip?.let { runCatching { windows.updateViewLayout(it, stripParams(stripTouchable)) } }
+        strip?.let { runCatching { windows.updateViewLayout(it, stripParams()) } }
     }
 
     override fun onDestroy() {
@@ -100,34 +98,21 @@ class NovaControlService : AccessibilityService() {
                     true
                 }
             }
-        // A barra di stato nascosta (giochi, video a tutto schermo) la striscia non deve rubare il tocco in alto.
-        view.setOnApplyWindowInsetsListener { _, insets ->
-            setStripActive(insets.isVisible(WindowInsets.Type.statusBars()))
-            insets
-        }
-        runCatching { windows.addView(view, stripParams(true)) }.onSuccess { strip = view }
+        // Sempre attiva, anche con la barra di stato nascosta (giochi, video): lì il tocco dall'alto è proprio il modo di arrivare qui.
+        runCatching { windows.addView(view, stripParams()) }.onSuccess { strip = view }
     }
 
-    private fun stripParams(touchable: Boolean): WindowManager.LayoutParams {
+    private fun stripParams(): WindowManager.LayoutParams {
         val density = resources.displayMetrics.density
         val barId = resources.getIdentifier("status_bar_height", "dimen", "android")
         val bar = if (barId > 0) resources.getDimensionPixelSize(barId) else 0
-        var flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        if (!touchable) flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         return WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             maxOf(bar, (STRIP_MIN_HEIGHT_DP * density).toInt()),
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-            flags,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSPARENT,
         ).apply { gravity = Gravity.TOP }
-    }
-
-    private fun setStripActive(active: Boolean) {
-        val view = strip ?: return
-        if (stripTouchable == active) return
-        stripTouchable = active
-        runCatching { windows.updateViewLayout(view, stripParams(active)) }
     }
 
     private fun openPanel() {
