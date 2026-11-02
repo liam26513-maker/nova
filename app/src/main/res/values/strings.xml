@@ -233,7 +233,9 @@
     <string name="home_overlay_on">Attivo: tira giù dall\'angolo in alto a destra, in qualunque app</string>
     <string name="home_overlay_off">Non attivo: tocca (con Shizuku si sblocca da solo) e accendi «Centro di controllo di NOVA»</string>
     <string name="more_gaming">Modalità Gaming</string>
-    <string name="mode_on">Modalità Gaming attiva. Per uscire: tendina → Altro → Modalità Gaming.</string>
+    <string name="mode_action_screen">schermo sempre acceso</string>
+    <string name="mode_action_sync">pausa della sincronizzazione</string>
+    <string name="mode_on">Modalità Gaming attiva: grafica al massimo, Non disturbare, rotazione bloccata, schermo acceso, sincronizzazione in pausa; Turbo: chiuse %1$d app. Per uscire: tendina → Altro → Modalità Gaming.</string>
     <string name="mode_on_partial">Modalità Gaming attiva, ma non ho potuto: %1$s (%2$s). Per uscire: tendina → Altro → Modalità Gaming.</string>
     <string name="mode_off">Modalità Gaming spenta: tutto com\'era.</string>
     <string name="mode_off_pending">Modalità Gaming spenta, ma una cosa non è tornata com\'era: ci riprovo al prossimo avvio.</string>

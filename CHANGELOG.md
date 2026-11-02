@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Modalità Gaming: corretto lo schermo che andava in verticale; ora fa più cose, e le dice
+- Richiesta: "Non mi sembra che cambi tanto e poi appena la attivo la schermata si mette in verticale senza mettersi in orizzontale nella home".
+- **Errore mio, corretto:** per «bloccare la rotazione» spegnevo solo la rotazione automatica, ma Android allora torna a un orientamento salvato a parte, che sul tuo tablet è verticale. Ora **salvo l'orientamento in cui sei** (per te: orizzontale) e blocco quello; all'uscita rimetto tutti e due i valori com'erano. Anche la Home resta in orizzontale.
+- **Fa di più, cose che si vedono:** oltre a grafica al massimo, Non disturbare, rotazione bloccata e Turbo, ora tiene **lo schermo acceso** (fino a 30 minuti senza toccarlo, poi torna il tempo di prima) e mette in **pausa la sincronizzazione automatica** degli account. Due nuovi permessi normali, senza richieste: leggere/modificare la sincronizzazione.
+- **Dice cosa ha fatto:** l'avviso all'ingresso elenca le cose attivate e **quante app ha chiuso il Turbo** («chiuse 14 app»), così si vede l'effetto invece di fidarsi.
+- **Onestà su cosa può cambiare:** il tuo schermo è a 60 Hz e Android non permette di andare oltre, quindi qui non c'è una frequenza da alzare. L'effetto più forte sui giochi (risoluzione per gioco) richiede di sapere *quale* gioco stai aprendo: è il prossimo passo della Gaming, insieme all'attivazione automatica e alle uscite di emergenza.
+
 ### Fase 3, primo passo: motore delle modalità e Modalità Gaming di base (solo manuale)
 - Richiesta: "Per adesso va bene. ora parti con le altri fasi del piano".
 - **Dove:** tendina di controllo → **Altro → «Modalità Gaming»** (Sì/No). Un tocco entra, un tocco esce e **rimette tutto com'era**. Parte solo a mano: niente attivazione automatica, per ora.

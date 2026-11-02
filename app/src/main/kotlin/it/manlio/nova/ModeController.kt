@@ -3,7 +3,6 @@ package it.manlio.nova
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.widget.Toast
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.modes.ActionOutcome
@@ -31,6 +30,10 @@ class ModeController(
     private val context: Context = app
     private val quick = QuickToggles(app, app, scope)
     private val main = Handler(Looper.getMainLooper())
+    private val settings = ModeSettings(context)
+
+    /** Quante app ha chiuso il Turbo all'ultimo ingresso (per dirlo all'utente). */
+    private var turboClosed = 0
 
     val engine = ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")))
 
@@ -66,7 +69,9 @@ class ModeController(
         when (action) {
             ModeAction.PERFORMANCE_GRAPHICS -> performanceGraphics()
             ModeAction.DO_NOT_DISTURB -> doNotDisturb()
-            ModeAction.LOCK_ROTATION -> lockRotation()
+            ModeAction.LOCK_ROTATION -> settings.lockRotation()
+            ModeAction.KEEP_SCREEN_ON -> settings.keepScreenOn()
+            ModeAction.PAUSE_SYNC -> settings.pauseSync()
             ModeAction.TURBO -> turbo()
         }
 
@@ -74,7 +79,9 @@ class ModeController(
         when (token.kind) {
             KIND_GRAPHICS -> restoreGraphics(token.value)
             KIND_DND -> !quick.available || app.systemTools.setToggle(QuickToggle.DND, on = false, wasOn = true)
-            KIND_ROTATION -> restoreRotation(token.value)
+            ModeSettings.KIND_ROTATION -> settings.restoreRotation(token.value)
+            ModeSettings.KIND_SCREEN_ON -> settings.restoreScreenTimeout(token.value)
+            ModeSettings.KIND_SYNC -> settings.resumeSync()
             else -> true // segnalibro di una versione futura o sconosciuto: niente da annullare
         }
 
@@ -100,29 +107,16 @@ class ModeController(
         return if (ok) ActionOutcome.Applied(UndoToken(KIND_DND)) else ActionOutcome.Failed("Android non ha obbedito")
     }
 
-    private fun lockRotation(): ActionOutcome {
-        if (!Settings.System.canWrite(context)) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_write))
-        val before = Settings.System.getInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 1)
-        val ok = runCatching { Settings.System.putInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) }.isSuccess
-        if (!ok) return ActionOutcome.Failed("impostazione non scrivibile")
-        return ActionOutcome.Applied(UndoToken(KIND_ROTATION, before.toString()))
-    }
-
-    private fun restoreRotation(value: String): Boolean {
-        if (!Settings.System.canWrite(context)) return false
-        val before = value.toIntOrNull() ?: 1
-        return runCatching { Settings.System.putInt(context.contentResolver, Settings.System.ACCELEROMETER_ROTATION, before) }.isSuccess
-    }
-
     private suspend fun turbo(): ActionOutcome {
         if (!quick.available) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_shizuku))
         val done = PerformanceUi(app, scope).runTurbo(withGraphics = false) // la grafica la gestisce la modalità, con il suo ripristino
+        turboClosed = done?.stopped ?: 0
         return if (done == null) ActionOutcome.Failed("Turbo non riuscito") else ActionOutcome.Applied()
     }
 
     private fun summary(report: EnterReport): String {
         val missing = report.skipped + report.failed
-        if (missing.isEmpty()) return context.getString(R.string.mode_on)
+        if (missing.isEmpty()) return context.getString(R.string.mode_on, turboClosed)
         val names = missing.joinToString(", ") { context.getString(label(it.first)) }
         val why = missing.map { it.second }.distinct().joinToString("; ")
         return context.getString(R.string.mode_on_partial, names, why)
@@ -133,6 +127,8 @@ class ModeController(
             ModeAction.PERFORMANCE_GRAPHICS -> R.string.mode_action_graphics
             ModeAction.DO_NOT_DISTURB -> R.string.mode_action_dnd
             ModeAction.LOCK_ROTATION -> R.string.mode_action_rotation
+            ModeAction.KEEP_SCREEN_ON -> R.string.mode_action_screen
+            ModeAction.PAUSE_SYNC -> R.string.mode_action_sync
             ModeAction.TURBO -> R.string.mode_action_turbo
         }
 
@@ -143,7 +139,6 @@ class ModeController(
     private companion object {
         const val KIND_GRAPHICS = "graphics"
         const val KIND_DND = "dnd"
-        const val KIND_ROTATION = "rotation"
         const val AUTO = "auto"
     }
 }

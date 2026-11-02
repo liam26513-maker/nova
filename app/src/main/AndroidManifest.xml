@@ -11,6 +11,9 @@
         tools:ignore="ProtectedPermissions" />
     <!-- Centro di controllo: sapere se il Wi-Fi è acceso (permesso normale, nessuna richiesta; non dà accesso a Internet). -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Modalità Gaming: mettere in pausa la sincronizzazione automatica degli account e riprenderla all'uscita (permessi normali, nessuna richiesta). -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <!-- Scorrere giù sulla Home apre le notifiche. -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <!-- Facoltativo, lo concede l'utente: serve solo a leggere lo sfondo di sistema per sfocarlo
