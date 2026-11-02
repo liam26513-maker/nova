@@ -1,5 +1,7 @@
 package it.manlio.nova.feature.home
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -38,5 +40,18 @@ class ControlSheetMathTest {
         assertEquals(0.4f, ControlSheetMath.snap(0.36f, 10), 1e-6f)
         assertEquals(1f, ControlSheetMath.snap(2f, 15), 0f)
         assertEquals(0f, ControlSheetMath.snap(0.01f, 15), 0f)
+    }
+
+    @Test
+    fun `a sheet driven without a frame clock goes to the end at once instead of crashing`() {
+        // È il caso del servizio di accessibilità: una scope senza orologio dei fotogrammi non può animare.
+        val sheet = ControlSheetState(CoroutineScope(Dispatchers.Unconfined))
+        sheet.drag(0.5f)
+        sheet.settle(open = true, velocity = 2f)
+        assertEquals(1f, sheet.progress, 0f)
+        assertTrue(sheet.target)
+        sheet.settle(open = false)
+        assertEquals(0f, sheet.progress, 0f)
+        assertFalse(sheet.target)
     }
 }

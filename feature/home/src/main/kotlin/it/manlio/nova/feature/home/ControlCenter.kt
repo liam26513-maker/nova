@@ -38,6 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -164,8 +165,14 @@ class ControlSheetState(
         job?.cancel()
         job =
             scope.launch {
-                val spec = spring<Float>(dampingRatio = SHEET_DAMPING, stiffness = SHEET_STIFFNESS)
-                animate(progress, if (open) 1f else 0f, velocity, spec) { v, _ -> progress = v.coerceIn(0f, 1f) }
+                val end = if (open) 1f else 0f
+                if (coroutineContext[MonotonicFrameClock] == null) {
+                    // Un'animazione senza orologio dei fotogrammi lancia un errore e chiude l'app: meglio arrivare in fondo di colpo.
+                    progress = end
+                } else {
+                    val spec = spring<Float>(dampingRatio = SHEET_DAMPING, stiffness = SHEET_STIFFNESS)
+                    animate(progress, end, velocity, spec) { v, _ -> progress = v.coerceIn(0f, 1f) }
+                }
             }
     }
 }
