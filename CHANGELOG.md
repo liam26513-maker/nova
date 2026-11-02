@@ -4,12 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
-### Tastiera di NOVA: base inserita (primo passo, ancora da pubblicare)
+### Tastiera di NOVA: base inserita e allegata alle release (primi passi)
 - Richiesta: "continua con i restanti passaggi del piano ... sottolineo l'ottimizzazione della tastiera per renderla più veloce e funzionale".
 - **Cosa c'è ora:** nella cartella `keyboard/` è entrato il codice di **HeliBoard** (tastiera open source, licenza GPL-3.0, derivata da quella di Android), come prevede il piano (SPEC §10.1), con nome **«Tastiera NOVA»** e pacchetto `it.manlio.nova.keyboard`. La licenza e le modifiche sono documentate in `docs/LICENZE.md` e `keyboard/UPSTREAM.md`.
 - **Più leggera e veloce da installare:** solo i processori dei tablet (ARM a 32 e 64 bit) e solo i dizionari di **italiano e inglese**; meno peso, meno da caricare.
 - **Privacy:** nessun permesso Internet, controllato in automatico sul manifest finale a ogni modifica.
-- **Non è ancora installabile da NOVA:** per ora la CI controlla che la tastiera si compili e rispetti peso e permessi. Pubblicarla nelle release e installarla/aggiornarla dall'app è il passo successivo. Mancano ancora le funzioni di §10 (aspetto iOS e tema di NOVA, tastiera divisa e flottante, trackpad sulla barra spaziatrice, espansioni di testo, scrittura a mano, ecc.).
+- **Come averla:** ogni release di NOVA ora allega anche `nova-tastiera-<numero>.apk` (firmato con la stessa chiave; l'APK pesa circa 9,4 MB). **Per ora si installa a mano** dalla pagina Releases di GitHub; poi, in Impostazioni di Android → Sistema → Tastiera → Tastiere sullo schermo, accendi «Tastiera NOVA». Installarla e aggiornarla da dentro NOVA è il passo successivo. Se la tastiera non si costruisce, la release di NOVA esce lo stesso. Mancano ancora le funzioni di §10 (aspetto iOS e tema di NOVA, tastiera divisa e flottante, trackpad sulla barra spaziatrice, espansioni di testo, scrittura a mano, ecc.).
 - **Velocità:** non l'ho ancora misurata sul tablet, quindi non prometto numeri: le ottimizzazioni vere si faranno confrontando prima e dopo.
 
 ### Tendina sopra le altre app: due cause per cui spariva subito, e un tasto di scorta

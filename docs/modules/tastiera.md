@@ -1,6 +1,6 @@
 # Tastiera di NOVA (`keyboard/`)
 
-Stato: **base inserita (Fase 4, primo passo)**. Fork di HeliBoard (GPL-3.0); vedi `keyboard/UPSTREAM.md` per l'origine e le modifiche e
+Stato: **base inserita e allegata alle release (Fase 4, primi passi)**. Fork di HeliBoard (GPL-3.0); vedi `keyboard/UPSTREAM.md` per l'origine e le modifiche e
 `docs/LICENZE.md` per le licenze. Mancano ancora quasi tutte le funzioni di SPEC §10 (elenco in fondo).
 
 ## Com'è fatta
@@ -11,7 +11,7 @@ Stato: **base inserita (Fase 4, primo passo)**. Fork di HeliBoard (GPL-3.0); ved
   riportare le correzioni di HeliBoard).
 - **CI:** `.github/workflows/tastiera.yml`, solo quando cambia `keyboard/`: prove di `tools/check_keyboard.py`, `assembleRelease`, controllo del
   **manifest unito** (nessun `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`; pacchetto giusto) e del peso contro `keyboardApkMb` (15 MB).
-- **Firma:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI).
+- **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. **Si installa a mano** dalla pagina Releases; l'installazione e l'aggiornamento dall'app sono il passo successivo.
 
 ## Ottimizzazioni già fatte (a livello di costruzione)
 
@@ -26,4 +26,4 @@ tocco al tasto, apertura della tastiera, memoria) prima e dopo.
 
 Aspetto iOS e tema di NOVA (`ContentProvider` dei token), tastiera divisa/flottante/riga numeri (disattivate di default), trackpad sulla barra
 spaziatrice, espansioni di testo, appunti → PC, dettatura, scrittura a mano → testo, «Invia a Claude», varianti per modalità, layout italiano della
-tastiera fisica e scorciatoie. Pubblicazione dell'APK nelle release e installazione/aggiornamento dall'app: passo successivo.
+tastiera fisica e scorciatoie. Installazione e aggiornamento dall'app (oggi si installa a mano dalla pagina Releases).
