@@ -37,7 +37,7 @@ jobs:
           chmod +x gradlew
           # Elenco dei compiti di prova disponibili (utile se il nome cambia con la versione degli strumenti).
           ./gradlew :app:tasks --all --console=plain | grep -E "^test[A-Za-z]*UnitTest " || true
-          ./gradlew :app:testDebugNoMinifyUnitTest --tests 'helium314.keyboard.latin.NovaUpgradeTest' --stacktrace
+          ./gradlew :app:testDebugUnitTest --tests 'helium314.keyboard.latin.NovaUpgradeTest' --stacktrace
 
       - name: Build release (senza firma)
         working-directory: keyboard
