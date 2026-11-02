@@ -19,6 +19,13 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Impostazioni di Android → Tastiera → Tastiere sullo schermo: compare «Tastiera NOVA»; scegliendola si scrive in italiano e in inglese con suggerimenti.
 - [ ] Nessuna richiesta di accesso a Internet nelle informazioni dell'app.
 
+## Modalità Gaming di base (Fase 3, primo passo)
+- [ ] Tendina → Altro → «Modalità Gaming» → tocca: compare un avviso («Modalità Gaming attiva…» oppure «…ma non ho potuto: … (serve Shizuku attivo)»). La riga dice «Sì».
+- [ ] Con Shizuku attivo: Non disturbare si accende e le app in secondo piano si chiudono; la rotazione resta bloccata; il livello grafico è su Prestazioni.
+- [ ] Riapri la tendina → Altro → «Modalità Gaming» → tocca di nuovo: avviso «tutto com'era»; Non disturbare, rotazione e livello grafico sono tornati come prima di entrare.
+- [ ] Entra nella modalità e **chiudi NOVA a forza** (Impostazioni di Android → App → NOVA → Arresto forzato), poi riaprila: la modalità risulta ancora attiva (riga «Sì») e si può uscire.
+- [ ] (Lungo) lasciarla accesa oltre 6 ore: si spegne da sola.
+
 ## Shizuku e aggiornamenti (Fase 0, punti 7–8)
 - [ ] Senza Shizuku: "Strumenti di sistema" mostra "Non attivo" e "Apri Shizuku per attivarlo" apre Shizuku o il Play Store.
 - [ ] Con Shizuku attivo: "Concedi il permesso a NOVA" mostra la richiesta di Shizuku; dopo il sì lo stato diventa "Attivo".

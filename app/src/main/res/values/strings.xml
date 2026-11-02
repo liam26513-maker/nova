@@ -232,6 +232,17 @@
     <string name="home_overlay">Centro di controllo sopra le altre app</string>
     <string name="home_overlay_on">Attivo: tira giù dall\'angolo in alto a destra, in qualunque app</string>
     <string name="home_overlay_off">Non attivo: tocca (con Shizuku si sblocca da solo) e accendi «Centro di controllo di NOVA»</string>
+    <string name="more_gaming">Modalità Gaming</string>
+    <string name="mode_on">Modalità Gaming attiva. Per uscire: tendina → Altro → Modalità Gaming.</string>
+    <string name="mode_on_partial">Modalità Gaming attiva, ma non ho potuto: %1$s (%2$s). Per uscire: tendina → Altro → Modalità Gaming.</string>
+    <string name="mode_off">Modalità Gaming spenta: tutto com\'era.</string>
+    <string name="mode_off_pending">Modalità Gaming spenta, ma una cosa non è tornata com\'era: ci riprovo al prossimo avvio.</string>
+    <string name="mode_reason_shizuku">serve Shizuku attivo</string>
+    <string name="mode_reason_write">serve il permesso di modificare le impostazioni</string>
+    <string name="mode_action_graphics">grafica al massimo delle prestazioni</string>
+    <string name="mode_action_dnd">Non disturbare</string>
+    <string name="mode_action_rotation">blocco della rotazione</string>
+    <string name="mode_action_turbo">Turbo</string>
     <string name="more_notifications">Notifiche di Android</string>
     <string name="more_quick_settings">Impostazioni rapide di Android</string>
     <string name="more_rotation">Rotazione automatica</string>

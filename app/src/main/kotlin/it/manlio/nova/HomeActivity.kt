@@ -257,6 +257,7 @@ class HomeActivity : ComponentActivity() {
         catalog.start()
         widgets.start()
         controls.start()
+        app.modes.start() // esce da una modalità dimenticata e riprende una rimasta a metà
         mediaHub.start()
         controlsTick++ // il permesso della luminosità può essere cambiato mentre la Home non c'era
         getSystemService(WindowManager::class.java).addCrossWindowBlurEnabledListener(mainExecutor, blurListener)

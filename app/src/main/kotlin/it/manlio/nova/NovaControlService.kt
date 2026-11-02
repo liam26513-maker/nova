@@ -167,7 +167,8 @@ class NovaControlService : AccessibilityService() {
 
     /** Apre la finestra del pannello e restituisce la tendina da trascinare; null se non si può (schermo bloccato, già aperta). */
     private fun openPanel(): ControlSheetState? {
-        if (panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return null
+        // In modalità provvisoria l'app non carica i suoi strumenti (Shizuku, registro…): la tendina non si apre.
+        if (app.safeModeReason != null || panel != null || getSystemService(KeyguardManager::class.java).isKeyguardLocked) return null
         val actions = newActions()
         closing = false
         val sheet = ControlSheetState(scope).also { it.estimate(PANEL_TRAVEL_DP * resources.displayMetrics.density) }

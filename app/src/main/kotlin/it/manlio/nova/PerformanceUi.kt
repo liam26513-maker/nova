@@ -130,10 +130,11 @@ class PerformanceUi(
     var turboCount by mutableIntStateOf(0)
         private set
 
-    suspend fun runTurbo(): TurboResult? {
+    /** [withGraphics] falso: chiude solo le app (lo usa una modalità, che gestisce da sola la grafica e il suo ripristino). */
+    suspend fun runTurbo(withGraphics: Boolean = true): TurboResult? {
         if (app.shizuku.status.value != ShizukuStatus.READY) return null
         val result = app.systemTools.turbo(TurboPlan.candidates(launchable(), keep()))
-        startTurboGraphics()
+        if (withGraphics) startTurboGraphics()
         return result
     }
 
