@@ -56,7 +56,19 @@ class Level(
 class MoreItem(
     val label: String,
     val state: String? = null,
-    val onClick: () -> String? = { null },
+    /** Riceve una funzione per correggere lo stato se Android non ha obbedito (mostra com'è davvero). */
+    val onClick: ((String) -> Unit) -> String? = { null },
+)
+
+/**
+ * Un interruttore che si cambia subito dalla tendina (Wi-Fi, Bluetooth, non disturbare): [read] dice com'è adesso,
+ * [set] lo cambia subito e chiama il secondo argomento solo se Android non ha obbedito, così la tendina rilegge lo stato vero.
+ * Esiste solo se il sistema lo permette (Shizuku attivo); senza, il riquadro apre la schermata di Android.
+ */
+@Immutable
+class Toggle(
+    val read: () -> Boolean,
+    val set: (Boolean, () -> Unit) -> Unit,
 )
 
 /**
@@ -79,4 +91,6 @@ class ControlActions(
     val onTurbo: (() -> Unit)? = null,
     /** Le altre impostazioni di Android, sotto «Altro». */
     val more: List<MoreItem> = emptyList(),
+    /** Interruttori diretti per i riquadri che altrimenti aprirebbero un pannello di Android. */
+    val toggles: Map<SystemPanel, Toggle> = emptyMap(),
 )

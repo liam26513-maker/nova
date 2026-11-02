@@ -121,7 +121,7 @@ internal object ControlSheetMath {
  * mentre si trascina. Si legge solo nella fase di disegno, così durante il gesto non si ricompone niente.
  */
 @Stable
-internal class ControlSheetState(
+class ControlSheetState(
     private val scope: CoroutineScope,
 ) {
     var progress by mutableFloatStateOf(0f)
@@ -130,15 +130,14 @@ internal class ControlSheetState(
     /** Quanto deve scorrere il pannello per passare da chiuso ad aperto (altezza + margine): il dito lo segue 1 a 1. */
     var travel = 1f
         private set
-    var measured = false
-        private set
+    private var measured = false
 
     /** Dove sta andando: serve a non far ripartire l'animazione (e perdere la velocità) quando la scelta è già fatta. */
     var target = false
         private set
     private var job: Job? = null
 
-    fun measure(px: Float) {
+    internal fun measure(px: Float) {
         travel = px.coerceAtLeast(1f)
         measured = true
     }
@@ -223,12 +222,16 @@ internal fun ControlCenter(
                 controls.openPanel(panel)
                 onClose()
             }
+            val wifiOn = rememberToggleState(controls.toggles[SystemPanel.INTERNET])
+            val btOn = rememberToggleState(controls.toggles[SystemPanel.BLUETOOTH])
+            val dndOn = rememberToggleState(controls.toggles[SystemPanel.DND])
             val available =
                 buildMap {
-                    val wifi = Tile(ControlGlyph.WIFI, stringResource(R.string.control_internet)) { leave(SystemPanel.INTERNET) }
+                    val wifiLabel = stringResource(R.string.control_internet)
+                    val wifi = panelTile(ControlGlyph.WIFI, wifiLabel, SystemPanel.INTERNET, controls, wifiOn, leave)
                     val btLabel = stringResource(R.string.control_bluetooth)
-                    val bluetooth = Tile(ControlGlyph.BLUETOOTH, btLabel) { leave(SystemPanel.BLUETOOTH) }
-                    val dnd = Tile(ControlGlyph.MOON, stringResource(R.string.control_dnd)) { leave(SystemPanel.DND) }
+                    val bluetooth = panelTile(ControlGlyph.BLUETOOTH, btLabel, SystemPanel.BLUETOOTH, controls, btOn, leave)
+                    val dnd = panelTile(ControlGlyph.MOON, stringResource(R.string.control_dnd), SystemPanel.DND, controls, dndOn, leave)
                     put(ControlTileId.WIFI, wifi)
                     put(ControlTileId.BLUETOOTH, bluetooth)
                     put(ControlTileId.DND, dnd)
@@ -336,6 +339,32 @@ internal fun ControlCenterEntry(
     )
 }
 
+/**
+ * Lo stato di un interruttore diretto, riletto a ogni apertura della tendina. Falso e inutilizzato se l'interruttore non c'è.
+ */
+@Composable
+private fun rememberToggleState(toggle: Toggle?): MutableState<Boolean> = remember(toggle) { mutableStateOf(toggle?.read() ?: false) }
+
+/**
+ * Riquadro di Wi-Fi, Bluetooth o non disturbare. Con un interruttore diretto cambia subito (lo stato si vede senza aspettare
+ * Android e poi si corregge se non ha obbedito); senza, apre la schermata di Android e chiude la tendina.
+ */
+private fun panelTile(
+    glyph: ControlGlyph,
+    label: String,
+    panel: SystemPanel,
+    controls: ControlActions,
+    state: MutableState<Boolean>,
+    leave: (SystemPanel) -> Unit,
+): Tile {
+    val toggle = controls.toggles[panel] ?: return Tile(glyph, label) { leave(panel) }
+    return Tile(glyph, label, state.value) {
+        val next = !state.value
+        state.value = next
+        toggle.set(next) { state.value = toggle.read() }
+    }
+}
+
 /** I riquadri a righe di [TILES_PER_ROW]; l'ultima riga si completa con spazi per tenere le colonne allineate. */
 @Composable
 private fun TileRows(tiles: List<Tile>) {
@@ -398,7 +427,7 @@ private fun MoreRow(
             .heightIn(min = ROW_HEIGHT)
             .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
                 view.perform(NovaHaptic.TAP)
-                val next = item.onClick()
+                val next = item.onClick { late -> state = late }
                 if (next == null) onClose() else state = next
             },
         verticalAlignment = Alignment.CenterVertically,
@@ -549,7 +578,7 @@ internal fun DrawScope.drawControlGlyph(
 private val CONTROL_WIDTH = 460.dp
 private val TILE: Dp = 76.dp
 private val PANEL_MARGIN = 12.dp
-private val OFFSCREEN_MARGIN = 120.dp
+private val OFFSCREEN_MARGIN = 48.dp
 private val HANDLE_WIDTH = 44.dp
 private val HANDLE_HEIGHT = 5.dp
 private val CARD = Color(0xE61D2127)
@@ -561,5 +590,5 @@ private const val CARD_TINT = 0.1f
 private const val TILES_PER_ROW = 4
 private const val DIM = 0.45f
 private const val FADE_IN_SPEED = 3f
-private const val SHEET_DAMPING = 0.9f
-internal const val SHEET_STIFFNESS = 700f
+private const val SHEET_DAMPING = 1f
+internal const val SHEET_STIFFNESS = 1500f

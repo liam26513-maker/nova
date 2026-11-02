@@ -121,10 +121,14 @@ fun HomeScreen(
     val tint = backgroundTint(prefs, style)
     val systemDark = isSystemInDarkTheme()
     val look = remember(prefs, systemDark, tint) { prefs.look(systemDark, tint) }
-    val swipeDown = rememberSwipeDown(prefs.swipeDownNotifications, actions.onSwipeDown)
+    // Scorrere giù apre la nostra tendina (se c'è); solo senza centro di controllo si ripiega sulle notifiche di Android.
+    val swipeDown =
+        rememberSwipeDown(prefs.swipeDownNotifications) {
+            if (actions.controls != null) control = true else actions.onSwipeDown()
+        }
     val previews = actions.notifications?.previews?.collectAsState()?.value ?: emptyMap()
     CompositionLocalProvider(LocalHomeLook provides look, LocalNotifications provides previews) {
-        // pullDownControl prima di swipeDown: l'angolo in alto a destra apre il centro di controllo, il resto le notifiche.
+        // pullDownControl prima di swipeDown: dall'angolo la tendina segue il dito; dal resto della Home si apre con una molla.
         BoxWithConstraints(
             Modifier.fillMaxSize().pullDownControl(sheet, actions.controls != null) { control = it }.then(swipeDown),
         ) {

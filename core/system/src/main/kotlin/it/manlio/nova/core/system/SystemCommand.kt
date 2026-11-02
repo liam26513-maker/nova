@@ -95,6 +95,15 @@ sealed interface SystemCommand {
         override val argv = listOf("pm", "install", "-r", "-i", ownPackage, "-S", size.toString())
     }
 
+    /**
+     * Accende o spegne uno degli interruttori del pannello rapido di Android (Wi-Fi, Bluetooth, aereo…). L'insieme è chiuso
+     * ([QuickToggle]): nessuna stringa dell'utente arriva alla shell, solo questi comandi fissi.
+     * Si usa sempre tramite [SystemTools.setToggle], che registra lo stato precedente.
+     */
+    data class SetToggle(val toggle: QuickToggle, val on: Boolean) : SystemCommand {
+        override val argv = toggle.argv(on)
+    }
+
     companion object {
         const val MIN_DPI = 120
         const val MAX_DPI = 640
@@ -110,6 +119,40 @@ sealed interface SystemCommand {
             require(PACKAGE.matches(name) && name.length <= MAX_PACKAGE_LENGTH) {
                 "Nome di pacchetto non valido: $name"
             }
+    }
+}
+
+/**
+ * Gli interruttori che il centro di controllo può cambiare con un tocco, se Shizuku è attivo (un'app normale non può:
+ * Android lo vieta dal 10). Ognuno ha il suo comando fisso, in `argv`: nulla viene mai interpretato da una shell.
+ */
+enum class QuickToggle {
+    WIFI,
+    BLUETOOTH,
+    AIRPLANE,
+    DND,
+    DARK_THEME,
+    LOCATION,
+    BATTERY_SAVER,
+    DATA_SAVER,
+    NIGHT_LIGHT,
+    INVERSION,
+    ;
+
+    internal fun argv(on: Boolean): List<String> {
+        val flag = if (on) "1" else "0"
+        return when (this) {
+            WIFI -> listOf("svc", "wifi", if (on) "enable" else "disable")
+            BLUETOOTH -> listOf("svc", "bluetooth", if (on) "enable" else "disable")
+            AIRPLANE -> listOf("cmd", "connectivity", "airplane-mode", if (on) "enable" else "disable")
+            DND -> listOf("cmd", "notification", "set_dnd", if (on) "priority" else "off")
+            DARK_THEME -> listOf("cmd", "uimode", "night", if (on) "yes" else "no")
+            LOCATION -> listOf("cmd", "location", "set-location-enabled", on.toString())
+            BATTERY_SAVER -> listOf("settings", "put", "global", "low_power", flag)
+            DATA_SAVER -> listOf("cmd", "netpolicy", "set", "restrict-background", on.toString())
+            NIGHT_LIGHT -> listOf("settings", "put", "secure", "night_display_activated", flag)
+            INVERSION -> listOf("settings", "put", "secure", "accessibility_display_inversion_enabled", flag)
+        }
     }
 }
 

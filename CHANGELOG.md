@@ -4,6 +4,18 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina: solo la nostra, che segue il dito, con funzioni che si attivano subito
+- Richiesta: "1. Quando tiro giu la tendina di nova si tira giu anche quella di android, non va bene, quella di android non ci deve essere. 2. La sensazione che da non va bene e' troppo a molla, fa fatica a scendere. 3. Non ci sono tutte le funzionalità che ci sono in quella di android. 4. Non C'è fluidità e se clicco qualche funzione non si attiva subito dalla tendina di nova e vorrei che fosse cosi".
+- **1. Quella di Android non deve esserci.** Quando NOVA apre la sua tendina, chiede ad Android di richiudere la sua (ripetutamente mentre il dito scende e subito dopo il rilascio), quindi non resta visibile. Sulla Home, **scorrere giù da qualsiasi punto apre la tendina di NOVA** e non più le notifiche di Android (la voce in Personalizza la Home ora si chiama «Scorri giù per la tendina»). Le notifiche di Android restano raggiungibili solo da «Altro» → «Notifiche di Android».
+- **2. Meno molla, più dito.** Sopra le altre app la tendina ora **segue il dito** durante il tiro (prima si apriva da sola con una molla dopo il riconoscimento del gesto). Ho tolto la zona morta all'inizio (il pannello compariva solo dopo circa 75 dp di tiro) e reso la molla di assestamento più secca e senza rimbalzo.
+- **3 e 4. Funzioni vere, subito.** Con **Shizuku attivo**:
+  - **Wi-Fi, Bluetooth e Non disturbare** (i riquadri) si accendono e si spengono **con un tocco, senza uscire dalla tendina** e si colorano subito; se Android non obbedisce, tornano allo stato vero.
+  - Sotto «Altro» ora cambiano subito, con «Sì/No» a lato: **Rotazione automatica, Modalità aereo, Posizione, Risparmio energetico, Risparmio dati, Tema scuro, Luce notturna, Inversione dei colori.**
+  - Le altre (Hotspot, NFC, Trasmetti schermo, Suoni, Schermo, Correzione colori, Accessibilità, Sveglie) aprono la schermata giusta di Android. «Impostazioni rapide di Android» resta come rete di sicurezza per tutto il resto.
+  - **Senza Shizuku** tutto resta com'era: i riquadri e le voci aprono la schermata di Android (un'app normale non può cambiarle da sola).
+- **Sicurezza e annullamento:** queste modifiche passano da `core/system` come comandi fissi e tipizzati (nessun testo arriva alla shell), vengono **registrate con lo stato di prima** e si annullano da Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche» (anche dalla modalità provvisoria). Se cambi lo stesso interruttore più volte, resta una sola voce con lo stato originale.
+- Nuovo permesso normale `ACCESS_WIFI_STATE` (solo per sapere se il Wi-Fi è acceso; non dà accesso a Internet e non c'è nessuna richiesta).
+
 ### Tendina sopra le altre app: la striscia ora copre davvero la barra di stato
 - Richiesta: "Ho aggiornato ma rimane sempre quella di android".
 - **Causa:** da Android 11 una finestra sopra le app, se non lo dichiara, si ferma **sotto** la barra di stato. La striscia di NOVA stava un po' più in basso: tirando giù dalla barra il tocco andava ad Android, che apriva la sua tendina.

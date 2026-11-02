@@ -108,6 +108,7 @@ class HomeActivity : ComponentActivity() {
             HomeControls(
                 this,
                 app,
+                lifecycleScope,
                 onSystemNotifications = { HomeSystem.expandNotifications(this) },
                 onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
             ) { HomeSystem.turboWithToast(this, lifecycleScope, performance) }

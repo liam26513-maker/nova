@@ -22,3 +22,7 @@ Impostazioni → **Prestazioni**. Tutto passa da `core/system` (`SystemTools`): 
 
 ## Limiti dichiarati
 Risoluzione dello schermo (solo densità), risparmio energetico intelligente automatico (§14.5), elenco di app consigliate per il debloat (non c'è un elenco affidabile: si sceglie a mano), Wi-Fi/Bluetooth con un tocco (per ora aprono il pannello di Android).
+
+## Interruttori del pannello rapido (centro di controllo)
+
+`SystemCommand.SetToggle(QuickToggle, on)`: Wi-Fi, Bluetooth, modalità aereo, non disturbare, tema scuro, posizione, risparmio energetico, risparmio dati, luce notturna, inversione dei colori. Insieme **chiuso**: ognuno ha il suo comando fisso (nessuna stringa dall'utente alla shell). `SystemTools.setToggle(toggle, on, wasOn)` registra lo stato originale in `SystemChange.Toggle` e si annulla con «Annulla tutte le modifiche». Lo stato si legge dalle API pubbliche dell'app (`app/QuickToggles`), non dalla shell.

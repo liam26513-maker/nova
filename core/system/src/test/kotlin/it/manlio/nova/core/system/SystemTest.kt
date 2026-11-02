@@ -76,6 +76,43 @@ class SystemCommandTest {
     }
 }
 
+class QuickToggleCommandTest {
+    @Test
+    fun `every toggle has a fixed command for on and for off`() {
+        val expected =
+            mapOf(
+                QuickToggle.WIFI to ("svc wifi enable" to "svc wifi disable"),
+                QuickToggle.BLUETOOTH to ("svc bluetooth enable" to "svc bluetooth disable"),
+                QuickToggle.AIRPLANE to ("cmd connectivity airplane-mode enable" to "cmd connectivity airplane-mode disable"),
+                QuickToggle.DND to ("cmd notification set_dnd priority" to "cmd notification set_dnd off"),
+                QuickToggle.DARK_THEME to ("cmd uimode night yes" to "cmd uimode night no"),
+                QuickToggle.LOCATION to ("cmd location set-location-enabled true" to "cmd location set-location-enabled false"),
+                QuickToggle.BATTERY_SAVER to ("settings put global low_power 1" to "settings put global low_power 0"),
+                QuickToggle.DATA_SAVER to ("cmd netpolicy set restrict-background true" to "cmd netpolicy set restrict-background false"),
+                QuickToggle.NIGHT_LIGHT to ("settings put secure night_display_activated 1" to "settings put secure night_display_activated 0"),
+                QuickToggle.INVERSION to
+                    (
+                        "settings put secure accessibility_display_inversion_enabled 1" to
+                            "settings put secure accessibility_display_inversion_enabled 0"
+                    ),
+            )
+        assertEquals(QuickToggle.entries.toSet(), expected.keys) // un comando per ogni interruttore, nessuno dimenticato
+        expected.forEach { (toggle, pair) ->
+            assertEquals(pair.first.split(' '), SystemCommand.SetToggle(toggle, true).argv)
+            assertEquals(pair.second.split(' '), SystemCommand.SetToggle(toggle, false).argv)
+        }
+    }
+
+    @Test
+    fun `no toggle command contains shell metacharacters`() {
+        QuickToggle.entries.forEach { t ->
+            listOf(true, false).forEach { on ->
+                SystemCommand.SetToggle(t, on).argv.forEach { assertTrue(it, Regex("^[A-Za-z0-9_.-]+$").matches(it)) }
+            }
+        }
+    }
+}
+
 class SystemChangeLogTest {
     @get:Rule val tmp = TemporaryFolder()
 
@@ -83,10 +120,12 @@ class SystemChangeLogTest {
     private class FakeShell : CommandRunner {
         val settings = mutableMapOf("global.animator_duration_scale" to "1.0")
         val disabled = mutableSetOf<String>()
+        val sent = mutableListOf<SystemCommand>()
         var failNext = false
 
         override suspend fun run(command: SystemCommand): ShellResult {
             if (failNext) return ShellResult(1, "errore").also { failNext = false }
+            sent += command
             return when (command) {
                 is SystemCommand.GetSetting -> ShellResult(0, settings["${command.namespace.value}.${command.key}"] ?: "null")
                 is SystemCommand.PutSetting -> {
@@ -114,6 +153,45 @@ class SystemChangeLogTest {
             assertEquals(0, log.revertAll())
             assertEquals(mapOf("global.animator_duration_scale" to "1.0"), shell.settings)
             assertTrue(shell.disabled.isEmpty())
+            assertTrue(log.entries().isEmpty())
+        }
+
+    @Test
+    fun `a toggle changed many times keeps one entry with the original state, and revert restores it`() =
+        runTest {
+            val shell = FakeShell()
+            val log = SystemChangeLog(File(tmp.root, "toggles.json"), shell)
+            log.setToggle(QuickToggle.WIFI, on = false, wasOn = true)
+            log.setToggle(QuickToggle.WIFI, on = true, wasOn = false)
+            log.setToggle(QuickToggle.WIFI, on = false, wasOn = true)
+            log.setToggle(QuickToggle.AIRPLANE, on = true, wasOn = false)
+            val toggles = log.entries().filterIsInstance<SystemChange.Toggle>()
+            assertEquals(2, toggles.size)
+            assertEquals(true, toggles.first { it.toggle == QuickToggle.WIFI }.previous) // originale: acceso
+            shell.sent.clear()
+            assertEquals(0, log.revertAll())
+            assertTrue(SystemCommand.SetToggle(QuickToggle.WIFI, true) in shell.sent)
+            assertTrue(SystemCommand.SetToggle(QuickToggle.AIRPLANE, false) in shell.sent)
+            assertTrue(log.entries().isEmpty())
+        }
+
+    @Test
+    fun `turning a toggle back to its original state leaves nothing to undo`() =
+        runTest {
+            val log = SystemChangeLog(File(tmp.root, "back.json"), FakeShell())
+            log.setToggle(QuickToggle.BLUETOOTH, on = false, wasOn = true)
+            assertEquals(1, log.entries().size)
+            log.setToggle(QuickToggle.BLUETOOTH, on = true, wasOn = false)
+            assertTrue(log.entries().isEmpty())
+        }
+
+    @Test
+    fun `a toggle that Android refuses is not recorded`() =
+        runTest {
+            val shell = FakeShell()
+            val log = SystemChangeLog(File(tmp.root, "refused.json"), shell)
+            shell.failNext = true
+            assertTrue(!log.setToggle(QuickToggle.WIFI, on = false, wasOn = true).ok)
             assertTrue(log.entries().isEmpty())
         }
 
