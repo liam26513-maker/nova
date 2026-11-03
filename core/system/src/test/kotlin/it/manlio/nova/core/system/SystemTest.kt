@@ -3,6 +3,7 @@ package it.manlio.nova.core.system
 import it.manlio.nova.core.system.SystemCommand.Namespace.GLOBAL
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -269,5 +270,63 @@ class SystemChangeLogTest {
             shell.failNext = true
             assertEquals(1, log.revertAll())
             assertEquals(1, log.entries().size)
+        }
+}
+
+class GameScaleTest {
+    @get:Rule
+    val tmp = TemporaryFolder()
+
+    private val game = "com.supercell.brawlstars"
+
+    @Test
+    fun `game scale commands are fixed argument lists`() {
+        assertEquals(listOf("cmd", "game", "set", "--downscale", "0.65", game), SystemCommand.GameScale(game, 65).argv)
+        assertEquals(listOf("cmd", "game", "mode", "standard", game), SystemCommand.GameScale(game, null).argv)
+    }
+
+    @Test
+    fun `scale below the minimum, odd values and protected packages are refused`() {
+        listOf(60, 30, 0, 100, 75, -65).forEach { p -> assertTrue("$p", runCatching { SystemCommand.GameScale(game, p) }.isFailure) }
+        assertTrue(runCatching { SystemCommand.GameScale("it.manlio.nova", 70) }.isFailure)
+        assertTrue(runCatching { SystemCommand.GameScale("com.x; reboot", 70) }.isFailure)
+    }
+
+    @Test
+    fun `steps go down to the minimum and then back to normal`() {
+        val seen = generateSequence(SystemCommand.nextGameScale(null)) { SystemCommand.nextGameScale(it) }.toList()
+        assertEquals(listOf(90, 80, 70, 65), seen)
+    }
+
+    @Test
+    fun `the log keeps one entry per game, none at normal, and reverts to normal`() =
+        runTest {
+            val ran = mutableListOf<SystemCommand>()
+            val shell =
+                CommandRunner {
+                    ran += it
+                    ShellResult(0, "")
+                }
+            val log = SystemChangeLog(File(tmp.root, "scale.json"), shell)
+            log.setGameScale(game, 70)
+            log.setGameScale(game, 65)
+            assertEquals(65, (log.entries().single() as SystemChange.GameScale).applied)
+            val reopened = SystemChangeLog(File(tmp.root, "scale.json"), shell)
+            assertEquals(65, (reopened.entries().single() as SystemChange.GameScale).applied)
+            log.setGameScale(game, null)
+            assertTrue(log.entries().isEmpty())
+
+            log.setGameScale(game, 80)
+            assertEquals(0, log.revertAll())
+            assertTrue(log.entries().isEmpty())
+            assertEquals(SystemCommand.GameScale(game, null), ran.last())
+        }
+
+    @Test
+    fun `a refused scale changes nothing in the log`() =
+        runTest {
+            val log = SystemChangeLog(File(tmp.root, "no.json"), { ShellResult(1, "no") })
+            assertFalse(log.setGameScale(game, 70).ok)
+            assertTrue(log.entries().isEmpty())
         }
 }

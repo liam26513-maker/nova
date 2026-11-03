@@ -271,6 +271,10 @@
     <string name="more_meter">Misura il gioco (2 minuti)</string>
     <string name="meter_running">in corso</string>
     <string name="more_meter_share">Condividi l\'ultima misura</string>
+    <string name="more_game_scale">Risoluzione: %1$s</string>
+    <string name="game_scale_percent">%1$d%%</string>
+    <string name="game_scale_done">Fatto: vale da quando riapri il gioco.</string>
+    <string name="game_scale_failed">Non ho potuto cambiare la risoluzione: Android non la permette per questa app.</string>
     <string name="more_close_game">Chiudi il gioco: %1$s</string>
     <string name="meter_needs_shizuku">Serve Shizuku attivo.</string>
     <string name="meter_started">Misuro per %1$d minuti: apri il gioco e gioca. Poi torna qui: Altro → Misura il gioco mostra il risultato.</string>

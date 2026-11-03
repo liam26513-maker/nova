@@ -18,7 +18,7 @@ Aggiornato a: release 0.1.3xx. Per riprendere il lavoro in una chat nuova basta 
 1. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): installarla e aggiornarla da NOVA (con Shizuku `pm install`, come l'app), poi tema di
    NOVA tramite `ContentProvider`, aspetto iOS, funzioni per tablet (divisa, flottante, riga numeri: disattivate di default), trackpad sulla barra spaziatrice,
    espansioni di testo, layout italiano per la tastiera fisica. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
-2. **Fase 3, seguito:** le uscite di emergenza della Gaming (volume giù 3 s, doppio swipe dal bordo, watchdog, «Chiudi gioco») **prima** di qualunque attivazione automatica; poi pannello in sovrimpressione, ridimensionamento per gioco, Studio, Lavoro, Creativa, Presentazione, profili automatici.
+2. **Fase 3, seguito:** le uscite di emergenza della Gaming (volume giù 3 s, doppio swipe dal bordo, watchdog, «Chiudi gioco») **prima** di qualunque attivazione automatica; poi pannello in sovrimpressione, Studio, Lavoro, Creativa, Presentazione, profili automatici.
 3. **Fase 4** penna, **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
 
 ## Regole che contano (CLAUDE.md)

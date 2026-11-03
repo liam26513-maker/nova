@@ -45,4 +45,6 @@ Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato
 ## Strumenti per i giochi (Altro)
 «Misura il gioco (2 minuti)» campiona ogni 2 s l'ultimo gioco in primo piano (solo su richiesta, Shizuku) e salva `diagnosi-gaming.txt`; «Condividi l'ultima misura» la manda via condivisione; «Chiudi il gioco» fa `force-stop` dell'ultimo gioco (uscita di emergenza n. 4 di SPEC §8.2).
 
+«Risoluzione: <gioco>» (Altro, solo con Shizuku e un gioco già visto) scende di un passo a ogni tocco: 100 → 90 → 80 → 70 → 65 → 100 (`SystemCommand.GameScale`, `cmd game set --downscale`; il ritorno a 100 è `cmd game mode standard`). Il minimo è il 65%: il comando rifiuta valori più bassi. Ogni scelta è nel registro (`SystemChange.GameScale`, una voce per gioco) e «Annulla tutte le modifiche» la toglie. Non dipende dalla Gaming, vale da quando il gioco si riapre e Android la rifiuta per le app che non sono giochi. Misura su U6 con Brawl Stars: 46,3 FPS e 32,4% di fotogrammi lenti al 100%, 61,5 FPS e 0,5% al 70%.
+
 La striscia della tendina (`StripShape`): `FULL` fuori dalla Gaming, `CORNER` (angolo in alto a destra, 200 dp) in Gaming con «Tendina sopra i giochi» acceso (predefinito), `NONE` se spenta. «Condividi l'ultima misura» è sempre in Altro; una misura fallita salva un testo diagnostico.

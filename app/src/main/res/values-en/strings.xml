@@ -268,6 +268,10 @@
     <string name="more_meter">Measure the game (2 minutes)</string>
     <string name="meter_running">running</string>
     <string name="more_meter_share">Share the last measurement</string>
+    <string name="more_game_scale">Resolution: %1$s</string>
+    <string name="game_scale_percent">%1$d%%</string>
+    <string name="game_scale_done">Done: it applies when you reopen the game.</string>
+    <string name="game_scale_failed">Could not change the resolution: Android does not allow it for this app.</string>
     <string name="more_close_game">Close the game: %1$s</string>
     <string name="meter_needs_shizuku">Shizuku must be on.</string>
     <string name="meter_started">Measuring for %1$d minutes: open the game and play. Then come back: More, Measure the game shows the result.</string>

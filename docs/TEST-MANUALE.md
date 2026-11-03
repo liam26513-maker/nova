@@ -198,3 +198,5 @@ Serve Shizuku attivo. Dopo ogni prova puoi usare Impostazioni → Strumenti di s
 - [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars e gioca 2 minuti: compare il riepilogo e «Condividi l'ultima misura».
 - [ ] Ripeti senza modalità Gaming, con la modalità, e con un'opzione alla volta: confronta FPS medi e «peggiore 1 %».
 - [ ] «Chiudi il gioco: …» chiude davvero il gioco.
+- [ ] Apri Brawl Stars, poi tendina → Altro → «Risoluzione: Brawl Stars»: a ogni tocco scende (90, 80, 70, 65%) e poi torna a 100%. Fermati a 65%, riapri il gioco: l'immagine è meno nitida, i tocchi cadono al punto giusto e la misura sale verso 60 FPS.
+- [ ] Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche»: la riga torna a 100% e il gioco, riaperto, è di nuovo nitido.

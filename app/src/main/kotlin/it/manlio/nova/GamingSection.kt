@@ -34,7 +34,7 @@ fun GamingSection(
     }
     val overlayHeader = stringResource(R.string.gaming_overlay_title)
     SettingsSection(backdrop, header = overlayHeader, footer = stringResource(R.string.gaming_overlay_footer)) {
-        val on = values[ModeOptions.OVERLAY] ?: false
+        val on = values[ModeOptions.OVERLAY] ?: true
         SettingsRow(
             stringResource(R.string.gaming_overlay_row),
             onClick = { options.set(ModeOptions.OVERLAY, !on) },
