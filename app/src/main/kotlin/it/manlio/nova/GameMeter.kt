@@ -14,6 +14,7 @@ import it.manlio.nova.core.system.LayerPicker
 import it.manlio.nova.core.system.ProtectedPackages
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
+import it.manlio.nova.core.system.SystemCommand.TimeStats.Step
 import it.manlio.nova.core.system.TimeStatsParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -59,9 +60,8 @@ class GameMeter(
         val layers = mutableMapOf<String, String>()
         val why = Why()
         val seen = mutableMapOf<String, Int>()
-        val stats = SystemCommand.TimeStats.Step
-        app.shizuku.run(SystemCommand.TimeStats(stats.ENABLE))
-        app.shizuku.run(SystemCommand.TimeStats(stats.CLEAR))
+        app.shizuku.run(SystemCommand.TimeStats(Step.ENABLE))
+        app.shizuku.run(SystemCommand.TimeStats(Step.CLEAR))
         repeat(DURATION_S / STEP_S) {
             delay(STEP_S * MS_PER_S)
             val pkg = app.foreground.value?.takeIf(app::isGamePackage)
@@ -77,8 +77,8 @@ class GameMeter(
             if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
             if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
         }
-        val dump = app.shizuku.run(SystemCommand.TimeStats(stats.DUMP)).output
-        app.shizuku.run(SystemCommand.TimeStats(stats.DISABLE))
+        val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
+        app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
         val best = collectors.entries.maxByOrNull { it.value.report()?.frames ?: 0 }
         val game = best?.key ?: seen.maxByOrNull { it.value }?.key
         // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
