@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina anche dentro i giochi, e «Condividi» sempre presente
+- Richiesta: "La tendina non si apre sulle altre app e non ce l'opzione condividi l'ultima misura".
+- **Tendina sopra le altre app:** durante la Modalità Gaming la striscia per tirare giù era tolta di serie (per non rubare i tocchi al gioco), quindi nei giochi non si apriva. Ora è **accesa di serie**: nelle app normali resta larga come lo schermo, nei giochi con la Gaming attiva si riduce a un **angolo in alto a destra** (200 dp), così i pulsanti del gioco restano liberi. Si può spegnere del tutto in Impostazioni → Modalità Gaming.
+- **Condividi l'ultima misura** compare sempre in Altro. Se la misura non è riuscita, il testo da condividere dice **perché** (nessun gioco davanti, livello grafico non trovato, errore del comando), così lo correggo senza indovinare.
+
 ### Misura del gioco e «Chiudi il gioco»
 - Richiesta: "Va bene continua con il resto del piano" (dopo il problema di Brawl Stars che laggava).
 - **Misura il gioco (2 minuti):** tendina → Altro → «Misura il gioco». Giochi normalmente per 2 minuti, NOVA legge i fotogrammi mostrati dal sistema (serve Shizuku) e calcola FPS medi, il peggiore 1 %, quanti fotogrammi sono lenti e il fotogramma più lungo, più temperatura, memoria libera e stato termico. Così non indoviniamo più: abbiamo numeri veri, con e senza modalità Gaming.

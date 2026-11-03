@@ -69,6 +69,7 @@ class NovaControlService : AccessibilityService() {
     private var closing by mutableStateOf(false)
     private var stripTouch: StripTouch? = null
     private var lastShadeHide = 0L
+    private var shape = StripShape.FULL
     private val app get() = application as NovaApp
 
     override fun onServiceConnected() {
@@ -88,16 +89,10 @@ class NovaControlService : AccessibilityService() {
         // e si rimette all'uscita, a meno che l'utente la voglia (Impostazioni → Modalità Gaming).
         // Per uscire dalla modalità resta la tendina della Home.
         if (app.safeModeReason == null) {
-            scope.watchGaming(app) { suppress ->
-                if (!suppress) {
-                    addStrip()
-                } else {
-                    strip?.let { runCatching { windows.removeView(it) } }
-                    strip = null
-                    stripTouch?.recycle()
-                    stripTouch = null
-                    app.log.i(LOG_TAG, "striscia tolta durante la Modalità Gaming")
-                }
+            scope.watchGaming(app) { shape ->
+                removeStrip()
+                if (shape != StripShape.NONE) addStrip(shape)
+                app.log.i(LOG_TAG, "striscia: $shape")
             }
         }
     }
@@ -131,13 +126,13 @@ class NovaControlService : AccessibilityService() {
     }
 
     @SuppressLint("ClickableViewAccessibility") // la striscia è solo un gesto: non ha un'azione da leggere con TalkBack
-    private fun addStrip() {
+    private fun addStrip(shape: StripShape = StripShape.FULL) {
         if (strip != null) return
         val slop = ViewConfiguration.get(this).scaledTouchSlop.toFloat()
         val touch = StripTouch(slop, ::openPanel, ::hideAndroidShade) { app.log.i(LOG_TAG, it) }
         val view = View(this).apply { setOnTouchListener(touch) }
         // Sempre attiva, anche con la barra di stato nascosta (giochi, video): lì il tocco dall'alto è proprio il modo di arrivare qui.
-        runCatching { windows.addView(view, stripParams()) }
+        runCatching { windows.addView(view, stripParams(shape)) }
             .onSuccess {
                 strip = view
                 stripTouch = touch
@@ -163,18 +158,27 @@ class NovaControlService : AccessibilityService() {
         if (finished) SHADE_HIDE_AFTER_MS.forEach { handler.postDelayed(::dismissShade, it) }
     }
 
-    private fun stripParams(): WindowManager.LayoutParams {
+    private fun removeStrip() {
+        strip?.let { runCatching { windows.removeView(it) } }
+        strip = null
+        stripTouch?.recycle()
+        stripTouch = null
+    }
+
+    private fun stripParams(shape: StripShape = this.shape): WindowManager.LayoutParams {
         val density = resources.displayMetrics.density
         val barId = resources.getIdentifier("status_bar_height", "dimen", "android")
         val bar = if (barId > 0) resources.getDimensionPixelSize(barId) else 0
+        this.shape = shape
+        val corner = shape == StripShape.CORNER
         return WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
+            if (corner) (CORNER_WIDTH_DP * density).toInt() else WindowManager.LayoutParams.MATCH_PARENT,
             maxOf(bar, (STRIP_MIN_HEIGHT_DP * density).toInt()),
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or OVER_SYSTEM_BARS,
             PixelFormat.TRANSPARENT,
         ).apply {
-            gravity = Gravity.TOP
+            gravity = if (corner) Gravity.TOP or Gravity.END else Gravity.TOP
             coverSystemBars()
         }
     }
@@ -314,6 +318,7 @@ class NovaControlService : AccessibilityService() {
 
     companion object {
         private const val STRIP_MIN_HEIGHT_DP = 24
+        private const val CORNER_WIDTH_DP = 200
         private const val LOG_TAG = "tendina"
         private const val SYSTEM_UI = "com.android.systemui"
         private const val PANEL_TRAVEL_DP = 520
@@ -346,12 +351,19 @@ private object ChoreographerClock : MonotonicFrameClock {
         }
 }
 
-/** Dice quando la striscia va tolta (vero) o rimessa (falso): modalità Gaming attiva e tendina sopra i giochi non voluta. */
+/** La forma della striscia: tutta la larghezza, solo l'angolo in alto a destra (durante la Gaming) o niente. */
+internal enum class StripShape { FULL, CORNER, NONE }
+
+/** Dice come va la striscia, in base alla Modalità Gaming e alla scelta dell'utente (tendina dentro i giochi). */
 private fun CoroutineScope.watchGaming(
     app: NovaApp,
-    onChange: (suppress: Boolean) -> Unit,
+    onChange: (StripShape) -> Unit,
 ) = launch {
     combine(app.modes.engine.active, app.modes.options.values) { active, _ ->
-        active?.modeId == Modes.GAMING.id && !app.modes.options.overlayInGames
+        when {
+            active?.modeId != Modes.GAMING.id -> StripShape.FULL
+            app.modes.options.overlayInGames -> StripShape.CORNER
+            else -> StripShape.NONE
+        }
     }.distinctUntilChanged().collect(onChange)
 }

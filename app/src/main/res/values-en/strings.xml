@@ -257,7 +257,7 @@
     <string name="gaming_turbo">Turbo: close background apps</string>
     <string name="gaming_turbo_summary">Frees memory; off by default because it may not help (needs Shizuku)</string>
     <string name="gaming_overlay_title">NOVA sheet over games</string>
-    <string name="gaming_overlay_footer">Off by default: during the mode the top edge of the screen belongs to the game and nothing of NOVA sits above it. To leave the mode: go Home, pull down from the top-right corner, More, Gaming mode. Turn it on if you need the sheet inside the game.</string>
+    <string name="gaming_overlay_footer">On by default: during the mode the sheet opens only from the top-right corner (a small area, so it does not steal taps from the game buttons). Turn it off to leave the whole top edge to the game; to leave the mode use Home, More, Gaming mode.</string>
     <string name="gaming_overlay_row">NOVA sheet over games</string>
     <string name="mode_exit_overlay">To leave: control sheet, More, Gaming mode.</string>
     <string name="mode_exit_home">To leave: go Home, pull down from the top-right corner, More, Gaming mode.</string>
@@ -349,4 +349,6 @@
     <string name="health_cold">Too cold</string>
     <string name="health_failure">Failure</string>
     <string name="health_unknown">Unknown</string>
+    <string name="meter_nothing_yet">No measurement yet: start it from “Measure the game” and play for 2 minutes.</string>
+    <string name="meter_no_data">No data</string>
 </resources>

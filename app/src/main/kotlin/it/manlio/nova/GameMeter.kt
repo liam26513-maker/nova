@@ -56,26 +56,69 @@ class GameMeter(
     private suspend fun measure() {
         val collectors = mutableMapOf<String, FrameCollector>()
         val layers = mutableMapOf<String, String>()
+        val why = Why()
         repeat(DURATION_S / STEP_S) {
             delay(STEP_S * MS_PER_S)
-            val pkg = app.foreground.value?.takeIf(app::isGamePackage) ?: return@repeat
-            val layer = layers[pkg] ?: findLayer(pkg)?.also { layers[pkg] = it } ?: return@repeat
+            val pkg = app.foreground.value?.takeIf(app::isGamePackage)
+            if (pkg == null) {
+                why.noGame++
+                return@repeat
+            }
+            val layer = layers[pkg] ?: findLayer(pkg, why)?.also { layers[pkg] = it }
+            if (layer == null) return@repeat
             val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
-            if (out.ok) collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
+            if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
+            if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
         }
         val best = collectors.entries.maxByOrNull { it.value.report()?.frames ?: 0 }
         val report = best?.value?.report()
-        if (best == null || report == null) return say(app.getString(R.string.meter_none))
-        val text = text(best.key, report)
-        file.writeText(text)
-        lastText = text
-        lastSummary = summary(report)
+        if (best == null || report == null) return fail(why)
+        save(text(best.key, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
     }
 
-    private suspend fun findLayer(pkg: String): String? {
+    private fun save(
+        text: String,
+        short: String?,
+    ) {
+        file.writeText(text)
+        lastText = text
+        lastSummary = short
+    }
+
+    /** Anche quando non si legge niente il testo si può condividere: dice cosa è andato storto, così lo si corregge. */
+    private fun fail(why: Why) {
+        val text =
+            buildString {
+                appendLine(SUMMARY_PREFIX + app.getString(R.string.meter_no_data))
+                appendLine("Misura non riuscita. Letture di fotogrammi: ${why.read}")
+                appendLine("Controlli senza un gioco davanti: ${why.noGame}")
+                appendLine("Gioco davanti all'ultimo controllo: ${app.foreground.value ?: "nessuno"}")
+                appendLine("Livello grafico trovato: ${why.layer ?: "nessuno"}")
+                appendLine("Elenco livelli (parte): ${why.layers}")
+                appendLine("Errore del comando: ${why.failed ?: "nessuno"}")
+                appendLine("Dispositivo: ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
+            }
+        save(text, app.getString(R.string.meter_no_data))
+        say(app.getString(R.string.meter_none))
+    }
+
+    private class Why {
+        var noGame = 0
+        var read = 0
+        var layer: String? = null
+        var layers: String = ""
+        var failed: String? = null
+    }
+
+    private suspend fun findLayer(
+        pkg: String,
+        why: Why,
+    ): String? {
         val list = app.shizuku.run(SystemCommand.ListSurfaceLayers)
-        return if (list.ok) LayerPicker.pick(list.output, pkg) else null
+        if (!list.ok) why.failed = list.output.take(DIAG_CHARS)
+        why.layers = list.output.lineSequence().filter { pkg.substringBefore('.') in it }.take(DIAG_LINES).joinToString(" | ")
+        return if (list.ok) LayerPicker.pick(list.output, pkg)?.also { why.layer = it } else null
     }
 
     private fun summary(r: FrameReport) = format("%.0f FPS · 1%% basso %.0f · %.0f%% lenti", r.fps, r.lowFps, r.slowPercent)
@@ -114,6 +157,8 @@ class GameMeter(
     companion object {
         const val DURATION_S = 120
         private const val STEP_S = 2
+        private const val DIAG_CHARS = 200
+        private const val DIAG_LINES = 6
         private const val MS_PER_S = 1000L
         private const val SECONDS_PER_MINUTE = 60
         private const val TENTHS = 10f
