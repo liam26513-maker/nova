@@ -71,11 +71,7 @@ class GameMeter(
             }
             seen.merge(pkg, 1, Int::plus)
             val layer = layers[pkg] ?: findLayer(pkg, why)?.also { layers[pkg] = it }
-            if (layer == null) return@repeat
-            val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
-            if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
-            if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
-            if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
+            if (layer != null) sample(pkg, layer, collectors, why)
         }
         val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
         app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
@@ -83,13 +79,21 @@ class GameMeter(
         val game = best?.key ?: seen.maxByOrNull { it.value }?.key
         // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
         val report = best?.value?.report() ?: game?.let { TimeStatsParser.parse(dump, it) }
-        if (game == null || report == null) {
-            why.game = game ?: app.lastGame
-            why.timeline = app.shizuku.run(SystemCommand.FrameTimeline).output
-            return fail(why, dump)
-        }
+        if (game == null || report == null) return fail(why, game ?: app.lastGame, dump)
         save(text(game, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
+    }
+
+    private suspend fun sample(
+        pkg: String,
+        layer: String,
+        collectors: MutableMap<String, FrameCollector>,
+        why: Why,
+    ) {
+        val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
+        if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
+        if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
+        if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
     }
 
     private fun save(
@@ -102,10 +106,13 @@ class GameMeter(
     }
 
     /** Anche quando non si legge niente il testo si può condividere: dice cosa è andato storto, così lo si corregge. */
-    private fun fail(
+    private suspend fun fail(
         why: Why,
+        game: String?,
         dump: String,
     ) {
+        why.game = game
+        why.timeline = app.shizuku.run(SystemCommand.FrameTimeline).output
         val text =
             buildString {
                 appendLine(SUMMARY_PREFIX + app.getString(R.string.meter_no_data))
