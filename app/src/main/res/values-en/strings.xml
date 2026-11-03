@@ -265,6 +265,16 @@
     <string name="more_standby">StandBy</string>
     <string name="customize_lock">Wallpaper on the lock screen too</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>
+    <string name="more_meter">Measure the game (2 minutes)</string>
+    <string name="meter_running">running</string>
+    <string name="more_meter_share">Share the last measurement</string>
+    <string name="more_close_game">Close the game: %1$s</string>
+    <string name="meter_needs_shizuku">Shizuku must be on.</string>
+    <string name="meter_started">Measuring for %1$d minutes: open the game and play. Then come back: More, Measure the game shows the result.</string>
+    <string name="meter_none">I could not read the game\'s frames: the accessibility service must be on and a game in front while I measure.</string>
+    <string name="meter_done">Measurement done: %1$s. More, Share the last measurement to send it.</string>
+    <string name="game_closed">Game closed.</string>
+    <string name="game_close_failed">I could not close the game.</string>
     <string name="more_notifications">Android notifications</string>
     <string name="more_quick_settings">Android quick settings</string>
     <string name="more_rotation">Auto-rotate</string>

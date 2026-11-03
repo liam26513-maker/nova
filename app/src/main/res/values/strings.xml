@@ -268,6 +268,16 @@
     <string name="more_standby">StandBy</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>
+    <string name="more_meter">Misura il gioco (2 minuti)</string>
+    <string name="meter_running">in corso</string>
+    <string name="more_meter_share">Condividi l\'ultima misura</string>
+    <string name="more_close_game">Chiudi il gioco: %1$s</string>
+    <string name="meter_needs_shizuku">Serve Shizuku attivo.</string>
+    <string name="meter_started">Misuro per %1$d minuti: apri il gioco e gioca. Poi torna qui: Altro → Misura il gioco mostra il risultato.</string>
+    <string name="meter_none">Non sono riuscita a leggere i fotogrammi del gioco: servono il servizio di accessibilità acceso e un gioco davanti mentre misuro.</string>
+    <string name="meter_done">Misura finita: %1$s. Altro → Condividi l\'ultima misura per inviarla.</string>
+    <string name="game_closed">Gioco chiuso.</string>
+    <string name="game_close_failed">Non sono riuscita a chiudere il gioco.</string>
     <string name="more_notifications">Notifiche di Android</string>
     <string name="more_quick_settings">Impostazioni rapide di Android</string>
     <string name="more_rotation">Rotazione automatica</string>

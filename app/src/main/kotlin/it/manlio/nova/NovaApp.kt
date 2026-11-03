@@ -98,6 +98,13 @@ class NovaApp :
     /** Qualcuno (la tendina, anche sopra le altre app) chiede il StandBy: la Home lo mostra appena è visibile. */
     val standbyRequest = MutableStateFlow(false)
 
+    /** L'app in primo piano se può essere un gioco (la riconosce il servizio di accessibilità), o null. */
+    val foreground = MutableStateFlow<String?>(null)
+
+    /** L'ultimo gioco visto in primo piano: serve al tasto «Chiudi il gioco» anche quando si è tornati alla Home. */
+    @Volatile var lastGame: String? = null
+    lateinit var gameMeter: GameMeter
+
     /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */
     @Volatile var nowPlayingPackage: String? = null
 
@@ -160,6 +167,7 @@ class NovaApp :
         }
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }
+        gameMeter = GameMeter(this, appScope)
         LockScreenWallpaper.start(this) // lo sfondo di NOVA anche sulla schermata di blocco
 
         profiler = DeviceProfiler(this)

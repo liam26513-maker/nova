@@ -30,3 +30,6 @@ Risoluzione dello schermo (solo densità), risparmio energetico intelligente aut
 ## Sblocco delle impostazioni con restrizioni di NOVA
 
 `SystemCommand.SetRestrictedSettings(ownPackage, allow)` → `appops set <pacchetto> ACCESS_RESTRICTED_SETTINGS allow|default`. `ownPackage` **deve essere** `SystemCommand.OWN_PACKAGE` (`it.manlio.nova`): qualunque altro pacchetto è rifiutato già nel costruttore. `SystemChangeLog.allowRestrictedSettings` registra `SystemChange.RestrictedSettings` (una sola voce) e `revertAll` riporta il valore predefinito. In app: `HomeSystem.unlockAndOpenAccessibility` (riga «Centro di controllo sopra le altre app»): con Shizuku pronto sblocca, avvisa con un Toast e apre l'accessibilità; senza, apre soltanto l'accessibilità.
+
+## Misura dei fotogrammi (sola lettura)
+`SystemCommand.ListSurfaceLayers` (`dumpsys SurfaceFlinger --list`) e `SystemCommand.SurfaceLatency(layer)` (`dumpsys SurfaceFlinger --latency <layer>`, nome validato da regex) leggono lo stato del compositore senza modificare nulla. `FrameCollector` unisce i campioni (scarta duplicati e valori non validi, ignora le pause ≥ 750 ms come caricamenti) e produce `FrameReport`; `LayerPicker` sceglie il livello `SurfaceView` del gioco. Test: `FrameStatsTest`.

@@ -193,3 +193,8 @@ Serve Shizuku attivo. Dopo ogni prova puoi usare Impostazioni → Strumenti di s
   - [ ] "Guarda il report": non ci devono essere email, numeri di telefono o token;
   - [ ] invia: con il token compare "Report caricato in reports/" e Claude Code si apre con "Leggi reports/…";
   - [ ] senza token compare il messaggio sugli appunti.
+
+## Misura del gioco
+- [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars e gioca 2 minuti: compare il riepilogo e «Condividi l'ultima misura».
+- [ ] Ripeti senza modalità Gaming, con la modalità, e con un'opzione alla volta: confronta FPS medi e «peggiore 1 %».
+- [ ] «Chiudi il gioco: …» chiude davvero il gioco.

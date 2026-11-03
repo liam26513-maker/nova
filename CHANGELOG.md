@@ -4,6 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Misura del gioco e «Chiudi il gioco»
+- Richiesta: "Va bene continua con il resto del piano" (dopo il problema di Brawl Stars che laggava).
+- **Misura il gioco (2 minuti):** tendina → Altro → «Misura il gioco». Giochi normalmente per 2 minuti, NOVA legge i fotogrammi mostrati dal sistema (serve Shizuku) e calcola FPS medi, il peggiore 1 %, quanti fotogrammi sono lenti e il fotogramma più lungo, più temperatura, memoria libera e stato termico. Così non indoviniamo più: abbiamo numeri veri, con e senza modalità Gaming.
+- **Condividi l'ultima misura:** manda il testo (senza dati personali) a Claude o a chi vuoi.
+- **Chiudi il gioco:** una delle uscite di emergenza della Gaming. Chiude subito l'ultimo gioco aperto (Shizuku); NOVA e le app di sistema non si possono chiudere.
+- Parte tecnica (`core/system`): due comandi **solo lettura** nuovi nella lista consentita (`dumpsys SurfaceFlinger --list` e `--latency <livello>`, il nome del livello è validato) con test; nessuna modifica al sistema.
+- Niente in background: la misura parte solo se la avvii e si ferma da sola.
+
 ### Sfondo di NOVA anche sulla schermata di blocco, e StandBy
 - Richiesta: "La schermata di blocco, metti lo sfondo di NOVA e anche la modalità standby".
 - **Sfondo della schermata di blocco:** lo sfondo scelto in NOVA (la sfumatura Notte/Aurora/Tramonto…, il colore o la tua foto) viene messo **anche sulla schermata di blocco** di Android, disegnato con lo stesso codice della Home, quindi uguale. Si accende da solo (si spegne in Personalizza la Home → Sfondo → «Sfondo anche sulla schermata di blocco»). Se usi lo sfondo di sistema non tocco niente. Cambia lo sfondo o la foto: la schermata di blocco si aggiorna da sola. **Cosa resta di Android:** il disegno della schermata di blocco (posizione dell'ora, PIN, notifiche) non si può cambiare: lo sfondo sì. Nuovo permesso normale, senza richieste: impostare lo sfondo.
