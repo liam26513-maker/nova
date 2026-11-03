@@ -83,7 +83,11 @@ class GameMeter(
         val game = best?.key ?: seen.maxByOrNull { it.value }?.key
         // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
         val report = best?.value?.report() ?: game?.let { TimeStatsParser.parse(dump, it) }
-        if (game == null || report == null) return fail(why, dump)
+        if (game == null || report == null) {
+            why.game = game ?: app.lastGame
+            why.timeline = app.shizuku.run(SystemCommand.FrameTimeline).output
+            return fail(why, dump)
+        }
         save(text(game, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
     }
@@ -112,17 +116,29 @@ class GameMeter(
                 appendLine("Elenco livelli (parte): ${why.layers}")
                 appendLine("Errore del comando: ${why.failed ?: "nessuno"}")
                 appendLine("Risposta di --latency (inizio): ${why.latency.replace('\n', '|')}")
-                val game = why.layer?.substringAfter('[')?.substringBefore('/').orEmpty()
-                val lines = dump.lineSequence().filter { game.isNotEmpty() && game in it }.take(DIAG_LINES)
-                appendLine("Statistiche: ${dump.length} caratteri; righe del gioco: ${lines.joinToString(" | ")}")
-                appendLine("Statistiche (inizio): ${dump.take(DIAG_DUMP).replace('\n', '|')}")
+                val game = why.game.orEmpty()
+                appendLine("Gioco misurato: $game")
+                appendLine("Statistiche: ${dump.length} caratteri; punto del gioco: ${around(dump, game)}")
+                appendLine("Statistiche (primo livello): ${around(dump, "layerName")}")
+                appendLine("Linea temporale: ${around(why.timeline, game)} || inizio: ${why.timeline.take(DIAG_DUMP).replace('\n', '|')}")
                 appendLine("Dispositivo: ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
             }
         save(text, app.getString(R.string.meter_no_data))
         say(app.getString(R.string.meter_none))
     }
 
+    private fun around(
+        text: String,
+        key: String,
+    ): String {
+        val at = if (key.isEmpty()) -1 else text.indexOf(key)
+        if (at < 0) return "(non trovato)"
+        return text.substring(maxOf(0, at - DIAG_DUMP / 2), minOf(text.length, at + DIAG_DUMP)).replace('\n', '|')
+    }
+
     private class Why {
+        var game: String? = null
+        var timeline: String = ""
         var noGame = 0
         var read = 0
         var layer: String? = null

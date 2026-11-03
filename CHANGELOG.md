@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Misura del gioco: scelta del livello giusto e più diagnosi
+- Richiesta: secondo test di Brawl Stars ("Riepilogo: Nessun dato"). Dal testo condiviso: su questo tablet il comando classico dà solo zeri e NOVA sceglieva una riga di servizio («ActivityRecordInputSink») invece del livello che disegna il gioco. Ora la sceglie giusta, e se non riesce ancora il testo contiene anche i punti del sistema che mi servono (statistiche per livello e linea temporale dei fotogrammi).
+- Parte tecnica (`core/system`): nuovo comando di sola lettura `SystemCommand.FrameTimeline`, test aggiornato su `LayerPicker`.
+
 ### La misura del gioco ora legge i fotogrammi su Android 14
 - Richiesta: il test di Brawl Stars ("Nessun dato", letture 0): il tablet trovava il gioco ma `--latency` non restituisce fotogrammi per i giochi su Android 12 e successivi.
 - **Cosa cambia:** la misura usa anche le statistiche di SurfaceFlinger (`--timestats`): FPS medi, peggiore 1 %, fotogrammi lenti e fotogramma più lungo, escluse le pause lunghe (caricamenti). Le statistiche si accendono all'inizio della misura e si **spengono alla fine** (non cambiano impostazioni salvate).
