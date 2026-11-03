@@ -14,6 +14,8 @@ import it.manlio.nova.core.system.LayerPicker
 import it.manlio.nova.core.system.ProtectedPackages
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
+import it.manlio.nova.core.system.SystemCommand.TimeStats.Step
+import it.manlio.nova.core.system.TimeStatsParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -57,6 +59,9 @@ class GameMeter(
         val collectors = mutableMapOf<String, FrameCollector>()
         val layers = mutableMapOf<String, String>()
         val why = Why()
+        val seen = mutableMapOf<String, Int>()
+        app.shizuku.run(SystemCommand.TimeStats(Step.ENABLE))
+        app.shizuku.run(SystemCommand.TimeStats(Step.CLEAR))
         repeat(DURATION_S / STEP_S) {
             delay(STEP_S * MS_PER_S)
             val pkg = app.foreground.value?.takeIf(app::isGamePackage)
@@ -64,16 +69,22 @@ class GameMeter(
                 why.noGame++
                 return@repeat
             }
+            seen.merge(pkg, 1, Int::plus)
             val layer = layers[pkg] ?: findLayer(pkg, why)?.also { layers[pkg] = it }
             if (layer == null) return@repeat
             val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
+            if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
             if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
             if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
         }
+        val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
+        app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
         val best = collectors.entries.maxByOrNull { it.value.report()?.frames ?: 0 }
-        val report = best?.value?.report()
-        if (best == null || report == null) return fail(why)
-        save(text(best.key, report), summary(report))
+        val game = best?.key ?: seen.maxByOrNull { it.value }?.key
+        // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
+        val report = best?.value?.report() ?: game?.let { TimeStatsParser.parse(dump, it) }
+        if (game == null || report == null) return fail(why, dump)
+        save(text(game, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
     }
 
@@ -87,7 +98,10 @@ class GameMeter(
     }
 
     /** Anche quando non si legge niente il testo si può condividere: dice cosa è andato storto, così lo si corregge. */
-    private fun fail(why: Why) {
+    private fun fail(
+        why: Why,
+        dump: String,
+    ) {
         val text =
             buildString {
                 appendLine(SUMMARY_PREFIX + app.getString(R.string.meter_no_data))
@@ -97,6 +111,11 @@ class GameMeter(
                 appendLine("Livello grafico trovato: ${why.layer ?: "nessuno"}")
                 appendLine("Elenco livelli (parte): ${why.layers}")
                 appendLine("Errore del comando: ${why.failed ?: "nessuno"}")
+                appendLine("Risposta di --latency (inizio): ${why.latency.replace('\n', '|')}")
+                val game = why.layer?.substringAfter('[')?.substringBefore('/').orEmpty()
+                val lines = dump.lineSequence().filter { game.isNotEmpty() && game in it }.take(DIAG_LINES)
+                appendLine("Statistiche: ${dump.length} caratteri; righe del gioco: ${lines.joinToString(" | ")}")
+                appendLine("Statistiche (inizio): ${dump.take(DIAG_DUMP).replace('\n', '|')}")
                 appendLine("Dispositivo: ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
             }
         save(text, app.getString(R.string.meter_no_data))
@@ -109,6 +128,7 @@ class GameMeter(
         var layer: String? = null
         var layers: String = ""
         var failed: String? = null
+        var latency: String = ""
     }
 
     private suspend fun findLayer(
@@ -159,6 +179,7 @@ class GameMeter(
         private const val STEP_S = 2
         private const val DIAG_CHARS = 200
         private const val DIAG_LINES = 6
+        private const val DIAG_DUMP = 700
         private const val MS_PER_S = 1000L
         private const val SECONDS_PER_MINUTE = 60
         private const val TENTHS = 10f

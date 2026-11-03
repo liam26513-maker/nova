@@ -33,3 +33,5 @@ Risoluzione dello schermo (solo densità), risparmio energetico intelligente aut
 
 ## Misura dei fotogrammi (sola lettura)
 `SystemCommand.ListSurfaceLayers` (`dumpsys SurfaceFlinger --list`) e `SystemCommand.SurfaceLatency(layer)` (`dumpsys SurfaceFlinger --latency <layer>`, nome validato da regex) leggono lo stato del compositore senza modificare nulla. `FrameCollector` unisce i campioni (scarta duplicati e valori non validi, ignora le pause ≥ 750 ms come caricamenti) e produce `FrameReport`; `LayerPicker` sceglie il livello `SurfaceView` del gioco. Test: `FrameStatsTest`.
+
+`SystemCommand.TimeStats(step)` (`dumpsys SurfaceFlinger --timestats -enable|-clear|-dump|-disable`): passi fissi, nessun parametro libero. Accendere le statistiche è volatile (si spegne con `-disable` a fine misura e al riavvio). `TimeStatsParser` ricava `FrameReport` da `averageFPS` e dall'istogramma `presentToPresent`; test in `TimeStatsParserTest`. Il formato è stato scritto a memoria del codice di Android e va confermato sul tablet: se non coincide, la misura salva la risposta grezza.
