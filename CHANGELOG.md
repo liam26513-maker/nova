@@ -4,6 +4,9 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La misura trova il gioco anche senza il servizio di accessibilità
+- Richiesta: misura con Gaming accesa e tendina spenta ("Nessun dato"). NOVA non aveva capito quale app era davanti (60 controlli su 60 senza gioco) e non guardava le statistiche giuste, ma il dato c'era (44,5 FPS su 4896 fotogrammi). Ora, se non sa quale gioco è davanti, prende dalle statistiche di sistema il livello di gioco con più fotogrammi.
+
 ### La misura non disturba più il gioco
 - Richiesta: "In oltre laggava troppo".
 - Durante la misura NOVA chiamava il sistema ogni 2 secondi (`dumpsys SurfaceFlinger`), e ogni chiamata ferma un attimo il compositore: poteva peggiorare lo scatto proprio mentre misuravo. Ora **durante i 2 minuti non esegue nessun comando**; legge le statistiche una volta sola alla fine.

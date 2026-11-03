@@ -46,6 +46,14 @@ class TimeStatsParserTest {
     }
 
     @Test
+    fun `finds the busiest game layer when nobody said which app is in front`() {
+        val (pkg, r) = TimeStatsParser.busiest(dump) { it != "com.android.systemui" }!!
+        assertEquals("com.game", pkg)
+        assertEquals(1000, r.frames)
+        assertNull(TimeStatsParser.busiest(dump) { false })
+    }
+
+    @Test
     fun `a missing game or an unknown format gives nothing`() {
         assertNull(TimeStatsParser.parse(dump, "com.altro"))
         assertNull(TimeStatsParser.parse("tutt'altro formato", "com.game"))

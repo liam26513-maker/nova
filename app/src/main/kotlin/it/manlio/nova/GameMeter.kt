@@ -66,10 +66,12 @@ class GameMeter(
         }
         val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
         app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
-        val game = seen.maxByOrNull { it.value }?.key
-        val report = game?.let { TimeStatsParser.parse(dump, it) }
-        if (game == null || report == null) return fail(why, game ?: app.lastGame, dump)
-        save(text(game, report), summary(report))
+        val seenGame = seen.maxByOrNull { it.value }?.key
+        // Se il servizio non ha segnalato nessun gioco davanti si prende il livello di gioco con più fotogrammi.
+        val seenReport = seenGame?.let { g -> TimeStatsParser.parse(dump, g)?.let { g to it } }
+        val found = seenReport ?: TimeStatsParser.busiest(dump, app::isGamePackage)
+        if (found == null) return fail(why, seenGame ?: app.lastGame, dump)
+        save(text(found.first, found.second), summary(found.second))
         say(app.getString(R.string.meter_done, lastSummary))
     }
 
