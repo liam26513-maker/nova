@@ -32,6 +32,20 @@ class TimeStatsParserTest {
     }
 
     @Test
+    fun `reads the real format of the UJJ U6 on Android 14`() {
+        val real =
+            "displayRefreshRate = 60 fps\nrenderRate = 60 fps\nuid = 10182\n" +
+                "layerName = SurfaceView[com.supercell.brawlstars/com.supercell.brawlstars.GameApp](BLAST)#4373\n" +
+                "packageName = \ngameMode = Unsupported\ntotalFrames = 5848\ndroppedFrames = 0\naverageFPS = 48.694\n" +
+                "present2present histogram is as below:\n16ms=4000 17ms=1500 33ms=300 34ms=40 50ms=8\n" +
+                "frameDuration histogram is as below:\n1ms=5848\n"
+        val r = TimeStatsParser.parse(real, "com.supercell.brawlstars")!!
+        assertEquals(5848, r.frames)
+        assertEquals(48.694, r.fps, 0.001)
+        assertEquals(50.0, r.worstMs, 0.01)
+    }
+
+    @Test
     fun `a missing game or an unknown format gives nothing`() {
         assertNull(TimeStatsParser.parse(dump, "com.altro"))
         assertNull(TimeStatsParser.parse("tutt'altro formato", "com.game"))

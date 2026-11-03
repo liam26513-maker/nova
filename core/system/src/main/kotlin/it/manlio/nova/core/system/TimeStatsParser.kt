@@ -2,14 +2,14 @@ package it.manlio.nova.core.system
 
 /**
  * Legge l'elenco di `dumpsys SurfaceFlinger --timestats -dump`: per ogni livello grafico il nome, `totalFrames`, `averageFPS` e
- * l'istogramma «presentToPresent» (`8ms=12 9ms=40 …`: quanti fotogrammi sono arrivati a quella distanza dal precedente). Pura,
+ * l'istogramma «present2present» (su Android 14; «presentToPresent» in altre versioni) (`8ms=12 9ms=40 …`: quanti fotogrammi sono arrivati a quella distanza dal precedente). Pura,
  * senza Android. Se il formato non è quello atteso restituisce `null` (e il chiamante mostra il testo grezzo per correggere).
  */
 object TimeStatsParser {
     private val FRAMES = Regex("totalFrames\\s*=\\s*(\\d+)")
     private val FPS = Regex("averageFPS\\s*=\\s*([0-9.]+)")
     private val BIN = Regex("(\\d+)ms\\s*=\\s*(\\d+)")
-    private const val HEADER = "presentToPresent"
+    private val HEADER = Regex("present(2|To)[Pp]resent")
     private const val MIN_FRAMES = 20
     private const val SLOW_MS = 25 // oltre una volta e mezza il ritmo di un 60 Hz
     private const val ONE_PERCENT = 100
@@ -30,7 +30,7 @@ object TimeStatsParser {
     private fun layer(block: String): FrameReport? {
         val total = FRAMES.find(block)?.groupValues?.get(1)?.toIntOrNull()
         val fps = FPS.find(block)?.groupValues?.get(1)?.toDoubleOrNull()
-        val start = block.indexOf(HEADER)
+        val start = HEADER.find(block)?.range?.first ?: -1
         if (total == null || fps == null || start < 0) return null
         if (total < MIN_FRAMES || fps <= 0) return null
         val bins = block.substring(start).lines().drop(1).takeWhile { "histogram" !in it }.flatMap { BIN.findAll(it).toList() }
