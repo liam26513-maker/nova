@@ -9,6 +9,7 @@ package it.manlio.nova.core.system
 object TimeStatsParser {
     private val FRAMES = Regex("totalFrames\\s*=\\s*(\\d+)")
     private val FPS = Regex("averageFPS\\s*=\\s*([0-9.]+)")
+    private val SURFACE_VIEW = Regex("layerName\\s*=\\s*SurfaceView\\[([^/\\]]+)/")
     private val BIN = Regex("(\\d+)ms\\s*=\\s*(\\d+)")
     private val HEADER = Regex("present(2|To)[Pp]resent")
     private const val MIN_FRAMES = 20
@@ -27,6 +28,22 @@ object TimeStatsParser {
             .filter { block -> packageName in block.lineSequence().first() }
             .mapNotNull(::layer)
             .maxByOrNull { it.frames }
+
+    /**
+     * Il gioco senza sapere quale sia: il livello `SurfaceView[<pacchetto>/…]` con più fotogrammi tra quelli che [accept] ammette
+     * (non NOVA, non la Home, non il sistema). Serve quando il servizio di accessibilità non ha segnalato quale app è davanti.
+     */
+    fun busiest(
+        dump: String,
+        accept: (String) -> Boolean,
+    ): Pair<String, FrameReport>? =
+        SURFACE_VIEW
+            .findAll(dump)
+            .map { it.groupValues[1] }
+            .distinct()
+            .filter(accept)
+            .mapNotNull { pkg -> parse(dump, pkg)?.let { pkg to it } }
+            .maxByOrNull { it.second.frames }
 
     private fun layer(block: String): FrameReport? {
         val total = FRAMES.find(block)?.groupValues?.get(1)?.toIntOrNull()
