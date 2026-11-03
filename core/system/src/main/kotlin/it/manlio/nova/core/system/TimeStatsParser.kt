@@ -31,7 +31,8 @@ object TimeStatsParser {
         val total = FRAMES.find(block)?.groupValues?.get(1)?.toIntOrNull()
         val fps = FPS.find(block)?.groupValues?.get(1)?.toDoubleOrNull()
         val start = block.indexOf(HEADER)
-        if (total == null || fps == null || start < 0 || total < MIN_FRAMES || fps <= 0) return null
+        if (total == null || fps == null || start < 0) return null
+        if (total < MIN_FRAMES || fps <= 0) return null
         val bins = block.substring(start).lines().drop(1).takeWhile { "histogram" !in it }.flatMap { BIN.findAll(it).toList() }
         val deltas = bins.flatMap { m -> List(m.groupValues[2].toInt()) { m.groupValues[1].toInt() } }
         val moving = deltas.filter { it < FrameCollector.PAUSE_MS }
