@@ -32,10 +32,14 @@ class FrameCollector {
         val lines = output.lines().map { it.trim() }.filter { it.isNotEmpty() }
         val head = lines.firstOrNull()?.toLongOrNull() ?: return 0
         if (head > 0) period = head
+        val fresh =
+            lines
+                .drop(1)
+                .mapNotNull { it.split(Regex("\\s+")).getOrNull(1)?.toLongOrNull() }
+                .filter { it > 0 && it != Long.MAX_VALUE }
         var added = 0
-        for (line in lines.drop(1)) {
-            val shown = line.split(Regex("\\s+")).getOrNull(1)?.toLongOrNull() ?: continue
-            if (shown <= 0 || shown == Long.MAX_VALUE || shown <= last) continue
+        for (shown in fresh) {
+            if (shown <= last) continue
             presents += shown
             last = shown
             added++

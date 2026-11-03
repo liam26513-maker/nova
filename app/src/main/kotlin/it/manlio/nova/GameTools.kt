@@ -22,10 +22,12 @@ internal class GameTools(
         buildList {
             val meter = app.gameMeter
             val state = if (meter.running) context.getString(R.string.meter_running) else meter.lastSummary
-            add(MoreItem(context.getString(R.string.more_meter), state) { _ ->
-                meter.start()
-                null
-            })
+            add(
+                MoreItem(context.getString(R.string.more_meter), state) { _ ->
+                    meter.start()
+                    null
+                },
+            )
             meter.lastText?.let { text ->
                 add(
                     MoreItem(context.getString(R.string.more_meter_share)) { _ ->
