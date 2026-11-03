@@ -2,7 +2,8 @@ package it.manlio.nova.core.system
 
 /**
  * Legge l'elenco di `dumpsys SurfaceFlinger --timestats -dump`: per ogni livello grafico il nome, `totalFrames`, `averageFPS` e
- * l'istogramma «present2present» (su Android 14; «presentToPresent» in altre versioni) (`8ms=12 9ms=40 …`: quanti fotogrammi sono arrivati a quella distanza dal precedente). Pura,
+ * l'istogramma «present2present» (Android 14; «presentToPresent» in altre versioni: `8ms=12 9ms=40 …`, quanti fotogrammi sono
+ * arrivati a quella distanza dal precedente). Pura,
  * senza Android. Se il formato non è quello atteso restituisce `null` (e il chiamante mostra il testo grezzo per correggere).
  */
 object TimeStatsParser {

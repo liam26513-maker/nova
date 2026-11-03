@@ -156,7 +156,6 @@ class GameMeter(
     companion object {
         const val DURATION_S = 120
         private const val STEP_S = 2
-        private const val DIAG_CHARS = 200
         private const val DIAG_LINES = 6
         private const val DIAG_DUMP = 700
         private const val MS_PER_S = 1000L
