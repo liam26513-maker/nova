@@ -146,16 +146,14 @@ class NovaControlService : AccessibilityService() {
      * Il sistema può aprire la sua tendina insieme alla nostra (segue lo stesso tocco): la richiudiamo subito, ogni tanto
      * mentre il dito scende e ancora un paio di volte a gesto finito. Quella di Android non deve restare.
      */
-    private fun dismissShade() {
-        performGlobalAction(GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE)
-    }
+    private val dismissShade = Runnable { performGlobalAction(GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE) }
 
     private fun hideAndroidShade(finished: Boolean) {
         val now = SystemClock.uptimeMillis()
         if (!finished && now - lastShadeHide < SHADE_HIDE_GAP_MS) return
         lastShadeHide = now
-        dismissShade()
-        if (finished) SHADE_HIDE_AFTER_MS.forEach { handler.postDelayed(::dismissShade, it) }
+        dismissShade.run()
+        if (finished) SHADE_HIDE_AFTER_MS.forEach { handler.postDelayed(dismissShade, it) }
     }
 
     private fun removeStrip() {
