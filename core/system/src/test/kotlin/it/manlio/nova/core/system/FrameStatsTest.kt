@@ -118,6 +118,10 @@ class FrameStatsTest {
         assertEquals(game, LayerPicker.pick(list, "com.supercell.brawlstars"))
         assertEquals("com.altro/com.altro.Main#0", LayerPicker.pick("StatusBar#0\ncom.altro/com.altro.Main#0", "com.altro"))
         assertNull(LayerPicker.pick(list, "com.non.presente"))
+        val android14 =
+            "3fff21c ActivityRecordInputSink com.g/.GameApp#4047\nActivityRecord{3b69a36 u0 com.g/.GameApp#4046\n" +
+                "715c3c4 com.g/com.g.GameApp#4048"
+        assertEquals("715c3c4 com.g/com.g.GameApp#4048", LayerPicker.pick(android14, "com.g"))
     }
 
     @Test

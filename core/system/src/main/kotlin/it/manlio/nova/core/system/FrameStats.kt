@@ -88,6 +88,8 @@ object LayerPicker {
         packageName: String,
     ): String? {
         val mine = list.lines().map { it.trim() }.filter { packageName in it && !it.startsWith("Background for") }
-        return mine.firstOrNull { it.startsWith("SurfaceView[") } ?: mine.firstOrNull { it.contains('/') }
+        // Su Android 14 ci sono anche righe «ActivityRecordInputSink …» e «ActivityRecord{…»: non sono il livello che disegna.
+        val real = mine.filter { "ActivityRecord" !in it && "$packageName/" in it }
+        return mine.firstOrNull { it.startsWith("SurfaceView[") } ?: real.firstOrNull()
     }
 }

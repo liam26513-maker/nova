@@ -88,6 +88,11 @@ sealed interface SystemCommand {
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--timestats", step.flag)
     }
 
+    /** I tempi dei fotogrammi per livello (`dumpsys SurfaceFlinger --frametimeline`), solo lettura: per la diagnosi dei giochi. */
+    data object FrameTimeline : SystemCommand {
+        override val argv = listOf("dumpsys", "SurfaceFlinger", "--frametimeline")
+    }
+
     /** Legge la densità dello schermo: «Physical density» e, se cambiata, «Override density». */
     data object GetDensity : SystemCommand {
         override val argv = listOf("wm", "density")

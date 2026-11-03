@@ -71,11 +71,7 @@ class GameMeter(
             }
             seen.merge(pkg, 1, Int::plus)
             val layer = layers[pkg] ?: findLayer(pkg, why)?.also { layers[pkg] = it }
-            if (layer == null) return@repeat
-            val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
-            if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
-            if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
-            if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
+            if (layer != null) sample(pkg, layer, collectors, why)
         }
         val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
         app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
@@ -83,9 +79,21 @@ class GameMeter(
         val game = best?.key ?: seen.maxByOrNull { it.value }?.key
         // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
         val report = best?.value?.report() ?: game?.let { TimeStatsParser.parse(dump, it) }
-        if (game == null || report == null) return fail(why, dump)
+        if (game == null || report == null) return fail(why, game ?: app.lastGame, dump)
         save(text(game, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
+    }
+
+    private suspend fun sample(
+        pkg: String,
+        layer: String,
+        collectors: MutableMap<String, FrameCollector>,
+        why: Why,
+    ) {
+        val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
+        if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
+        if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
+        if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
     }
 
     private fun save(
@@ -98,10 +106,13 @@ class GameMeter(
     }
 
     /** Anche quando non si legge niente il testo si può condividere: dice cosa è andato storto, così lo si corregge. */
-    private fun fail(
+    private suspend fun fail(
         why: Why,
+        game: String?,
         dump: String,
     ) {
+        why.game = game
+        why.timeline = app.shizuku.run(SystemCommand.FrameTimeline).output
         val text =
             buildString {
                 appendLine(SUMMARY_PREFIX + app.getString(R.string.meter_no_data))
@@ -112,17 +123,29 @@ class GameMeter(
                 appendLine("Elenco livelli (parte): ${why.layers}")
                 appendLine("Errore del comando: ${why.failed ?: "nessuno"}")
                 appendLine("Risposta di --latency (inizio): ${why.latency.replace('\n', '|')}")
-                val game = why.layer?.substringAfter('[')?.substringBefore('/').orEmpty()
-                val lines = dump.lineSequence().filter { game.isNotEmpty() && game in it }.take(DIAG_LINES)
-                appendLine("Statistiche: ${dump.length} caratteri; righe del gioco: ${lines.joinToString(" | ")}")
-                appendLine("Statistiche (inizio): ${dump.take(DIAG_DUMP).replace('\n', '|')}")
+                val game = why.game.orEmpty()
+                appendLine("Gioco misurato: $game")
+                appendLine("Statistiche: ${dump.length} caratteri; punto del gioco: ${around(dump, game)}")
+                appendLine("Statistiche (primo livello): ${around(dump, "layerName")}")
+                appendLine("Linea temporale: ${around(why.timeline, game)} || inizio: ${why.timeline.take(DIAG_DUMP).replace('\n', '|')}")
                 appendLine("Dispositivo: ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
             }
         save(text, app.getString(R.string.meter_no_data))
         say(app.getString(R.string.meter_none))
     }
 
+    private fun around(
+        text: String,
+        key: String,
+    ): String {
+        val at = if (key.isEmpty()) -1 else text.indexOf(key)
+        if (at < 0) return "(non trovato)"
+        return text.substring(maxOf(0, at - DIAG_DUMP / 2), minOf(text.length, at + DIAG_DUMP)).replace('\n', '|')
+    }
+
     private class Why {
+        var game: String? = null
+        var timeline: String = ""
         var noGame = 0
         var read = 0
         var layer: String? = null
