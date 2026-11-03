@@ -84,5 +84,9 @@
     <string name="island_label">Now playing: %1$s</string>
     <string name="home_menu_clear_notification">Clear notification</string>
     <string name="control_more">More</string>
+    <string name="standby_description">StandBy: tap to leave</string>
+    <string name="standby_battery">Battery %1$d%%</string>
+    <string name="standby_charging">charging</string>
+    <string name="standby_alarm">Alarm %1$s</string>
     <string name="control_turbo">Turbo</string>
 </resources>

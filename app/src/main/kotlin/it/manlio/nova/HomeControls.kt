@@ -143,6 +143,7 @@ class HomeControls(
             }
         }
         return listOf(
+            standby(),
             gaming(),
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
             MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
@@ -164,6 +165,14 @@ class HomeControls(
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
         )
     }
+
+    /** StandBy (SPEC §12.6): chiede alla Home di mostrarlo e la porta in primo piano (anche da sopra un'altra app). */
+    private fun standby() =
+        MoreItem(context.getString(R.string.more_standby)) {
+            app.standbyRequest.value = true
+            context.startActivity(Intent(context, HomeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            null
+        }
 
     /** Modalità Gaming (SPEC §8.2, di base): un tocco entra, un tocco esce e rimette tutto com'era. È anche l'uscita di emergenza. */
     private fun gaming(): MoreItem {

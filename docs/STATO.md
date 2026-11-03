@@ -10,6 +10,7 @@ Aggiornato a: release 0.1.3xx. Per riprendere il lavoro in una chat nuova basta 
   accessibilità), riquadri a prima vista scelti in Personalizza la Home, sezione «Altro», interruttori diretti con Shizuku, tasto di
   accessibilità di scorta, sblocco in un tocco delle impostazioni con restrizioni.
 - **Fase 2** strumenti di sistema (Shizuku): Turbo, animazioni, densità, DNS anti-pubblicità, congelamento, stato, interruttori rapidi.
+- **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano foto/calendario/widget/Stato PC nello StandBy.
 - **Fase 3, primo passo**: motore delle modalità (`core/modes`) e Gaming di base solo manuale (tendina → Altro). Vedi `docs/modules/modalita.md`.
 - **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release.
 

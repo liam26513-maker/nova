@@ -84,5 +84,9 @@
     <string name="island_label">In riproduzione: %1$s</string>
     <string name="home_menu_clear_notification">Cancella la notifica</string>
     <string name="control_more">Altro</string>
+    <string name="standby_description">StandBy: tocca per uscire</string>
+    <string name="standby_battery">Batteria %1$d%%</string>
+    <string name="standby_charging">in carica</string>
+    <string name="standby_alarm">Sveglia %1$s</string>
     <string name="control_turbo">Turbo</string>
 </resources>

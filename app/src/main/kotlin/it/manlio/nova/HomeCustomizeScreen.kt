@@ -175,6 +175,11 @@ private fun WallpaperSection(
                 onChange { it.copy(blurLevel = v) }
             }
         }
+        if (prefs.wallpaper != WallpaperSource.SYSTEM) {
+            Choice(R.string.customize_lock, listOf(true, false), prefs.lockWallpaper, { onOff(it) }, divider = true) { v ->
+                onChange { it.copy(lockWallpaper = v) }
+            }
+        }
         Choice(R.string.customize_scrim, ScrimStrength.entries, prefs.scrim, { stringResource(labelOf(it)) }, divider = true) { v ->
             onChange { it.copy(scrim = v) }
         }
@@ -332,6 +337,9 @@ private fun LayoutSection(
         }
         Choice(R.string.customize_double_tap, listOf(true, false), prefs.doubleTapSleep, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(doubleTapSleep = v) }
+        }
+        Choice(R.string.customize_standby_auto, listOf(true, false), prefs.standbyAuto, { onOff(it) }, divider = true) { v ->
+            onChange { it.copy(standbyAuto = v) }
         }
     }
 }
