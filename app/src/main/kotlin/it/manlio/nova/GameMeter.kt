@@ -8,9 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
 import android.widget.Toast
-import it.manlio.nova.core.system.FrameCollector
 import it.manlio.nova.core.system.FrameReport
-import it.manlio.nova.core.system.LayerPicker
 import it.manlio.nova.core.system.ProtectedPackages
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
@@ -24,10 +22,10 @@ import java.io.File
 import java.util.Locale
 
 /**
- * Misura un gioco mentre ci si gioca (con Shizuku): ogni 2 secondi, per 2 minuti, legge i tempi dei fotogrammi del gioco in primo
- * piano (`dumpsys SurfaceFlinger --latency`, solo lettura) e ne ricava FPS, scatti, temperatura e memoria. Parte solo se lo chiede
- * l'utente e dura al massimo [DURATION_S] secondi: non c'è nessun controllo continuo. Il risultato è un testo che si può condividere
- * (con l'app Claude, per esempio) per capire cosa fa scattare un gioco con dati veri invece di ipotesi.
+ * Misura un gioco mentre ci si gioca (con Shizuku): per 2 minuti guarda quale app è davanti (senza comandi, per non disturbare il
+ * gioco) e alla fine legge una volta sola le statistiche di SurfaceFlinger (solo lettura): FPS, scatti, più temperatura e memoria.
+ * Parte solo se lo chiede l'utente e dura al massimo [DURATION_S] secondi. Il risultato è un testo che si può condividere (con
+ * l'app Claude, per esempio) per capire cosa fa scattare un gioco con dati veri invece di ipotesi.
  */
 class GameMeter(
     private val app: NovaApp,
@@ -56,44 +54,23 @@ class GameMeter(
     }
 
     private suspend fun measure() {
-        val collectors = mutableMapOf<String, FrameCollector>()
-        val layers = mutableMapOf<String, String>()
         val why = Why()
         val seen = mutableMapOf<String, Int>()
         app.shizuku.run(SystemCommand.TimeStats(Step.ENABLE))
         app.shizuku.run(SystemCommand.TimeStats(Step.CLEAR))
+        // Durante il gioco niente comandi: ogni `dumpsys SurfaceFlinger` ferma un attimo il compositore e falserebbe la misura.
         repeat(DURATION_S / STEP_S) {
             delay(STEP_S * MS_PER_S)
             val pkg = app.foreground.value?.takeIf(app::isGamePackage)
-            if (pkg == null) {
-                why.noGame++
-                return@repeat
-            }
-            seen.merge(pkg, 1, Int::plus)
-            val layer = layers[pkg] ?: findLayer(pkg, why)?.also { layers[pkg] = it }
-            if (layer != null) sample(pkg, layer, collectors, why)
+            if (pkg == null) why.noGame++ else seen.merge(pkg, 1, Int::plus)
         }
         val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
         app.shizuku.run(SystemCommand.TimeStats(Step.DISABLE))
-        val best = collectors.entries.maxByOrNull { it.value.report()?.frames ?: 0 }
-        val game = best?.key ?: seen.maxByOrNull { it.value }?.key
-        // --latency non dà più nulla per i livelli BLAST di Android 12+: si ripiega sulle statistiche di SurfaceFlinger.
-        val report = best?.value?.report() ?: game?.let { TimeStatsParser.parse(dump, it) }
+        val game = seen.maxByOrNull { it.value }?.key
+        val report = game?.let { TimeStatsParser.parse(dump, it) }
         if (game == null || report == null) return fail(why, game ?: app.lastGame, dump)
         save(text(game, report), summary(report))
         say(app.getString(R.string.meter_done, lastSummary))
-    }
-
-    private suspend fun sample(
-        pkg: String,
-        layer: String,
-        collectors: MutableMap<String, FrameCollector>,
-        why: Why,
-    ) {
-        val out = app.shizuku.run(SystemCommand.SurfaceLatency(layer))
-        if (why.latency.isEmpty()) why.latency = out.output.take(DIAG_CHARS)
-        if (!out.ok) why.failed = out.output.take(DIAG_CHARS)
-        if (out.ok) why.read += collectors.getOrPut(pkg) { FrameCollector() }.add(out.output)
     }
 
     private fun save(
@@ -111,23 +88,19 @@ class GameMeter(
         game: String?,
         dump: String,
     ) {
-        why.game = game
-        why.timeline = app.shizuku.run(SystemCommand.FrameTimeline).output
+        val key = game.orEmpty()
+        val layers = app.shizuku.run(SystemCommand.ListSurfaceLayers).output.lineSequence()
+        val mine = layers.filter { key.isNotEmpty() && key in it }.take(DIAG_LINES).joinToString(" | ")
         val text =
             buildString {
                 appendLine(SUMMARY_PREFIX + app.getString(R.string.meter_no_data))
-                appendLine("Misura non riuscita. Letture di fotogrammi: ${why.read}")
+                appendLine("Misura non riuscita.")
                 appendLine("Controlli senza un gioco davanti: ${why.noGame}")
                 appendLine("Gioco davanti all'ultimo controllo: ${app.foreground.value ?: "nessuno"}")
-                appendLine("Livello grafico trovato: ${why.layer ?: "nessuno"}")
-                appendLine("Elenco livelli (parte): ${why.layers}")
-                appendLine("Errore del comando: ${why.failed ?: "nessuno"}")
-                appendLine("Risposta di --latency (inizio): ${why.latency.replace('\n', '|')}")
-                val game = why.game.orEmpty()
-                appendLine("Gioco misurato: $game")
-                appendLine("Statistiche: ${dump.length} caratteri; punto del gioco: ${around(dump, game)}")
+                appendLine("Livelli del gioco: $mine")
+                appendLine("Gioco misurato: $key")
+                appendLine("Statistiche: ${dump.length} caratteri; punto del gioco: ${around(dump, key)}")
                 appendLine("Statistiche (primo livello): ${around(dump, "layerName")}")
-                appendLine("Linea temporale: ${around(why.timeline, game)} || inizio: ${why.timeline.take(DIAG_DUMP).replace('\n', '|')}")
                 appendLine("Dispositivo: ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE}")
             }
         save(text, app.getString(R.string.meter_no_data))
@@ -144,24 +117,7 @@ class GameMeter(
     }
 
     private class Why {
-        var game: String? = null
-        var timeline: String = ""
         var noGame = 0
-        var read = 0
-        var layer: String? = null
-        var layers: String = ""
-        var failed: String? = null
-        var latency: String = ""
-    }
-
-    private suspend fun findLayer(
-        pkg: String,
-        why: Why,
-    ): String? {
-        val list = app.shizuku.run(SystemCommand.ListSurfaceLayers)
-        if (!list.ok) why.failed = list.output.take(DIAG_CHARS)
-        why.layers = list.output.lineSequence().filter { pkg.substringBefore('.') in it }.take(DIAG_LINES).joinToString(" | ")
-        return if (list.ok) LayerPicker.pick(list.output, pkg)?.also { why.layer = it } else null
     }
 
     private fun summary(r: FrameReport) = format("%.0f FPS · 1%% basso %.0f · %.0f%% lenti", r.fps, r.lowFps, r.slowPercent)
