@@ -14,7 +14,7 @@ class StandbyAndLockTest {
     }
 
     @Test
-    fun `automatic standby needs all three: switched on, charging, landscape`() {
+    fun `automatic standby needs all three, switched on and charging and landscape`() {
         assertTrue(StandbyRules.shouldStart(auto = true, charging = true, landscape = true))
         assertFalse(StandbyRules.shouldStart(auto = false, charging = true, landscape = true))
         assertFalse(StandbyRules.shouldStart(auto = true, charging = false, landscape = true))
