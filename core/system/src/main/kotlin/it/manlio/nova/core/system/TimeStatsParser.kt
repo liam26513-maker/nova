@@ -28,14 +28,14 @@ object TimeStatsParser {
             .maxByOrNull { it.frames }
 
     private fun layer(block: String): FrameReport? {
-        val total = FRAMES.find(block)?.groupValues?.get(1)?.toIntOrNull() ?: return null
-        val fps = FPS.find(block)?.groupValues?.get(1)?.toDoubleOrNull() ?: return null
-        val start = block.indexOf(HEADER).takeIf { it >= 0 } ?: return null
-        val rest = block.substring(start).lines().drop(1)
-        val bins = rest.takeWhile { "histogram" !in it }.flatMap { BIN.findAll(it).toList() }
+        val total = FRAMES.find(block)?.groupValues?.get(1)?.toIntOrNull()
+        val fps = FPS.find(block)?.groupValues?.get(1)?.toDoubleOrNull()
+        val start = block.indexOf(HEADER)
+        if (total == null || fps == null || start < 0 || total < MIN_FRAMES || fps <= 0) return null
+        val bins = block.substring(start).lines().drop(1).takeWhile { "histogram" !in it }.flatMap { BIN.findAll(it).toList() }
         val deltas = bins.flatMap { m -> List(m.groupValues[2].toInt()) { m.groupValues[1].toInt() } }
         val moving = deltas.filter { it < FrameCollector.PAUSE_MS }
-        if (total < MIN_FRAMES || fps <= 0 || moving.size < MIN_FRAMES) return null
+        if (moving.size < MIN_FRAMES) return null
         val worst = moving.sortedDescending()
         val lowest = worst.take(maxOf(1, moving.size / ONE_PERCENT)).average()
         return FrameReport(
