@@ -163,7 +163,7 @@ class HomeControls(
             go(R.string.more_color_correction, ACTION_COLOR_CORRECTION),
             go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
-        )
+        ) + GameTools(context, app).items()
     }
 
     /** StandBy (SPEC §12.6): chiede alla Home di mostrarlo e la porta in primo piano (anche da sopra un'altra app). */

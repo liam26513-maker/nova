@@ -41,3 +41,6 @@ Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.
 - **Modalità definite nel codice:** `shortcut:` in `Modes.kt`; passare a `config/modes/<nome>.json` (con schema e test di caricamento, come chiede CLAUDE.md) quando le modalità saranno più d'una.
 - **Modalità provvisoria:** il registro delle modalità non è ancora azzerato da `core/safemode` (lo fa «Annulla tutte le modifiche» solo per gli interruttori di sistema); da aggiungere.
+
+## Strumenti per i giochi (Altro)
+«Misura il gioco (2 minuti)» campiona ogni 2 s l'ultimo gioco in primo piano (solo su richiesta, Shizuku) e salva `diagnosi-gaming.txt`; «Condividi l'ultima misura» la manda via condivisione; «Chiudi il gioco» fa `force-stop` dell'ultimo gioco (uscita di emergenza n. 4 di SPEC §8.2).

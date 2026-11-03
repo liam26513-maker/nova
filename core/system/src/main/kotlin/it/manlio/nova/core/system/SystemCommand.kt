@@ -59,6 +59,24 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "force-stop", packageName)
     }
 
+    /** Elenca i livelli grafici (per trovare quello di un gioco). Solo lettura. */
+    data object ListSurfaceLayers : SystemCommand {
+        override val argv = listOf("dumpsys", "SurfaceFlinger", "--list")
+    }
+
+    /**
+     * Legge i tempi degli ultimi fotogrammi di un livello grafico (`dumpsys SurfaceFlinger --latency`): serve a misurare FPS e scatti
+     * di un gioco. Solo lettura. Il nome del livello (es. `SurfaceView[com.gioco/com.gioco.Main](BLAST)#0`) ha un insieme chiuso
+     * di caratteri; niente virgolette, punti e virgola o altro che una shell potrebbe interpretare (comunque non c'è shell: è una lista).
+     */
+    data class SurfaceLatency(val layer: String) : SystemCommand {
+        init {
+            require(LAYER.matches(layer)) { "Nome di livello non consentito" }
+        }
+
+        override val argv = listOf("dumpsys", "SurfaceFlinger", "--latency", layer)
+    }
+
     /** Legge la densità dello schermo: «Physical density» e, se cambiata, «Override density». */
     data object GetDensity : SystemCommand {
         override val argv = listOf("wm", "density")
@@ -124,6 +142,7 @@ sealed interface SystemCommand {
         const val MAX_APK_BYTES = 200L * 1024 * 1024
         const val OWN_PACKAGE = "it.manlio.nova"
         private const val MAX_PACKAGE_LENGTH = 128
+        private val LAYER = Regex("^[A-Za-z0-9_.#/\\[\\]()\\$:=, -]{1,250}$")
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
         private val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")

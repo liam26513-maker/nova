@@ -107,7 +107,10 @@ class NovaControlService : AccessibilityService() {
         // tendina di Android (SystemUI), che si apre insieme alla nostra durante il gesto e che chiudiamo noi: scambiarla per
         // «un'altra finestra davanti» richiudeva la tendina di NOVA un attimo dopo averla aperta.
         val other = event.packageName != packageName && event.packageName != SYSTEM_UI
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && other) requestClose()
+        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
+        requestClose()
+        // Quale app è davanti (non la tastiera): serve a misurare o chiudere un gioco.
+        event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let(app::noteForeground)
     }
 
     override fun onInterrupt() = requestClose()
