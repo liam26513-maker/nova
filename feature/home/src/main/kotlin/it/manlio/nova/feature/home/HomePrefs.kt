@@ -83,6 +83,10 @@ data class HomePrefs(
     val showStatusBar: Boolean = true,
     val swipeDownNotifications: Boolean = true,
     val doubleTapSleep: Boolean = false,
+    /** Lo sfondo di NOVA (o la foto, o il colore) anche sulla schermata di blocco di Android. Con lo sfondo di sistema non fa niente. */
+    val lockWallpaper: Boolean = true,
+    /** StandBy automatico: in carica, in orizzontale e fermo per un po' parte da solo (SPEC §12.6). A mano è sempre disponibile. */
+    val standbyAuto: Boolean = false,
     /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
     val controlTiles: List<ControlTileId> = ControlTileId.DEFAULT,
     /** App nascoste: chiave → nome al momento in cui è stata nascosta (per mostrarle nelle Impostazioni). */
@@ -98,11 +102,17 @@ data class HomePrefs(
 
     /** Solo l'aspetto (per i temi): senza app nascoste, nomi e disposizione. */
     fun appearance(): HomePrefs =
-        copy(hidden = emptyMap(), renamed = emptyMap(), layout = HomeLayoutStyle.IPAD, controlTiles = ControlTileId.DEFAULT)
+        copy(
+            hidden = emptyMap(),
+            renamed = emptyMap(),
+            layout = HomeLayoutStyle.IPAD,
+            controlTiles = ControlTileId.DEFAULT,
+            standbyAuto = false,
+        )
 
     /** Applica l'aspetto di [theme] tenendo app nascoste, nomi e disposizione di queste preferenze. */
     fun withLookOf(theme: HomePrefs): HomePrefs =
-        theme.copy(hidden = hidden, renamed = renamed, layout = layout, controlTiles = controlTiles)
+        theme.copy(hidden = hidden, renamed = renamed, layout = layout, controlTiles = controlTiles, standbyAuto = standbyAuto)
 
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
     val iconSignature: String get() = "$iconShape/$iconStyle/${iconPack.orEmpty()}"
@@ -202,6 +212,8 @@ internal object PrefsCodec {
             showStatusBar = bool("statusBar", d.showStatusBar),
             swipeDownNotifications = bool("swipeDown", d.swipeDownNotifications),
             doubleTapSleep = bool("doubleTapSleep", d.doubleTapSleep),
+            lockWallpaper = bool("lockWallpaper", d.lockWallpaper),
+            standbyAuto = bool("standbyAuto", d.standbyAuto),
             controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
             renamed =
@@ -239,6 +251,8 @@ internal object PrefsCodec {
         p["statusBar"] = prefs.showStatusBar.toString()
         p["swipeDown"] = prefs.swipeDownNotifications.toString()
         p["doubleTapSleep"] = prefs.doubleTapSleep.toString()
+        p["lockWallpaper"] = prefs.lockWallpaper.toString()
+        p["standbyAuto"] = prefs.standbyAuto.toString()
         p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
         prefs.renamed.forEach { (key, name) -> p["$RENAMED$key"] = name }

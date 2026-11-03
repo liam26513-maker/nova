@@ -4,6 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Sfondo di NOVA anche sulla schermata di blocco, e StandBy
+- Richiesta: "La schermata di blocco, metti lo sfondo di NOVA e anche la modalità standby".
+- **Sfondo della schermata di blocco:** lo sfondo scelto in NOVA (la sfumatura Notte/Aurora/Tramonto…, il colore o la tua foto) viene messo **anche sulla schermata di blocco** di Android, disegnato con lo stesso codice della Home, quindi uguale. Si accende da solo (si spegne in Personalizza la Home → Sfondo → «Sfondo anche sulla schermata di blocco»). Se usi lo sfondo di sistema non tocco niente. Cambia lo sfondo o la foto: la schermata di blocco si aggiorna da sola. **Cosa resta di Android:** il disegno della schermata di blocco (posizione dell'ora, PIN, notifiche) non si può cambiare: lo sfondo sì. Nuovo permesso normale, senza richieste: impostare lo sfondo.
+- **StandBy:** schermo nero a tutto campo con **l'ora grande**, la data, la batteria (anche «in carica») e la prossima sveglia. **Di notte** (21–7) rosso scuro e luminosità quasi al minimo; il resto del giorno luminosità ridotta; lo schermo non si spegne mentre è aperto. Un tocco o Indietro per uscire.
+  - **A mano:** tendina di controllo → Altro → **StandBy** (anche da sopra un'altra app: porta la Home in primo piano).
+  - **In automatico (spento di serie):** Personalizza la Home → Disposizione e gesti → «StandBy automatico»: parte da solo quando il tablet è **in carica, in orizzontale e fermo per 30 secondi** con la Home aperta.
+- **Cosa NON c'è ancora dello StandBy completo (SPEC §12.6):** foto a rotazione, calendario, widget a scelta, Stato PC. Per ora ora, data, batteria e sveglia. Non è la schermata di blocco: è una schermata della Home che mostra queste cose mentre il tablet è in carica.
+
 ### Modalità Gaming: più leggera, con un interruttore per ogni voce (per far sparire lo scatto)
 - Richiesta: "Metto come esempio il gioco brawlstars ... l'esito non è positivo perché laggava (cosa da far sparire assolutamente) e non prendeva bene i comandi".
 - **Cosa non so, e lo dico:** non posso misurare Brawl Stars dal cloud, quindi non so *quale* delle cose che la modalità cambia lo faceva scattare (potrebbe anche scattare da solo su questo tablet: ti chiedo una prova di confronto, sotto). Invece di tirare a indovinare, ho tolto ciò che poteva pesare e ti ho dato il modo di trovare il colpevole in due prove.

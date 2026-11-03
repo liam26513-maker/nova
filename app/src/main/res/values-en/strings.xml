@@ -262,6 +262,9 @@
     <string name="mode_exit_overlay">To leave: control sheet, More, Gaming mode.</string>
     <string name="mode_exit_home">To leave: go Home, pull down from the top-right corner, More, Gaming mode.</string>
     <string name="mode_turbo_closed">Turbo closed %1$d apps.</string>
+    <string name="more_standby">StandBy</string>
+    <string name="customize_lock">Wallpaper on the lock screen too</string>
+    <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>
     <string name="more_notifications">Android notifications</string>
     <string name="more_quick_settings">Android quick settings</string>
     <string name="more_rotation">Auto-rotate</string>

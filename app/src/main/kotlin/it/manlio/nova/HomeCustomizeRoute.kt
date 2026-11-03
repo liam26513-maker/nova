@@ -96,6 +96,7 @@ private fun rememberPhotoPicker(app: NovaApp): () -> Unit {
             scope.launch {
                 if (WallpaperLoader.savePhoto(context, uri)) {
                     app.homePrefs.update { it.copy(wallpaper = WallpaperSource.PHOTO) }
+                    LockScreenWallpaper.apply(app, app.homePrefs.prefs.value) // la nuova foto anche sulla schermata di blocco
                 } else {
                     toast(context, R.string.customize_photo_failed)
                 }

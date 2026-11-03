@@ -62,6 +62,7 @@ class HomeActivity : ComponentActivity() {
     private lateinit var layoutStore: HomeLayoutStore
     private lateinit var widgets: WidgetHostBridge
     private lateinit var controls: HomeControls
+    private val standby by lazy { StandbyController(this, app, lifecycleScope) }
     private lateinit var performance: PerformanceUi
     private lateinit var mediaHub: MediaHub
     private val weather = WeatherClient()
@@ -145,6 +146,9 @@ class HomeActivity : ComponentActivity() {
                     layout = layout,
                     onLayoutChange = { change -> lifecycleScope.launch { layoutStore.update(change) } },
                     animate = HomeSystem.animationsOn(this),
+                    standby = standby.info(),
+                    onStandbyExit = standby::hide,
+                    onTouch = standby::touched,
                 )
             }
         }
@@ -257,6 +261,7 @@ class HomeActivity : ComponentActivity() {
         catalog.start()
         widgets.start()
         controls.start()
+        standby.start()
         app.modes.start() // esce da una modalità dimenticata e riprende una rimasta a metà
         mediaHub.start()
         controlsTick++ // il permesso della luminosità può essere cambiato mentre la Home non c'era
@@ -274,6 +279,7 @@ class HomeActivity : ComponentActivity() {
             catalog.stop()
             widgets.stop()
             controls.stop()
+            standby.stop()
             mediaHub.stop()
             getSystemService(WindowManager::class.java).removeCrossWindowBlurEnabledListener(blurListener)
             wallpapers.removeOnColorsChangedListener(colorsListener)

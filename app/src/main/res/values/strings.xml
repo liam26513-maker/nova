@@ -265,6 +265,9 @@
     <string name="mode_exit_overlay">Per uscire: tendina → Altro → Modalità Gaming.</string>
     <string name="mode_exit_home">Per uscire: torna alla Home, tira giù dall\'angolo in alto a destra → Altro → Modalità Gaming.</string>
     <string name="mode_turbo_closed">Turbo: chiuse %1$d app.</string>
+    <string name="more_standby">StandBy</string>
+    <string name="customize_lock">Sfondo anche sulla schermata di blocco</string>
+    <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>
     <string name="more_notifications">Notifiche di Android</string>
     <string name="more_quick_settings">Impostazioni rapide di Android</string>
     <string name="more_rotation">Rotazione automatica</string>

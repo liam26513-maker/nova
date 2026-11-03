@@ -95,6 +95,9 @@ class NovaApp :
     lateinit var systemTools: SystemTools
     lateinit var modes: ModeController
 
+    /** Qualcuno (la tendina, anche sopra le altre app) chiede il StandBy: la Home lo mostra appena è visibile. */
+    val standbyRequest = MutableStateFlow(false)
+
     /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */
     @Volatile var nowPlayingPackage: String? = null
 
@@ -157,6 +160,7 @@ class NovaApp :
         }
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }
+        LockScreenWallpaper.start(this) // lo sfondo di NOVA anche sulla schermata di blocco
 
         profiler = DeviceProfiler(this)
         appScope.launch {

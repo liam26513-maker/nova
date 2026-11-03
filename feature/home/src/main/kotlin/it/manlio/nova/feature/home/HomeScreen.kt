@@ -81,6 +81,11 @@ fun HomeScreen(
     onLayoutChange: ((HomeLayout) -> HomeLayout) -> Unit = {},
     /** Falso con «Rimuovi animazioni» di Android: niente ondeggiamento in modifica. */
     animate: Boolean = true,
+    /** StandBy (SPEC §12.6): non nullo = schermo nero con l'ora grande sopra la Home; [onStandbyExit] lo chiude. */
+    standby: StandbyInfo? = null,
+    onStandbyExit: () -> Unit = {},
+    /** A ogni tocco (senza consumarlo): ricomincia il conto del StandBy automatico. */
+    onTouch: () -> Unit = {},
 ) {
     val data = rememberHomeData(apps, favoriteKeys, prefs, layout)
     val visible = data.visible
@@ -92,6 +97,7 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     var control by rememberSaveable { mutableStateOf(false) }
     val sheet = remember { ControlSheetState(scope) }
+    val touch = rememberUpdatedState(onTouch)
     // `control` è la scelta (aprire/chiudere dal codice: ricerca, Indietro, un riquadro); la tendina la segue con una molla.
     LaunchedEffect(control) { if (sheet.target != control) sheet.settle(control) }
     val latestData by rememberUpdatedState(data)
@@ -130,7 +136,7 @@ fun HomeScreen(
     CompositionLocalProvider(LocalHomeLook provides look, LocalNotifications provides previews) {
         // pullDownControl prima di swipeDown: dall'angolo la tendina segue il dito; dal resto della Home si apre con una molla.
         BoxWithConstraints(
-            Modifier.fillMaxSize().pullDownControl(sheet, actions.controls != null) { control = it }.then(swipeDown),
+            Modifier.fillMaxSize().onAnyTouch(touch).pullDownControl(sheet, actions.controls != null) { control = it }.then(swipeDown),
         ) {
             HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
@@ -225,6 +231,7 @@ fun HomeScreen(
                     ipadActions,
                 ) { menuFor = null }.copy(onClearNotification = clear)
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
+            standby?.let { StandbyScreen(it, nowMillis, onStandbyExit) }
         }
     }
 }
