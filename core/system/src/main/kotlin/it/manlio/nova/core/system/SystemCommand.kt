@@ -77,6 +77,17 @@ sealed interface SystemCommand {
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--latency", layer)
     }
 
+    /**
+     * Le statistiche dei fotogrammi di SurfaceFlinger (`dumpsys SurfaceFlinger --timestats`): su Android 12+ è dove si leggono FPS e
+     * fotogrammi persi dei giochi, perché `--latency` non dà più nulla per i livelli BLAST. Accendere è temporaneo (si spegne con
+     * [Step.DISABLE], e al riavvio comunque) e non cambia nessuna impostazione salvata.
+     */
+    data class TimeStats(val step: Step) : SystemCommand {
+        enum class Step(val flag: String) { ENABLE("-enable"), CLEAR("-clear"), DUMP("-dump"), DISABLE("-disable") }
+
+        override val argv = listOf("dumpsys", "SurfaceFlinger", "--timestats", step.flag)
+    }
+
     /** Legge la densità dello schermo: «Physical density» e, se cambiata, «Override density». */
     data object GetDensity : SystemCommand {
         override val argv = listOf("wm", "density")

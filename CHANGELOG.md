@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La misura del gioco ora legge i fotogrammi su Android 14
+- Richiesta: il test di Brawl Stars ("Nessun dato", letture 0): il tablet trovava il gioco ma `--latency` non restituisce fotogrammi per i giochi su Android 12 e successivi.
+- **Cosa cambia:** la misura usa anche le statistiche di SurfaceFlinger (`--timestats`): FPS medi, peggiore 1 %, fotogrammi lenti e fotogramma più lungo, escluse le pause lunghe (caricamenti). Le statistiche si accendono all'inizio della misura e si **spengono alla fine** (non cambiano impostazioni salvate).
+- Se ancora non legge niente, il testo da condividere contiene l'inizio della risposta grezza del sistema: con quello adatto il lettore al formato vero.
+- Parte tecnica (`core/system`): nuovo comando in lista consentita `SystemCommand.TimeStats` (quattro passi fissi: accendi, azzera, leggi, spegni), `TimeStatsParser` con test.
+
 ### Tendina anche dentro i giochi, e «Condividi» sempre presente
 - Richiesta: "La tendina non si apre sulle altre app e non ce l'opzione condividi l'ultima misura".
 - **Tendina sopra le altre app:** durante la Modalità Gaming la striscia per tirare giù era tolta di serie (per non rubare i tocchi al gioco), quindi nei giochi non si apriva. Ora è **accesa di serie**: nelle app normali resta larga come lo schermo, nei giochi con la Gaming attiva si riduce a un **angolo in alto a destra** (200 dp), così i pulsanti del gioco restano liberi. Si può spegnere del tutto in Impostazioni → Modalità Gaming.
