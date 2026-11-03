@@ -44,3 +44,5 @@ Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato
 
 ## Strumenti per i giochi (Altro)
 «Misura il gioco (2 minuti)» campiona ogni 2 s l'ultimo gioco in primo piano (solo su richiesta, Shizuku) e salva `diagnosi-gaming.txt`; «Condividi l'ultima misura» la manda via condivisione; «Chiudi il gioco» fa `force-stop` dell'ultimo gioco (uscita di emergenza n. 4 di SPEC §8.2).
+
+La striscia della tendina (`StripShape`): `FULL` fuori dalla Gaming, `CORNER` (angolo in alto a destra, 200 dp) in Gaming con «Tendina sopra i giochi» acceso (predefinito), `NONE` se spenta. «Condividi l'ultima misura» è sempre in Altro; una misura fallita salva un testo diagnostico.

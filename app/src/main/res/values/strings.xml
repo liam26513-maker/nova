@@ -260,7 +260,7 @@
     <string name="gaming_turbo">Turbo: chiudi le app in secondo piano</string>
     <string name="gaming_turbo_summary">Libera memoria; spento di serie perché non è detto che aiuti (serve Shizuku)</string>
     <string name="gaming_overlay_title">Tendina di NOVA sopra i giochi</string>
-    <string name="gaming_overlay_footer">Spenta di serie: durante la modalità il bordo alto dello schermo è tutto del gioco e non c\'è nessun livello di NOVA sopra. Per uscire dalla modalità: torna alla Home, tira giù dall\'angolo in alto a destra → Altro → Modalità Gaming. Accendila se ti serve la tendina dentro il gioco.</string>
+    <string name="gaming_overlay_footer">Accesa di serie: durante la modalità la tendina si apre solo dall\'angolo in alto a destra (una piccola zona, per non rubare i tocchi ai pulsanti del gioco). Spegnila per lasciare tutto il bordo alto al gioco; per uscire dalla modalità resta la Home → Altro → Modalità Gaming.</string>
     <string name="gaming_overlay_row">Tendina di NOVA sopra i giochi</string>
     <string name="mode_exit_overlay">Per uscire: tendina → Altro → Modalità Gaming.</string>
     <string name="mode_exit_home">Per uscire: torna alla Home, tira giù dall\'angolo in alto a destra → Altro → Modalità Gaming.</string>
@@ -352,4 +352,6 @@
     <string name="health_cold">Troppo fredda</string>
     <string name="health_failure">Guasto</string>
     <string name="health_unknown">Non nota</string>
+    <string name="meter_nothing_yet">Non c\'è ancora nessuna misura: avviala da «Misura il gioco» e gioca 2 minuti.</string>
+    <string name="meter_no_data">Nessun dato</string>
 </resources>

@@ -28,14 +28,12 @@ internal class GameTools(
                     null
                 },
             )
-            meter.lastText?.let { text ->
-                add(
-                    MoreItem(context.getString(R.string.more_meter_share)) { _ ->
-                        share(text)
-                        null
-                    },
-                )
-            }
+            add(
+                MoreItem(context.getString(R.string.more_meter_share)) { _ ->
+                    meter.lastText?.let(::share) ?: say(R.string.meter_nothing_yet)
+                    null
+                },
+            )
             app.lastGame?.let { game ->
                 add(
                     MoreItem(context.getString(R.string.more_close_game, label(game))) { _ ->

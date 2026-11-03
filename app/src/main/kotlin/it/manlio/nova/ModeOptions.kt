@@ -21,10 +21,10 @@ class ModeOptions(private val file: File) {
     fun enabled(action: ModeAction): Boolean = state.value[action.name] ?: (action in DEFAULT_ON)
 
     /**
-     * La tendina di NOVA sopra gli altri giochi (la striscia trasparente sul bordo alto): predefinito spento durante la Gaming,
-     * perché è un livello in più sopra il gioco e il tocco in quella fascia andrebbe a NOVA.
+     * La tendina di NOVA dentro i giochi: predefinito acceso, ma durante la Gaming la striscia si riduce a un angolo (in alto a
+     * destra) per non rubare i tocchi ai pulsanti del gioco. Spenta, durante la Gaming la striscia non c'è.
      */
-    val overlayInGames: Boolean get() = state.value[OVERLAY] ?: false
+    val overlayInGames: Boolean get() = state.value[OVERLAY] ?: true
 
     fun set(
         key: String,
