@@ -4,6 +4,13 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La misura non disturba più il gioco
+- Richiesta: "In oltre laggava troppo".
+- Durante la misura NOVA chiamava il sistema ogni 2 secondi (`dumpsys SurfaceFlinger`), e ogni chiamata ferma un attimo il compositore: poteva peggiorare lo scatto proprio mentre misuravo. Ora **durante i 2 minuti non esegue nessun comando**; legge le statistiche una volta sola alla fine.
+
+### Misura del gioco: ora legge il formato vero del tablet
+- Richiesta: terzo test di Brawl Stars. Il testo condiviso ha mostrato che il tablet i numeri li ha (5848 fotogrammi, 48,7 FPS medi sul livello del gioco) ma l'istogramma si chiama «present2present»: NOVA cercava un altro nome. Ora lo legge, con un test costruito sul testo vero del tablet.
+
 ### Misura del gioco: scelta del livello giusto e più diagnosi
 - Richiesta: secondo test di Brawl Stars ("Riepilogo: Nessun dato"). Dal testo condiviso: su questo tablet il comando classico dà solo zeri e NOVA sceglieva una riga di servizio («ActivityRecordInputSink») invece del livello che disegna il gioco. Ora la sceglie giusta, e se non riesce ancora il testo contiene anche i punti del sistema che mi servono (statistiche per livello e linea temporale dei fotogrammi).
 - Parte tecnica (`core/system`): nuovo comando di sola lettura `SystemCommand.FrameTimeline`, test aggiornato su `LayerPicker`.
