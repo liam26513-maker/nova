@@ -53,7 +53,7 @@ class FrameStatsTest {
             }
         c.add(text)
         val r = c.report()!!
-        assertTrue(r.fps < 50)
+        assertTrue("fps ${r.fps}", r.fps in 45.0..55.0)
         assertTrue(r.lowFps < 25)
         assertTrue("slow ${r.slowPercent}", r.slowPercent in 5.0..15.0)
         assertEquals(50.0, r.worstMs, 0.5)
