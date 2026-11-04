@@ -4,9 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
-### Tendina e note: due correzioni trovate provando sul tablet
+### La tendina di Android si richiude davvero
+- Richiesta: "finisci cio che devi e sistema".
+- La correzione precedente non bastava: su questo tablet il comando che NOVA usava per chiudere la tendina di Android non fa niente. Ora la chiude con Shizuku; senza Shizuku, dopo un gesto lento può restare aperta.
+
+### Note: la chiusura torna dove eri
 - Richiesta: "ricontrolla tutto ora che il tablet è acceso".
-- Tirando giù la tendina lentamente, quella di Android restava aperta dietro quella di NOVA. Ora si richiude.
 - Chiudendo le note rapide si finiva nelle Impostazioni di NOVA. Ora si torna dov'eri.
 
 ### Note rapide, filtro caldo, schermo diviso e controllo del DNS

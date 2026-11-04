@@ -273,6 +273,13 @@ class SystemChangeLogTest {
         }
 }
 
+class CollapseShadeTest {
+    @Test
+    fun `it only asks the status bar to close`() {
+        assertEquals(listOf("cmd", "statusbar", "collapse"), SystemCommand.CollapseShade.argv)
+    }
+}
+
 class GameScaleTest {
     @get:Rule
     val tmp = TemporaryFolder()
