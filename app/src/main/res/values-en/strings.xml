@@ -230,6 +230,8 @@
     <string name="home_overlay_on">On: pull down from the top-right corner in any app</string>
     <string name="home_overlay_off">Off: tap (with Shizuku it unlocks itself) and turn on NOVA Control Centre</string>
     <string name="more_gaming">Gaming mode</string>
+    <string name="mode_action_night_light">blue light filter off</string>
+    <string name="mode_action_brightness">full brightness</string>
     <string name="mode_action_screen">keep screen on</string>
     <string name="mode_action_sync">pause sync</string>
     <string name="mode_on">%1$s on: %2$s.</string>

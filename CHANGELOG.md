@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Colori veri in Creativa, schermo al massimo in Presentazione
+- Richiesta: "finisci tutto il resto del piano".
+- **Creativa** spegne il filtro luce blu, così vedi i colori veri (serve Shizuku). **Presentazione** porta la luminosità al massimo.
+- All'uscita tutto torna com'era, compresa la luminosità automatica.
+
 ### Salvataggi più sicuri
 - Richiesta: "migliori e rivedi quello che ce gia".
 - Quattro file (scelte della Gaming, modalità attiva, registro delle modifiche, profilo del tablet) potevano non aggiornarsi senza dirlo, se il sistema rifiutava di sostituire il file. Ora si salvano come tutti gli altri file di NOVA.

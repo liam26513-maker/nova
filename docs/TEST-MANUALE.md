@@ -27,6 +27,8 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] «StandBy automatico» su Acceso: collega il caricatore, tablet in orizzontale con la Home aperta, non toccare per 30 secondi: parte da solo. Senza caricatore o in verticale non parte.
 
 ## Modalità di base
+- [ ] Con il filtro luce blu acceso, Creativa lo spegne e all'uscita lo riaccende. Con il filtro spento resta spento anche all'uscita.
+- [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.
 
