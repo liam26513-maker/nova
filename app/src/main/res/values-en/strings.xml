@@ -279,6 +279,11 @@
     <string name="meter_done">Measurement done: %1$s. More, Share the last measurement to send it.</string>
     <string name="game_closed">Game closed.</string>
     <string name="game_close_failed">I could not close the game.</string>
+    <string name="meter_armed">Ready: start the match and, once on the field, press volume up. If it ends within 2 minutes, press it again.</string>
+    <string name="exit_menu_title">Leave Gaming mode</string>
+    <string name="exit_menu_leave">Leave the mode</string>
+    <string name="exit_menu_close">Close the game</string>
+    <string name="exit_menu_home">Back to Home</string>
     <string name="more_notifications">Android notifications</string>
     <string name="more_quick_settings">Android quick settings</string>
     <string name="more_rotation">Auto-rotate</string>

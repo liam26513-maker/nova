@@ -195,7 +195,9 @@ Serve Shizuku attivo. Dopo ogni prova puoi usare Impostazioni → Strumenti di s
   - [ ] senza token compare il messaggio sugli appunti.
 
 ## Misura del gioco
-- [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars e gioca 2 minuti: compare il riepilogo e «Condividi l'ultima misura».
+- [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars, avvia la partita e premi volume su sul campo: dopo 2 minuti compare il riepilogo e «Condividi l'ultima misura». Premendo di nuovo volume su prima, la misura finisce entro 2 secondi.
+- [ ] In Gaming, dentro il gioco, tieni premuto volume giù per 3 secondi: compare il menu; «Esci dalla modalità», «Chiudi il gioco» e «Torna alla Home» fanno ciò che dicono. Rilasciando prima dei 3 secondi non compare niente. Fuori dalla Gaming non compare mai.
+- [ ] Dopo l'aggiornamento il servizio di accessibilità di NOVA è ancora acceso (ora chiede anche i tasti).
 - [ ] Ripeti senza modalità Gaming, con la modalità, e con un'opzione alla volta: confronta FPS medi e «peggiore 1 %».
 - [ ] «Chiudi il gioco: …» chiude davvero il gioco.
 - [ ] Apri Brawl Stars, poi tendina → Altro → «Risoluzione: Brawl Stars»: a ogni tocco scende (90, 80, 70, 65%) e poi torna a 100%. Fermati a 65%, riapri il gioco: l'immagine è meno nitida, i tocchi cadono al punto giusto e la misura sale verso 60 FPS.

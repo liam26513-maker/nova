@@ -34,7 +34,8 @@ Entrata e uscita: tendina di controllo → **Altro → Modalità Gaming** (`Home
 ## Uscite di emergenza (stato)
 
 Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato o dall'angolo); spegnimento automatico dopo 6 ore; ripristino al riavvio dell'app; tasto di accensione tenuto ~10 s (riavvio hardware, sempre disponibile).
-**Da fare (SPEC §8.2):** volume giù tenuto 3 s (AccessibilityService, `FLAG_REQUEST_FILTER_KEY_EVENTS`), doppio swipe dal bordo, watchdog del gioco bloccato (8 s), pulsante «Chiudi gioco» (`am force-stop`). Finché mancano, la Gaming resta **solo manuale**.
+Volume giù tenuto 3 s: `VolumeKeys` e `GamingExitMenu` (`GamingExit.kt`), con il servizio di accessibilità acceso; il tasto non viene mai consumato. «Chiudi il gioco» è in Altro e nel menu.
+**Da fare (SPEC §8.2):** doppio swipe dal bordo, watchdog del gioco bloccato (8 s). Finché mancano, la Gaming resta **solo manuale**.
 
 ## Scelte e limiti
 
