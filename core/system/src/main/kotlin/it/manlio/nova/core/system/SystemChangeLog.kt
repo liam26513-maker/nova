@@ -240,7 +240,10 @@ class SystemChangeLog(
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.writeText(JSON.encodeToString(entries()))
-        tmp.renameTo(file)
+        if (!tmp.renameTo(file)) {
+            file.delete()
+            tmp.renameTo(file)
+        }
     }
 
     companion object {

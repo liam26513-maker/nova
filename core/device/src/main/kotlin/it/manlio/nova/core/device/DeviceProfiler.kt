@@ -21,7 +21,10 @@ class DeviceProfiler(private val context: Context) {
     fun save(profile: DeviceProfile) {
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.writeText(JSON.encodeToString(DeviceProfile.serializer(), profile))
-        tmp.renameTo(file)
+        if (!tmp.renameTo(file)) {
+            file.delete()
+            tmp.renameTo(file)
+        }
     }
 
     /** Lettura istantanea (senza benchmark). Da chiamare fuori dal thread principale: legge /sys. */
