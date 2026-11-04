@@ -28,8 +28,8 @@ Internet nella tastiera, mai cambiare chiave di firma né `applicationId`. La CI
 ## Misure su U6 (Brawl Stars, Footbrawl, una partita per caso)
 100%: 46 FPS e un fotogramma lento su tre, con o senza Gaming e tendina. 70%: 61,5 FPS e 0,5% di lenti. Il 65% non è ancora misurato in partita. Nella terza prova la rotazione automatica risultava accesa nonostante la Gaming: causa non trovata.
 
-## Da risolvere sul tablet (4 novembre)
-Con «Blocca pubblicità» acceso (`dns.adguard.com`) il tablet non trovava nessun sito sulla rete di casa, mentre gli indirizzi numerici rispondevano: DNS privato non confermato. Probabile blocco della rete, non dimostrato. Il servizio di accessibilità di NOVA risultava spento, causa ignota. Finché sono così non si provano l'aggiornamento della tastiera e le uscite col volume. Su 0.1.450 provate Studio e Lavoro; mancano Creativa, Presentazione, Risoluzione e il 65% in partita.
+## Sul tablet (4 novembre, 0.1.460)
+Provate: Studio, Lavoro e l'aggiornamento automatico della tastiera (0.1.340 → 0.1.460 con «Controlla ora»). Per un'ora circa, durante un guasto di GitHub, il DNS di «Blocca pubblicità» non è stato confermato e il tablet non trovava nessun sito; poi si è ripreso da solo, causa non trovata. Il servizio di accessibilità di NOVA risulta spento, causa ignota: senza non si provano le uscite col volume. Mancano Creativa, Presentazione, Risoluzione e il 65% in partita.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).
