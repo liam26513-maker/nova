@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il tuo tempo
+- Richiesta: "passa ad un altra parte del piano che puoi fare da solo".
+- Nuova pagina in Impostazioni: quanto tempo passi in ogni modalità negli ultimi 7 giorni e, se dai il permesso, in ogni app.
+- Sono solo statistiche: restano sul tablet e non mettono nessun limite.
+
 ### I tuoi giochi in un posto solo
 - Richiesta: "passa ad un altra parte del piano che puoi fare da solo".
 - In Impostazioni → Modalità Gaming c'è l'elenco dei giochi: li apri da lì e cambi la risoluzione di ognuno.

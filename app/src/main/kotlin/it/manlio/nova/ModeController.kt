@@ -11,9 +11,11 @@ import it.manlio.nova.core.modes.ModeAction
 import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.ModeEngine
 import it.manlio.nova.core.modes.ModeEnvironment
+import it.manlio.nova.core.modes.ModeMinutes
 import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.modes.Pomodoro
 import it.manlio.nova.core.modes.PomodoroPhase
+import it.manlio.nova.core.modes.Session
 import it.manlio.nova.core.modes.StudyGate
 import it.manlio.nova.core.modes.StudyStore
 import it.manlio.nova.core.modes.TextSessionStore
@@ -22,6 +24,7 @@ import it.manlio.nova.core.system.QuickToggle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.time.LocalDate
 
 /**
  * Le modalità (SPEC §8) sul tablet vero: traduce ogni [ModeAction] in ciò che Android permette e sa annullarla.
@@ -45,6 +48,9 @@ class ModeController(
 
     val engine = ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")))
 
+    /** Quanto tempo passa in ogni modalità (Impostazioni → Il tuo tempo). */
+    val minutes = ModeMinutes(File(app.filesDir, "mode-minutes.properties"))
+
     val studyStore = StudyStore(File(app.filesDir, "studio.properties"))
     val studyGate = StudyGate(System::currentTimeMillis, studyStore)
 
@@ -62,7 +68,15 @@ class ModeController(
             engine.recover()
             engine.exitIfExpired()
             if (isActive(Modes.STUDY)) pomodoro.restore()
-            engine.active.collect { if (it?.modeId != Modes.STUDY.id) pomodoro.stop() }
+            var running: Session? = engine.active.value
+            engine.active.collect { now ->
+                if (now?.modeId != Modes.STUDY.id) pomodoro.stop()
+                running?.takeIf { it.startedAt != now?.startedAt }?.let { ended ->
+                    val spent = (System.currentTimeMillis() - ended.startedAt) / MS_PER_MINUTE
+                    minutes.add(ended.modeId, LocalDate.now(), spent.toInt())
+                }
+                running = now
+            }
         }
     }
 
@@ -197,5 +211,6 @@ class ModeController(
         const val KIND_NIGHT_LIGHT = "night_light"
         const val KIND_NIGHT_LIGHT_ON = "night_light_on"
         const val AUTO = "auto"
+        const val MS_PER_MINUTE = 60_000L
     }
 }

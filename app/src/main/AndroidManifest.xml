@@ -11,6 +11,10 @@
         tools:ignore="ProtectedPermissions" />
     <!-- Centro di controllo: sapere se il Wi-Fi è acceso (permesso normale, nessuna richiesta; non dà accesso a Internet). -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Il tuo tempo (SPEC §12.7): lo concede l'utente dalle impostazioni di Android; i dati restano sul tablet. -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <!-- Modalità Gaming: mettere in pausa la sincronizzazione automatica degli account e riprenderla all'uscita (permessi normali, nessuna richiesta). -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
