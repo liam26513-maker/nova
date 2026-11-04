@@ -35,6 +35,10 @@ class GameMeter(
     private val file = File(app.filesDir, "diagnosi-gaming.txt")
     private var job: Job? = null
 
+    @Volatile private var armed = false
+
+    @Volatile private var stopEarly = false
+
     /** Il testo dell'ultima misura (anche dopo un riavvio), o null. */
     var lastText: String? = file.takeIf { it.exists() }?.readText()
         private set
@@ -53,13 +57,33 @@ class GameMeter(
         job = scope.launch { measure() }
     }
 
+    /** Prepara la misura: parte alla prossima pressione di volume su, così i dati sono solo della partita. */
+    fun arm() {
+        if (running) return
+        if (app.shizuku.status.value != ShizukuStatus.READY) return say(app.getString(R.string.meter_needs_shizuku))
+        armed = true
+        say(app.getString(R.string.meter_armed))
+    }
+
+    /** Volume su: fa partire la misura preparata; durante la misura la ferma prima, se la partita è finita. */
+    fun onVolumeUp() {
+        if (armed) {
+            armed = false
+            start()
+        } else if (running) {
+            stopEarly = true
+        }
+    }
+
     private suspend fun measure() {
         val why = Why()
         val seen = mutableMapOf<String, Int>()
         app.shizuku.run(SystemCommand.TimeStats(Step.ENABLE))
         app.shizuku.run(SystemCommand.TimeStats(Step.CLEAR))
         // Durante il gioco niente comandi: ogni `dumpsys SurfaceFlinger` ferma un attimo il compositore e falserebbe la misura.
-        repeat(DURATION_S / STEP_S) {
+        stopEarly = false
+        var step = 0
+        while (step++ < DURATION_S / STEP_S && !stopEarly) {
             delay(STEP_S * MS_PER_S)
             val pkg = app.foreground.value?.takeIf(app::isGamePackage)
             if (pkg == null) why.noGame++ else seen.merge(pkg, 1, Int::plus)

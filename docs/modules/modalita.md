@@ -10,6 +10,10 @@ Stato: **Fase 3, primo passo**. Motore + Gaming di base, solo manuale. Vedi SPEC
 - **Rete di sicurezza:** `exitIfExpired()` esce dalla modalità dimenticata (`ModeDefinition.maxMinutes`, 6 ore per Gaming).
 - `TextSessionStore`: file di testo semplice (`filesDir/mode-session.txt`), scrittura via file temporaneo.
 
+## Le modalità
+
+`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Mancano Pomodoro e blocco distrazioni (§8.4), desktop e finestre flottanti (§8.3), filtro luce blu (§8.5), Home portfolio (§8.6).
+
 ## Sul tablet (`app/ModeController`)
 
 | Azione | Cosa fa | Come torna com'era | Se non si può |
@@ -34,7 +38,8 @@ Entrata e uscita: tendina di controllo → **Altro → Modalità Gaming** (`Home
 ## Uscite di emergenza (stato)
 
 Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato o dall'angolo); spegnimento automatico dopo 6 ore; ripristino al riavvio dell'app; tasto di accensione tenuto ~10 s (riavvio hardware, sempre disponibile).
-**Da fare (SPEC §8.2):** volume giù tenuto 3 s (AccessibilityService, `FLAG_REQUEST_FILTER_KEY_EVENTS`), doppio swipe dal bordo, watchdog del gioco bloccato (8 s), pulsante «Chiudi gioco» (`am force-stop`). Finché mancano, la Gaming resta **solo manuale**.
+Volume giù tenuto 3 s: `VolumeKeys` e `GamingExitMenu` (`GamingExit.kt`), con il servizio di accessibilità acceso; il tasto non viene mai consumato. «Chiudi il gioco» è in Altro e nel menu.
+**Da fare (SPEC §8.2):** doppio swipe dal bordo, watchdog del gioco bloccato (8 s). Finché mancano, la Gaming resta **solo manuale**.
 
 ## Scelte e limiti
 

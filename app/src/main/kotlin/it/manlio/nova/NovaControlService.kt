@@ -57,8 +57,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  *  - una **striscia** invisibile su tutta la larghezza, sopra la barra di stato: tirarla giù apre il pannello, che **segue il dito**;
  *  - il **pannello**, a tutto schermo, con lo stesso centro di controllo della Home (nasce al gesto e sparisce quando si chiude).
  * Se Android apre la sua tendina insieme alla nostra, il servizio la richiude. Non legge lo schermo
- * (`canRetrieveWindowContent` è falso) e non compie azioni. Da spento non esiste niente. A schermo bloccato non apre nulla.
+ * (`canRetrieveWindowContent` è falso). Guarda solo i tasti del volume, senza mai consumarli ([VolumeKeys]): uscita di emergenza
+ * della Gaming e avvio della misura. Da spento non esiste niente. A schermo bloccato non apre nulla.
  */
+@Suppress("TooManyFunctions") // i richiami di Android e le due finestre: dividerla sparpaglierebbe lo stato della tendina
 class NovaControlService : AccessibilityService() {
     private val windows by lazy { getSystemService(WindowManager::class.java) }
     private val handler = Handler(Looper.getMainLooper())
@@ -71,6 +73,22 @@ class NovaControlService : AccessibilityService() {
     private var lastShadeHide = 0L
     private var shape = StripShape.FULL
     private val app get() = application as NovaApp
+    private val exitMenu by lazy { GamingExitMenu(this, app) }
+    private val volumeKeys by lazy {
+        VolumeKeys(
+            post = { task, ms -> handler.postDelayed(task, ms) },
+            cancel = handler::removeCallbacks,
+            gaming = { app.modes.isActive(Modes.GAMING) },
+            onHeld = { exitMenu.show() },
+            onVolumeUp = { app.gameMeter.onVolumeUp() },
+        )
+    }
+
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        // In modalità provvisoria l'app non carica modalità e misura.
+        if (app.safeModeReason == null) volumeKeys.onKey(event.keyCode, event.action, event.repeatCount)
+        return false
+    }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -116,6 +134,7 @@ class NovaControlService : AccessibilityService() {
     }
 
     override fun onDestroy() {
+        exitMenu.dismiss()
         removePanel()
         strip?.let { runCatching { windows.removeView(it) } }
         strip = null

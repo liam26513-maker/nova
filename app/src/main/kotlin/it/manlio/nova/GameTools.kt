@@ -25,7 +25,8 @@ internal class GameTools(
             val state = if (meter.running) context.getString(R.string.meter_running) else meter.lastSummary
             add(
                 MoreItem(context.getString(R.string.more_meter), state) { _ ->
-                    meter.start()
+                    // Col servizio acceso parte da volume su, a partita iniziata; senza, l'unico modo è partire subito.
+                    if (NovaControlService.isEnabled(context)) meter.arm() else meter.start()
                     null
                 },
             )
@@ -80,7 +81,7 @@ internal class GameTools(
         return scaleText(next)
     }
 
-    private fun close(game: String) {
+    fun close(game: String) {
         if (app.shizuku.status.value != ShizukuStatus.READY) return say(R.string.meter_needs_shizuku)
         app.appScope.launch {
             val ok = app.shizuku.run(SystemCommand.ForceStop(game)).ok

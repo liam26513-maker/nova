@@ -26,6 +26,8 @@
 
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
+        <!-- La tastiera di NOVA: per sapere se c'è e quale versione ha, e aggiornarla. -->
+        <package android:name="it.manlio.nova.keyboard" />
         <!-- Widget di altre app, da mostrare nella Home (AppWidgetHost). -->
         <intent>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

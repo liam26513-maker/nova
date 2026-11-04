@@ -4,6 +4,27 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Salvataggi più sicuri
+- Richiesta: "migliori e rivedi quello che ce gia".
+- Quattro file (scelte della Gaming, modalità attiva, registro delle modifiche, profilo del tablet) potevano non aggiornarsi senza dirlo, se il sistema rifiutava di sostituire il file. Ora si salvano come tutti gli altri file di NOVA.
+
+### La tastiera si aggiorna da sola
+- Richiesta: "finisci tutto il resto del piano".
+- Se la tastiera di NOVA è installata e Shizuku è attivo, NOVA la aggiorna insieme ai suoi controlli. Prima si faceva a mano dalla pagina Releases.
+- Controlla impronta, pacchetto, versione e firma, come per NOVA. Se qualcosa va storto la tastiera resta com'è e NOVA continua ad aggiornarsi normalmente.
+
+### Modalità Studio, Lavoro, Creativa e Presentazione (versione di base)
+- Richiesta: "finisci tutto il resto del piano".
+- In tendina → Altro ci sono quattro modalità nuove, oltre alla Gaming. Una sola per volta; all'uscita tutto torna com'era.
+- **Studio:** niente notifiche e schermo acceso. **Lavoro:** niente notifiche. **Creativa:** grafica di NOVA leggera, niente notifiche, rotazione bloccata, schermo acceso. **Presentazione:** niente notifiche, rotazione bloccata, schermo acceso.
+- Per ora fanno solo questo: Pomodoro, finestre flottanti e Home portfolio non ci sono ancora.
+
+### Uscita di emergenza dai giochi e misura col tasto volume
+- Richiesta: "finisci tutto il resto del piano" e "aggiungere queste funzionalita che hai fatto, su nova".
+- **Uscita di emergenza:** in Modalità Gaming tieni premuto **volume giù per 3 secondi**: compare un menu con «Esci dalla modalità», «Chiudi il gioco» e «Torna alla Home». Serve il servizio di accessibilità di NOVA acceso.
+- **Misura:** tendina → Altro → «Misura il gioco» ora aspetta: avvii la partita e premi **volume su** quando sei sul campo; se la partita finisce prima dei 2 minuti premi di nuovo volume su. Così i dati sono solo della partita. Con il servizio spento la misura parte subito, come prima.
+- Il volume continua a cambiare come sempre: NOVA guarda il tasto ma non lo blocca.
+
 ### Risoluzione per gioco: meno scatti (minimo 65%)
 - Richiesta: "l'importante è che non vi sia il lag quindi direi di abbassare la grafica ad un minimo di 65, un ottimizzazione ai comandi e di aggiungere queste funzionalita che hai fatto, su nova".
 - **Cosa cambia:** tendina → Altro → «Risoluzione: <gioco>». Ogni tocco scende di un passo (100, 90, 80, 70, 65%) e poi torna a 100%. Vale da quando riapri il gioco. Sotto il 65% non si scende.

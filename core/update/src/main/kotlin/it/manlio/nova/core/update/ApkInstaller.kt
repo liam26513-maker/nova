@@ -21,7 +21,7 @@ sealed interface ApkCheck {
 
 /**
  * Verifica e installa un aggiornamento di NOVA (SPEC §4.6):
- * stesso pacchetto, versione attesa, **stessa firma** dell'app installata.
+ * pacchetto atteso (NOVA o la sua tastiera), versione attesa, **stessa firma** di NOVA installata.
  * Con Shizuku l'installazione è silenziosa; senza, Android chiede una conferma.
  */
 class ApkInstaller(
@@ -31,6 +31,7 @@ class ApkInstaller(
     fun check(
         apk: File,
         expectedVersionCode: Int,
+        expectedPackage: String = context.packageName,
     ): ApkCheck {
         val pm = context.packageManager
         val flags = PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES.toLong())
@@ -39,7 +40,7 @@ class ApkInstaller(
         val reason =
             when {
                 archive == null -> "Il file scaricato non è un'app valida"
-                archive.packageName != context.packageName -> "L'app scaricata non è NOVA"
+                archive.packageName != expectedPackage -> "L'app scaricata non è quella attesa"
                 archive.longVersionCode != expectedVersionCode.toLong() -> "Versione inattesa nell'app scaricata"
                 ours.isEmpty() || ours != archive.signingInfo?.apkContentsSigners.fingerprints() ->
                     "La firma non corrisponde: aggiornamento rifiutato"
@@ -47,6 +48,12 @@ class ApkInstaller(
             }
         return reason?.let(ApkCheck::Rejected) ?: ApkCheck.Ok
     }
+
+    /** La versione installata di [packageName], o null se non c'è. */
+    fun installedVersion(packageName: String): Long? =
+        runCatching {
+            context.packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0)).longVersionCode
+        }.getOrNull()
 
     /** @return null se avviata, altrimenti il motivo dell'errore. */
     suspend fun install(apk: File): String? {
