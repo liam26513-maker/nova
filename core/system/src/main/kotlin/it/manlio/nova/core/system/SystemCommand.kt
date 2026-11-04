@@ -113,6 +113,11 @@ sealed interface SystemCommand {
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--frametimeline")
     }
 
+    /** Chiude la tendina di Android: sul tablet di riferimento l'azione di accessibilità non fa niente. Non cambia impostazioni. */
+    data object CollapseShade : SystemCommand {
+        override val argv = listOf("cmd", "statusbar", "collapse")
+    }
+
     /** Legge la densità dello schermo: «Physical density» e, se cambiata, «Override density». */
     data object GetDensity : SystemCommand {
         override val argv = listOf("wm", "density")
