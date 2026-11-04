@@ -1,6 +1,7 @@
 package it.manlio.nova.feature.home
 
 import androidx.compose.runtime.Immutable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 /** I simboli dei riquadri del centro di controllo, disegnati da NOVA. */
@@ -56,6 +57,8 @@ class Level(
 class MoreItem(
     val label: String,
     val state: String? = null,
+    /** Lo stato quando può cambiare senza toccare questa voce (una modalità si spegne se ne accendi un'altra). */
+    val live: Flow<String>? = null,
     /** Riceve una funzione per correggere lo stato se Android non ha obbedito (mostra com'è davvero). */
     val onClick: ((String) -> Unit) -> String? = { null },
 )

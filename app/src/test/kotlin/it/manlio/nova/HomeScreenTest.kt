@@ -72,6 +72,7 @@ import it.manlio.nova.feature.home.Weather
 import it.manlio.nova.feature.home.WeatherKind
 import it.manlio.nova.feature.home.WidgetItem
 import it.manlio.nova.feature.home.WidgetKind
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -863,6 +864,20 @@ class HomeScreenTest {
         compose.onNodeWithText("Bluetooth").performClick()
         compose.waitForIdle()
         assertEquals(listOf(SystemPanel.BLUETOOTH), panels)
+    }
+
+    @Test
+    fun control_center_more_row_follows_a_state_changed_elsewhere() {
+        val live = MutableStateFlow("Sì")
+        val item = MoreItem("Modalità Studio", "Sì", live = live)
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, more = listOf(item)))
+        openControl()
+        openMore()
+        compose.onNodeWithText("Sì").assertExists()
+
+        live.value = "No" // un'altra modalità l'ha spenta
+        compose.waitForIdle()
+        compose.onNodeWithText("No").assertExists()
     }
 
     @Test

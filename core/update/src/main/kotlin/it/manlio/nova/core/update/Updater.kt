@@ -245,13 +245,7 @@ class Updater(
     }
 
     /** Motivo comprensibile di un errore di rete o di GitHub. */
-    fun reasonFor(error: Throwable): String =
-        when {
-            error is GitHubClient.HttpException && error.code == UNAUTHORIZED -> "Token GitHub non valido o scaduto"
-            error is GitHubClient.HttpException && error.code == NOT_FOUND -> "Repository non trovato: controlla i permessi del token"
-            error is java.io.IOException -> "Nessuna connessione o GitHub non raggiungibile"
-            else -> error.message ?: error::class.simpleName.orEmpty()
-        }
+    fun reasonFor(error: Throwable): String = failureReason(error)
 
     private fun publish(state: UpdateState) {
         _state.value = state
@@ -259,10 +253,21 @@ class Updater(
 
     private companion object {
         const val TAG = "update"
-        const val UNAUTHORIZED = 401
-        const val NOT_FOUND = 404
         val FORBIDDEN_CODES = setOf(403, 404)
         const val ROLLBACK_WORKFLOW = "rollback.yml"
         val TAG_FORMAT = Regex("^v\\d+\\.\\d+\\.\\d+$")
     }
 }
+
+private const val HTTP_UNAUTHORIZED = 401
+private const val HTTP_NOT_FOUND = 404
+
+/** Motivo comprensibile di un errore di rete o di GitHub. */
+internal fun failureReason(error: Throwable): String =
+    when {
+        error is GitHubClient.HttpException && error.code == HTTP_UNAUTHORIZED -> "Token GitHub non valido o scaduto"
+        error is GitHubClient.HttpException && error.code == HTTP_NOT_FOUND -> "Repository non trovato: controlla i permessi del token"
+        error is java.net.UnknownHostException -> "Il tablet non trova i siti. Se è acceso, spegni «Blocca pubblicità» in Prestazioni"
+        error is java.io.IOException -> "Nessuna connessione o GitHub non raggiungibile"
+        else -> error.message ?: error::class.simpleName.orEmpty()
+    }

@@ -50,6 +50,8 @@ private fun gamingTitle(action: ModeAction): Int =
         ModeAction.LOCK_ROTATION -> R.string.gaming_rotation
         ModeAction.KEEP_SCREEN_ON -> R.string.gaming_screen
         ModeAction.PAUSE_SYNC -> R.string.gaming_sync
+        ModeAction.NIGHT_LIGHT_OFF -> R.string.mode_action_night_light // non sono voci della Gaming: qui non compaiono
+        ModeAction.FULL_BRIGHTNESS -> R.string.mode_action_brightness
         ModeAction.TURBO -> R.string.gaming_turbo
     }
 
@@ -60,5 +62,7 @@ private fun gamingSummary(action: ModeAction): Int =
         ModeAction.LOCK_ROTATION -> R.string.gaming_rotation_summary
         ModeAction.KEEP_SCREEN_ON -> R.string.gaming_screen_summary
         ModeAction.PAUSE_SYNC -> R.string.gaming_sync_summary
+        ModeAction.NIGHT_LIGHT_OFF -> R.string.mode_action_night_light
+        ModeAction.FULL_BRIGHTNESS -> R.string.mode_action_brightness
         ModeAction.TURBO -> R.string.gaming_turbo_summary
     }

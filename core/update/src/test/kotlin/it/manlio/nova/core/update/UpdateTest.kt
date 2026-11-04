@@ -138,6 +138,12 @@ class UpdatePlannerTest {
     }
 
     @Test
+    fun `a host that cannot be found points to the ad blocking DNS, other network errors do not`() {
+        assertTrue(failureReason(java.net.UnknownHostException("api.github.com")).contains("Blocca pubblicità"))
+        assertEquals("Nessuna connessione o GitHub non raggiungibile", failureReason(java.io.IOException("reset")))
+    }
+
+    @Test
     fun `semantic version comparison`() {
         assertTrue(UpdatePlanner.compareVersions("1.10.0", "1.9.3") > 0)
         assertTrue(UpdatePlanner.compareVersions("0.1", "0.1.0") == 0)

@@ -20,6 +20,12 @@ enum class ModeAction {
     /** Sincronizzazione automatica degli account in pausa: niente lavoro in secondo piano durante il gioco. */
     PAUSE_SYNC,
 
+    /** Filtro luce blu spento, per vedere i colori veri (serve Shizuku). */
+    NIGHT_LIGHT_OFF,
+
+    /** Luminosità al massimo, regolazione automatica spenta. Serve il permesso di modificare le impostazioni. */
+    FULL_BRIGHTNESS,
+
     /** Chiude le app in secondo piano (serve Shizuku). Non si può annullare: le app si riaprono quando servono. */
     TURBO,
 }
@@ -70,7 +76,7 @@ object Modes {
             maxMinutes = 10 * 60,
         )
 
-    /** Creativa di base (SPEC §8.5): effetti di NOVA spenti, niente notifiche, schermo fermo e acceso. */
+    /** Creativa di base (SPEC §8.5): effetti di NOVA spenti, niente notifiche, schermo fermo e acceso, colori veri. */
     val CREATIVE =
         ModeDefinition(
             id = "creativa",
@@ -80,15 +86,22 @@ object Modes {
                     ModeAction.DO_NOT_DISTURB,
                     ModeAction.LOCK_ROTATION,
                     ModeAction.KEEP_SCREEN_ON,
+                    ModeAction.NIGHT_LIGHT_OFF,
                 ),
             maxMinutes = 6 * 60,
         )
 
-    /** Presentazione di base (SPEC §8.6): niente notifiche, schermo fermo e acceso. La Home «portfolio» è ancora da fare. */
+    /** Presentazione di base (SPEC §8.6): niente notifiche, schermo fermo, acceso e al massimo. La Home «portfolio» è ancora da fare. */
     val PRESENTATION =
         ModeDefinition(
             id = "presentazione",
-            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON),
+            actions =
+                listOf(
+                    ModeAction.DO_NOT_DISTURB,
+                    ModeAction.LOCK_ROTATION,
+                    ModeAction.KEEP_SCREEN_ON,
+                    ModeAction.FULL_BRIGHTNESS,
+                ),
             maxMinutes = 3 * 60,
         )
 

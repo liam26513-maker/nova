@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlin.math.roundToInt
 
 /**
@@ -183,7 +184,8 @@ class HomeControls(
     private fun mode(mode: ModeDefinition): MoreItem {
         val text = { on: Boolean -> context.getString(if (on) R.string.more_on else R.string.more_off) }
         val modes = app.modes
-        return MoreItem(modes.name(mode), text(modes.isActive(mode))) { report ->
+        val live = modes.engine.active.map { text(it?.modeId == mode.id) }
+        return MoreItem(modes.name(mode), text(modes.isActive(mode)), live) { report ->
             val next = !modes.isActive(mode)
             modes.toggle(mode) { report(text(it)) }
             text(next)

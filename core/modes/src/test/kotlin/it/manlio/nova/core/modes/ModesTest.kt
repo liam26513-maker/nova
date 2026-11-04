@@ -25,6 +25,14 @@ class ModesTest {
     }
 
     @Test
+    fun `true colours are for creative and full brightness for presentation, never for gaming`() {
+        assertTrue(ModeAction.NIGHT_LIGHT_OFF in Modes.CREATIVE.actions)
+        assertTrue(ModeAction.FULL_BRIGHTNESS in Modes.PRESENTATION.actions)
+        assertTrue(ModeAction.NIGHT_LIGHT_OFF !in Modes.GAMING.actions)
+        assertTrue(ModeAction.FULL_BRIGHTNESS !in Modes.GAMING.actions)
+    }
+
+    @Test
     fun `modes are found by id`() {
         assertNotNull(Modes.byId("gaming"))
         assertEquals(null, Modes.byId("inesistente"))

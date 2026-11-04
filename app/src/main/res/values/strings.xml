@@ -233,6 +233,8 @@
     <string name="home_overlay_on">Attivo: tira giù dall\'angolo in alto a destra, in qualunque app</string>
     <string name="home_overlay_off">Non attivo: tocca (con Shizuku si sblocca da solo) e accendi «Centro di controllo di NOVA»</string>
     <string name="more_gaming">Modalità Gaming</string>
+    <string name="mode_action_night_light">filtro luce blu spento</string>
+    <string name="mode_action_brightness">luminosità al massimo</string>
     <string name="mode_action_screen">schermo sempre acceso</string>
     <string name="mode_action_sync">pausa della sincronizzazione</string>
     <string name="mode_on">%1$s attiva: %2$s.</string>

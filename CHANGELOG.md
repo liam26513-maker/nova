@@ -4,6 +4,19 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Aggiornamenti: spiega quando il problema è il DNS
+- Richiesta: "fai tutto cio che ti serve".
+- Se il tablet non trova i siti, la schermata Aggiornamenti ora dice di spegnere «Blocca pubblicità», invece di un generico «nessuna connessione».
+
+### Le righe delle modalità dicono sempre la verità
+- Richiesta: "risolvi il problema e continua".
+- Accendendo una modalità mentre un'altra era attiva, la riga di quella vecchia restava su «Sì» anche se era già spenta. Ora si aggiorna da sola.
+
+### Colori veri in Creativa, schermo al massimo in Presentazione
+- Richiesta: "finisci tutto il resto del piano".
+- **Creativa** spegne il filtro luce blu, così vedi i colori veri (serve Shizuku). **Presentazione** porta la luminosità al massimo.
+- All'uscita tutto torna com'era, compresa la luminosità automatica.
+
 ### Salvataggi più sicuri
 - Richiesta: "migliori e rivedi quello che ce gia".
 - Quattro file (scelte della Gaming, modalità attiva, registro delle modifiche, profilo del tablet) potevano non aggiornarsi senza dirlo, se il sistema rifiutava di sostituire il file. Ora si salvano come tutti gli altri file di NOVA.

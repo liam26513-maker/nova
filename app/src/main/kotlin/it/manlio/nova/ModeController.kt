@@ -77,6 +77,8 @@ class ModeController(
             ModeAction.LOCK_ROTATION -> settings.lockRotation()
             ModeAction.KEEP_SCREEN_ON -> settings.keepScreenOn()
             ModeAction.PAUSE_SYNC -> settings.pauseSync()
+            ModeAction.NIGHT_LIGHT_OFF -> nightLightOff()
+            ModeAction.FULL_BRIGHTNESS -> settings.fullBrightness()
             ModeAction.TURBO -> turbo()
         }
 
@@ -87,6 +89,8 @@ class ModeController(
             ModeSettings.KIND_ROTATION -> settings.restoreRotation(token.value)
             ModeSettings.KIND_SCREEN_ON -> settings.restoreScreenTimeout(token.value)
             ModeSettings.KIND_SYNC -> settings.resumeSync()
+            KIND_NIGHT_LIGHT -> !quick.available || app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = true, wasOn = false)
+            ModeSettings.KIND_BRIGHTNESS -> settings.restoreBrightness(token.value)
             else -> true // segnalibro di una versione futura o sconosciuto: niente da annullare
         }
 
@@ -110,6 +114,13 @@ class ModeController(
         if (quick.isOn(QuickToggle.DND)) return ActionOutcome.Applied() // già acceso dall'utente: non lo spegniamo noi all'uscita
         val ok = app.systemTools.setToggle(QuickToggle.DND, on = true, wasOn = false)
         return if (ok) ActionOutcome.Applied(UndoToken(KIND_DND)) else ActionOutcome.Failed("Android non ha obbedito")
+    }
+
+    private suspend fun nightLightOff(): ActionOutcome {
+        if (!quick.available) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_shizuku))
+        if (!quick.isOn(QuickToggle.NIGHT_LIGHT)) return ActionOutcome.Applied() // già spento: all'uscita non va acceso
+        val ok = app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = false, wasOn = true)
+        return if (ok) ActionOutcome.Applied(UndoToken(KIND_NIGHT_LIGHT)) else ActionOutcome.Failed("Android non ha obbedito")
     }
 
     private suspend fun turbo(): ActionOutcome {
@@ -153,6 +164,8 @@ class ModeController(
             ModeAction.LOCK_ROTATION -> R.string.mode_action_rotation
             ModeAction.KEEP_SCREEN_ON -> R.string.mode_action_screen
             ModeAction.PAUSE_SYNC -> R.string.mode_action_sync
+            ModeAction.NIGHT_LIGHT_OFF -> R.string.mode_action_night_light
+            ModeAction.FULL_BRIGHTNESS -> R.string.mode_action_brightness
             ModeAction.TURBO -> R.string.mode_action_turbo
         }
 
@@ -163,6 +176,7 @@ class ModeController(
     private companion object {
         const val KIND_GRAPHICS = "graphics"
         const val KIND_DND = "dnd"
+        const val KIND_NIGHT_LIGHT = "night_light"
         const val AUTO = "auto"
     }
 }
