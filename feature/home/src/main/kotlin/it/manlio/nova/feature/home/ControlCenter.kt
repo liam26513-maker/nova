@@ -38,6 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
@@ -429,6 +430,7 @@ private fun MoreRow(
     val look = LocalHomeLook.current
     val view = LocalView.current
     var state by remember(item) { mutableStateOf(item.state) }
+    LaunchedEffect(item) { item.live?.collect { state = it } }
     Row(
         Modifier
             .fillMaxWidth()

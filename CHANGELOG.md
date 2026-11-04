@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Le righe delle modalità dicono sempre la verità
+- Richiesta: "risolvi il problema e continua".
+- Accendendo una modalità mentre un'altra era attiva, la riga di quella vecchia restava su «Sì» anche se era già spenta. Ora si aggiorna da sola.
+
 ### Colori veri in Creativa, schermo al massimo in Presentazione
 - Richiesta: "finisci tutto il resto del piano".
 - **Creativa** spegne il filtro luce blu, così vedi i colori veri (serve Shizuku). **Presentazione** porta la luminosità al massimo.
