@@ -63,6 +63,16 @@ class MoreItem(
     val onClick: ((String) -> Unit) -> String? = { null },
 )
 
+/** La pastiglia della Modalità Studio in cima alla Home: prende il posto dell'isola finché la modalità è accesa. */
+@Immutable
+class StudyBar(
+    val text: String,
+    val timerLabel: String,
+    val onTimer: () -> Unit,
+    val exitLabel: String,
+    val onExit: () -> Unit,
+)
+
 /**
  * Un interruttore che si cambia subito dalla tendina (Wi-Fi, Bluetooth, non disturbare): [read] dice com'è adesso,
  * [set] lo cambia subito e chiama il secondo argomento solo se Android non ha obbedito, così la tendina rilegge lo stato vero.

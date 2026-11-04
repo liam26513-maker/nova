@@ -93,6 +93,7 @@ class HomeActivity : ComponentActivity() {
             }
         }
 
+    @Suppress("LongMethod") // radice della composizione della Home
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app.safeModeReason?.let { reason ->
@@ -148,6 +149,7 @@ class HomeActivity : ComponentActivity() {
                     animate = HomeSystem.animationsOn(this),
                     standby = standby.info(),
                     onStandbyExit = standby::hide,
+                    study = rememberStudyBar(this, app),
                     onTouch = standby::touched,
                 )
             }

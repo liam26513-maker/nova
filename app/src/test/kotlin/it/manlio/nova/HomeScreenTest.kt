@@ -62,6 +62,7 @@ import it.manlio.nova.feature.home.NowPlaying
 import it.manlio.nova.feature.home.Pomodoro
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
+import it.manlio.nova.feature.home.StudyBar
 import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.TextSize
 import it.manlio.nova.feature.home.ThemeMode
@@ -112,6 +113,7 @@ class HomeScreenTest {
         weather: (suspend (String) -> Result<Weather>)? = null,
         notifications: NotificationSource? = null,
         media: MediaSource? = null,
+        study: StudyBar? = null,
     ) {
         val actions =
             HomeActions(
@@ -146,6 +148,7 @@ class HomeScreenTest {
                         layout = layout,
                         onLayoutChange = { change -> layout = change(layout) },
                         animate = false,
+                        study = study,
                     )
                 }
             }
@@ -864,6 +867,21 @@ class HomeScreenTest {
         compose.onNodeWithText("Bluetooth").performClick()
         compose.waitForIdle()
         assertEquals(listOf(SystemPanel.BLUETOOTH), panels)
+    }
+
+    @Test
+    fun study_pill_shows_the_timer_and_a_working_exit_button() {
+        var exits = 0
+        var timers = 0
+        render(study = StudyBar("Studio fino alle 12:45", "Ferma", { timers++ }, "Esci", { exits++ }))
+
+        compose.onNodeWithText("Studio fino alle 12:45").assertExists()
+        compose.onNodeWithText("Ferma").performClick()
+        compose.onNodeWithText("Esci").performClick()
+        compose.runOnIdle {
+            assertEquals(1, timers)
+            assertEquals(1, exits)
+        }
     }
 
     @Test

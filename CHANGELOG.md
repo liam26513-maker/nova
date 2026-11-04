@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Modalità Studio completa: tasto di uscita, Pomodoro vero, blocco distrazioni
+- Richiesta: "risolvi i limiti" e "aggiungi un tasto di uscita per la modalita studio".
+- **Tasto di uscita:** con la Studio accesa, in cima alla Home compare una pastiglia con il Pomodoro e il tasto «Esci». In tendina → Altro c'è anche «Esci dalla Modalità Studio».
+- **Pomodoro:** ora scegli le durate (Impostazioni → Modalità Studio), vedi i minuti di oggi e degli ultimi 7 giorni, e se Android chiude NOVA il timer riprende da solo.
+- **Blocco distrazioni:** scegli le app da bloccare. Durante la Studio aprirle riporta alla Home; puoi sbloccarle per 5 minuti, con conferma.
+
 ### Timer Pomodoro nella Modalità Studio
 - Richiesta: "finisci tutto il resto del piano".
 - In tendina → Altro c'è «Pomodoro»: 25 minuti di studio e 5 di pausa, a ciclo. Accende la Studio se è spenta e la riga dice fino a che ora dura la fase.
