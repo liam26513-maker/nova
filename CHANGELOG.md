@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Modalità Studio, Lavoro, Creativa e Presentazione (versione di base)
+- Richiesta: "finisci tutto il resto del piano".
+- In tendina → Altro ci sono quattro modalità nuove, oltre alla Gaming. Una sola per volta; all'uscita tutto torna com'era.
+- **Studio:** niente notifiche e schermo acceso. **Lavoro:** niente notifiche. **Creativa:** grafica di NOVA leggera, niente notifiche, rotazione bloccata, schermo acceso. **Presentazione:** niente notifiche, rotazione bloccata, schermo acceso.
+- Per ora fanno solo questo: Pomodoro, finestre flottanti e Home portfolio non ci sono ancora.
+
 ### Uscita di emergenza dai giochi e misura col tasto volume
 - Richiesta: "finisci tutto il resto del piano" e "aggiungere queste funzionalita che hai fatto, su nova".
 - **Uscita di emergenza:** in Modalità Gaming tieni premuto **volume giù per 3 secondi**: compare un menu con «Esci dalla modalità», «Chiudi il gioco» e «Torna alla Home». Serve il servizio di accessibilità di NOVA acceso.

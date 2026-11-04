@@ -11,6 +11,7 @@ import it.manlio.nova.core.modes.ModeAction
 import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.ModeEngine
 import it.manlio.nova.core.modes.ModeEnvironment
+import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.modes.TextSessionStore
 import it.manlio.nova.core.modes.UndoToken
 import it.manlio.nova.core.system.QuickToggle
@@ -58,12 +59,12 @@ class ModeController(
         scope.launch {
             val on = !isActive(mode)
             if (on) {
-                // Solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
-                val report = engine.enter(mode.copy(actions = mode.actions.filter(options::enabled)))
-                say(summary(report))
+                // Per la Gaming solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
+                val actions = if (mode == Modes.GAMING) mode.actions.filter(options::enabled) else mode.actions
+                say(summary(mode, engine.enter(mode.copy(actions = actions))))
             } else {
                 val report = engine.exit()
-                say(context.getString(if (report.pending == 0) R.string.mode_off else R.string.mode_off_pending))
+                say(context.getString(if (report.pending == 0) R.string.mode_off else R.string.mode_off_pending, name(mode)))
             }
             onDone(isActive(mode))
         }
@@ -118,15 +119,31 @@ class ModeController(
         return if (done == null) ActionOutcome.Failed("Turbo non riuscito") else ActionOutcome.Applied()
     }
 
-    private fun summary(report: EnterReport): String {
-        val hint = context.getString(if (options.overlayInGames) R.string.mode_exit_overlay else R.string.mode_exit_home)
+    /** Il nome della modalità per gli avvisi e per la riga in Altro. */
+    fun name(mode: ModeDefinition): String =
+        context.getString(
+            when (mode) {
+                Modes.STUDY -> R.string.more_study
+                Modes.WORK -> R.string.more_work
+                Modes.CREATIVE -> R.string.more_creative
+                Modes.PRESENTATION -> R.string.more_presentation
+                else -> R.string.more_gaming
+            },
+        )
+
+    private fun summary(
+        mode: ModeDefinition,
+        report: EnterReport,
+    ): String {
+        val overlay = mode != Modes.GAMING || options.overlayInGames
+        val hint = context.getString(if (overlay) R.string.mode_exit_overlay else R.string.mode_exit_home, name(mode))
         val done = report.applied.joinToString(", ") { context.getString(label(it)) }
         val turbo = if (ModeAction.TURBO in report.applied) " " + context.getString(R.string.mode_turbo_closed, turboClosed) else ""
         val missing = report.skipped + report.failed
-        if (missing.isEmpty()) return context.getString(R.string.mode_on, done) + turbo + " " + hint
+        if (missing.isEmpty()) return context.getString(R.string.mode_on, name(mode), done) + turbo + " " + hint
         val names = missing.joinToString(", ") { context.getString(label(it.first)) }
         val why = missing.map { it.second }.distinct().joinToString("; ")
-        return context.getString(R.string.mode_on_partial, done, names, why) + turbo + " " + hint
+        return context.getString(R.string.mode_on_partial, name(mode), done, names, why) + turbo + " " + hint
     }
 
     private fun label(action: ModeAction): Int =
