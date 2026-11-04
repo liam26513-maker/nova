@@ -36,8 +36,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
@@ -98,6 +100,9 @@ private fun NotesScreen(
     onClose: () -> Unit,
 ) {
     val focus = remember { FocusRequester() }
+
+    // Il cursore parte dalla fine: si continua a scrivere dopo quello che c'è già.
+    var value by remember { mutableStateOf(TextFieldValue(text, TextRange(text.length))) }
     val title = stringResource(R.string.notes_title)
     LaunchedEffect(Unit) { focus.requestFocus() }
     Column(Modifier.fillMaxSize().background(NOTES_BACKGROUND).systemBarsPadding().imePadding().padding(horizontal = 24.dp)) {
@@ -107,10 +112,13 @@ private fun NotesScreen(
             NotesButton(stringResource(R.string.notes_close), onClose)
         }
         Box(Modifier.fillMaxSize().padding(vertical = 8.dp)) {
-            if (text.isEmpty()) BasicText(stringResource(R.string.notes_hint), style = TextStyle(NOTES_HINT, 18.sp))
+            if (value.text.isEmpty()) BasicText(stringResource(R.string.notes_hint), style = TextStyle(NOTES_HINT, 18.sp))
             BasicTextField(
-                text,
-                onChange,
+                value,
+                {
+                    value = it
+                    onChange(it.text)
+                },
                 Modifier.fillMaxSize().focusRequester(focus).semantics { contentDescription = title },
                 textStyle = TextStyle(Color.White, 18.sp),
                 cursorBrush = SolidColor(Color.White),

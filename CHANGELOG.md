@@ -11,6 +11,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 ### Note: la chiusura torna dove eri
 - Richiesta: "ricontrolla tutto ora che il tablet è acceso".
 - Chiudendo le note rapide si finiva nelle Impostazioni di NOVA. Ora si torna dov'eri.
+- Riaprendo le note il cursore stava all'inizio del testo. Ora parte dalla fine.
 
 ### Note rapide, filtro caldo, schermo diviso e controllo del DNS
 - Richiesta: "continua con tutto il resto che puoi fare".
