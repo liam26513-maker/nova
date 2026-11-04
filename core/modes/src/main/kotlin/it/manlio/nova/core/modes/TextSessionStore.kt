@@ -36,7 +36,10 @@ class TextSessionStore(private val file: File) : SessionStore {
             }.joinToString("\n", postfix = "\n")
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.writeText(body)
-        tmp.renameTo(file)
+        if (!tmp.renameTo(file)) {
+            file.delete()
+            tmp.renameTo(file)
+        }
     }
 
     private fun escape(text: String) = text.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n")
