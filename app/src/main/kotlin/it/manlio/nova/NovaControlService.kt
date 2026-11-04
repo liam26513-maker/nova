@@ -363,7 +363,9 @@ class NovaControlService : AccessibilityService() {
         private const val SYSTEM_UI = "com.android.systemui"
         private const val PANEL_TRAVEL_DP = 520
         private const val SHADE_HIDE_GAP_MS = 100L
-        private val SHADE_HIDE_AFTER_MS = listOf(120L, 350L)
+
+        // Con un gesto lento Android ignora le prime richieste: la sua tendina restava aperta dietro la nostra.
+        private val SHADE_HIDE_AFTER_MS = listOf(120L, 350L, 700L, 1200L, 2000L)
         private const val OVER_SYSTEM_BARS =
             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         private const val FORCE_REMOVE_MS = 700L

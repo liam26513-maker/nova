@@ -76,6 +76,7 @@
         <activity
             android:name=".NotesActivity"
             android:exported="false"
+            android:taskAffinity=""
             android:label="@string/notes_title"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
