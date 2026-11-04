@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.3xx. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.490 e PR successive. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -11,15 +11,16 @@ Aggiornato a: release 0.1.3xx. Per riprendere il lavoro in una chat nuova basta 
   accessibilità di scorta, sblocco in un tocco delle impostazioni con restrizioni.
 - **Fase 2** strumenti di sistema (Shizuku): Turbo, animazioni, densità, DNS anti-pubblicità, congelamento, stato, interruttori rapidi.
 - **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano foto/calendario/widget/Stato PC nello StandBy.
-- **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio, Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
+- **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio con Pomodoro, blocco app, note e filtro caldo; Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Doppio swipe e watchdog ci sono, spenti di serie. Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
 - **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release.
 
 ## Prossimo passo (in ordine)
-1. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi tema di
+1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
+2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi tema di
    NOVA tramite `ContentProvider`, aspetto iOS, funzioni per tablet (divisa, flottante, riga numeri: disattivate di default), trackpad sulla barra spaziatrice,
    espansioni di testo, layout italiano per la tastiera fisica. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
-2. **Fase 3, seguito:** doppio swipe dal bordo e watchdog **prima** di qualunque attivazione automatica. Attenzione: il doppio swipe richiede finestre sui bordi sopra il gioco e il watchdog una lettura periodica dei fotogrammi, che nelle prove disturbava il gioco: vanno decisi con il proprietario. Poi pannello in sovrimpressione, contenuti veri di Studio, Lavoro, Creativa e Presentazione, profili automatici.
-3. **Fase 4** penna, **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
+3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie e se serve l'attivazione automatica della Gaming. Poi pannello in sovrimpressione, libreria giochi, desktop e finestre flottanti per Lavoro, Home portfolio e PIN per Presentazione (serve sapere cosa contiene il portfolio), profili automatici, modalità in `config/modes/`.
+4. **Fase 4** penna, **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso
@@ -30,6 +31,9 @@ Internet nella tastiera, mai cambiare chiave di firma né `applicationId`. La CI
 
 ## Sul tablet (4 novembre, 0.1.460)
 Provate: Studio, Lavoro e l'aggiornamento automatico della tastiera (0.1.340 → 0.1.460 con «Controlla ora»). Per un'ora circa, durante un guasto di GitHub, il DNS di «Blocca pubblicità» non è stato confermato e il tablet non trovava nessun sito; poi si è ripreso da solo, causa non trovata. Il servizio di accessibilità di NOVA risulta spento, causa ignota: senza non si provano le uscite col volume. Mancano Creativa, Presentazione, Risoluzione e il 65% in partita.
+
+## Sul tablet (4 novembre, 0.1.490)
+Installata la 0.1.490, servizio di accessibilità di nuovo acceso. Non ancora provati a mano: pastiglia e uscita della Studio, Pomodoro, blocco app, doppio swipe, watchdog, volume giù e su, Creativa, Presentazione, Risoluzione, 65% in partita. Brawl Stars è impostato a 0,65 via adb.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).

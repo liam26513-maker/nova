@@ -23,6 +23,9 @@ enum class ModeAction {
     /** Filtro luce blu spento, per vedere i colori veri (serve Shizuku). */
     NIGHT_LIGHT_OFF,
 
+    /** Filtro caldo acceso per leggere (serve Shizuku). Solo se l'utente lo sceglie per la Studio. */
+    NIGHT_LIGHT_ON,
+
     /** Luminosità al massimo, regolazione automatica spenta. Serve il permesso di modificare le impostazioni. */
     FULL_BRIGHTNESS,
 
@@ -60,11 +63,11 @@ object Modes {
             maxMinutes = 6 * 60,
         )
 
-    /** Studio di base (SPEC §8.4): niente notifiche, schermo acceso. Pomodoro e blocco distrazioni sono ancora da fare. */
+    /** Studio (SPEC §8.4): niente notifiche, schermo acceso e, se scelto, filtro caldo. Il Pomodoro sta in [Pomodoro]. */
     val STUDY =
         ModeDefinition(
             id = "studio",
-            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON),
+            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON, ModeAction.NIGHT_LIGHT_ON),
             maxMinutes = 4 * 60,
         )
 

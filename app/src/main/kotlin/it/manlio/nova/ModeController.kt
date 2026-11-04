@@ -74,9 +74,8 @@ class ModeController(
         scope.launch {
             val on = !isActive(mode)
             if (on) {
-                // Per la Gaming solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
-                val actions = if (mode == Modes.GAMING) mode.actions.filter(options::enabled) else mode.actions
-                say(summary(mode, engine.enter(mode.copy(actions = actions))))
+                // Solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
+                say(summary(mode, engine.enter(mode.copy(actions = options.chosen(mode)))))
             } else {
                 val report = engine.exit()
                 say(context.getString(if (report.pending == 0) R.string.mode_off else R.string.mode_off_pending, name(mode)))
@@ -92,7 +91,8 @@ class ModeController(
             ModeAction.LOCK_ROTATION -> settings.lockRotation()
             ModeAction.KEEP_SCREEN_ON -> settings.keepScreenOn()
             ModeAction.PAUSE_SYNC -> settings.pauseSync()
-            ModeAction.NIGHT_LIGHT_OFF -> nightLightOff()
+            ModeAction.NIGHT_LIGHT_OFF -> nightLight(on = false)
+            ModeAction.NIGHT_LIGHT_ON -> nightLight(on = true)
             ModeAction.FULL_BRIGHTNESS -> settings.fullBrightness()
             ModeAction.TURBO -> turbo()
         }
@@ -105,6 +105,7 @@ class ModeController(
             ModeSettings.KIND_SCREEN_ON -> settings.restoreScreenTimeout(token.value)
             ModeSettings.KIND_SYNC -> settings.resumeSync()
             KIND_NIGHT_LIGHT -> !quick.available || app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = true, wasOn = false)
+            KIND_NIGHT_LIGHT_ON -> !quick.available || app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = false, wasOn = true)
             ModeSettings.KIND_BRIGHTNESS -> settings.restoreBrightness(token.value)
             else -> true // segnalibro di una versione futura o sconosciuto: niente da annullare
         }
@@ -131,11 +132,12 @@ class ModeController(
         return if (ok) ActionOutcome.Applied(UndoToken(KIND_DND)) else ActionOutcome.Failed("Android non ha obbedito")
     }
 
-    private suspend fun nightLightOff(): ActionOutcome {
+    private suspend fun nightLight(on: Boolean): ActionOutcome {
         if (!quick.available) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_shizuku))
-        if (!quick.isOn(QuickToggle.NIGHT_LIGHT)) return ActionOutcome.Applied() // già spento: all'uscita non va acceso
-        val ok = app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = false, wasOn = true)
-        return if (ok) ActionOutcome.Applied(UndoToken(KIND_NIGHT_LIGHT)) else ActionOutcome.Failed("Android non ha obbedito")
+        if (quick.isOn(QuickToggle.NIGHT_LIGHT) == on) return ActionOutcome.Applied() // già così: all'uscita non va toccato
+        val ok = app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = on, wasOn = !on)
+        val token = UndoToken(if (on) KIND_NIGHT_LIGHT_ON else KIND_NIGHT_LIGHT)
+        return if (ok) ActionOutcome.Applied(token) else ActionOutcome.Failed("Android non ha obbedito")
     }
 
     private suspend fun turbo(): ActionOutcome {
@@ -180,6 +182,7 @@ class ModeController(
             ModeAction.KEEP_SCREEN_ON -> R.string.mode_action_screen
             ModeAction.PAUSE_SYNC -> R.string.mode_action_sync
             ModeAction.NIGHT_LIGHT_OFF -> R.string.mode_action_night_light
+            ModeAction.NIGHT_LIGHT_ON -> R.string.mode_action_warm
             ModeAction.FULL_BRIGHTNESS -> R.string.mode_action_brightness
             ModeAction.TURBO -> R.string.mode_action_turbo
         }
@@ -192,6 +195,7 @@ class ModeController(
         const val KIND_GRAPHICS = "graphics"
         const val KIND_DND = "dnd"
         const val KIND_NIGHT_LIGHT = "night_light"
+        const val KIND_NIGHT_LIGHT_ON = "night_light_on"
         const val AUTO = "auto"
     }
 }

@@ -493,7 +493,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.1 Motore delle modalità
 
-> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Le modalità sono ancora definite nel codice (`Modes.kt`), non in `config/modes/*.json`. Mancano attivazione automatica, uscite 2–3 e pannello di §8.2, le altre modalità. Dettagli: `docs/modules/modalita.md`.
+> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Le modalità sono ancora definite nel codice (`Modes.kt`), non in `config/modes/*.json`. Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, pannello di §8.2, desktop e finestre flottanti di §8.3, Home portfolio e PIN di §8.6. Dettagli: `docs/modules/modalita.md`.
 
 - Una modalità è un JSON in `config/modes/` che descrive: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
 - **Attivazione:** manuale (centro di controllo, ricerca, widget), automatica (app aperta, accessorio collegato, orario, rete Wi-Fi), o da ADAM.
@@ -537,6 +537,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.3 Modalità Lavoro
 
+- **Schermo diviso** dalla tendina sopra le altre app durante la modalità (fatto; serve il servizio di accessibilità).
 - **Desktop:** barra applicazioni propria in basso (overlay) con app aperte e preferite; **finestre flottanti ridimensionabili** tramite modalità freeform di Android (abilitazione `enable_freeform_support` via Shizuku, avvio con `ActivityOptions.setLaunchBounds`); split-screen rapido. Riferimento architetturale: progetto open source "Taskbar" (farmerbb), da studiare per le tecniche, rispettando la licenza.
 - **Set di finestre stile Stage Manager:** gruppi di app salvati con posizione e dimensione ("Ricerca: browser + note + Claude"), riapribili con un tocco; set recenti a lato.
 - Tastiera fisica e mouse: §10.6.
@@ -547,7 +548,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 - Timer Pomodoro nella home e nell'isola (durate configurabili), con statistiche settimanali.
 - Blocco delle app che distraggono durante le sessioni (overlay che intercetta l'apertura, con "sblocca per 5 minuti" che richiede conferma).
-- Note rapide sempre a un gesto; modalità lettura (filtro caldo, font ottimizzati per i PDF dove possibile); tastiera con riga scientifica (§10.5).
+- Note rapide sempre a un gesto (tendina → Altro e pastiglia della Studio); modalità lettura (filtro caldo facoltativo, spento di serie; font ottimizzati per i PDF dove possibile, non fatti); tastiera con riga scientifica (§10.5).
 - Flusso "Appunti → Claude" (§12.3) e testo dalle immagini (§12.1) in primo piano.
 
 ### 8.5 Modalità Creativa
@@ -728,6 +729,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 ### 13.1 Blocco pubblicità di sistema
 
 - Tramite **DNS privato** di Android (`private_dns_mode=hostname`, `private_dns_specifier=<provider>`) impostato via Shizuku; provider selezionabili (es. AdGuard DNS, NextDNS con profilo personale). Nessuna VPN: compatibile con Tailscale.
+- Prima di accenderlo NOVA controlla che il provider risponda sulla porta 853; se non risponde resta spento e lo dice.
 - Interruttore rapido nel centro di controllo (alcuni siti/app possono rompersi). Elenco eccezioni non disponibile a livello DNS: documentarlo.
 
 ### 13.2 Firewall per app

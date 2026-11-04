@@ -1,6 +1,7 @@
 package it.manlio.nova
 
 import it.manlio.nova.core.modes.ModeAction
+import it.manlio.nova.core.modes.Modes
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -24,6 +25,16 @@ class ModeOptionsTest {
         assertFalse(o.enabled(ModeAction.TURBO))
         assertFalse(o.enabled(ModeAction.PAUSE_SYNC))
         assertTrue(o.overlayInGames)
+    }
+
+    @Test
+    fun `study keeps its base actions and adds the warm filter only when chosen, gaming follows the choices`() {
+        val o = options()
+        assertEquals(listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON), o.chosen(Modes.STUDY))
+        assertEquals(Modes.WORK.actions, o.chosen(Modes.WORK))
+        assertFalse(ModeAction.TURBO in o.chosen(Modes.GAMING))
+        o.set(ModeAction.NIGHT_LIGHT_ON.name, true)
+        assertTrue(ModeAction.NIGHT_LIGHT_ON in o.chosen(Modes.STUDY))
     }
 
     @Test

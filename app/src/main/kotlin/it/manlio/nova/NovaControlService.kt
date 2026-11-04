@@ -296,6 +296,7 @@ class NovaControlService : AccessibilityService() {
             onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
         ).also {
             controls = it
+            it.onSplitScreen = { performGlobalAction(GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN) }
             it.start()
         }.actions()
 

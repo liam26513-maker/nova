@@ -285,6 +285,17 @@
     <string name="study_block_footer">Durante la Studio queste app non si aprono: NOVA torna alla Home e chiede cosa fare. Serve il servizio di accessibilità di NOVA.</string>
     <string name="study_block_pick">Scegli le app da bloccare</string>
     <string name="study_block_remove">Tocca per sbloccarla</string>
+    <string name="notes_title">Note rapide</string>
+    <string name="notes_short">Note</string>
+    <string name="notes_hint">Scrivi qui: si salva da solo.</string>
+    <string name="notes_share">Condividi</string>
+    <string name="notes_close">Chiudi</string>
+    <string name="more_split_screen">Schermo diviso</string>
+    <string name="mode_action_warm">filtro caldo</string>
+    <string name="study_reading">Lettura</string>
+    <string name="study_reading_footer">Vale dalla prossima volta che accendi la Studio; all\'uscita torna com\'era. Serve Shizuku.</string>
+    <string name="study_warm">Filtro caldo durante la Studio</string>
+    <string name="perf_dns_unreachable">Il DNS di AdGuard non risponde su questa rete: l\'ho lasciato spento, altrimenti il tablet non troverebbe più nessun sito.</string>
     <string name="study_exit">Esci</string>
     <string name="study_exit_row">Esci dalla Modalità Studio</string>
     <string name="study_timer_stop">Ferma</string>
