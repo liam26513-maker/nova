@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tendina e note: due correzioni trovate provando sul tablet
+- Richiesta: "ricontrolla tutto ora che il tablet è acceso".
+- Tirando giù la tendina lentamente, quella di Android restava aperta dietro quella di NOVA. Ora si richiude.
+- Chiudendo le note rapide si finiva nelle Impostazioni di NOVA. Ora si torna dov'eri.
+
 ### Note rapide, filtro caldo, schermo diviso e controllo del DNS
 - Richiesta: "continua con tutto il resto che puoi fare".
 - **Note rapide:** in tendina → Altro e nella pastiglia della Studio. Si salvano da sole e si possono condividere, anche con Claude.
