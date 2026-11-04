@@ -12,6 +12,8 @@ import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.ModeEngine
 import it.manlio.nova.core.modes.ModeEnvironment
 import it.manlio.nova.core.modes.Modes
+import it.manlio.nova.core.modes.Pomodoro
+import it.manlio.nova.core.modes.PomodoroPhase
 import it.manlio.nova.core.modes.TextSessionStore
 import it.manlio.nova.core.modes.UndoToken
 import it.manlio.nova.core.system.QuickToggle
@@ -41,6 +43,12 @@ class ModeController(
 
     val engine = ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")))
 
+    /** Il Pomodoro vive dentro la Studio: uscendo dalla modalità si ferma. */
+    val pomodoro =
+        Pomodoro(scope, System::currentTimeMillis) { phase ->
+            say(context.getString(if (phase == PomodoroPhase.FOCUS) R.string.pomodoro_focus else R.string.pomodoro_break, phase.minutes))
+        }
+
     fun isActive(mode: ModeDefinition): Boolean = engine.active.value?.modeId == mode.id
 
     /** All'avvio dell'app: riprende o conclude una sessione rimasta a metà, ed esce da quella dimenticata. */
@@ -49,6 +57,7 @@ class ModeController(
             engine.recover()
             engine.exitIfExpired()
         }
+        scope.launch { engine.active.collect { if (it?.modeId != Modes.STUDY.id) pomodoro.stop() } }
     }
 
     /** Entra o esce dalla modalità [mode]; [onDone] riceve lo stato finale (vero = attiva). Un avviso a schermo dice com'è andata. */

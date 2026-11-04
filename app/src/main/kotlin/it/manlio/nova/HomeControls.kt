@@ -10,9 +10,12 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.AlarmClock
 import android.provider.Settings
+import android.text.format.DateFormat
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.Modes
+import it.manlio.nova.core.modes.PomodoroPhase
+import it.manlio.nova.core.modes.PomodoroState
 import it.manlio.nova.core.system.QuickToggle
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.ControlActions
@@ -26,6 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import kotlin.math.roundToInt
 
 /**
@@ -148,6 +152,7 @@ class HomeControls(
             standby(),
             mode(Modes.GAMING),
             mode(Modes.STUDY),
+            pomodoroItem(context, app),
             mode(Modes.WORK),
             mode(Modes.CREATIVE),
             mode(Modes.PRESENTATION),
@@ -292,5 +297,30 @@ class HomeControls(
         const val ACTION_NIGHT_DISPLAY = "android.settings.NIGHT_DISPLAY_SETTINGS"
         const val ACTION_COLOR_INVERSION = "android.settings.COLOR_INVERSION_SETTINGS"
         const val ACTION_COLOR_CORRECTION = "android.settings.COLOR_CORRECTION_SETTINGS"
+    }
+}
+
+/** Pomodoro (SPEC §8.4): parte con la Studio, accendendola se serve; ritoccandolo si ferma e la Studio resta accesa. */
+private fun pomodoroItem(
+    context: Context,
+    app: NovaApp,
+): MoreItem {
+    val modes = app.modes
+    val timer = modes.pomodoro
+    val text = { s: PomodoroState? ->
+        if (s == null) {
+            context.getString(R.string.more_off)
+        } else {
+            val end = DateFormat.getTimeFormat(context).format(Date(s.endsAt))
+            context.getString(if (s.phase == PomodoroPhase.FOCUS) R.string.pomodoro_focus_until else R.string.pomodoro_break_until, end)
+        }
+    }
+    return MoreItem(context.getString(R.string.more_pomodoro), text(timer.state.value), timer.state.map(text)) { _ ->
+        when {
+            timer.state.value != null -> timer.stop()
+            modes.isActive(Modes.STUDY) -> timer.start()
+            else -> modes.toggle(Modes.STUDY) { on -> if (on) timer.start() }
+        }
+        text(timer.state.value)
     }
 }

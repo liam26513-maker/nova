@@ -268,6 +268,11 @@
     <string name="more_work">Work mode</string>
     <string name="more_creative">Creative mode</string>
     <string name="more_presentation">Presentation mode</string>
+    <string name="more_pomodoro">Pomodoro</string>
+    <string name="pomodoro_focus">%1$d minutes of study</string>
+    <string name="pomodoro_break">%1$d minute break</string>
+    <string name="pomodoro_focus_until">Study until %1$s</string>
+    <string name="pomodoro_break_until">Break until %1$s</string>
     <string name="more_standby">StandBy</string>
     <string name="customize_lock">Wallpaper on the lock screen too</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>
