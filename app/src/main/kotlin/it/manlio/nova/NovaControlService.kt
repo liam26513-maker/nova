@@ -1,6 +1,5 @@
 package it.manlio.nova
 
-import android.accessibilityservice.AccessibilityButtonController
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
@@ -111,15 +110,6 @@ class NovaControlService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         addStrip()
-        // Il pulsante di accessibilità di Android (se lo si sceglie come scorciatoia) apre la tendina senza il gesto.
-        val button =
-            object : AccessibilityButtonController.AccessibilityButtonCallback() {
-                override fun onClicked(controller: AccessibilityButtonController) {
-                    app.log.i(LOG_TAG, "pulsante di accessibilità")
-                    if (panel != null) requestClose() else openPanel()?.settle(true)
-                }
-            }
-        runCatching { accessibilityButtonController.registerAccessibilityButtonCallback(button) }
         app.log.i(LOG_TAG, "servizio collegato, striscia ${if (strip != null) "creata" else "NON creata"}")
         // Durante la Modalità Gaming la striscia è un livello in più sopra il gioco (e prende il tocco in quella fascia): si toglie
         // e si rimette all'uscita, a meno che l'utente la voglia (Impostazioni → Modalità Gaming).
