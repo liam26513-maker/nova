@@ -271,6 +271,11 @@
     <string name="more_work">Modalità Lavoro</string>
     <string name="more_creative">Modalità Creativa</string>
     <string name="more_presentation">Modalità Presentazione</string>
+    <string name="more_pomodoro">Pomodoro</string>
+    <string name="pomodoro_focus">%1$d minuti di studio</string>
+    <string name="pomodoro_break">Pausa di %1$d minuti</string>
+    <string name="pomodoro_focus_until">Studio fino alle %1$s</string>
+    <string name="pomodoro_break_until">Pausa fino alle %1$s</string>
     <string name="more_standby">StandBy</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

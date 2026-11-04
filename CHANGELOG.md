@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Timer Pomodoro nella Modalità Studio
+- Richiesta: "finisci tutto il resto del piano".
+- In tendina → Altro c'è «Pomodoro»: 25 minuti di studio e 5 di pausa, a ciclo. Accende la Studio se è spenta e la riga dice fino a che ora dura la fase.
+- Ritoccandolo si ferma; uscendo dalla Studio si ferma da solo. Se Android chiude NOVA il timer si perde: per ora le durate sono fisse e non ci sono statistiche.
+
 ### Aggiornamenti: spiega quando il problema è il DNS
 - Richiesta: "fai tutto cio che ti serve".
 - Se il tablet non trova i siti, la schermata Aggiornamenti ora dice di spegnere «Blocca pubblicità», invece di un generico «nessuna connessione».

@@ -12,7 +12,7 @@ Stato: **Fase 3, primo passo**. Motore + Gaming di base, solo manuale. Vedi SPEC
 
 ## Le modalità
 
-`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Creativa spegne il filtro luce blu (`NIGHT_LIGHT_OFF`), Presentazione porta la luminosità al massimo (`FULL_BRIGHTNESS`). Mancano Pomodoro e blocco distrazioni (§8.4), desktop e finestre flottanti (§8.3), Home portfolio (§8.6).
+`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Creativa spegne il filtro luce blu (`NIGHT_LIGHT_OFF`), Presentazione porta la luminosità al massimo (`FULL_BRIGHTNESS`). Il Pomodoro (`Pomodoro`, in Altro) ha durate fisse 25/5, sta solo in memoria e non ha statistiche. Mancano Pomodoro nella Home e nell'isola e blocco distrazioni (§8.4), desktop e finestre flottanti (§8.3), Home portfolio (§8.6).
 
 ## Sul tablet (`app/ModeController`)
 
