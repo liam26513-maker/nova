@@ -68,9 +68,14 @@ data class UpdatePlan(
  */
 object UpdatePlanner {
     private val APK = Regex("^nova-(\\d+)\\.apk$")
+    private val KEYBOARD_APK = Regex("^nova-tastiera-(\\d+)\\.apk$")
     private val STANDBY = Regex("^nova-ripristino-(\\d+)-(v\\d+\\.\\d+\\.\\d+)\\.apk$")
     private val CONFIG_TAG = Regex("^config-v(\\d+\\.\\d+\\.\\d+)$")
     const val CONFIG_ASSET = "nova-config.json"
+    const val KEYBOARD_PACKAGE = "it.manlio.nova.keyboard"
+
+    /** Il numero di versione della tastiera è questo più quello di NOVA (`NOVA_VERSION_BASE` in `keyboard/`). */
+    const val KEYBOARD_VERSION_BASE = 100_000
 
     fun plan(
         releases: List<Release>,
@@ -90,6 +95,24 @@ object UpdatePlanner {
                 .maxWithOrNull { a, b -> compareVersions(a.version, b.version) }
         return UpdatePlan(app, config)
     }
+
+    /**
+     * La tastiera più recente sopra [installedVersionCode] (`nova-tastiera-<code>.apk` + `.sha256`); [AppUpdate.versionCode] è
+     * quello vero della tastiera, cioè il numero nel nome più [KEYBOARD_VERSION_BASE].
+     */
+    fun keyboard(
+        releases: List<Release>,
+        installedVersionCode: Long,
+    ): AppUpdate? =
+        releases
+            .filter { !it.draft && !it.prerelease }
+            .mapNotNull { r ->
+                val apk = r.assets.firstOrNull { KEYBOARD_APK.matches(it.name) } ?: return@mapNotNull null
+                val checksum = r.assets.firstOrNull { it.name == "${apk.name}.sha256" } ?: return@mapNotNull null
+                val code = KEYBOARD_APK.find(apk.name)!!.groupValues[1].toIntOrNull() ?: return@mapNotNull null
+                AppUpdate(KEYBOARD_VERSION_BASE + code, r.tag, apk, checksum, null)
+            }.filter { it.versionCode > installedVersionCode }
+            .maxByOrNull { it.versionCode }
 
     /**
      * Versioni dell'app più vecchie di quella installata, dalla più recente, per il ritorno indietro

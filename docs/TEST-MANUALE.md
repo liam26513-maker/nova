@@ -16,6 +16,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Anche se il consigliato è più basso, toccando **Massimo** o **Bilanciato** la scelta viene applicata ("Fissato da te: …").
 
 ## Tastiera di NOVA (quando sarà pubblicata)
+- [ ] Con Shizuku attivo, Aggiornamenti → «Controlla ora» quando NOVA è aggiornata: la tastiera passa alla versione dell'ultima release (Impostazioni di Android → App → Tastiera NOVA) e continua a funzionare.
 - [ ] Impostazioni di Android → Tastiera → Tastiere sullo schermo: compare «Tastiera NOVA»; scegliendola si scrive in italiano e in inglese con suggerimenti.
 - [ ] Nessuna richiesta di accesso a Internet nelle informazioni dell'app.
 

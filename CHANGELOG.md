@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La tastiera si aggiorna da sola
+- Richiesta: "finisci tutto il resto del piano".
+- Se la tastiera di NOVA è installata e Shizuku è attivo, NOVA la aggiorna insieme ai suoi controlli. Prima si faceva a mano dalla pagina Releases.
+- Controlla impronta, pacchetto, versione e firma, come per NOVA. Se qualcosa va storto la tastiera resta com'è e NOVA continua ad aggiornarsi normalmente.
+
 ### Modalità Studio, Lavoro, Creativa e Presentazione (versione di base)
 - Richiesta: "finisci tutto il resto del piano".
 - In tendina → Altro ci sono quattro modalità nuove, oltre alla Gaming. Una sola per volta; all'uscita tutto torna com'era.

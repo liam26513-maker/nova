@@ -11,7 +11,7 @@ Stato: **base inserita e allegata alle release (Fase 4, primi passi)**. Fork di 
   riportare le correzioni di HeliBoard).
 - **CI:** `.github/workflows/tastiera.yml`, solo quando cambia `keyboard/`: prove di `tools/check_keyboard.py`, `assembleRelease`, controllo del
   **manifest unito** (nessun `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`; pacchetto giusto) e del peso contro `keyboardApkMb` (15 MB).
-- **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. **Si installa a mano** dalla pagina Releases; l'installazione e l'aggiornamento dall'app sono il passo successivo.
+- **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. La **prima installazione** è a mano dalla pagina Releases; dopo la aggiorna NOVA (`Updater.updateKeyboard`), solo con Shizuku pronto e quando NOVA stessa non ha aggiornamenti da installare.
 
 ## Profilo NOVA (sensazione)
 
@@ -37,4 +37,4 @@ tocco al tasto, apertura della tastiera, memoria) prima e dopo.
 
 Aspetto iOS e tema di NOVA (`ContentProvider` dei token), tastiera divisa/flottante/riga numeri (disattivate di default), trackpad sulla barra
 spaziatrice, espansioni di testo, appunti → PC, dettatura, scrittura a mano → testo, «Invia a Claude», varianti per modalità, layout italiano della
-tastiera fisica e scorciatoie. Installazione e aggiornamento dall'app (oggi si installa a mano dalla pagina Releases).
+tastiera fisica e scorciatoie. Prima installazione dall'app.
