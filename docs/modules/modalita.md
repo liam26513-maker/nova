@@ -45,6 +45,10 @@ Doppio swipe (`EdgeSwipeWindow`, `DoubleSwipe`) e watchdog (`GameWatchdog`, `Fre
 
 Non è una modalità: riga di Altro, spenta di serie. Porta `SCREEN_OFF_TIMEOUT` a `Int.MAX_VALUE` e salva il valore di prima. Una modalità con `KEEP_SCREEN_ON` accesa dopo non lo tocca; se invece l'interruttore si accende durante una modalità, uscendone Android torna al tempo salvato dalla modalità e la riga dice «No».
 
+## Libreria dei giochi (`app/GameLibrary`)
+
+In Impostazioni → Modalità Gaming: le app con categoria gioco, aperte con un tocco, con la percentuale che scende di un passo (`GameTools.stepScale`). `GameFps` tiene gli FPS dell'ultima misura e li dimentica se la risoluzione cambia; `suggestedScale` propone un passo sotto 55 FPS. La percentuale viene dal registro delle modifiche: una scala impostata fuori da NOVA, con adb, qui si vede come 100%.
+
 ## Scelte e limiti
 
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.

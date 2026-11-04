@@ -62,7 +62,11 @@ fun SettingsScreen(
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
-            CAT_GAMING -> performance?.let { GamingSection(backdrop, it.modeOptions) }
+            CAT_GAMING ->
+                performance?.let {
+                    GameLibrarySection(backdrop, remember(it) { it.gameTools })
+                    GamingSection(backdrop, it.modeOptions)
+                }
             CAT_STUDY -> performance?.let { StudySection(backdrop, it.modes) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {

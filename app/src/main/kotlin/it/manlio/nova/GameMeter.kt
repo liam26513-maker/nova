@@ -96,6 +96,7 @@ class GameMeter(
         val found = seenReport ?: TimeStatsParser.busiest(dump, app::isGamePackage)
         if (found == null) return fail(why, seenGame ?: app.lastGame, dump)
         save(text(found.first, found.second), summary(found.second))
+        GameFps(app).record(found.first, found.second.fps.toFloat())
         say(app.getString(R.string.meter_done, lastSummary))
     }
 

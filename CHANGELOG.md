@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### I tuoi giochi in un posto solo
+- Richiesta: "passa ad un altra parte del piano che puoi fare da solo".
+- In Impostazioni → Modalità Gaming c'è l'elenco dei giochi: li apri da lì e cambi la risoluzione di ognuno.
+- Dopo «Misura il gioco» ogni gioco mostra gli FPS. Se sono sotto 55 ti propone di scendere di un passo.
+- Ci sono anche le scorciatoie a Xbox Cloud Gaming e GeForce NOW.
+
 ### Il servizio di accessibilità non dipende più dalla scorciatoia
 - Richiesta: "continua".
 - Sul tablet le Impostazioni di Android andavano in crash proprio sulla pagina del servizio di NOVA, e il servizio risultava spento. La pagina ora ha un normale interruttore, senza la scorciatoia che faceva scattare il crash.

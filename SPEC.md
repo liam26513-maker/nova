@@ -527,7 +527,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 **Pannello in sovrimpressione** (swipe dal bordo, a scomparsa): FPS stimati, temperatura, batteria, ping, RAM; pulsanti screenshot, registrazione, Turbo, cambio risoluzione, esci. Disegno leggero, aggiornato al massimo 2 volte al secondo.
 
-**Libreria giochi unica:** giochi locali + giochi PC in streaming (Moonlight, §11.4) + cloud gaming (scorciatoie a Xbox Cloud Gaming, GeForce NOW). Copertine dai metadati o icone.
+**Libreria giochi unica** (fatti: giochi locali e scorciatoie cloud in Impostazioni → Modalità Gaming; mancano streaming dal PC e copertine): giochi locali + giochi PC in streaming (Moonlight, §11.4) + cloud gaming (scorciatoie a Xbox Cloud Gaming, GeForce NOW). Copertine dai metadati o icone.
 
 **Profili intelligenti:** per ogni gioco si salvano impostazioni e statistiche (FPS medi, minimi, temperatura). Dopo ogni sessione, suggerimenti: "Ha fatto 24 FPS medi: provo la risoluzione al 75%?" (un tocco per applicare).
 

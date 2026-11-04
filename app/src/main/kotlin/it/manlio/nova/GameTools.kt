@@ -57,7 +57,7 @@ internal class GameTools(
     }
 
     /** La risoluzione scelta per [game], dal registro delle modifiche; null = normale. */
-    private fun scale(game: String): Int? =
+    fun scale(game: String): Int? =
         app.systemChanges.entries().filterIsInstance<SystemChange.GameScale>().firstOrNull { it.packageName == game }?.applied
 
     private fun scaleText(percent: Int?) = context.getString(R.string.game_scale_percent, percent ?: FULL_SCALE)
@@ -66,6 +66,7 @@ internal class GameTools(
     private fun changeScale(
         game: String,
         fix: (String) -> Unit,
+        done: () -> Unit = {},
     ): String? {
         val before = scale(game)
         if (app.shizuku.status.value != ShizukuStatus.READY) {
@@ -75,10 +76,19 @@ internal class GameTools(
         val next = SystemCommand.nextGameScale(before)
         app.appScope.launch {
             val ok = app.systemChanges.setGameScale(game, next).ok
-            if (!ok) fix(scaleText(before))
+            if (ok) GameFps(context).forget(game) else fix(scaleText(before))
             say(if (ok) R.string.game_scale_done else R.string.game_scale_failed)
+            done()
         }
         return scaleText(next)
+    }
+
+    /** Dalla libreria dei giochi: un passo in giù, poi [done] rilegge la riga. */
+    fun stepScale(
+        game: String,
+        done: () -> Unit,
+    ) {
+        changeScale(game, {}, done)
     }
 
     fun close(game: String) {
