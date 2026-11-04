@@ -1,10 +1,24 @@
 package it.manlio.nova
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.graphics.PixelFormat
+import android.os.PowerManager
+import android.view.Gravity
 import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import android.view.WindowManager
 import it.manlio.nova.core.modes.Modes
+import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.system.SystemCommand
+import it.manlio.nova.core.system.SystemCommand.TimeStats.Step
+import it.manlio.nova.core.system.TimeStatsParser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 /**
  * I tasti del volume per il servizio di accessibilità: volume giù tenuto [HOLD_MS] durante la Gaming chiama [onHeld] (uscita di
@@ -72,5 +86,133 @@ internal class GamingExitMenu(
     fun dismiss() {
         dialog?.dismiss()
         dialog = null
+    }
+}
+
+/** Doppio swipe dal bordo (SPEC §8.2, punto 1): il primo avvisa soltanto, il secondo entro [WINDOW_MS] esegue. */
+internal class DoubleSwipe(private val clock: () -> Long) {
+    private var first: Long? = null
+
+    /** @return vero se questo è il secondo swipe. */
+    fun swipe(): Boolean {
+        val now = clock()
+        val second = first?.let { now - it <= WINDOW_MS } == true
+        first = if (second) null else now
+        return second
+    }
+
+    private companion object {
+        const val WINDOW_MS = 2000L
+    }
+}
+
+/** Dice se il gioco è fermo: il conto dei fotogrammi non cresce tra due letture. Senza dati non dà mai l'allarme. */
+internal class FreezeDetector {
+    private var last: Int? = null
+
+    fun update(frames: Int?): Boolean {
+        val frozen = frames != null && frames == last
+        last = frames
+        return frozen
+    }
+
+    fun reset() {
+        last = null
+    }
+}
+
+/**
+ * La sottile fascia sul bordo destro che riconosce il doppio swipe durante la Gaming. Prende i tocchi su quei pochi pixel, perciò
+ * è spenta di serie: si accende in Impostazioni → Modalità Gaming.
+ */
+internal class EdgeSwipeWindow(
+    private val service: AccessibilityService,
+    private val onSwipe: () -> Unit,
+) {
+    private val windows = service.getSystemService(WindowManager::class.java)
+    private var view: View? = null
+
+    @SuppressLint("ClickableViewAccessibility") // niente da leggere: è un gesto, e il menu ha altre uscite accessibili
+    fun add() {
+        if (view != null) return
+        val density = service.resources.displayMetrics.density
+        var startX = 0f
+        val edge = View(service)
+        edge.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> startX = event.rawX
+                MotionEvent.ACTION_UP -> if (startX - event.rawX > SWIPE_DP * density) onSwipe()
+            }
+            true
+        }
+        val params =
+            WindowManager.LayoutParams(
+                (EDGE_DP * density).toInt(),
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSPARENT,
+            ).apply {
+                gravity = Gravity.END
+                setFitInsetsTypes(0)
+            }
+        if (runCatching { windows.addView(edge, params) }.isSuccess) view = edge
+    }
+
+    fun remove() {
+        view?.let { runCatching { windows.removeView(it) } }
+        view = null
+    }
+
+    private companion object {
+        const val EDGE_DP = 16
+        const val SWIPE_DP = 48
+    }
+}
+
+/**
+ * Il watchdog (SPEC §8.2, punto 3): ogni [CHECK_MS] legge il conto dei fotogrammi del gioco davanti e, se non cresce, chiama [onFrozen].
+ * Ogni lettura ferma un attimo il compositore e nelle prove disturbava il gioco: per questo è spento di serie.
+ */
+internal class GameWatchdog(
+    private val app: NovaApp,
+    private val onFrozen: () -> Unit,
+) {
+    private val detector = FreezeDetector()
+
+    /** Gira finché non viene annullata; alla fine spegne sempre le statistiche. */
+    suspend fun watch() {
+        try {
+            stats(Step.ENABLE)
+            while (true) {
+                delay(CHECK_MS)
+                if (!check()) continue
+                onFrozen()
+                detector.reset()
+                delay(PAUSE_AFTER_ALARM_MS)
+            }
+        } finally {
+            withContext(NonCancellable) { stats(Step.DISABLE) }
+        }
+    }
+
+    private suspend fun check(): Boolean {
+        val game = app.foreground.value?.takeIf(app::isGamePackage)
+        if (game == null || app.gameMeter.running || !app.getSystemService(PowerManager::class.java).isInteractive) {
+            detector.reset()
+            return false
+        }
+        stats(Step.ENABLE) // la misura del gioco, finendo, le spegne
+        val dump = app.shizuku.run(SystemCommand.TimeStats(Step.DUMP)).output
+        return detector.update(withContext(Dispatchers.Default) { TimeStatsParser.parse(dump, game)?.frames })
+    }
+
+    private suspend fun stats(step: Step) {
+        if (app.shizuku.status.value == ShizukuStatus.READY) app.shizuku.run(SystemCommand.TimeStats(step))
+    }
+
+    private companion object {
+        const val CHECK_MS = 8_000L
+        const val PAUSE_AFTER_ALARM_MS = 60_000L
     }
 }

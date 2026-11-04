@@ -32,6 +32,7 @@ fun GamingSection(
             )
         }
     }
+    ExitOptions(backdrop, options, values)
     val overlayHeader = stringResource(R.string.gaming_overlay_title)
     SettingsSection(backdrop, header = overlayHeader, footer = stringResource(R.string.gaming_overlay_footer)) {
         val on = values[ModeOptions.OVERLAY] ?: true
@@ -39,6 +40,32 @@ fun GamingSection(
             stringResource(R.string.gaming_overlay_row),
             onClick = { options.set(ModeOptions.OVERLAY, !on) },
             trailing = { if (on) Check() },
+        )
+    }
+}
+
+/** Le uscite di emergenza che costano qualcosa al gioco: le accende l'utente. */
+@Composable
+private fun ExitOptions(
+    backdrop: ImageBitmap,
+    options: ModeOptions,
+    values: Map<String, Boolean>,
+) {
+    SettingsSection(backdrop, header = stringResource(R.string.gaming_exits), footer = stringResource(R.string.gaming_exits_footer)) {
+        val swipe = values[ModeOptions.EDGE_SWIPE] == true
+        val watchdog = values[ModeOptions.WATCHDOG] == true
+        SettingsRow(
+            stringResource(R.string.gaming_edge),
+            summary = stringResource(R.string.gaming_edge_summary),
+            onClick = { options.set(ModeOptions.EDGE_SWIPE, !swipe) },
+            trailing = { if (swipe) Check() },
+        )
+        SettingsRow(
+            stringResource(R.string.gaming_watchdog),
+            summary = stringResource(R.string.gaming_watchdog_summary),
+            showDivider = true,
+            onClick = { options.set(ModeOptions.WATCHDOG, !watchdog) },
+            trailing = { if (watchdog) Check() },
         )
     }
 }

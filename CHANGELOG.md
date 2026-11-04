@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Gaming: altre due uscite di emergenza, da accendere
+- Richiesta: "fai le cose restanti che mi hai detto".
+- **Doppio swipe:** due swipe dal bordo destro entro 2 secondi aprono il menu di uscita.
+- **Controllo gioco bloccato:** ogni 8 secondi guarda se il gioco è fermo e propone di uscire.
+- Sono spente di serie, in Impostazioni → Modalità Gaming: il doppio swipe prende i tocchi sugli ultimi millimetri a destra e il controllo può far scattare il gioco. Volume giù tenuto 3 secondi resta sempre attivo.
+
 ### Modalità Studio completa: tasto di uscita, Pomodoro vero, blocco distrazioni
 - Richiesta: "risolvi i limiti" e "aggiungi un tasto di uscita per la modalita studio".
 - **Tasto di uscita:** con la Studio accesa, in cima alla Home compare una pastiglia con il Pomodoro e il tasto «Esci». In tendina → Altro c'è anche «Esci dalla Modalità Studio».

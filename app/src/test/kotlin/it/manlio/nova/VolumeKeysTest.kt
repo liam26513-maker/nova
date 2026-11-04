@@ -2,7 +2,9 @@ package it.manlio.nova
 
 import android.view.KeyEvent
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class VolumeKeysTest {
@@ -64,5 +66,32 @@ class VolumeKeysTest {
         press(KeyEvent.KEYCODE_POWER)
         assertEquals(1, ups)
         assertNull(pending)
+    }
+
+    @Test
+    fun `only a second edge swipe within two seconds counts`() {
+        var now = 0L
+        val swipe = DoubleSwipe { now }
+
+        assertFalse(swipe.swipe())
+        now = 2001
+        assertFalse(swipe.swipe()) // troppo tardi: questo vale come primo
+        now = 4000
+        assertTrue(swipe.swipe())
+        now = 4100
+        assertFalse(swipe.swipe()) // dopo l'uscita si ricomincia da capo
+    }
+
+    @Test
+    fun `a game is frozen only when the frame count stops growing`() {
+        val detector = FreezeDetector()
+
+        assertFalse(detector.update(100))
+        assertFalse(detector.update(500))
+        assertTrue(detector.update(500))
+        assertFalse(detector.update(null)) // nessun dato: mai un allarme
+        assertFalse(detector.update(500))
+        detector.reset()
+        assertFalse(detector.update(500))
     }
 }

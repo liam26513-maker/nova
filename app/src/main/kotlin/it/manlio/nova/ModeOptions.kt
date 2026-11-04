@@ -55,6 +55,10 @@ class ModeOptions(private val file: File) {
     companion object {
         const val OVERLAY = "OVERLAY_IN_GAMES"
 
+        /** Doppio swipe dal bordo e watchdog: spenti di serie, il primo prende tocchi al gioco e il secondo lo disturba. */
+        const val EDGE_SWIPE = "EDGE_SWIPE"
+        const val WATCHDOG = "WATCHDOG"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)

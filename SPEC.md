@@ -518,7 +518,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 **Gesti protetti (non disattivati):** il primo swipe di sistema dal bordo mostra una maniglia; il secondo entro 2 secondi esegue l'azione. Implementazione tramite overlay di cattura sui bordi (AccessibilityService).
 
-**Uscite di emergenza (tutte sempre attive in Gaming):**
+**Uscite di emergenza (sempre attive in Gaming; 1 e 3 solo se accese in Impostazioni, perché pesano sul gioco):**
 1. gesti protetti (doppio swipe);
 2. **volume giù tenuto premuto 3 secondi** → menu "Esci / Chiudi forzatamente / Torna alla home" (intercettazione tasti via AccessibilityService `FLAG_REQUEST_FILTER_KEY_EVENTS`);
 3. **watchdog blocchi:** se il gioco non produce frame o non risponde per 8 secondi, NOVA propone la chiusura;

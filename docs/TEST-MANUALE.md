@@ -26,6 +26,10 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Di notte (21–7): colori rosso scuro e luminosità quasi al minimo; all'uscita la luminosità torna quella di prima.
 - [ ] «StandBy automatico» su Acceso: collega il caricatore, tablet in orizzontale con la Home aperta, non toccare per 30 secondi: parte da solo. Senza caricatore o in verticale non parte.
 
+## Uscite di emergenza in più (Gaming)
+- [ ] Impostazioni → Modalità Gaming: accendi il doppio swipe. In gioco, uno swipe dal bordo destro mostra «Scorri di nuovo»; il secondo entro 2 secondi apre il menu. I comandi del gioco vicino al bordo funzionano ancora.
+- [ ] Accendi il controllo gioco bloccato e misura il gioco: se gli FPS peggiorano, lascialo spento. In una schermata ferma del gioco deve proporre di uscire; «Annulla» fa continuare.
+
 ## Modalità di base
 - [ ] Con la Studio accesa, in cima alla Home c'è la pastiglia: «Pomodoro» avvia il timer, «Esci» spegne la modalità e fa sparire la pastiglia.
 - [ ] Impostazioni → Modalità Studio: scegli un'app da bloccare, accendi la Studio e aprila: torni alla Home con il messaggio. «Sblocca per 5 minuti» chiede conferma e la riapre.
