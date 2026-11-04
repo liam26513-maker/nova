@@ -62,12 +62,7 @@ fun SettingsScreen(
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
-            CAT_GAMING ->
-                performance?.let {
-                    GameLibrarySection(backdrop, remember(it) { it.gameTools })
-                    GamingSection(backdrop, it.modeOptions)
-                }
-            CAT_STUDY -> performance?.let { StudySection(backdrop, it.modes) }
+            CAT_GAMING, CAT_STUDY, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
                 val context = androidx.compose.ui.platform.LocalContext.current
@@ -108,11 +103,13 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
             emptyList()
         }
     val study = stringResource(R.string.more_study)
+    val time = stringResource(R.string.time_title)
     val game =
         if (withPerformance) {
             listOf(
                 SidebarEntry(CAT_GAMING, gaming, SidebarGlyph.GRID, Color(0xFFE0603A)),
                 SidebarEntry(CAT_STUDY, study, SidebarGlyph.TEXT, Color(0xFF4C9A6A)),
+                SidebarEntry(CAT_TIME, time, SidebarGlyph.EYE, Color(0xFF5B7FD6)),
             )
         } else {
             emptyList()
@@ -132,6 +129,23 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     }
 }
 
+/** Le pagine legate alle modalità, tutte possibili solo con gli strumenti di sistema. */
+@Composable
+private fun ModeCategory(
+    id: String,
+    backdrop: ImageBitmap,
+    ui: PerformanceUi,
+) {
+    when (id) {
+        CAT_GAMING -> {
+            GameLibrarySection(backdrop, remember(ui) { ui.gameTools })
+            GamingSection(backdrop, ui.modeOptions)
+        }
+        CAT_STUDY -> StudySection(backdrop, ui.modes)
+        else -> TimeSection(backdrop, ui.modes)
+    }
+}
+
 private const val CAT_IMPROVE = "improve"
 private const val CAT_GRAPHICS = "graphics"
 private const val CAT_DEVICE = "device"
@@ -141,6 +155,7 @@ private const val CAT_TOOLS = "tools"
 private const val CAT_PERFORMANCE = "performance"
 private const val CAT_GAMING = "gaming"
 private const val CAT_STUDY = "study"
+private const val CAT_TIME = "time"
 private const val CAT_STATUS = "status"
 
 @Composable

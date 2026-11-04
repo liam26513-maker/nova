@@ -315,6 +315,15 @@
     <string name="games_cloud">Giochi in cloud</string>
     <string name="games_xbox">Xbox Cloud Gaming</string>
     <string name="games_geforce">GeForce NOW</string>
+    <string name="time_title">Il tuo tempo</string>
+    <string name="time_modes">Modalità, ultimi 7 giorni</string>
+    <string name="time_footer">Solo statistiche: restano sul tablet e non mettono nessun limite.</string>
+    <string name="time_apps">App</string>
+    <string name="time_grant">Mostra il tempo per ogni app</string>
+    <string name="time_grant_summary">Scegli NOVA in «Accesso ai dati di utilizzo» e attivalo</string>
+    <string name="time_today">Oggi</string>
+    <string name="time_week">Ultimi 7 giorni</string>
+    <string name="time_empty">Ancora niente da mostrare</string>
     <string name="gaming_exits">Uscite di emergenza in più</string>
     <string name="gaming_exits_footer">Volume giù tenuto 3 secondi funziona sempre. Queste due costano qualcosa al gioco: servono il servizio di accessibilità e, per il controllo, Shizuku.</string>
     <string name="gaming_edge">Doppio swipe dal bordo destro</string>
