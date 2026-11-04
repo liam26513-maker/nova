@@ -62,6 +62,9 @@ class HomeControls(
         }.getOrNull()
     private val quick = QuickToggles(context, app, scope)
     private val torchOn = MutableStateFlow(false)
+
+    /** Schermo diviso: lo sa fare solo il servizio di accessibilità, quindi esiste solo nella tendina sopra le altre app. */
+    var onSplitScreen: (() -> Unit)? = null
     private val callback =
         object : CameraManager.TorchCallback() {
             override fun onTorchModeChanged(
@@ -149,13 +152,18 @@ class HomeControls(
                 text(next)
             }
         }
+        val cast = go(R.string.more_cast, Settings.ACTION_CAST_SETTINGS)
+        val presenting = app.modes.isActive(Modes.PRESENTATION)
         return listOfNotNull(
             studyExitItem(context, app),
+            cast.takeIf { presenting },
             standby(),
             mode(Modes.GAMING),
             mode(Modes.STUDY),
             pomodoroItem(context, app),
+            notesItem(context),
             mode(Modes.WORK),
+            splitScreenItem(context, app, onSplitScreen),
             mode(Modes.CREATIVE),
             mode(Modes.PRESENTATION),
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
@@ -170,7 +178,7 @@ class HomeControls(
             toggle(R.string.more_color_inversion, QuickToggle.INVERSION, ACTION_COLOR_INVERSION),
             go(R.string.more_hotspot, Settings.ACTION_WIRELESS_SETTINGS),
             go(R.string.more_nfc, Settings.ACTION_NFC_SETTINGS),
-            go(R.string.more_cast, Settings.ACTION_CAST_SETTINGS),
+            cast.takeUnless { presenting },
             go(R.string.more_sound, Settings.ACTION_SOUND_SETTINGS),
             go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
             go(R.string.more_color_correction, ACTION_COLOR_CORRECTION),
@@ -334,6 +342,19 @@ private fun pomodoroItem(
     }
 }
 
+/** Durante il Lavoro: mette l'app aperta in schermo diviso, o lo toglie (SPEC §8.3). */
+private fun splitScreenItem(
+    context: Context,
+    app: NovaApp,
+    onSplitScreen: (() -> Unit)?,
+): MoreItem? {
+    val split = onSplitScreen?.takeIf { app.modes.isActive(Modes.WORK) } ?: return null
+    return MoreItem(context.getString(R.string.more_split_screen)) {
+        split()
+        null
+    }
+}
+
 /** L'uscita dalla Studio in cima ad «Altro», solo mentre è accesa. */
 private fun studyExitItem(
     context: Context,
@@ -357,6 +378,8 @@ internal fun studyBar(
     text = state?.let { pomodoroText(context, it) } ?: context.getString(R.string.more_study),
     timerLabel = context.getString(if (state == null) R.string.more_pomodoro else R.string.study_timer_stop),
     onTimer = { togglePomodoro(app.modes) },
+    notesLabel = context.getString(R.string.notes_short),
+    onNotes = { openNotes(context) },
     exitLabel = context.getString(R.string.study_exit),
     onExit = { if (app.modes.isActive(Modes.STUDY)) app.modes.toggle(Modes.STUDY) {} },
 )

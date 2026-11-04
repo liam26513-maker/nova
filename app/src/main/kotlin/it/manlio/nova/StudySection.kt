@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
+import it.manlio.nova.core.modes.ModeAction
 import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.modes.StudyGate
 import it.manlio.nova.feature.home.StudyBar
@@ -41,6 +42,7 @@ internal fun StudySection(
     val store = modes.studyStore
     val durations by store.durations.collectAsState()
     val blocked by store.blocked.collectAsState()
+    val options by modes.options.values.collectAsState()
     var picking by remember { mutableStateOf(false) }
     val apps = remember(picking, blocked) { if (picking) freezable(context.packageManager, blocked.toList()) else emptyList() }
     val (today, week) = remember { modes.pomodoro.minutes() }
@@ -50,6 +52,15 @@ internal fun StudySection(
             store.setDurations(durations.copy(pause = it))
         }
         SettingsRow(stringResource(R.string.study_stats, today, week), showDivider = true)
+    }
+    SettingsSection(backdrop, header = stringResource(R.string.study_reading), footer = stringResource(R.string.study_reading_footer)) {
+        val key = ModeAction.NIGHT_LIGHT_ON.name
+        val warm = options[key] == true
+        SettingsRow(
+            stringResource(R.string.study_warm),
+            onClick = { modes.options.set(key, !warm) },
+            trailing = { if (warm) Check() },
+        )
     }
     SettingsSection(backdrop, header = stringResource(R.string.study_block), footer = stringResource(R.string.study_block_footer)) {
         blocked.sorted().forEachIndexed { i, pkg ->

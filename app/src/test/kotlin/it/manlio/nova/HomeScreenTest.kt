@@ -873,13 +873,16 @@ class HomeScreenTest {
     fun study_pill_shows_the_timer_and_a_working_exit_button() {
         var exits = 0
         var timers = 0
-        render(study = StudyBar("Studio fino alle 12:45", "Ferma", { timers++ }, "Esci", { exits++ }))
+        var notes = 0
+        render(study = StudyBar("Studio fino alle 12:45", "Ferma", { timers++ }, "Note", { notes++ }, "Esci", { exits++ }))
 
         compose.onNodeWithText("Studio fino alle 12:45").assertExists()
         compose.onNodeWithText("Ferma").performClick()
+        compose.onNodeWithText("Note").performClick()
         compose.onNodeWithText("Esci").performClick()
         compose.runOnIdle {
             assertEquals(1, timers)
+            assertEquals(1, notes)
             assertEquals(1, exits)
         }
     }

@@ -10,14 +10,19 @@ import androidx.compose.runtime.setValue
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.system.Density
 import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.system.SystemTools
 import it.manlio.nova.core.system.TurboPlan
 import it.manlio.nova.core.system.TurboResult
 import it.manlio.nova.feature.home.Favorites
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.InetSocketAddress
+import java.net.Socket
 
 /**
  * Stato e azioni degli strumenti di sistema (SPEC §7) per le Impostazioni e per il centro di controllo.
@@ -68,7 +73,16 @@ class PerformanceUi(
 
     fun chooseAnimations(scale: String) = act { app.systemTools.setAnimationScale(scale).also { if (it) animations = scale } }
 
-    fun chooseAdBlock(on: Boolean) = act { app.systemTools.setAdBlockDns(on).also { if (it) adBlock = on } }
+    /** Prima di accenderlo si controlla che il DNS risponda: se non risponde, Android non troverebbe più nessun sito. */
+    fun chooseAdBlock(on: Boolean) =
+        act {
+            if (on && !withContext(Dispatchers.IO) { dnsReachable(SystemTools.AD_BLOCK_HOST) }) {
+                message = R.string.perf_dns_unreachable
+                true
+            } else {
+                app.systemTools.setAdBlockDns(on).also { if (it) adBlock = on }
+            }
+        }
 
     fun freeze(pkg: String) =
         act {
@@ -190,3 +204,15 @@ class PerformanceUi(
         private const val MS_PER_MINUTE = 60_000L
     }
 }
+
+/**
+ * Risponde qualcuno sulla porta del DNS privato?
+ * shortcut: guarda solo la connessione, non le risposte del DNS; basta a evitare il tablet senza rete, da rivedere se non bastasse.
+ */
+internal fun dnsReachable(
+    host: String,
+    port: Int = DNS_TLS_PORT,
+): Boolean = runCatching { Socket().use { it.connect(InetSocketAddress(host, port), DNS_TIMEOUT_MS) } }.isSuccess
+
+private const val DNS_TLS_PORT = 853
+private const val DNS_TIMEOUT_MS = 3000

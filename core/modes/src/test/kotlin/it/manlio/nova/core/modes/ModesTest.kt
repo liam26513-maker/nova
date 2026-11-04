@@ -33,6 +33,11 @@ class ModesTest {
     }
 
     @Test
+    fun `the warm filter belongs to study only`() {
+        assertEquals(listOf(Modes.STUDY), Modes.all.filter { ModeAction.NIGHT_LIGHT_ON in it.actions })
+    }
+
+    @Test
     fun `modes are found by id`() {
         assertNotNull(Modes.byId("gaming"))
         assertEquals(null, Modes.byId("inesistente"))

@@ -282,6 +282,17 @@
     <string name="study_block_footer">During Study mode these apps do not open: NOVA goes Home and asks what to do. It needs the NOVA accessibility service.</string>
     <string name="study_block_pick">Choose apps to block</string>
     <string name="study_block_remove">Tap to unblock</string>
+    <string name="notes_title">Quick notes</string>
+    <string name="notes_short">Notes</string>
+    <string name="notes_hint">Write here: it saves itself.</string>
+    <string name="notes_share">Share</string>
+    <string name="notes_close">Close</string>
+    <string name="more_split_screen">Split screen</string>
+    <string name="mode_action_warm">warm filter</string>
+    <string name="study_reading">Reading</string>
+    <string name="study_reading_footer">Applies the next time you turn on Study and goes back on exit. Needs Shizuku.</string>
+    <string name="study_warm">Warm filter during Study</string>
+    <string name="perf_dns_unreachable">AdGuard DNS does not answer on this network: I left it off, otherwise the tablet would not find any site.</string>
     <string name="study_exit">Leave</string>
     <string name="study_exit_row">Leave Study mode</string>
     <string name="study_timer_stop">Stop</string>

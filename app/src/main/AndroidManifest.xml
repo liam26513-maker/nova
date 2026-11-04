@@ -73,6 +73,12 @@
         </activity>
         <!-- Notifiche sotto le icone e musica nell'isola (SPEC §6.2, §6.7): si attiva solo se l'utente dà l'accesso
              alle notifiche a NOVA dalle impostazioni di Android. Le notifiche restano in memoria. -->
+        <activity
+            android:name=".NotesActivity"
+            android:exported="false"
+            android:label="@string/notes_title"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
         <!-- Sveglia del Pomodoro: fa ripartire NOVA se Android l'ha chiusa. Non esce dall'app. -->
         <receiver android:name=".PomodoroAlarm" android:exported="false" />
 

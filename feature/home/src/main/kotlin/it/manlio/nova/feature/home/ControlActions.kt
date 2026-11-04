@@ -65,10 +65,13 @@ class MoreItem(
 
 /** La pastiglia della Modalità Studio in cima alla Home: prende il posto dell'isola finché la modalità è accesa. */
 @Immutable
+@Suppress("LongParameterList") // testo e tre pulsanti, ognuno con etichetta e azione
 class StudyBar(
     val text: String,
     val timerLabel: String,
     val onTimer: () -> Unit,
+    val notesLabel: String,
+    val onNotes: () -> Unit,
     val exitLabel: String,
     val onExit: () -> Unit,
 )

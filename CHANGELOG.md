@@ -4,6 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Note rapide, filtro caldo, schermo diviso e controllo del DNS
+- Richiesta: "continua con tutto il resto che puoi fare".
+- **Note rapide:** in tendina → Altro e nella pastiglia della Studio. Si salvano da sole e si possono condividere, anche con Claude.
+- **Filtro caldo per leggere:** in Impostazioni → Modalità Studio puoi farlo accendere con la Studio; all'uscita torna com'era. È spento di serie.
+- **Schermo diviso:** durante la Modalità Lavoro, nella tendina sopra le altre app, compare la riga «Schermo diviso».
+- **Presentazione:** mentre è accesa, «Trasmetti schermo» sale in cima ad Altro.
+- **Blocca pubblicità:** prima di accendersi controlla che il DNS di AdGuard risponda. Se non risponde resta spento e te lo dice, così il tablet non resta senza siti.
+
 ### Gaming: altre due uscite di emergenza, da accendere
 - Richiesta: "fai le cose restanti che mi hai detto".
 - **Doppio swipe:** due swipe dal bordo destro entro 2 secondi aprono il menu di uscita.

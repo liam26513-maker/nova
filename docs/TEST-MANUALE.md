@@ -36,6 +36,11 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Avvia il Pomodoro, chiudi NOVA dalle app recenti, attendi la fine della fase: compare l'avviso, con al massimo qualche minuto di ritardo.
 - [ ] Tendina → Altro → Pomodoro con la Studio spenta: la Studio si accende e la riga dice «Studio fino alle …». Dopo 25 minuti compare l'avviso della pausa. Uscendo dalla Studio torna «No».
 - [ ] Con il filtro luce blu acceso, Creativa lo spegne e all'uscita lo riaccende. Con il filtro spento resta spento anche all'uscita.
+- [ ] Tendina → Altro → Note rapide: scrivi, chiudi, riapri: il testo c'è. Ruota il tablet mentre scrivi: il testo resta. «Condividi» apre l'elenco delle app.
+- [ ] Impostazioni → Modalità Studio → Filtro caldo: accendi la Studio, lo schermo diventa caldo; uscendo torna com'era. Se il filtro era già acceso, resta acceso.
+- [ ] Con Lavoro acceso, sopra un'app aperta: tendina → Altro → Schermo diviso. L'app va a metà schermo; la tendina si chiude da sola?
+- [ ] Con Presentazione accesa, la riga della trasmissione è in cima ad Altro.
+- [ ] Blocca pubblicità, con la rete normale: si accende. Con il Wi-Fi spento: resta spento e compare il messaggio.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.

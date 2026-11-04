@@ -1,6 +1,8 @@
 package it.manlio.nova
 
 import it.manlio.nova.core.modes.ModeAction
+import it.manlio.nova.core.modes.ModeDefinition
+import it.manlio.nova.core.modes.Modes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +21,10 @@ class ModeOptions(private val file: File) {
     val values: StateFlow<Map<String, Boolean>> = state.asStateFlow()
 
     fun enabled(action: ModeAction): Boolean = state.value[action.name] ?: (action in DEFAULT_ON)
+
+    /** Le azioni da fare entrando: nella Gaming si sceglie tutto, nelle altre solo le voci facoltative come il filtro caldo. */
+    fun chosen(mode: ModeDefinition): List<ModeAction> =
+        mode.actions.filter { (mode != Modes.GAMING && it != ModeAction.NIGHT_LIGHT_ON) || enabled(it) }
 
     /**
      * La tendina di NOVA dentro i giochi: predefinito acceso, ma durante la Gaming la striscia si riduce a un angolo (in alto a

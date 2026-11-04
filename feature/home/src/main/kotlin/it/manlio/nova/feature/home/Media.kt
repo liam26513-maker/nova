@@ -302,6 +302,7 @@ internal fun StudyPill(
     ) {
         BasicText(bar.text, style = TextStyle(Color.White, 15.sp))
         StudyPillButton(bar.timerLabel, bar.onTimer)
+        StudyPillButton(bar.notesLabel, bar.onNotes)
         StudyPillButton(bar.exitLabel, bar.onExit)
     }
 }
