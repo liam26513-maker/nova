@@ -39,7 +39,7 @@ Entrata e uscita: tendina di controllo → **Altro → Modalità Gaming** (`Home
 
 Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato o dall'angolo); spegnimento automatico dopo 6 ore; ripristino al riavvio dell'app; tasto di accensione tenuto ~10 s (riavvio hardware, sempre disponibile).
 Volume giù tenuto 3 s: `VolumeKeys` e `GamingExitMenu` (`GamingExit.kt`), con il servizio di accessibilità acceso; il tasto non viene mai consumato. «Chiudi il gioco» è in Altro e nel menu.
-**Da fare (SPEC §8.2):** doppio swipe dal bordo, watchdog del gioco bloccato (8 s). Finché mancano, la Gaming resta **solo manuale**.
+Doppio swipe (`EdgeSwipeWindow`, `DoubleSwipe`) e watchdog (`GameWatchdog`, `FreezeDetector`) ci sono ma sono **spenti di serie** (`ModeOptions.EDGE_SWIPE`, `WATCHDOG`): la fascia prende tocchi al gioco e ogni lettura di `--timestats` ferma un attimo il compositore. Prima di un'attivazione automatica della Gaming va deciso se bastano le altre uscite: per ora resta **solo manuale**.
 
 ## Scelte e limiti
 

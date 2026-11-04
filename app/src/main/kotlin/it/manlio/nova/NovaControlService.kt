@@ -46,6 +46,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -75,6 +77,18 @@ class NovaControlService : AccessibilityService() {
     private val app get() = application as NovaApp
     private val exitMenu by lazy { GamingExitMenu(this, app) }
     private val studyGuard by lazy { StudyGuard(this, app) }
+    private val doubleSwipe = DoubleSwipe(System::currentTimeMillis)
+    private val edge by lazy {
+        EdgeSwipeWindow(this) {
+            if (doubleSwipe.swipe()) exitMenu.show() else Toast.makeText(this, R.string.edge_again, Toast.LENGTH_SHORT).show()
+        }
+    }
+    private val watchdog by lazy {
+        GameWatchdog(app) {
+            Toast.makeText(this, R.string.watchdog_frozen, Toast.LENGTH_LONG).show()
+            exitMenu.show()
+        }
+    }
     private val volumeKeys by lazy {
         VolumeKeys(
             post = { task, ms -> handler.postDelayed(task, ms) },
@@ -113,6 +127,8 @@ class NovaControlService : AccessibilityService() {
                 if (shape != StripShape.NONE) addStrip(shape)
                 app.log.i(LOG_TAG, "striscia: $shape")
             }
+            scope.launch { gamingOption(ModeOptions.EDGE_SWIPE).collect { on -> if (on) edge.add() else edge.remove() } }
+            scope.launch { gamingOption(ModeOptions.WATCHDOG).collectLatest { on -> if (on) watchdog.watch() } }
         }
     }
 
@@ -140,6 +156,7 @@ class NovaControlService : AccessibilityService() {
     override fun onDestroy() {
         exitMenu.dismiss()
         studyGuard.dismiss()
+        edge.remove()
         removePanel()
         strip?.let { runCatching { windows.removeView(it) } }
         strip = null
@@ -371,6 +388,14 @@ private object ChoreographerClock : MonotonicFrameClock {
             Choreographer.getInstance().postFrameCallback(callback)
             continuation.invokeOnCancellation { Choreographer.getInstance().removeFrameCallback(callback) }
         }
+}
+
+/** Vero mentre la Gaming è accesa e l'utente ha scelto l'opzione [key]. */
+private fun NovaControlService.gamingOption(key: String): Flow<Boolean> {
+    val modes = (application as NovaApp).modes
+    return combine(modes.engine.active, modes.options.values) { active, values ->
+        active?.modeId == Modes.GAMING.id && values[key] == true
+    }.distinctUntilChanged()
 }
 
 /** La forma della striscia: tutta la larghezza, solo l'angolo in alto a destra (durante la Gaming) o niente. */
