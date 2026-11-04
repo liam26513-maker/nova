@@ -5,12 +5,13 @@ import android.content.Intent
 import android.os.Handler
 import android.widget.Toast
 import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.system.SystemChange
 import it.manlio.nova.core.system.SystemCommand
 import it.manlio.nova.feature.home.MoreItem
 import kotlinx.coroutines.launch
 
 /**
- * Gli strumenti per i giochi nella tendina (Altro): misurare un gioco, condividere la misura, chiudere il gioco.
+ * Gli strumenti per i giochi nella tendina (Altro): misurare un gioco, condividere la misura, cambiarne la risoluzione, chiuderlo.
  * «Chiudi il gioco» è una delle uscite di emergenza della Gaming (SPEC §8.2, punto 4): `am force-stop` con Shizuku sull'ultimo gioco
  * visto; i pacchetti protetti (NOVA, sistema) il comando stesso li rifiuta.
  */
@@ -24,7 +25,8 @@ internal class GameTools(
             val state = if (meter.running) context.getString(R.string.meter_running) else meter.lastSummary
             add(
                 MoreItem(context.getString(R.string.more_meter), state) { _ ->
-                    meter.start()
+                    // Col servizio acceso parte da volume su, a partita iniziata; senza, l'unico modo è partire subito.
+                    if (NovaControlService.isEnabled(context)) meter.arm() else meter.start()
                     null
                 },
             )
@@ -35,6 +37,11 @@ internal class GameTools(
                 },
             )
             app.lastGame?.let { game ->
+                add(
+                    MoreItem(context.getString(R.string.more_game_scale, label(game)), scaleText(scale(game))) { fix ->
+                        changeScale(game, fix)
+                    },
+                )
                 add(
                     MoreItem(context.getString(R.string.more_close_game, label(game))) { _ ->
                         close(game)
@@ -49,7 +56,32 @@ internal class GameTools(
         context.startActivity(Intent.createChooser(send, null).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
-    private fun close(game: String) {
+    /** La risoluzione scelta per [game], dal registro delle modifiche; null = normale. */
+    private fun scale(game: String): Int? =
+        app.systemChanges.entries().filterIsInstance<SystemChange.GameScale>().firstOrNull { it.packageName == game }?.applied
+
+    private fun scaleText(percent: Int?) = context.getString(R.string.game_scale_percent, percent ?: FULL_SCALE)
+
+    /** Scende di un passo; se Android rifiuta (per esempio l'app non è un gioco) la riga torna a dire com'è davvero. */
+    private fun changeScale(
+        game: String,
+        fix: (String) -> Unit,
+    ): String? {
+        val before = scale(game)
+        if (app.shizuku.status.value != ShizukuStatus.READY) {
+            say(R.string.meter_needs_shizuku)
+            return null
+        }
+        val next = SystemCommand.nextGameScale(before)
+        app.appScope.launch {
+            val ok = app.systemChanges.setGameScale(game, next).ok
+            if (!ok) fix(scaleText(before))
+            say(if (ok) R.string.game_scale_done else R.string.game_scale_failed)
+        }
+        return scaleText(next)
+    }
+
+    fun close(game: String) {
         if (app.shizuku.status.value != ShizukuStatus.READY) return say(R.string.meter_needs_shizuku)
         app.appScope.launch {
             val ok = app.shizuku.run(SystemCommand.ForceStop(game)).ok
@@ -64,5 +96,9 @@ internal class GameTools(
 
     private fun say(id: Int) {
         Handler(context.mainLooper).post { Toast.makeText(context, id, Toast.LENGTH_LONG).show() }
+    }
+
+    private companion object {
+        const val FULL_SCALE = 100
     }
 }

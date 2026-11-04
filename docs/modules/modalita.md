@@ -10,6 +10,10 @@ Stato: **Fase 3, primo passo**. Motore + Gaming di base, solo manuale. Vedi SPEC
 - **Rete di sicurezza:** `exitIfExpired()` esce dalla modalità dimenticata (`ModeDefinition.maxMinutes`, 6 ore per Gaming).
 - `TextSessionStore`: file di testo semplice (`filesDir/mode-session.txt`), scrittura via file temporaneo.
 
+## Le modalità
+
+`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Mancano Pomodoro e blocco distrazioni (§8.4), desktop e finestre flottanti (§8.3), filtro luce blu (§8.5), Home portfolio (§8.6).
+
 ## Sul tablet (`app/ModeController`)
 
 | Azione | Cosa fa | Come torna com'era | Se non si può |
@@ -34,7 +38,8 @@ Entrata e uscita: tendina di controllo → **Altro → Modalità Gaming** (`Home
 ## Uscite di emergenza (stato)
 
 Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato o dall'angolo); spegnimento automatico dopo 6 ore; ripristino al riavvio dell'app; tasto di accensione tenuto ~10 s (riavvio hardware, sempre disponibile).
-**Da fare (SPEC §8.2):** volume giù tenuto 3 s (AccessibilityService, `FLAG_REQUEST_FILTER_KEY_EVENTS`), doppio swipe dal bordo, watchdog del gioco bloccato (8 s), pulsante «Chiudi gioco» (`am force-stop`). Finché mancano, la Gaming resta **solo manuale**.
+Volume giù tenuto 3 s: `VolumeKeys` e `GamingExitMenu` (`GamingExit.kt`), con il servizio di accessibilità acceso; il tasto non viene mai consumato. «Chiudi il gioco» è in Altro e nel menu.
+**Da fare (SPEC §8.2):** doppio swipe dal bordo, watchdog del gioco bloccato (8 s). Finché mancano, la Gaming resta **solo manuale**.
 
 ## Scelte e limiti
 
@@ -44,5 +49,7 @@ Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato
 
 ## Strumenti per i giochi (Altro)
 «Misura il gioco (2 minuti)» campiona ogni 2 s l'ultimo gioco in primo piano (solo su richiesta, Shizuku) e salva `diagnosi-gaming.txt`; «Condividi l'ultima misura» la manda via condivisione; «Chiudi il gioco» fa `force-stop` dell'ultimo gioco (uscita di emergenza n. 4 di SPEC §8.2).
+
+«Risoluzione: <gioco>» (Altro, solo con Shizuku e un gioco già visto) scende di un passo a ogni tocco: 100 → 90 → 80 → 70 → 65 → 100 (`SystemCommand.GameScale`, `cmd game set --downscale`; il ritorno a 100 è `cmd game mode standard`). Il minimo è il 65%: il comando rifiuta valori più bassi. Ogni scelta è nel registro (`SystemChange.GameScale`, una voce per gioco) e «Annulla tutte le modifiche» la toglie. Non dipende dalla Gaming, vale da quando il gioco si riapre e Android la rifiuta per le app che non sono giochi. Misura su U6 con Brawl Stars: 46,3 FPS e 32,4% di fotogrammi lenti al 100%, 61,5 FPS e 0,5% al 70%.
 
 La striscia della tendina (`StripShape`): `FULL` fuori dalla Gaming, `CORNER` (angolo in alto a destra, 200 dp) in Gaming con «Tendina sopra i giochi» acceso (predefinito), `NONE` se spenta. «Condividi l'ultima misura» è sempre in Altro; una misura fallita salva un testo diagnostico.

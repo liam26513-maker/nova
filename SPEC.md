@@ -509,7 +509,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 - livello grafico NOVA → Prestazioni; moduli non necessari in pausa.
 
 **Spinge il gioco:**
-- **Ridimensionamento per gioco** tramite `GameManager` / `cmd game` (es. 0,7×) se il dispositivo lo supporta (rilevato dal profilatore); profilo per gioco salvato;
+- **Ridimensionamento per gioco** tramite `GameManager` / `cmd game` (es. 0,7×, **minimo 0,65×**) se il dispositivo lo supporta; si sceglie da tendina → Altro, una scelta per gioco salvata nel registro delle modifiche;
 - **frequenza schermo massima** se lo schermo supporta più di 60 Hz;
 - **Wi-Fi a bassa latenza** (`WifiManager.WIFI_MODE_FULL_LOW_LATENCY` lock) per tutta la sessione;
 - **precaricamento predittivo** (ispirazione Hyper Boost): se l'utente apre la libreria giochi o è il suo orario abituale di gioco, si liberano risorse e si "scalda" il gioco più probabile (avvio anticipato del processo dove consentito).

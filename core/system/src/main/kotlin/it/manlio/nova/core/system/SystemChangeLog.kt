@@ -46,6 +46,10 @@ sealed interface SystemChange {
         override val time: Long,
     ) : SystemChange
 
+    /** Risoluzione di un gioco abbassata (si annulla tornando alla modalità normale del gioco). */
+    @Serializable
+    data class GameScale(val packageName: String, val applied: Int, override val time: Long) : SystemChange
+
     /**
      * Densità dello schermo cambiata. [previous] null = quella di fabbrica. Finché [confirmed] è falso la modifica
      * si annulla da sola (`SystemTools`): se l'utente non vede più lo schermo, non resta così.
@@ -172,6 +176,18 @@ class SystemChangeLog(
         return result
     }
 
+    /** Cambia la risoluzione di un gioco ([percent] null = normale): una sola voce per gioco, nessuna se è normale. */
+    suspend fun setGameScale(
+        packageName: String,
+        percent: Int?,
+    ): ShellResult {
+        val result = runner.run(SystemCommand.GameScale(packageName, percent))
+        if (!result.ok) return result
+        synchronized(changes) { changes.removeAll { it is SystemChange.GameScale && it.packageName == packageName } }
+        if (percent != null) record(SystemChange.GameScale(packageName, percent, clock())) else save()
+        return result
+    }
+
     /** Sblocca le impostazioni con restrizioni di NOVA (una sola voce nel registro, anche se si ripete). */
     suspend fun allowRestrictedSettings(ownPackage: String): ShellResult {
         val result = runner.run(SystemCommand.SetRestrictedSettings(ownPackage, allow = true))
@@ -200,6 +216,7 @@ class SystemChangeLog(
                         is SystemChange.PackageDisabled -> runner.run(SystemCommand.EnablePackage(change.packageName))
                         is SystemChange.Density -> runner.run(SystemCommand.SetDensity(change.previous))
                         is SystemChange.Toggle -> runner.run(SystemCommand.SetToggle(change.toggle, change.previous))
+                        is SystemChange.GameScale -> runner.run(SystemCommand.GameScale(change.packageName, null))
                         is SystemChange.RestrictedSettings ->
                             runner.run(SystemCommand.SetRestrictedSettings(change.packageName, allow = false))
                     }
@@ -223,7 +240,10 @@ class SystemChangeLog(
         file.parentFile?.mkdirs()
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.writeText(JSON.encodeToString(entries()))
-        tmp.renameTo(file)
+        if (!tmp.renameTo(file)) {
+            file.delete()
+            tmp.renameTo(file)
+        }
     }
 
     companion object {

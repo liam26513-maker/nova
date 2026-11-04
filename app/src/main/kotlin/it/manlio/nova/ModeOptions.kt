@@ -46,7 +46,10 @@ class ModeOptions(private val file: File) {
         val p = Properties().apply { state.value.forEach { (k, v) -> setProperty(k, v.toString()) } }
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.outputStream().use { p.store(it, "NOVA modalita") }
-        tmp.renameTo(file)
+        if (!tmp.renameTo(file)) {
+            file.delete()
+            tmp.renameTo(file)
+        }
     }
 
     companion object {

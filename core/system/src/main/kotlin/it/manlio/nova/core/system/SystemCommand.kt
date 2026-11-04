@@ -59,6 +59,26 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "force-stop", packageName)
     }
 
+    /**
+     * La risoluzione a cui gira un gioco (`cmd game`, SPEC §8.2): [percent] è una di [GAME_SCALES], null = torna normale (modalità
+     * `standard` del gioco). Vale al prossimo avvio del gioco. Mai sotto il 65%: più in basso il gioco diventa troppo sgranato.
+     * Si usa tramite [SystemChangeLog.setGameScale], che la registra.
+     */
+    data class GameScale(val packageName: String, val percent: Int?) : SystemCommand {
+        init {
+            requirePackage(packageName)
+            require(!ProtectedPackages.isProtected(packageName)) { "Il pacchetto $packageName è protetto" }
+            require(percent == null || percent in GAME_SCALES) { "Risoluzione non consentita: $percent" }
+        }
+
+        override val argv =
+            if (percent == null) {
+                listOf("cmd", "game", "mode", "standard", packageName)
+            } else {
+                listOf("cmd", "game", "set", "--downscale", "0.$percent", packageName)
+            }
+    }
+
     /** Elenca i livelli grafici (per trovare quello di un gioco). Solo lettura. */
     data object ListSurfaceLayers : SystemCommand {
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--list")
@@ -157,6 +177,14 @@ sealed interface SystemCommand {
         const val MAX_DPI = 640
         const val MAX_APK_BYTES = 200L * 1024 * 1024
         const val OWN_PACKAGE = "it.manlio.nova"
+
+        /** Le risoluzioni scelte per un gioco, in percentuale, dalla più alta alla più bassa (il minimo è l'ultima). */
+        val GAME_SCALES = listOf(90, 80, 70, 65)
+
+        /** La risoluzione dopo [percent] (null = normale): si scende fino al minimo e poi si torna normale. */
+        fun nextGameScale(percent: Int?): Int? =
+            if (percent == null) GAME_SCALES.first() else GAME_SCALES.getOrNull(GAME_SCALES.indexOf(percent) + 1)
+
         private const val MAX_PACKAGE_LENGTH = 128
         private val LAYER = Regex("^[A-Za-z0-9_.#/\\[\\]()\\$:=, -]{1,250}$")
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")

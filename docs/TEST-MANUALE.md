@@ -16,6 +16,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Anche se il consigliato è più basso, toccando **Massimo** o **Bilanciato** la scelta viene applicata ("Fissato da te: …").
 
 ## Tastiera di NOVA (quando sarà pubblicata)
+- [ ] Con Shizuku attivo, Aggiornamenti → «Controlla ora» quando NOVA è aggiornata: la tastiera passa alla versione dell'ultima release (Impostazioni di Android → App → Tastiera NOVA) e continua a funzionare.
 - [ ] Impostazioni di Android → Tastiera → Tastiere sullo schermo: compare «Tastiera NOVA»; scegliendola si scrive in italiano e in inglese con suggerimenti.
 - [ ] Nessuna richiesta di accesso a Internet nelle informazioni dell'app.
 
@@ -24,6 +25,10 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Tendina → Altro → «StandBy» (da una app qualsiasi): compare lo schermo nero con ora grande, data, batteria (e «in carica» se è collegato), sveglia se c'è. Un tocco o Indietro: torna la Home. Lo schermo non si spegne mentre è aperto.
 - [ ] Di notte (21–7): colori rosso scuro e luminosità quasi al minimo; all'uscita la luminosità torna quella di prima.
 - [ ] «StandBy automatico» su Acceso: collega il caricatore, tablet in orizzontale con la Home aperta, non toccare per 30 secondi: parte da solo. Senza caricatore o in verticale non parte.
+
+## Modalità di base
+- [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
+- [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.
 
 ## Modalità Gaming di base (Fase 3, primo passo)
 - [ ] **Confronto su un gioco che scattava (es. Brawl Stars):** 1) senza modalità; 2) con la modalità di serie; 3) se scatta ancora, Impostazioni di NOVA → Modalità Gaming: spegni le voci una alla volta e riprova. Annota quando lo scatto sparisce. Durante la Gaming il bordo alto è del gioco (nessuna striscia di NOVA); dalla Home si esce con la tendina dall'angolo in alto a destra.
@@ -195,6 +200,10 @@ Serve Shizuku attivo. Dopo ogni prova puoi usare Impostazioni → Strumenti di s
   - [ ] senza token compare il messaggio sugli appunti.
 
 ## Misura del gioco
-- [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars e gioca 2 minuti: compare il riepilogo e «Condividi l'ultima misura».
+- [ ] Tendina → Altro → «Misura il gioco», apri Brawl Stars, avvia la partita e premi volume su sul campo: dopo 2 minuti compare il riepilogo e «Condividi l'ultima misura». Premendo di nuovo volume su prima, la misura finisce entro 2 secondi.
+- [ ] In Gaming, dentro il gioco, tieni premuto volume giù per 3 secondi: compare il menu; «Esci dalla modalità», «Chiudi il gioco» e «Torna alla Home» fanno ciò che dicono. Rilasciando prima dei 3 secondi non compare niente. Fuori dalla Gaming non compare mai.
+- [ ] Dopo l'aggiornamento il servizio di accessibilità di NOVA è ancora acceso (ora chiede anche i tasti).
 - [ ] Ripeti senza modalità Gaming, con la modalità, e con un'opzione alla volta: confronta FPS medi e «peggiore 1 %».
 - [ ] «Chiudi il gioco: …» chiude davvero il gioco.
+- [ ] Apri Brawl Stars, poi tendina → Altro → «Risoluzione: Brawl Stars»: a ogni tocco scende (90, 80, 70, 65%) e poi torna a 100%. Fermati a 65%, riapri il gioco: l'immagine è meno nitida, i tocchi cadono al punto giusto e la misura sale verso 60 FPS.
+- [ ] Impostazioni → Strumenti di sistema → «Annulla tutte le modifiche»: la riga torna a 100% e il gioco, riaperto, è di nuovo nitido.

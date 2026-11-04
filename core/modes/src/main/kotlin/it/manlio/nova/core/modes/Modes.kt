@@ -36,8 +36,8 @@ object Modes {
      * Gaming di base (SPEC §8.2), solo manuale. Il Turbo va per ultimo perché è la parte lenta.
      * Non c'è il Wi-Fi a bassa latenza: per Android il blocco funziona solo se l'app che lo tiene è in primo piano,
      * e durante il gioco NOVA non lo è.
-     * shortcut: definita qui nel codice e non in config/modes/<nome>.json (SPEC §8.1);
-     * passare al JSON quando le modalità saranno più d'una.
+     * shortcut: le modalità sono nel codice e non in config/modes/<nome>.json (SPEC §8.1);
+     * passare al JSON quando si vorrà cambiarle senza un nuovo APK.
      */
     val GAMING =
         ModeDefinition(
@@ -54,7 +54,45 @@ object Modes {
             maxMinutes = 6 * 60,
         )
 
-    val all: List<ModeDefinition> = listOf(GAMING)
+    /** Studio di base (SPEC §8.4): niente notifiche, schermo acceso. Pomodoro e blocco distrazioni sono ancora da fare. */
+    val STUDY =
+        ModeDefinition(
+            id = "studio",
+            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON),
+            maxMinutes = 4 * 60,
+        )
+
+    /** Lavoro di base (SPEC §8.3): niente notifiche. Desktop e finestre flottanti sono ancora da fare. */
+    val WORK =
+        ModeDefinition(
+            id = "lavoro",
+            actions = listOf(ModeAction.DO_NOT_DISTURB),
+            maxMinutes = 10 * 60,
+        )
+
+    /** Creativa di base (SPEC §8.5): effetti di NOVA spenti, niente notifiche, schermo fermo e acceso. */
+    val CREATIVE =
+        ModeDefinition(
+            id = "creativa",
+            actions =
+                listOf(
+                    ModeAction.PERFORMANCE_GRAPHICS,
+                    ModeAction.DO_NOT_DISTURB,
+                    ModeAction.LOCK_ROTATION,
+                    ModeAction.KEEP_SCREEN_ON,
+                ),
+            maxMinutes = 6 * 60,
+        )
+
+    /** Presentazione di base (SPEC §8.6): niente notifiche, schermo fermo e acceso. La Home «portfolio» è ancora da fare. */
+    val PRESENTATION =
+        ModeDefinition(
+            id = "presentazione",
+            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON),
+            maxMinutes = 3 * 60,
+        )
+
+    val all: List<ModeDefinition> = listOf(GAMING, STUDY, WORK, CREATIVE, PRESENTATION)
 
     fun byId(id: String): ModeDefinition? = all.firstOrNull { it.id == id }
 }

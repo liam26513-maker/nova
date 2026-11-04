@@ -11,6 +11,7 @@ import android.os.Looper
 import android.provider.AlarmClock
 import android.provider.Settings
 import it.manlio.nova.core.design.GraphicsLevel
+import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.system.QuickToggle
 import it.manlio.nova.core.system.ShizukuStatus
@@ -144,7 +145,11 @@ class HomeControls(
         }
         return listOf(
             standby(),
-            gaming(),
+            mode(Modes.GAMING),
+            mode(Modes.STUDY),
+            mode(Modes.WORK),
+            mode(Modes.CREATIVE),
+            mode(Modes.PRESENTATION),
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
             MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
             rotation(),
@@ -175,12 +180,12 @@ class HomeControls(
         }
 
     /** Modalità Gaming (SPEC §8.2, di base): un tocco entra, un tocco esce e rimette tutto com'era. È anche l'uscita di emergenza. */
-    private fun gaming(): MoreItem {
+    private fun mode(mode: ModeDefinition): MoreItem {
         val text = { on: Boolean -> context.getString(if (on) R.string.more_on else R.string.more_off) }
         val modes = app.modes
-        return MoreItem(context.getString(R.string.more_gaming), text(modes.isActive(Modes.GAMING))) { report ->
-            val next = !modes.isActive(Modes.GAMING)
-            modes.toggle(Modes.GAMING) { report(text(it)) }
+        return MoreItem(modes.name(mode), text(modes.isActive(mode))) { report ->
+            val next = !modes.isActive(mode)
+            modes.toggle(mode) { report(text(it)) }
             text(next)
         }
     }
