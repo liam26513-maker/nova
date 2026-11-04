@@ -114,6 +114,30 @@ class UpdatePlannerTest {
     }
 
     @Test
+    fun `the newest keyboard is found with its real version code`() {
+        fun keyboard(code: Int) =
+            Release("v0.1.$code", assets = listOf(asset("nova-tastiera-$code.apk"), asset("nova-tastiera-$code.apk.sha256")))
+        val found = UpdatePlanner.keyboard(listOf(keyboard(430), keyboard(440)), 100_340)
+        assertEquals(100_440, found?.versionCode)
+        assertEquals("nova-tastiera-440.apk", found?.apk?.name)
+    }
+
+    @Test
+    fun `an up to date keyboard, a missing checksum or a draft give no keyboard update`() {
+        val apk = asset("nova-tastiera-440.apk")
+        val sum = asset("nova-tastiera-440.apk.sha256")
+        assertNull(UpdatePlanner.keyboard(listOf(Release("v1", assets = listOf(apk, sum))), 100_440))
+        assertNull(UpdatePlanner.keyboard(listOf(Release("v1", assets = listOf(apk))), 100_340))
+        assertNull(UpdatePlanner.keyboard(listOf(Release("v1", draft = true, assets = listOf(apk, sum))), 100_340))
+    }
+
+    @Test
+    fun `the keyboard is never taken for an app update`() {
+        val release = Release("v1", assets = listOf(asset("nova-tastiera-440.apk"), asset("nova-tastiera-440.apk.sha256")))
+        assertNull(UpdatePlanner.plan(listOf(release), 340, "0.0.0").app)
+    }
+
+    @Test
     fun `semantic version comparison`() {
         assertTrue(UpdatePlanner.compareVersions("1.10.0", "1.9.3") > 0)
         assertTrue(UpdatePlanner.compareVersions("0.1", "0.1.0") == 0)

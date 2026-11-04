@@ -62,7 +62,7 @@ interface ConfigTarget {
  * Aggiornatore (SPEC §4.6): controlla le release, applica a caldo la configurazione e scarica,
  * verifica e installa l'app. Prima di ogni cambio salva un punto di ripristino.
  */
-@Suppress("LongParameterList") // punto di assemblaggio: ogni dipendenza è esplicita e sostituibile nei test
+@Suppress("LongParameterList", "TooManyFunctions") // punto di assemblaggio: ogni dipendenza è esplicita e sostituibile nei test
 class Updater(
     private val context: Context,
     private val versionCode: Int,
@@ -88,8 +88,9 @@ class Updater(
         mutex.withLock {
             if (!tokens.isSet()) return@withLock publish(UpdateState.NoToken)
             publish(UpdateState.Checking)
+            val releases = runCatching { client.releases() }.getOrElse { return@withLock fail("Controllo non riuscito", it) }
             val plan =
-                runCatching { UpdatePlanner.plan(client.releases(), versionCode, config.currentVersion()) }
+                runCatching { UpdatePlanner.plan(releases, versionCode, config.currentVersion()) }
                     .getOrElse { return@withLock fail("Controllo non riuscito", it) }
             plan.config?.let { applyConfig(it) }
             val app = plan.app
@@ -98,6 +99,7 @@ class Updater(
                 automatic && shizuku.status.value == ShizukuStatus.READY -> installLocked(app, "app ${app.tag}")
                 else -> publish(UpdateState.AppAvailable(app))
             }
+            if (app == null) updateKeyboard(releases)
         }
 
     /** Installa l'aggiornamento disponibile (tasto "Installa"). */
@@ -188,14 +190,7 @@ class Updater(
         reason: String,
     ) {
         runCatching {
-            val dir = File(context.externalCacheDir ?: error("Memoria esterna non disponibile"), "updates")
-            dir.listFiles()?.forEach(File::delete) // niente avanzi di download vecchi
-            val apk = File(dir, update.apk.name)
-            val expected = Checksums.parse(client.downloadText(update.checksum)) ?: error("Impronta mancante")
-            publish(UpdateState.Downloading(0f))
-            client.download(update.apk, apk) { publish(UpdateState.Downloading(it)) }
-            kotlin.check(Checksums.sha256(apk) == expected) { "L'impronta del file scaricato non corrisponde" }
-            (installer.check(apk, update.versionCode) as? ApkCheck.Rejected)?.let { error(it.reason) }
+            val apk = fetch(update, context.packageName) { publish(UpdateState.Downloading(it)) }
             history.addRestorePoint(restorePoint(reason))
             publish(UpdateState.Installing)
             log.i(TAG, "installo ${update.tag} (${update.versionCode})")
@@ -204,6 +199,38 @@ class Updater(
             if (!silent) publish(UpdateState.AwaitingConfirmation)
             // Con Shizuku il processo viene sostituito subito dalla nuova versione.
         }.onFailure { fail("Aggiornamento non riuscito", it) }
+    }
+
+    /** Scarica e verifica un APK (impronta, pacchetto, versione, firma): se qualcosa non torna lancia un errore. */
+    private suspend fun fetch(
+        update: AppUpdate,
+        packageName: String,
+        progress: (Float) -> Unit,
+    ): File {
+        val dir = File(context.externalCacheDir ?: error("Memoria esterna non disponibile"), "updates")
+        dir.listFiles()?.forEach(File::delete) // niente avanzi di download vecchi
+        val apk = File(dir, update.apk.name)
+        val expected = Checksums.parse(client.downloadText(update.checksum)) ?: error("Impronta mancante")
+        progress(0f)
+        client.download(update.apk, apk, progress)
+        kotlin.check(Checksums.sha256(apk) == expected) { "L'impronta del file scaricato non corrisponde" }
+        (installer.check(apk, update.versionCode, packageName) as? ApkCheck.Rejected)?.let { error(it.reason) }
+        return apk
+    }
+
+    /**
+     * Aggiorna la tastiera, se è installata e Shizuku è pronto. Non cambia lo stato mostrato e un errore finisce solo nel registro:
+     * un problema della tastiera non deve mai disturbare l'aggiornamento di NOVA.
+     */
+    private suspend fun updateKeyboard(releases: List<Release>) {
+        if (shizuku.status.value != ShizukuStatus.READY) return
+        val installed = installer.installedVersion(UpdatePlanner.KEYBOARD_PACKAGE) ?: return
+        val update = UpdatePlanner.keyboard(releases, installed) ?: return
+        runCatching {
+            val result = shizuku.installApk(fetch(update, UpdatePlanner.KEYBOARD_PACKAGE) {})
+            kotlin.check(result.ok) { result.output }
+            log.i(TAG, "tastiera aggiornata a ${update.tag}")
+        }.onFailure { log.e(TAG, "tastiera non aggiornata", it) }
     }
 
     private fun restorePoint(reason: String) = RestorePoint(clock(), reason, versionCode, versionName, config.currentVersion())
