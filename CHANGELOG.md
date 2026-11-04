@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Aggiornamenti: spiega quando il problema è il DNS
+- Richiesta: "fai tutto cio che ti serve".
+- Se il tablet non trova i siti, la schermata Aggiornamenti ora dice di spegnere «Blocca pubblicità», invece di un generico «nessuna connessione».
+
 ### Le righe delle modalità dicono sempre la verità
 - Richiesta: "risolvi il problema e continua".
 - Accendendo una modalità mentre un'altra era attiva, la riga di quella vecchia restava su «Sì» anche se era già spenta. Ora si aggiorna da sola.
