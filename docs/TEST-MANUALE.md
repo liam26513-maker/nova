@@ -41,6 +41,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Con Lavoro acceso, sopra un'app aperta: tendina → Altro → Schermo diviso. L'app va a metà schermo; la tendina si chiude da sola?
 - [ ] Con Presentazione accesa, la riga della trasmissione è in cima ad Altro.
 - [ ] Blocca pubblicità, con la rete normale: si accende. Con il Wi-Fi spento: resta spento e compare il messaggio.
+- [ ] Tendina → Altro → Schermo sempre acceso: la riga dice «Sì» e lo schermo non si spegne da solo. Ritoccandola torna il tempo di prima.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.

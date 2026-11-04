@@ -41,6 +41,10 @@ Fatte: tendina → Altro → Modalità Gaming (si raggiunge dalla barra di stato
 Volume giù tenuto 3 s: `VolumeKeys` e `GamingExitMenu` (`GamingExit.kt`), con il servizio di accessibilità acceso; il tasto non viene mai consumato. «Chiudi il gioco» è in Altro e nel menu.
 Doppio swipe (`EdgeSwipeWindow`, `DoubleSwipe`) e watchdog (`GameWatchdog`, `FreezeDetector`) ci sono ma sono **spenti di serie** (`ModeOptions.EDGE_SWIPE`, `WATCHDOG`): la fascia prende tocchi al gioco e ogni lettura di `--timestats` ferma un attimo il compositore. Prima di un'attivazione automatica della Gaming va deciso se bastano le altre uscite: per ora resta **solo manuale**.
 
+## Schermo sempre acceso (`app/ScreenAwake`)
+
+Non è una modalità: riga di Altro, spenta di serie. Porta `SCREEN_OFF_TIMEOUT` a `Int.MAX_VALUE` e salva il valore di prima. Una modalità con `KEEP_SCREEN_ON` accesa dopo non lo tocca; se invece l'interruttore si accende durante una modalità, uscendone Android torna al tempo salvato dalla modalità e la riga dice «No».
+
 ## Scelte e limiti
 
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.

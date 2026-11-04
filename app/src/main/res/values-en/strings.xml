@@ -282,6 +282,7 @@
     <string name="study_block_footer">During Study mode these apps do not open: NOVA goes Home and asks what to do. It needs the NOVA accessibility service.</string>
     <string name="study_block_pick">Choose apps to block</string>
     <string name="study_block_remove">Tap to unblock</string>
+    <string name="more_screen_awake">Screen always on</string>
     <string name="notes_title">Quick notes</string>
     <string name="notes_short">Notes</string>
     <string name="notes_hint">Write here: it saves itself.</string>
