@@ -169,6 +169,7 @@ class HomeControls(
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
             MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
             rotation(),
+            screenAwakeItem(context),
             toggle(R.string.more_airplane, QuickToggle.AIRPLANE, Settings.ACTION_AIRPLANE_MODE_SETTINGS),
             toggle(R.string.more_location, QuickToggle.LOCATION, Settings.ACTION_LOCATION_SOURCE_SETTINGS),
             toggle(R.string.more_battery_saver, QuickToggle.BATTERY_SAVER, Settings.ACTION_BATTERY_SAVER_SETTINGS),

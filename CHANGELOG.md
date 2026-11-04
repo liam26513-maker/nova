@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Schermo sempre acceso
+- Richiesta: "metti l'impostazione che lo schermo rimane sempre acceso".
+- In tendina → Altro c'è «Schermo sempre acceso». È spento di serie e, spegnendolo, torna il tempo di prima. Da acceso consuma più batteria.
+
 ### La tendina di Android si richiude davvero
 - Richiesta: "finisci cio che devi e sistema".
 - La correzione precedente non bastava: su questo tablet il comando che NOVA usava per chiudere la tendina di Android non fa niente. Ora la chiude con Shizuku; senza Shizuku, dopo un gesto lento può restare aperta.
