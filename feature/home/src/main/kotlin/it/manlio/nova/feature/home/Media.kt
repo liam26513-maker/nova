@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -284,3 +286,37 @@ private fun DrawScope.drawGlyph(
         }
     }
 }
+
+/** La pastiglia della Studio: stato a sinistra, Pomodoro e uscita come veri pulsanti. */
+@Composable
+internal fun StudyPill(
+    bar: StudyBar,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier
+            .background(Color.Black.copy(alpha = STUDY_PILL_ALPHA), RoundedCornerShape(percent = 50))
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        BasicText(bar.text, style = TextStyle(Color.White, 15.sp))
+        StudyPillButton(bar.timerLabel, bar.onTimer)
+        StudyPillButton(bar.exitLabel, bar.onExit)
+    }
+}
+
+@Composable
+private fun StudyPillButton(
+    label: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        Modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        BasicText(label, style = TextStyle(Color.White, 15.sp, fontWeight = FontWeight.SemiBold))
+    }
+}
+
+private const val STUDY_PILL_ALPHA = 0.75f

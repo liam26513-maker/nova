@@ -21,6 +21,7 @@ import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.feature.home.ControlActions
 import it.manlio.nova.feature.home.Level
 import it.manlio.nova.feature.home.MoreItem
+import it.manlio.nova.feature.home.StudyBar
 import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.Toggle
 import it.manlio.nova.feature.home.Torch
@@ -148,7 +149,8 @@ class HomeControls(
                 text(next)
             }
         }
-        return listOf(
+        return listOfNotNull(
+            studyExitItem(context, app),
             standby(),
             mode(Modes.GAMING),
             mode(Modes.STUDY),
@@ -300,27 +302,61 @@ class HomeControls(
     }
 }
 
+/** Il testo del Pomodoro: «Studio fino alle 12:45». */
+private fun pomodoroText(
+    context: Context,
+    state: PomodoroState,
+): String {
+    val end = DateFormat.getTimeFormat(context).format(Date(state.endsAt))
+    return context.getString(if (state.phase == PomodoroPhase.FOCUS) R.string.pomodoro_focus_until else R.string.pomodoro_break_until, end)
+}
+
+/** Avvia o ferma il Pomodoro; se la Studio è spenta la accende prima. */
+private fun togglePomodoro(modes: ModeController) {
+    val timer = modes.pomodoro
+    when {
+        timer.state.value != null -> timer.stop()
+        modes.isActive(Modes.STUDY) -> timer.start()
+        else -> modes.toggle(Modes.STUDY) { on -> if (on) timer.start() }
+    }
+}
+
 /** Pomodoro (SPEC §8.4): parte con la Studio, accendendola se serve; ritoccandolo si ferma e la Studio resta accesa. */
 private fun pomodoroItem(
     context: Context,
     app: NovaApp,
 ): MoreItem {
-    val modes = app.modes
-    val timer = modes.pomodoro
-    val text = { s: PomodoroState? ->
-        if (s == null) {
-            context.getString(R.string.more_off)
-        } else {
-            val end = DateFormat.getTimeFormat(context).format(Date(s.endsAt))
-            context.getString(if (s.phase == PomodoroPhase.FOCUS) R.string.pomodoro_focus_until else R.string.pomodoro_break_until, end)
-        }
-    }
+    val timer = app.modes.pomodoro
+    val text = { s: PomodoroState? -> s?.let { pomodoroText(context, it) } ?: context.getString(R.string.more_off) }
     return MoreItem(context.getString(R.string.more_pomodoro), text(timer.state.value), timer.state.map(text)) { _ ->
-        when {
-            timer.state.value != null -> timer.stop()
-            modes.isActive(Modes.STUDY) -> timer.start()
-            else -> modes.toggle(Modes.STUDY) { on -> if (on) timer.start() }
-        }
+        togglePomodoro(app.modes)
         text(timer.state.value)
     }
 }
+
+/** L'uscita dalla Studio in cima ad «Altro», solo mentre è accesa. */
+private fun studyExitItem(
+    context: Context,
+    app: NovaApp,
+): MoreItem? =
+    if (!app.modes.isActive(Modes.STUDY)) {
+        null
+    } else {
+        MoreItem(context.getString(R.string.study_exit_row)) {
+            if (app.modes.isActive(Modes.STUDY)) app.modes.toggle(Modes.STUDY) {}
+            null
+        }
+    }
+
+/** La pastiglia della Studio in cima alla Home: stato del Pomodoro e tasto di uscita. */
+internal fun studyBar(
+    context: Context,
+    app: NovaApp,
+    state: PomodoroState?,
+) = StudyBar(
+    text = state?.let { pomodoroText(context, it) } ?: context.getString(R.string.more_study),
+    timerLabel = context.getString(if (state == null) R.string.more_pomodoro else R.string.study_timer_stop),
+    onTimer = { togglePomodoro(app.modes) },
+    exitLabel = context.getString(R.string.study_exit),
+    onExit = { if (app.modes.isActive(Modes.STUDY)) app.modes.toggle(Modes.STUDY) {} },
+)

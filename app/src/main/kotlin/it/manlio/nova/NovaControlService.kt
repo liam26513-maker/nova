@@ -74,6 +74,7 @@ class NovaControlService : AccessibilityService() {
     private var shape = StripShape.FULL
     private val app get() = application as NovaApp
     private val exitMenu by lazy { GamingExitMenu(this, app) }
+    private val studyGuard by lazy { StudyGuard(this, app) }
     private val volumeKeys by lazy {
         VolumeKeys(
             post = { task, ms -> handler.postDelayed(task, ms) },
@@ -123,7 +124,10 @@ class NovaControlService : AccessibilityService() {
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
         requestClose()
         // Quale app è davanti (non la tastiera): serve a misurare o chiudere un gioco.
-        event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let(app::noteForeground)
+        event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let {
+            app.noteForeground(it)
+            if (app.safeModeReason == null) studyGuard.check(it)
+        }
     }
 
     override fun onInterrupt() = requestClose()
@@ -135,6 +139,7 @@ class NovaControlService : AccessibilityService() {
 
     override fun onDestroy() {
         exitMenu.dismiss()
+        studyGuard.dismiss()
         removePanel()
         strip?.let { runCatching { windows.removeView(it) } }
         strip = null

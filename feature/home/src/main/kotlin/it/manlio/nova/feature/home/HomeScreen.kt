@@ -86,6 +86,8 @@ fun HomeScreen(
     onStandbyExit: () -> Unit = {},
     /** A ogni tocco (senza consumarlo): ricomincia il conto del StandBy automatico. */
     onTouch: () -> Unit = {},
+    /** Non nullo = Modalità Studio accesa: pastiglia con il Pomodoro e il tasto di uscita. */
+    study: StudyBar? = null,
 ) {
     val data = rememberHomeData(apps, favoriteKeys, prefs, layout)
     val visible = data.visible
@@ -214,7 +216,8 @@ fun HomeScreen(
                 )
             }
             if (!editing && !searching && !control) {
-                DynamicIsland(actions.media, Modifier.align(Alignment.TopCenter).safeDrawingPadding().padding(top = 14.dp))
+                val top = Modifier.align(Alignment.TopCenter).safeDrawingPadding().padding(top = 14.dp)
+                if (study != null) StudyPill(study, top) else DynamicIsland(actions.media, top)
             }
             val clear =
                 menuFor?.let { previews[it.component.packageName] }?.let { p ->

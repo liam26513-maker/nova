@@ -63,6 +63,7 @@ fun SettingsScreen(
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
             CAT_GAMING -> performance?.let { GamingSection(backdrop, it.modeOptions) }
+            CAT_STUDY -> performance?.let { StudySection(backdrop, it.modes) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
                 val context = androidx.compose.ui.platform.LocalContext.current
@@ -102,7 +103,16 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
         } else {
             emptyList()
         }
-    val game = if (withPerformance) listOf(SidebarEntry(CAT_GAMING, gaming, SidebarGlyph.GRID, Color(0xFFE0603A))) else emptyList()
+    val study = stringResource(R.string.more_study)
+    val game =
+        if (withPerformance) {
+            listOf(
+                SidebarEntry(CAT_GAMING, gaming, SidebarGlyph.GRID, Color(0xFFE0603A)),
+                SidebarEntry(CAT_STUDY, study, SidebarGlyph.TEXT, Color(0xFF4C9A6A)),
+            )
+        } else {
+            emptyList()
+        }
     return remember(improve, graphics, device, home, updates, tools, status, performance, withPerformance, gaming) {
         listOf(
             SidebarEntry(CAT_IMPROVE, improve, SidebarGlyph.SPARKLE, Color(0xFF7B68D8)),
@@ -126,6 +136,7 @@ private const val CAT_UPDATES = "updates"
 private const val CAT_TOOLS = "tools"
 private const val CAT_PERFORMANCE = "performance"
 private const val CAT_GAMING = "gaming"
+private const val CAT_STUDY = "study"
 private const val CAT_STATUS = "status"
 
 @Composable
