@@ -306,6 +306,15 @@
     <string name="study_blocked_unlock">Sblocca per 5 minuti</string>
     <string name="study_unlock_title">Sbloccare per 5 minuti?</string>
     <string name="study_unlock_yes">Sì, sblocca</string>
+    <string name="games_title">I tuoi giochi</string>
+    <string name="games_footer">Tocca un gioco per aprirlo, tocca la percentuale per cambiare la risoluzione (serve Shizuku, vale dalla prossima apertura). Gli FPS arrivano da «Misura il gioco».</string>
+    <string name="games_none">Nessun gioco trovato</string>
+    <string name="games_fps">%1$d FPS nell\'ultima misura</string>
+    <string name="games_fps_tip">%1$d FPS nell\'ultima misura: prova il %2$d%%</string>
+    <string name="games_change_scale">Cambia la risoluzione di %1$s</string>
+    <string name="games_cloud">Giochi in cloud</string>
+    <string name="games_xbox">Xbox Cloud Gaming</string>
+    <string name="games_geforce">GeForce NOW</string>
     <string name="gaming_exits">Uscite di emergenza in più</string>
     <string name="gaming_exits_footer">Volume giù tenuto 3 secondi funziona sempre. Queste due costano qualcosa al gioco: servono il servizio di accessibilità e, per il controllo, Shizuku.</string>
     <string name="gaming_edge">Doppio swipe dal bordo destro</string>

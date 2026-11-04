@@ -303,6 +303,15 @@
     <string name="study_blocked_unlock">Unlock for 5 minutes</string>
     <string name="study_unlock_title">Unlock for 5 minutes?</string>
     <string name="study_unlock_yes">Yes, unlock</string>
+    <string name="games_title">Your games</string>
+    <string name="games_footer">Tap a game to open it, tap the percentage to change its resolution (needs Shizuku, applies the next time it opens). FPS come from «Measure the game».</string>
+    <string name="games_none">No games found</string>
+    <string name="games_fps">%1$d FPS in the last measure</string>
+    <string name="games_fps_tip">%1$d FPS in the last measure: try %2$d%%</string>
+    <string name="games_change_scale">Change the resolution of %1$s</string>
+    <string name="games_cloud">Cloud gaming</string>
+    <string name="games_xbox">Xbox Cloud Gaming</string>
+    <string name="games_geforce">GeForce NOW</string>
     <string name="gaming_exits">Extra emergency exits</string>
     <string name="gaming_exits_footer">Holding volume down for 3 seconds always works. These two cost the game something: they need the accessibility service and, for the check, Shizuku.</string>
     <string name="gaming_edge">Double swipe from the right edge</string>
