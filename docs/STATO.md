@@ -7,8 +7,8 @@ Aggiornato a: release 0.1.520 e PR successive. Per riprendere il lavoro in una c
 - **Fase 0** fondamenta: moduli `core/*`, aggiornatore, Migliora/Ripara, CI e rilasci, modalità provvisoria.
 - **Fase 1** Home: griglia/lista/ibrido, widget, ricerca, notifiche sulle icone, isola dinamica, personalizzazione.
 - **Centro di controllo** (SPEC §6.8): tendina che segue il dito, sostituisce quella di Android (Home e sopra le altre app con il servizio di
-  accessibilità), riquadri a prima vista scelti in Personalizza la Home, sezione «Altro», interruttori diretti con Shizuku, tasto di
-  accessibilità di scorta, sblocco in un tocco delle impostazioni con restrizioni.
+  accessibilità), riquadri a prima vista scelti in Personalizza la Home, sezione «Altro», interruttori diretti con Shizuku,
+  sblocco in un tocco delle impostazioni con restrizioni.
 - **Fase 2** strumenti di sistema (Shizuku): Turbo, animazioni, densità, DNS anti-pubblicità, congelamento, stato, interruttori rapidi.
 - **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano foto/calendario/widget/Stato PC nello StandBy.
 - **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio con Pomodoro, blocco app, note e filtro caldo; Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Doppio swipe e watchdog ci sono, spenti di serie. Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
@@ -33,7 +33,7 @@ Internet nella tastiera, mai cambiare chiave di firma né `applicationId`. La CI
 Provate: Studio, Lavoro e l'aggiornamento automatico della tastiera (0.1.340 → 0.1.460 con «Controlla ora»). Per un'ora circa, durante un guasto di GitHub, il DNS di «Blocca pubblicità» non è stato confermato e il tablet non trovava nessun sito; poi si è ripreso da solo, causa non trovata. Il servizio di accessibilità di NOVA risulta spento, causa ignota: senza non si provano le uscite col volume. Mancano Creativa, Presentazione, Risoluzione e il 65% in partita.
 
 ## Sul tablet (4 novembre, 0.1.520)
-Provate sul tablet: tendina con gesti veloci e lenti (la tendina di Android si chiude con Shizuku: l'azione di accessibilità `GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE` qui non fa niente), note rapide, pagine Studio, Gaming, Aggiornamenti e Prestazioni. Non ancora provati a mano: pastiglia e uscita della Studio, Pomodoro, blocco app, filtro caldo, schermo diviso, doppio swipe, watchdog, volume giù e su, Creativa, Presentazione, Risoluzione, 65% in partita. Brawl Stars è impostato a 0,65 via adb. Una volta, sulla 0.1.510, si è aperta solo la tendina di Android: non si è ripetuto in 8 prove.
+Provate sul tablet: tendina con gesti veloci e lenti (la tendina di Android si chiude con Shizuku: l'azione di accessibilità `GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE` qui non fa niente), note rapide, pagine Studio, Gaming, Aggiornamenti e Prestazioni. Non ancora provati a mano: pastiglia e uscita della Studio, Pomodoro, blocco app, filtro caldo, schermo diviso, doppio swipe, watchdog, volume giù e su, Creativa, Presentazione, Risoluzione, 65% in partita. Brawl Stars è impostato a 0,65 via adb. Il servizio di accessibilità si è spento più volte: sulla sua pagina le Impostazioni di Android andavano in crash («Unexpected tutorial pages size») perché con `flagRequestAccessibilityButton` il servizio era legato alla scorciatoia. Il flag è stato tolto; resta da confermare che non si spenga più.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).

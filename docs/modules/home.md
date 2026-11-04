@@ -177,7 +177,7 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 
 - **Eventi di SystemUI:** `onAccessibilityEvent` chiudeva il pannello a ogni `TYPE_WINDOW_STATE_CHANGED` di un pacchetto diverso da NOVA; ma la tendina di Android (pacchetto `com.android.systemui`), che si apre in parallelo durante il gesto, generava proprio quell'evento, quindi il pannello si richiudeva subito. Ora `com.android.systemui` è ignorato.
 - **`ACTION_CANCEL`:** quando SystemUI riconosce il gesto e "ruba" il tocco, `StripTouch` riceve `ACTION_CANCEL`. Non è un rilascio: se la tendina seguiva il dito, `settle(true)`; se il dito era sceso oltre mezza soglia senza essere ancora stato riconosciuto, apre la tendina (`openPanel()?.settle(true)`).
-- **Pulsante di accessibilità:** `android:accessibilityFlags="flagRequestAccessibilityButton"` + `AccessibilityButtonController.registerAccessibilityButtonCallback`: `onClicked` apre (con la molla) o richiude la tendina. L'utente lo sceglie come scorciatoia del servizio in Impostazioni → Accessibilità. Non dipende dall'intercettazione dei tocchi.
+- **Pulsante di accessibilità (tolto):** con `flagRequestAccessibilityButton` Android nasconde l'interruttore del servizio e lo lega alla scorciatoia; sul tablet di riferimento accenderla manda in crash le Impostazioni («Unexpected tutorial pages size»). Il flag non va rimesso (`AccessibilityConfigTest`).
 - **Diagnosi:** `app.log` (tag `tendina`): servizio collegato (striscia creata o no), tocco sulla striscia, gesto riconosciuto, tocco annullato dal sistema (con i pixel scesi), rilascio, pulsante usato, errori di creazione delle finestre. `StripTouch` non ha test JVM (usa `MotionEvent`).
 
 #### Sfondo di blocco e StandBy

@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il servizio di accessibilità non dipende più dalla scorciatoia
+- Richiesta: "continua".
+- Sul tablet le Impostazioni di Android andavano in crash proprio sulla pagina del servizio di NOVA, e il servizio risultava spento. La pagina ora ha un normale interruttore, senza la scorciatoia che faceva scattare il crash.
+- Sparisce il tasto di accessibilità di scorta: la tendina si apre con il gesto dall'alto, come sempre.
+
 ### Schermo sempre acceso
 - Richiesta: "metti l'impostazione che lo schermo rimane sempre acceso".
 - In tendina → Altro c'è «Schermo sempre acceso». È spento di serie e, spegnendolo, torna il tempo di prima. Da acceso consuma più batteria.
