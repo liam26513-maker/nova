@@ -53,6 +53,10 @@ In Impostazioni → Modalità Gaming: le app con categoria gioco, aperte con un 
 
 `ModeEngine.onFinished` dà i minuti una volta per sessione e `ModeController` li somma al giorno di fine (`mode-time.properties`). Non contarli da `start()`: gira a ogni ritorno sulla Home. Le app vengono da `UsageStatsManager`, solo con l'accesso concesso dall'utente; NOVA non compare nell'elenco.
 
+## Doppio swipe e gesti di Android
+
+Con la navigazione a gesti Android ruba lo swipe dal bordo e manda `ACTION_CANCEL`: `EdgeGesture` conta anche quello. `systemGestureExclusionRects` libera 200 dp al centro del bordo (il massimo che Android concede); fuori da lì lo swipe conta ma scatta anche «Indietro». I tasti inviati con `adb input` non arrivano al filtro del servizio: volume giù si prova solo col tasto vero.
+
 ## Scelte e limiti
 
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.

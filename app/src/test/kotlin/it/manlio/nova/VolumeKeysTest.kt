@@ -8,6 +8,24 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class VolumeKeysTest {
+    @Test
+    fun `an edge swipe counts once, also when Android takes it over as Back`() {
+        val edge = EdgeGesture(distance = 48f)
+
+        edge.down(800f)
+        assertEquals(false, edge.moved(780f))
+        assertEquals(true, edge.moved(740f))
+        assertEquals(false, edge.moved(700f))
+        assertEquals(false, edge.cancelled())
+
+        edge.down(800f)
+        edge.moved(785f)
+        assertEquals(true, edge.cancelled())
+
+        edge.down(800f)
+        assertEquals(false, edge.cancelled())
+    }
+
     private var pending: Runnable? = null
     private var delay = 0L
     private var gaming = true
