@@ -47,6 +47,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Impostazioni → Strumenti di sistema → «Lascia lavorare NOVA in secondo piano» apre «Background Manage»: NOVA e Tastiera NOVA sono attive.
 - [ ] Tira giù la tendina lentamente e velocemente, sulla Home e sopra un'app: la tendina di Android non si vede mai e quella di NOVA segue il dito senza scatti.
 - [ ] Tendina → Altro → «Notifiche di Android»: si apre quella di Android. Chiudila e ritira giù: torna solo quella di NOVA.
+- [ ] Impostazioni della tastiera → Barra degli strumenti → attiva «Invia a Claude»: scrivi una frase, tocca il tasto e si apre l'app Claude con il testo.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.

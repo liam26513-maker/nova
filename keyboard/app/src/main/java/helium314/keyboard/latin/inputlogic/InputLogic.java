@@ -777,6 +777,9 @@ public final class InputLogic {
             case KeyCode.CLIPBOARD_COPY:
                 mConnection.copyText(true);
                 break;
+            case KeyCode.SEND_TO_CLAUDE:
+                mConnection.sendToClaude();
+                break;
             case KeyCode.CLIPBOARD_COPY_ALL:
                 mConnection.copyText(false);
                 break;

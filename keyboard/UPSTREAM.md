@@ -19,6 +19,7 @@ nativo con NDK): si compila da qui (`./gradlew :app:assembleRelease`) e lo contr
 | Rimossi `tools/` (generatore di emoji), `art/`, `fastlane/`, `.github/`, `.idea/`, `AI_USAGE.md`, `CONTRIBUTING.md` | Non servono per costruire la tastiera. |
 | Profilo NOVA nei predefiniti (`Defaults.kt`): tasti arrotondati con bordo, vibrazione accesa e brevissima (10 ms), clic sommesso se manca il motorino, niente fumetto sul tasto, niente simboli secondari sui tasti, niente suggerimenti di emoji e appunti | Sensazione più pulita e soddisfacente su tablet (richiesta di Manlio); un'unica migrazione per chi aveva la prima versione (`AppUpgrade.kt`). |
 | Numero di versione = 100000 + quello di NOVA | Le migrazioni di HeliBoard (`oldVersion <= 4201`…) non devono rieseguirsi a ogni aggiornamento; test `NovaUpgradeTest`. |
+| Tasto «Invia a Claude» nella barra strumenti, spento di serie (`ToolbarKey.SEND_TO_CLAUDE`, `RichInputConnection.sendToClaude`) | SPEC §10.4. |
 | Nessun permesso Internet | SPEC §10.1: lo verifica `tools/check_keyboard.py` sul manifest unito. |
 
 ## Come aggiungere un dizionario

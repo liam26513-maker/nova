@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera: tasto «Invia a Claude»
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nella barra strumenti della tastiera si può aggiungere «Invia a Claude»: copia il testo selezionato, o tutto il campo, e lo apre nell'app Claude. È spento di serie: si attiva nelle impostazioni della tastiera.
+
 ### Solo la tendina di NOVA
 - Richiesta: "voglio solo la tendina di nova, quella android non la voglio piu vedere neanche per una frazione di secondo".
 - Con Shizuku attivo NOVA blocca la tendina di Android: dal gesto dall'alto parte solo la sua, e il gesto non scatta più.

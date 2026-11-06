@@ -6,9 +6,11 @@
 
 package helium314.keyboard.latin;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Bundle;
@@ -770,7 +772,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         mIC.setSelection(mExpectedSelStart - range.getNumberOfCharsInWordBeforeCursor(), mExpectedSelStart + range.getNumberOfCharsInWordAfterCursor());
     }
 
-    public void copyText(final boolean getSelection) {
+    /** Il testo selezionato o, se non c'è selezione o non è richiesta, tutto il campo; null se è vuoto. */
+    private CharSequence textToCopy(final boolean getSelection) {
         CharSequence text = null;
         if (getSelection) {
             // copy selected text, and if nothing is selected copy the whole text
@@ -782,10 +785,33 @@ public final class RichInputConnection implements PrivateCommandPerformer {
             etr.flags = InputConnection.GET_TEXT_WITH_STYLES;
             etr.hintMaxChars = Integer.MAX_VALUE;
             final ExtractedText et = mIC.getExtractedText(etr, 0);
-            if (et == null) return;
+            if (et == null) return null;
             text = et.text;
         }
-        if (text == null || text.length() == 0) return;
+        return text == null || text.length() == 0 ? null : text;
+    }
+
+    /** NOVA (SPEC §10.4): copia il testo e lo condivide con l'app Claude. Nessuna rete: la tastiera non ha Internet. */
+    public void sendToClaude() {
+        final CharSequence text = textToCopy(true);
+        if (text == null) return;
+        final ClipboardManager cm = (ClipboardManager) mParent.getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setPrimaryClip(ClipData.newPlainText("copied text", text));
+        final Intent send = new Intent(Intent.ACTION_SEND)
+                .setType("text/plain")
+                .setPackage("com.anthropic.claude")
+                .putExtra(Intent.EXTRA_TEXT, text.toString())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            mParent.startActivity(send);
+        } catch (final ActivityNotFoundException e) {
+            KeyboardSwitcher.getInstance().showToast(mParent.getString(R.string.send_to_claude_missing), true);
+        }
+    }
+
+    public void copyText(final boolean getSelection) {
+        final CharSequence text = textToCopy(getSelection);
+        if (text == null) return;
         final ClipboardManager cm = (ClipboardManager) mParent.getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setPrimaryClip(ClipData.newPlainText("copied text", text));
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {

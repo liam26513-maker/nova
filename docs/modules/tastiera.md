@@ -33,8 +33,15 @@ non ridistribuibile. Servirebbe una libreria aperta. **Non misurato:** la latenz
 Non ho ancora misurato velocità di scrittura o avvio sul tablet: ogni miglioramento di velocità andrà confrontato con una misura (latenza dal
 tocco al tasto, apertura della tastiera, memoria) prima e dopo.
 
+## Già disponibili (da HeliBoard, in Impostazioni della tastiera)
+
+Tastiera divisa, flottante e riga numeri, tutte spente di serie (§10.3). Cursore con lo swipe sulla barra spaziatrice, cronologia appunti, italiano e inglese insieme.
+
+## Invia a Claude (§10.4)
+
+Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impostazioni della tastiera → Barra degli strumenti. Copia il testo selezionato (o tutto il campo) e lo condivide con `com.anthropic.claude`. Nessuna rete, nessuna chiave.
+
 ## Da fare (SPEC §10)
 
-Aspetto iOS e tema di NOVA (`ContentProvider` dei token), tastiera divisa/flottante/riga numeri (disattivate di default), trackpad sulla barra
-spaziatrice, espansioni di testo, appunti → PC, dettatura, scrittura a mano → testo, «Invia a Claude», varianti per modalità, layout italiano della
+Aspetto iOS e tema di NOVA (`ContentProvider` dei token), selezione con due dita sulla barra spaziatrice, espansioni di testo, appunti → PC, scrittura a mano → testo, varianti per modalità, layout italiano della
 tastiera fisica e scorciatoie. Prima installazione dall'app.
