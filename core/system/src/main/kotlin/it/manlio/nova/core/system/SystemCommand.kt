@@ -113,6 +113,14 @@ sealed interface SystemCommand {
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--frametimeline")
     }
 
+    /**
+     * Impedisce alla tendina di Android di aprirsi, così il gesto dall'alto è solo di NOVA. Si usa tramite
+     * [SystemChangeLog.setShadeLock], che la registra. Non è un'impostazione salvata: un riavvio la toglie.
+     */
+    data class ShadeLock(val locked: Boolean) : SystemCommand {
+        override val argv = listOf("cmd", "statusbar", "send-disable-flag", if (locked) "statusbar-expansion" else "none")
+    }
+
     /** Chiude la tendina di Android: sul tablet di riferimento l'azione di accessibilità non fa niente. Non cambia impostazioni. */
     data object CollapseShade : SystemCommand {
         override val argv = listOf("cmd", "statusbar", "collapse")

@@ -119,6 +119,13 @@ class NovaControlService : AccessibilityService() {
                 removeStrip()
                 if (shape != StripShape.NONE) addStrip(shape)
                 app.log.i(LOG_TAG, "striscia: $shape")
+                // Senza striscia il gesto non arriva a NOVA: la tendina di Android torna disponibile.
+                AndroidShade.lock(app, shape != StripShape.NONE)
+            }
+            scope.launch {
+                app.shizuku.status.collect { status ->
+                    if (status == ShizukuStatus.READY && shape != StripShape.NONE) AndroidShade.lock(app, true)
+                }
             }
             scope.launch { gamingOption(ModeOptions.EDGE_SWIPE).collect { on -> if (on) edge.add() else edge.remove() } }
             scope.launch { gamingOption(ModeOptions.WATCHDOG).collectLatest { on -> if (on) watchdog.watch() } }
@@ -147,6 +154,7 @@ class NovaControlService : AccessibilityService() {
     }
 
     override fun onDestroy() {
+        if (app.safeModeReason == null) AndroidShade.lock(app, false) // senza servizio la tendina di NOVA non si apre più
         exitMenu.dismiss()
         studyGuard.dismiss()
         edge.remove()
@@ -183,6 +191,8 @@ class NovaControlService : AccessibilityService() {
     private val dismissShade = Runnable { performGlobalAction(GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE) }
 
     private fun hideAndroidShade(finished: Boolean) {
+        if (app.shadeLocked) return // bloccata: non parte, e continuare a chiuderla renderebbe a scatti il gesto
+        if (shape != StripShape.NONE) AndroidShade.lock(app, true) // sbloccata da «Notifiche di Android»
         val now = SystemClock.uptimeMillis()
         if (!finished && now - lastShadeHide < SHADE_HIDE_GAP_MS) return
         lastShadeHide = now
@@ -296,8 +306,8 @@ class NovaControlService : AccessibilityService() {
             this,
             app,
             scope,
-            onSystemNotifications = { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) },
-            onSystemQuickSettings = { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) },
+            onSystemNotifications = { AndroidShade.open(app) { performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS) } },
+            onSystemQuickSettings = { AndroidShade.open(app) { performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS) } },
             onTurbo = { HomeSystem.turboWithToast(this, scope, PerformanceUi(app, scope)) },
         ).also {
             controls = it

@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Solo la tendina di NOVA
+- Richiesta: "voglio solo la tendina di nova, quella android non la voglio piu vedere neanche per una frazione di secondo".
+- Con Shizuku attivo NOVA blocca la tendina di Android: dal gesto dall'alto parte solo la sua, e il gesto non scatta più.
+- Le notifiche di Android restano raggiungibili da tendina → Altro → «Notifiche di Android» e «Impostazioni rapide di Android»: al gesto dopo la tendina si riblocca.
+- Il blocco sparisce da solo con un riavvio, finché Shizuku non riparte, e con «Annulla tutte le modifiche».
+
 ### La barra della luminosità segue i cambiamenti
 - Richiesta: "la luminosita si alza [...] però la barra della luminosita rimane ferma".
 - Accendendo la Presentazione con la tendina aperta la barra restava dov'era. Ora si muove da sola, anche quando la luminosità cambia per altri motivi.

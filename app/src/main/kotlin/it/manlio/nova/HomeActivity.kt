@@ -111,8 +111,8 @@ class HomeActivity : ComponentActivity() {
                 this,
                 app,
                 lifecycleScope,
-                onSystemNotifications = { HomeSystem.expandNotifications(this) },
-                onSystemQuickSettings = { HomeSystem.expandQuickSettings(this) },
+                onSystemNotifications = { AndroidShade.open(app) { HomeSystem.expandNotifications(this) } },
+                onSystemQuickSettings = { AndroidShade.open(app) { HomeSystem.expandQuickSettings(this) } },
             ) { HomeSystem.turboWithToast(this, lifecycleScope, performance) }
         NotificationHub.init(this)
         mediaHub = MediaHub(this)
