@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La barra della luminosità segue i cambiamenti
+- Richiesta: "la luminosita si alza [...] però la barra della luminosita rimane ferma".
+- Accendendo la Presentazione con la tendina aperta la barra restava dov'era. Ora si muove da sola, anche quando la luminosità cambia per altri motivi.
+
 ### Il doppio swipe funziona con i gesti di Android
 - Richiesta: "Accesa, prova".
 - Sul tablet lo swipe dal bordo destro era preso da Android come «Indietro». Ora funziona dal centro del bordo; più in alto o più in basso resta «Indietro».

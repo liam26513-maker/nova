@@ -46,6 +46,8 @@ class Level(
     val read: () -> Float,
     val write: (Float) -> Unit,
     val steps: Int = 0,
+    /** Emette quando il valore cambia da fuori (una modalità, Android): il cursore lo rilegge, se non lo stai trascinando. */
+    val changes: Flow<Unit>? = null,
 )
 
 /**
