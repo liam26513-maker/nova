@@ -49,6 +49,9 @@ class NovaApp :
     UpdaterProvider {
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /** Vero se la tendina di Android è bloccata da NOVA: il gesto dall'alto non deve più combatterla. */
+    @Volatile var shadeLocked = false
+
     val log = LocalLog()
 
     lateinit var bootGuard: BootGuard

@@ -278,6 +278,12 @@ class CollapseShadeTest {
     fun `it only asks the status bar to close`() {
         assertEquals(listOf("cmd", "statusbar", "collapse"), SystemCommand.CollapseShade.argv)
     }
+
+    @Test
+    fun `the lock touches only the expansion of the status bar, and none gives everything back`() {
+        assertEquals(listOf("cmd", "statusbar", "send-disable-flag", "statusbar-expansion"), SystemCommand.ShadeLock(true).argv)
+        assertEquals(listOf("cmd", "statusbar", "send-disable-flag", "none"), SystemCommand.ShadeLock(false).argv)
+    }
 }
 
 class GameScaleTest {
@@ -304,6 +310,30 @@ class GameScaleTest {
         val seen = generateSequence(SystemCommand.nextGameScale(null)) { SystemCommand.nextGameScale(it) }.toList()
         assertEquals(listOf(90, 80, 70, 65), seen)
     }
+
+    @Test
+    fun `the shade lock is one entry, survives a restart of the app and is undone by reverting everything`() =
+        runTest {
+            val ran = mutableListOf<SystemCommand>()
+            val shell =
+                CommandRunner {
+                    ran += it
+                    ShellResult(0, "")
+                }
+            val log = SystemChangeLog(File(tmp.root, "shade.json"), shell)
+            log.setShadeLock(true)
+            log.setShadeLock(true)
+            assertEquals(1, log.entries().size)
+            val reopened = SystemChangeLog(File(tmp.root, "shade.json"), shell)
+            assertTrue(reopened.entries().single() is SystemChange.ShadeLock)
+
+            assertEquals(0, reopened.revertAll())
+            assertEquals(SystemCommand.ShadeLock(false), ran.last())
+            assertTrue(reopened.entries().isEmpty())
+
+            log.setShadeLock(false)
+            assertTrue(log.entries().isEmpty())
+        }
 
     @Test
     fun `the log keeps one entry per game, none at normal, and reverts to normal`() =
