@@ -2,6 +2,7 @@ package it.manlio.nova
 
 import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -86,8 +87,10 @@ class SettingsScreenshotTest {
         render("theme/light.json", GraphicsState(GraphicsLevel.BALANCED, automatic = true))
         compose.onRoot().captureRoboImage("screenshots/impostazioni_stretto_elenco.png")
         compose.onNodeWithText("Il tuo tablet").performClick()
-        compose.waitForIdle()
-        compose.onNodeWithText("Processore", substring = true).assertExists()
+        // Il passaggio al dettaglio è animato: su una macchina lenta il testo arriva dopo il primo «idle».
+        compose.waitUntil(DETAIL_TIMEOUT_MS) {
+            compose.onAllNodesWithText("Processore", substring = true).fetchSemanticsNodes().isNotEmpty()
+        }
         compose.onRoot().captureRoboImage("screenshots/impostazioni_stretto_dettaglio.png")
         compose.onNodeWithText("‹  Impostazioni").performClick()
         compose.waitForIdle()
@@ -189,3 +192,5 @@ private val SAMPLE_SYSTEM =
         shizuku = ShizukuStatus.NEEDS_PERMISSION,
         systemChanges = 2,
     )
+
+private const val DETAIL_TIMEOUT_MS = 5_000L
