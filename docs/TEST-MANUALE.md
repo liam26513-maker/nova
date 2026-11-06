@@ -44,6 +44,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Tendina → Altro → Schermo sempre acceso: la riga dice «Sì» e lo schermo non si spegne da solo. Ritoccandola torna il tempo di prima.
 - [ ] Impostazioni di Android → Accessibilità → Centro di controllo di NOVA: c'è un interruttore normale, si accende senza crash e dopo un riavvio del tablet resta acceso.
 - [ ] Impostazioni → Il tuo tempo: accendi e spegni una modalità dopo qualche minuto, la pagina li conta. «Mostra il tempo per ogni app» apre la schermata di Android; concesso l'accesso, tornando compaiono le app.
+- [ ] Impostazioni → Strumenti di sistema → «Lascia lavorare NOVA in secondo piano» apre «Background Manage»: NOVA e Tastiera NOVA sono attive.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.

@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.560 e PR successive. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.580 e PR successive. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -32,8 +32,8 @@ Internet nella tastiera, mai cambiare chiave di firma né `applicationId`. La CI
 ## Sul tablet (4 novembre, 0.1.460)
 Provate: Studio, Lavoro e l'aggiornamento automatico della tastiera (0.1.340 → 0.1.460 con «Controlla ora»). Per un'ora circa, durante un guasto di GitHub, il DNS di «Blocca pubblicità» non è stato confermato e il tablet non trovava nessun sito; poi si è ripreso da solo, causa non trovata. Il servizio di accessibilità di NOVA risulta spento, causa ignota: senza non si provano le uscite col volume. Mancano Creativa, Presentazione, Risoluzione e il 65% in partita.
 
-## Sul tablet (5 novembre, 0.1.560)
-Provate sul tablet: tendina con gesti veloci e lenti (la tendina di Android si chiude con Shizuku: l'azione di accessibilità `GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE` qui non fa niente), note rapide, pagine Studio, Gaming, Aggiornamenti e Prestazioni. Non ancora provati a mano: pastiglia e uscita della Studio, Pomodoro, blocco app, filtro caldo, schermo diviso, doppio swipe, watchdog, volume giù e su, Creativa, Presentazione, Risoluzione, 65% in partita. Brawl Stars è al 65%, anche nel registro di NOVA. «I tuoi giochi» e «Il tuo tempo» sono visibili, ma il conteggio dei minuti e le app non sono ancora provati. Il servizio di accessibilità si è spento più volte: sulla sua pagina le Impostazioni di Android andavano in crash («Unexpected tutorial pages size») perché con `flagRequestAccessibilityButton` il servizio era legato alla scorciatoia. Il flag è stato tolto; resta da confermare che non si spenga più.
+## Sul tablet (6 novembre, 0.1.580)
+Provate sul tablet: tendina con gesti veloci e lenti (la tendina di Android si chiude con Shizuku: l'azione di accessibilità `GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE` qui non fa niente), note rapide, pagine Studio, Gaming, Aggiornamenti e Prestazioni. Provati anche: pastiglia e uscita della Studio, avvio del Pomodoro, blocco e sblocco delle app, Lavoro con schermo diviso, ingresso e uscita dalla Creativa, minuti di «Il tuo tempo». Non ancora provati a mano: filtro caldo, doppio swipe, watchdog, volume giù e su, Presentazione, 65% in partita. Brawl Stars è al 65%, anche nel registro di NOVA. Il tempo per ogni app aspetta il permesso del proprietario. Il servizio di accessibilità si fermava perché il gestore Allwinner «Background Manage» bloccava NOVA (`awbms skipService`): il 6 novembre il proprietario ha autorizzato NOVA e Tastiera NOVA. A volte, di rado, si apre solo la tendina di Android: 2 volte su circa 25 prove, causa non trovata.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).

@@ -65,6 +65,8 @@
     <string name="updates_token_save">Salva il token</string>
     <string name="updates_rollback_config">Torna alla configurazione precedente</string>
     <string name="updates_rollback_config_summary">Istantaneo, senza rete</string>
+    <string name="system_background">Lascia lavorare NOVA in secondo piano</string>
+    <string name="system_background_summary">Attiva NOVA e Tastiera NOVA: senza, il tablet ferma tendina e notifiche</string>
     <string name="system_title">Strumenti di sistema</string>
     <string name="system_footer">Shizuku dà a NOVA i permessi per le funzioni di sistema senza root. Ogni modifica viene registrata e si può sempre annullare.</string>
     <string name="system_shizuku_ready">Attivo</string>

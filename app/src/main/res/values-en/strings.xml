@@ -62,6 +62,8 @@
     <string name="updates_token_save">Save the token</string>
     <string name="updates_rollback_config">Go back to the previous configuration</string>
     <string name="updates_rollback_config_summary">Instant, no network needed</string>
+    <string name="system_background">Let NOVA work in the background</string>
+    <string name="system_background_summary">Turn on NOVA and NOVA Keyboard: otherwise the tablet stops the control centre and notifications</string>
     <string name="system_title">System tools</string>
     <string name="system_footer">Shizuku gives NOVA the permissions for system features without root. Every change is recorded and can always be undone.</string>
     <string name="system_shizuku_ready">Active</string>
