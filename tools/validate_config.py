@@ -14,6 +14,7 @@ SCHEMA_FOR = {
     "brand.json": "brand",
     "modules.json": "modules",
     "modes.json": "modes",
+    "debloat.json": "debloat",
     "theme/*.json": "theme",
 }
 

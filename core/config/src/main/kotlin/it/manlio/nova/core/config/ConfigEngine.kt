@@ -114,6 +114,7 @@ class ConfigEngine(
             theme: String,
             modules: String,
             modes: String,
+            debloat: String,
         ): JsonObject =
             JsonObject(
                 mapOf(
@@ -122,6 +123,7 @@ class ConfigEngine(
                     "theme" to JSON.parseToJsonElement(theme),
                     "modules" to JSON.parseToJsonElement(modules),
                     "modes" to JSON.parseToJsonElement(modes),
+                    "debloat" to JSON.parseToJsonElement(debloat),
                 ),
             )
     }

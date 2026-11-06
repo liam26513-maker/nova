@@ -7,12 +7,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import it.manlio.nova.core.config.DebloatApp
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.system.Density
 import it.manlio.nova.core.system.ShizukuStatus
+import it.manlio.nova.core.system.SystemCommand
 import it.manlio.nova.core.system.SystemTools
 import it.manlio.nova.core.system.TurboPlan
 import it.manlio.nova.core.system.TurboResult
+import it.manlio.nova.core.system.parsePackages
 import it.manlio.nova.feature.home.Favorites
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +48,11 @@ class PerformanceUi(
     var frozen by mutableStateOf<List<String>>(emptyList())
         private set
 
+    /** I pacchetti del tablet, letti con Shizuku: vuoto finché non si può. */
+    var installed by mutableStateOf<Set<String>>(emptySet())
+        private set
+    val debloat: Map<String, DebloatApp> get() = app.config.current.value.debloat.apps
+
     /** Secondi che restano per confermare la nuova densità; 0 = niente da confermare. */
     var trialLeft by mutableIntStateOf(0)
         private set
@@ -68,6 +76,7 @@ class PerformanceUi(
             animations = app.systemTools.animationScale()
             adBlock = app.systemTools.adBlockDnsOn()
             density = app.systemTools.density()
+            installed = parsePackages(app.shizuku.run(SystemCommand.ListPackages).output)
         }
     }
 

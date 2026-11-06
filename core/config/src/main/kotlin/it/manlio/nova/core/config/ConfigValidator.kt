@@ -13,6 +13,7 @@ object ConfigValidator {
     private val DAMPING_RANGE = MIN_DAMPING..MAX_DAMPING
     private const val MAX_MODE_MINUTES = 24 * 60
     private val MODE_MINUTES = 1..MAX_MODE_MINUTES
+    private val DEBLOAT_LEVELS = setOf("safe", "consider")
 
     fun validate(c: NovaConfig): List<String> =
         buildList {
@@ -22,6 +23,7 @@ object ConfigValidator {
                 "theme" to c.theme.schemaVersion,
                 "modules" to c.modules.schemaVersion,
                 "modes" to c.modes.schemaVersion,
+                "debloat" to c.debloat.schemaVersion,
             ).forEach { (name, v) ->
                 if (v != SUPPORTED_SCHEMA_VERSION) {
                     add("$name.schemaVersion=$v non supportato (atteso $SUPPORTED_SCHEMA_VERSION)")
@@ -31,6 +33,7 @@ object ConfigValidator {
             color("brand.accentColor", c.brand.accentColor)
             addAll(validateTheme(c.theme))
             c.modules.modules.keys.filterNot { ID.matches(it) }.forEach { add("modules: id non valido '$it'") }
+            c.debloat.apps.filterValues { it.level !in DEBLOAT_LEVELS }.keys.forEach { add("debloat: livello non valido per $it") }
             c.modes.modes.forEach { (id, mode) ->
                 if (mode.maxMinutes !in MODE_MINUTES) add("modes.$id.maxMinutes fuori da $MODE_MINUTES")
             }

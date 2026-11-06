@@ -245,7 +245,14 @@ class NovaApp :
             with(context.assets) {
                 fun read(path: String) = open(path).bufferedReader().use { it.readText() }
                 val theme = if (isNightMode(context)) "theme/dark.json" else "theme/light.json"
-                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"), read("modes.json"))
+                ConfigEngine.assemble(
+                    read("meta.json"),
+                    read("brand.json"),
+                    read(theme),
+                    read("modules.json"),
+                    read("modes.json"),
+                    read("debloat.json"),
+                )
             }
 
         private fun isNightMode(context: Context) =

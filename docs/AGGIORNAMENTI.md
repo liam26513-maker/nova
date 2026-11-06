@@ -20,7 +20,7 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 
 ## Configurazione (aggiornamento a caldo)
 - Release con tag `config-vX.Y.Z`.
-- Asset `nova-config.json`: documento completo `{ "meta": …, "brand": …, "theme": …, "modules": …, "modes": … }`, con `meta.version` uguale a `X.Y.Z`.
+- Asset `nova-config.json`: documento completo `{ "meta": …, "brand": …, "theme": …, "modules": …, "modes": …, "debloat": … }`, con `meta.version` uguale a `X.Y.Z`.
 - Asset `nova-config.json.sha256`.
 - Si applica se la versione è maggiore di quella attiva. Il motore la valida: un pacchetto non valido viene rifiutato e resta quello precedente.
 - Il tablet conserva gli ultimi 10 pacchetti: "Torna alla configurazione precedente" è istantaneo e non usa la rete.
@@ -40,7 +40,7 @@ Come `core/update` trova e verifica gli aggiornamenti (SPEC §4.5–4.6). Il wor
 | Workflow | Quando parte | Cosa pubblica |
 |---|---|---|
 | `release.yml` | merge su `main` che tocca il codice (non solo `config/` o documenti). Cinque job: `versione` → `build` (firmata, **senza test**: girano già in `ci.yml`), `ripristino` e `tastiera` (in parallelo, facoltativi) → `pubblica`. L'app: circa 4 minuti; la tastiera, in parallelo, circa 12 | `vX.Y.<code>` con `nova-<code>.apk` firmato + `.sha256`, più il ripristino immediato della versione precedente e `nova-tastiera-<code>.apk` + `.sha256`; note dal `CHANGELOG.md` |
-| `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules, modes) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
+| `config-release.yml` | merge su `main` che tocca `config/` | `config-v<meta.version>` con `nova-config.json` (meta, brand, modules, modes, debloat) + `.sha256`; se la versione non è stata aumentata avvisa e non pubblica |
 | `rollback.yml` | dal tablet: Impostazioni → Aggiornamenti → "Torna a una versione precedente" (oppure a mano da Actions) | ricompila il codice di un tag passato con un `versionCode` più alto, così si installa sopra |
 
 - **versionCode:** vedi la tabella "Numeri di versione" più sotto. Le anteprime di sviluppo hanno 1, quindi qualsiasi release le sostituisce.

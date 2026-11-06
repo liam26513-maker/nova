@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "apps": {
+    "com.clock.pt1.keeptesting": { "name": "Prova di fabbrica", "level": "safe", "note": "Test del produttore: resta sempre in memoria e a te non serve" },
+    "bnd.com": { "name": "Modalità tecnica", "level": "safe", "note": "Strumento del produttore per i tecnici" },
+    "com.softwinner.dragonatt": { "name": "Test del produttore", "level": "safe", "note": "Serve solo in fabbrica" },
+    "com.softwinner.awlogsettings": { "name": "AwlogSettings", "level": "safe", "note": "Registro tecnico del produttore" },
+    "com.softwinner.qrscanner": { "name": "Lettore QR", "level": "safe", "note": "La fotocamera di Google legge già i codici QR" },
+    "com.google.android.apps.kids.home": { "name": "Kids Space", "level": "safe", "note": "Spazio per bambini: se non lo usi non serve" },
+    "com.google.android.apps.youtube.kids": { "name": "YouTube Kids", "level": "safe", "note": "Se non lo usi non serve" },
+    "com.google.android.videos": { "name": "Google TV", "level": "safe", "note": "Se non noleggi film da Google non serve" },
+    "com.google.android.apps.books": { "name": "Google Play Libri", "level": "safe", "note": "Se non leggi libri da Google non serve" },
+    "com.google.android.feedback": { "name": "Commenti Google", "level": "safe", "note": "Manda segnalazioni a Google" },
+    "com.google.android.printservice.recommendation": { "name": "Consigli di stampa", "level": "safe", "note": "Propone servizi di stampa" },
+    "com.softwinner.awfloatwindowball": { "name": "Pallina flottante", "level": "consider", "note": "Pallina del produttore, sempre in memoria: spegnila se non la usi" },
+    "com.softwinner.videoplayer": { "name": "Lettore video", "level": "consider", "note": "Spegnilo se guardi i video con un'altra app" },
+    "com.softwinner.miracastReceiver": { "name": "MiracastReceiver", "level": "consider", "note": "Serve per ricevere lo schermo di un altro dispositivo" },
+    "com.softwinner.timerswitch": { "name": "Accensione programmata", "level": "consider", "note": "Serve solo se programmi accensione e spegnimento" },
+    "com.android.soundrecorder": { "name": "Registratore", "level": "consider", "note": "Spegnilo se non registri audio" },
+    "com.google.android.apps.youtube.music": { "name": "YouTube Music", "level": "consider", "note": "Spegnilo se ascolti musica altrove" },
+    "com.google.android.apps.tachyon": { "name": "Meet", "level": "consider", "note": "Serve per le videochiamate Google" },
+    "com.google.android.play.games": { "name": "Google Play Giochi", "level": "consider", "note": "Alcuni giochi lo usano per i salvataggi: controlla dopo averlo spento" },
+    "com.google.android.apps.googleassistant": { "name": "Assistente", "level": "consider", "note": "Spegnilo se non usi l'Assistente Google" }
+  }
+}

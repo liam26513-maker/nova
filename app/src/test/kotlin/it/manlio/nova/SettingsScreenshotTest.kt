@@ -43,7 +43,14 @@ class SettingsScreenshotTest {
         val config =
             ConfigEngine(
                 1,
-                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"), read("modes.json")),
+                ConfigEngine.assemble(
+                    read("meta.json"),
+                    read("brand.json"),
+                    read(theme),
+                    read("modules.json"),
+                    read("modes.json"),
+                    read("debloat.json"),
+                ),
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, graphics.level)) {
@@ -127,6 +134,7 @@ class SettingsScreenshotTest {
                     read("theme/light.json"),
                     read("modules.json"),
                     read("modes.json"),
+                    read("debloat.json"),
                 ),
             ).current.value
         compose.setContent {

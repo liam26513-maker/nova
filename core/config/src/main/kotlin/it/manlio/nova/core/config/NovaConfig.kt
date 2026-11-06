@@ -73,6 +73,20 @@ data class ModesConfig(
     val modes: Map<String, ModeConfig>,
 )
 
+/** Un'app che si può spegnere (SPEC §7.2): [level] è `safe` o `consider`. */
+@Serializable
+data class DebloatApp(
+    val name: String,
+    val level: String,
+    val note: String,
+)
+
+@Serializable
+data class DebloatConfig(
+    val schemaVersion: Int,
+    val apps: Map<String, DebloatApp>,
+)
+
 /** Configurazione completa risultante dalla fusione degli strati. */
 @Serializable
 data class NovaConfig(
@@ -81,4 +95,5 @@ data class NovaConfig(
     val theme: ThemeConfig,
     val modules: ModulesConfig,
     val modes: ModesConfig,
+    val debloat: DebloatConfig,
 )
