@@ -13,6 +13,7 @@ SCHEMA_FOR = {
     "meta.json": "meta",
     "brand.json": "brand",
     "modules.json": "modules",
+    "modes.json": "modes",
     "theme/*.json": "theme",
 }
 

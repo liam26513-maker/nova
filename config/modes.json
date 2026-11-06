@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "modes": {
+    "gaming": {
+      "actions": ["PERFORMANCE_GRAPHICS", "DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "PAUSE_SYNC", "TURBO"],
+      "maxMinutes": 360
+    },
+    "studio": {
+      "actions": ["DO_NOT_DISTURB", "KEEP_SCREEN_ON", "NIGHT_LIGHT_ON"],
+      "maxMinutes": 240
+    },
+    "lavoro": {
+      "actions": ["DO_NOT_DISTURB"],
+      "maxMinutes": 600
+    },
+    "creativa": {
+      "actions": ["PERFORMANCE_GRAPHICS", "DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "NIGHT_LIGHT_OFF"],
+      "maxMinutes": 360
+    },
+    "presentazione": {
+      "actions": ["DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "FULL_BRIGHTNESS"],
+      "maxMinutes": 180
+    }
+  }
+}

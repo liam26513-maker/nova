@@ -42,7 +42,7 @@ class SettingsScreenshotTest {
         val config =
             ConfigEngine(
                 1,
-                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json")),
+                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"), read("modes.json")),
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, graphics.level)) {
@@ -118,7 +118,13 @@ class SettingsScreenshotTest {
         val config =
             ConfigEngine(
                 1,
-                ConfigEngine.assemble(read("meta.json"), read("brand.json"), read("theme/light.json"), read("modules.json")),
+                ConfigEngine.assemble(
+                    read("meta.json"),
+                    read("brand.json"),
+                    read("theme/light.json"),
+                    read("modules.json"),
+                    read("modes.json"),
+                ),
             ).current.value
         compose.setContent {
             NovaTheme(tokensFrom(config, GraphicsLevel.BALANCED)) { BenchmarkReportScreen(SAMPLE_PROFILE, onDone = {}) }

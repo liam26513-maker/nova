@@ -20,11 +20,20 @@ import it.manlio.nova.core.modes.StudyGate
 import it.manlio.nova.core.modes.StudyStore
 import it.manlio.nova.core.modes.TextSessionStore
 import it.manlio.nova.core.modes.UndoToken
+import it.manlio.nova.core.modes.withConfig
 import it.manlio.nova.core.system.QuickToggle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDate
+
+/** La modalità come la vuole la configurazione attuale; senza una voce per lei, quella compilata. */
+private fun configured(
+    app: NovaApp,
+    mode: ModeDefinition,
+): ModeDefinition =
+    app.config.current.value.modes.modes[mode.id]
+        ?.let { mode.withConfig(it.actions, it.maxMinutes) } ?: mode
 
 /**
  * Le modalità (SPEC §8) sul tablet vero: traduce ogni [ModeAction] in ciò che Android permette e sa annullarla.
@@ -46,7 +55,8 @@ class ModeController(
     /** Cosa fa la modalità, voce per voce (scelto in Impostazioni → Modalità Gaming). */
     val options = ModeOptions(File(app.filesDir, "mode-options.properties"))
 
-    val engine = ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")))
+    val engine =
+        ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")), catalog = { Modes.all.map { configured(app, it) } })
 
     /** Quanto tempo passa in ogni modalità (Impostazioni → Il tuo tempo). */
     val minutes = ModeMinutes(File(app.filesDir, "mode-minutes.properties"))
@@ -89,7 +99,8 @@ class ModeController(
             val on = !isActive(mode)
             if (on) {
                 // Solo le voci che l'utente tiene accese: così si può trovare cosa fa scattare un gioco.
-                say(summary(mode, engine.enter(mode.copy(actions = options.chosen(mode)))))
+                val wanted = configured(app, mode)
+                say(summary(mode, engine.enter(wanted.copy(actions = options.chosen(wanted)))))
             } else {
                 val report = engine.exit()
                 say(context.getString(if (report.pending == 0) R.string.mode_off else R.string.mode_off_pending, name(mode)))

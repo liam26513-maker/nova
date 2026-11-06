@@ -66,7 +66,7 @@ class ModeEngine(
     private val env: ModeEnvironment,
     private val store: SessionStore,
     private val clock: () -> Long = System::currentTimeMillis,
-    private val catalog: List<ModeDefinition> = Modes.all,
+    private val catalog: () -> List<ModeDefinition> = { Modes.all },
 ) {
     private val lock = Mutex()
     private val _active = MutableStateFlow<Session?>(null)
@@ -123,7 +123,7 @@ class ModeEngine(
     suspend fun exitIfExpired(): Boolean =
         lock.withLock {
             val session = _active.value ?: return@withLock false
-            val max = catalog.firstOrNull { it.id == session.modeId }?.maxMinutes ?: DEFAULT_MAX_MINUTES
+            val max = catalog().firstOrNull { it.id == session.modeId }?.maxMinutes ?: DEFAULT_MAX_MINUTES
             val expired = clock() - session.startedAt >= max * MINUTE_MS
             if (expired) finish(session)
             expired

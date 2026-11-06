@@ -38,6 +38,13 @@ class ModesTest {
     }
 
     @Test
+    fun `the config changes actions and duration, drops unknown names and keeps turbo in gaming only`() {
+        val study = Modes.STUDY.withConfig(listOf("KEEP_SCREEN_ON", "DAL_FUTURO", "TURBO", "KEEP_SCREEN_ON"), 30)
+        assertEquals(ModeDefinition("studio", listOf(ModeAction.KEEP_SCREEN_ON), 30), study)
+        assertTrue(ModeAction.TURBO in Modes.GAMING.withConfig(listOf("TURBO"), 60).actions)
+    }
+
+    @Test
     fun `modes are found by id`() {
         assertNotNull(Modes.byId("gaming"))
         assertEquals(null, Modes.byId("inesistente"))
