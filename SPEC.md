@@ -537,7 +537,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.3 Modalità Lavoro
 
-- **Schermo diviso** dalla tendina sopra le altre app durante la modalità (fatto; serve il servizio di accessibilità).
+- **Schermo diviso** dalla tendina sopra le altre app durante la modalità: apre le app recenti, con il tasto «Dividi» di Android (`GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN` sul tablet di riferimento non fa niente).
 - **Desktop:** barra applicazioni propria in basso (overlay) con app aperte e preferite; **finestre flottanti ridimensionabili** tramite modalità freeform di Android (abilitazione `enable_freeform_support` via Shizuku, avvio con `ActivityOptions.setLaunchBounds`); split-screen rapido. Riferimento architetturale: progetto open source "Taskbar" (farmerbb), da studiare per le tecniche, rispettando la licenza.
 - **Set di finestre stile Stage Manager:** gruppi di app salvati con posizione e dimensione ("Ricerca: browser + note + Claude"), riapribili con un tocco; set recenti a lato.
 - Tastiera fisica e mouse: §10.6.

@@ -15,7 +15,6 @@ import it.manlio.nova.core.modes.ModeMinutes
 import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.modes.Pomodoro
 import it.manlio.nova.core.modes.PomodoroPhase
-import it.manlio.nova.core.modes.Session
 import it.manlio.nova.core.modes.StudyGate
 import it.manlio.nova.core.modes.StudyStore
 import it.manlio.nova.core.modes.TextSessionStore
@@ -26,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDate
+import java.util.concurrent.atomic.AtomicBoolean
 
 /** La modalità come la vuole la configurazione attuale; senza una voce per lei, quella compilata. */
 private fun configured(
@@ -56,10 +56,18 @@ class ModeController(
     val options = ModeOptions(File(app.filesDir, "mode-options.properties"))
 
     val engine =
-        ModeEngine(this, TextSessionStore(File(app.filesDir, "mode-session.txt")), catalog = { Modes.all.map { configured(app, it) } })
+        ModeEngine(
+            this,
+            TextSessionStore(File(app.filesDir, "mode-session.txt")),
+            catalog = { Modes.all.map { configured(app, it) } },
+            onFinished = { id, spent -> minutes.add(id, LocalDate.now(), spent) },
+        )
 
     /** Quanto tempo passa in ogni modalità (Impostazioni → Il tuo tempo). */
-    val minutes = ModeMinutes(File(app.filesDir, "mode-minutes.properties"))
+    val minutes = ModeMinutes(File(app.filesDir, "mode-time.properties"))
+
+    /** [start] gira a ogni ritorno sulla Home: chi ascolta il motore deve essere uno solo. */
+    private val watching = AtomicBoolean(false)
 
     val studyStore = StudyStore(File(app.filesDir, "studio.properties"))
     val studyGate = StudyGate(System::currentTimeMillis, studyStore)
@@ -78,14 +86,8 @@ class ModeController(
             engine.recover()
             engine.exitIfExpired()
             if (isActive(Modes.STUDY)) pomodoro.restore()
-            var running: Session? = engine.active.value
-            engine.active.collect { now ->
-                if (now?.modeId != Modes.STUDY.id) pomodoro.stop()
-                running?.takeIf { it.startedAt != now?.startedAt }?.let { ended ->
-                    val spent = (System.currentTimeMillis() - ended.startedAt) / MS_PER_MINUTE
-                    minutes.add(ended.modeId, LocalDate.now(), spent.toInt())
-                }
-                running = now
+            if (watching.compareAndSet(false, true)) {
+                engine.active.collect { if (it?.modeId != Modes.STUDY.id) pomodoro.stop() }
             }
         }
     }
@@ -222,6 +224,5 @@ class ModeController(
         const val KIND_NIGHT_LIGHT = "night_light"
         const val KIND_NIGHT_LIGHT_ON = "night_light_on"
         const val AUTO = "auto"
-        const val MS_PER_MINUTE = 60_000L
     }
 }

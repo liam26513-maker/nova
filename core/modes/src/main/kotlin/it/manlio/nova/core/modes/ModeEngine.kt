@@ -67,6 +67,8 @@ class ModeEngine(
     private val store: SessionStore,
     private val clock: () -> Long = System::currentTimeMillis,
     private val catalog: () -> List<ModeDefinition> = { Modes.all },
+    /** Una sola volta per sessione: id della modalità e minuti passati dentro. */
+    private val onFinished: (String, Int) -> Unit = { _, _ -> },
 ) {
     private val lock = Mutex()
     private val _active = MutableStateFlow<Session?>(null)
@@ -138,6 +140,7 @@ class ModeEngine(
             if (ok) restored++ else left += token
         }
         _active.value = null
+        if (!session.leftover) onFinished(session.modeId, ((clock() - session.startedAt) / MINUTE_MS).toInt())
         if (left.isEmpty()) {
             store.save(null)
         } else {

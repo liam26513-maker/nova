@@ -12,7 +12,7 @@ Stato: **Fase 3, primo passo**. Motore + Gaming di base, solo manuale. Vedi SPEC
 
 ## Le modalità
 
-`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Creativa spegne il filtro luce blu (`NIGHT_LIGHT_OFF`), Presentazione porta la luminosità al massimo (`FULL_BRIGHTNESS`). Studio completa di timer: `Pomodoro` e `StudyStore` (durate, minuti per giorno, sessione salvata; `PomodoroAlarm` fa ripartire NOVA a fine fase, sveglia non esatta), `StudyGate` e `StudyGuard` per il blocco delle app (serve il servizio di accessibilità), `StudyPill` in cima alla Home al posto dell'isola con il tasto di uscita. Note rapide: `QuickNotes` e `NotesActivity`, file `note-rapide.txt`, si salvano in `onPause`. Filtro caldo: `NIGHT_LIGHT_ON`, voce facoltativa spenta di serie (`ModeOptions.chosen`). Schermo diviso: `HomeControls.onSplitScreen`, solo con il servizio di accessibilità e durante il Lavoro. In Presentazione la riga della trasmissione sale in cima ad Altro. Mancano font per i PDF (§8.4), desktop e finestre flottanti (§8.3), Home portfolio e PIN di uscita (§8.6).
+`Modes.all`: Gaming, Studio, Lavoro, Creativa, Presentazione, tutte da tendina → Altro. Le quattro nuove sono **di base**: usano solo le azioni di `ModeAction`, senza Turbo. Le scelte di `ModeOptions` valgono solo per la Gaming. Creativa spegne il filtro luce blu (`NIGHT_LIGHT_OFF`), Presentazione porta la luminosità al massimo (`FULL_BRIGHTNESS`). Studio completa di timer: `Pomodoro` e `StudyStore` (durate, minuti per giorno, sessione salvata; `PomodoroAlarm` fa ripartire NOVA a fine fase, sveglia non esatta), `StudyGate` e `StudyGuard` per il blocco delle app (serve il servizio di accessibilità), `StudyPill` in cima alla Home al posto dell'isola con il tasto di uscita. Note rapide: `QuickNotes` e `NotesActivity`, file `note-rapide.txt`, si salvano in `onPause`. Filtro caldo: `NIGHT_LIGHT_ON`, voce facoltativa spenta di serie (`ModeOptions.chosen`). Schermo diviso: `HomeControls.onSplitScreen` apre le app recenti (tasto «Dividi»), solo con il servizio di accessibilità e durante il Lavoro. In Presentazione la riga della trasmissione sale in cima ad Altro. Mancano font per i PDF (§8.4), desktop e finestre flottanti (§8.3), Home portfolio e PIN di uscita (§8.6).
 
 ## Sul tablet (`app/ModeController`)
 
@@ -51,7 +51,7 @@ In Impostazioni → Modalità Gaming: le app con categoria gioco, aperte con un 
 
 ## Il tuo tempo (`app/TimeSection`, `core/modes/ModeMinutes`)
 
-`ModeController.start` conta i minuti quando una sessione finisce e li somma al giorno di fine (`mode-minutes.properties`). Le app vengono da `UsageStatsManager`, solo con l'accesso concesso dall'utente; NOVA non compare nell'elenco.
+`ModeEngine.onFinished` dà i minuti una volta per sessione e `ModeController` li somma al giorno di fine (`mode-time.properties`). Non contarli da `start()`: gira a ogni ritorno sulla Home. Le app vengono da `UsageStatsManager`, solo con l'accesso concesso dall'utente; NOVA non compare nell'elenco.
 
 ## Scelte e limiti
 
