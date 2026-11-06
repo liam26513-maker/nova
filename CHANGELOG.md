@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La tendina si riapre anche mentre si sta chiudendo
+- Richiesta: "risolvi le cose ancora aperte".
+- Tirando giù la tendina subito dopo averla chiusa, si apriva solo quella di Android. Ora si apre quella di NOVA.
+
 ### Trovato perché il servizio di NOVA si fermava
 - Richiesta: "controlla quello che non hai controllato".
 - Il tablet ha un gestore del produttore, «Background Manage», che ferma le app non autorizzate. Ora in Impostazioni → Strumenti di sistema c'è la riga che ci porta: lì NOVA e Tastiera NOVA vanno attivate.
