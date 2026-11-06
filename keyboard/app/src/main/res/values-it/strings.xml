@@ -558,4 +558,6 @@
     <string name="recent_emojis_cleared">Emoji recenti cancellate</string>
     <string name="prefs_enable_hardware_keyboard">Supporto tastiera fisica</string>
     <string name="accent_shifted_icon">Icona shift con accento</string>
+    <string name="send_to_claude">Invia a Claude</string>
+    <string name="send_to_claude_missing">L\'app Claude non è installata</string>
 </resources>
