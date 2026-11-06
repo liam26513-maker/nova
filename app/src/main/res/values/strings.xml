@@ -329,7 +329,7 @@
     <string name="gaming_exits">Uscite di emergenza in più</string>
     <string name="gaming_exits_footer">Volume giù tenuto 3 secondi funziona sempre. Queste due costano qualcosa al gioco: servono il servizio di accessibilità e, per il controllo, Shizuku.</string>
     <string name="gaming_edge">Doppio swipe dal bordo destro</string>
-    <string name="gaming_edge_summary">Due swipe entro 2 secondi aprono il menu di uscita. Prende i tocchi sugli ultimi millimetri a destra</string>
+    <string name="gaming_edge_summary">Due swipe dal centro del bordo entro 2 secondi aprono il menu di uscita. Prende i tocchi sugli ultimi millimetri a destra</string>
     <string name="gaming_watchdog">Controllo gioco bloccato</string>
     <string name="gaming_watchdog_summary">Ogni 8 secondi guarda se il gioco è fermo e propone di uscire. Può far scattare il gioco</string>
     <string name="edge_again">Scorri di nuovo per uscire</string>

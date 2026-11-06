@@ -326,7 +326,7 @@
     <string name="gaming_exits">Extra emergency exits</string>
     <string name="gaming_exits_footer">Holding volume down for 3 seconds always works. These two cost the game something: they need the accessibility service and, for the check, Shizuku.</string>
     <string name="gaming_edge">Double swipe from the right edge</string>
-    <string name="gaming_edge_summary">Two swipes within 2 seconds open the exit menu. It takes touches on the last millimetres on the right</string>
+    <string name="gaming_edge_summary">Two swipes from the middle of the edge within 2 seconds open the exit menu. It takes touches on the last millimetres on the right</string>
     <string name="gaming_watchdog">Frozen game check</string>
     <string name="gaming_watchdog_summary">Every 8 seconds it checks whether the game stopped and offers to leave. It can make the game stutter</string>
     <string name="edge_again">Swipe again to leave</string>

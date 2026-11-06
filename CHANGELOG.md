@@ -6,7 +6,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ### Il doppio swipe funziona con i gesti di Android
 - Richiesta: "Accesa, prova".
-- Sul tablet lo swipe dal bordo destro era preso da Android come «Indietro» e NOVA non lo contava. Ora lo conta, e al centro del bordo non scatta «Indietro».
+- Sul tablet lo swipe dal bordo destro era preso da Android come «Indietro». Ora funziona dal centro del bordo; più in alto o più in basso resta «Indietro».
 
 ### «Risoluzione» solo per i giochi
 - Richiesta: "controlla cio che non hai controllato e eventualmente aggiustalo".
