@@ -2,6 +2,7 @@ package it.manlio.nova
 
 import android.content.Context
 import android.content.Intent
+import android.database.ContentObserver
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.AudioManager
@@ -26,9 +27,12 @@ import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.Toggle
 import it.manlio.nova.feature.home.Torch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import java.util.Date
 import kotlin.math.roundToInt
@@ -258,6 +262,7 @@ class HomeControls(
                     )
                 }
             },
+            changes = settingChanges(context, Settings.System.SCREEN_BRIGHTNESS),
         )
 
     private fun open(panel: SystemPanel) {
@@ -342,6 +347,22 @@ private fun pomodoroItem(
         text(timer.state.value)
     }
 }
+
+/** Avvisa quando Android cambia l'impostazione di sistema [name]; ascolta solo finché qualcuno raccoglie, cioè a tendina aperta. */
+private fun settingChanges(
+    context: Context,
+    name: String,
+): Flow<Unit> =
+    callbackFlow {
+        val observer =
+            object : ContentObserver(Handler(Looper.getMainLooper())) {
+                override fun onChange(selfChange: Boolean) {
+                    trySend(Unit)
+                }
+            }
+        context.contentResolver.registerContentObserver(Settings.System.getUriFor(name), false, observer)
+        awaitClose { context.contentResolver.unregisterContentObserver(observer) }
+    }
 
 /** Durante il Lavoro: apre le app recenti, dove Android ha il tasto «Dividi» (SPEC §8.3). */
 private fun splitScreenItem(

@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +61,7 @@ internal fun SliderRow(
     val latest by rememberUpdatedState(level) // la Home può ricostruire le azioni a metà trascinamento: il valore non deve saltare
     val value = remember { mutableFloatStateOf(ControlSheetMath.snap(level.read(), level.steps)) }
     val written = remember { floatArrayOf(value.floatValue) }
+    val dragging = remember { mutableStateOf(false) }
     val commit = {
         if (value.floatValue != written[0]) {
             written[0] = value.floatValue
@@ -72,10 +74,20 @@ internal fun SliderRow(
             delay(WRITE_GAP_MS)
         }
     }
+    LaunchedEffect(level.changes) {
+        level.changes?.collect {
+            if (!dragging.value) {
+                val now = ControlSheetMath.snap(latest.read(), latest.steps)
+                written[0] = now // non è una scelta di chi tocca: non va riscritto
+                value.floatValue = now
+            }
+        }
+    }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Canvas(Modifier.size(24.dp)) { drawControlGlyph(glyph, look.muted) }
         GlassSlider(
             value = value,
+            pressed = dragging,
             label = label,
             steps = level.steps,
             onRelease = { commit() },
@@ -92,13 +104,13 @@ internal fun SliderRow(
 @Composable
 private fun GlassSlider(
     value: MutableFloatState,
+    pressed: MutableState<Boolean>,
     label: String,
     steps: Int,
     onRelease: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val look = LocalHomeLook.current
-    val pressed = remember { mutableStateOf(false) }
     val grow = animateFloatAsState(if (pressed.value) PRESSED_SCALE else 1f, spring(stiffness = SHEET_STIFFNESS), label = "slider-grow")
     val set = { v: Float -> value.floatValue = ControlSheetMath.snap(v, steps) }
     Box(

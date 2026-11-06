@@ -18,7 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
@@ -73,6 +77,7 @@ import it.manlio.nova.feature.home.Weather
 import it.manlio.nova.feature.home.WeatherKind
 import it.manlio.nova.feature.home.WidgetItem
 import it.manlio.nova.feature.home.WidgetKind
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -714,6 +719,27 @@ class HomeScreenTest {
         compose.onNodeWithContentDescription("Luminosità").performSemanticsAction(SemanticsActions.SetProgress) { it(0.9f) }
         compose.waitForIdle()
         assertEquals(0.9f, bri, 0.001f)
+    }
+
+    @Test
+    fun brightness_bar_follows_a_change_made_elsewhere_without_writing_it_back() {
+        var bri = 0.4f
+        var writes = 0
+        val changes = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+        val brightness = Level({ bri }, { writes++ }, changes = changes)
+        render(prefs = HomePrefs(), controls = ControlActions(openPanel = {}, brightness = brightness))
+        openControl()
+        compose.waitForIdle()
+
+        bri = 1f // la Presentazione porta la luminosità al massimo
+        changes.tryEmit(Unit)
+        compose.waitForIdle()
+
+        val full = ProgressBarRangeInfo(1f, 0f..1f)
+        compose
+            .onNodeWithContentDescription("Luminosità")
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ProgressBarRangeInfo, full))
+        assertEquals(0, writes)
     }
 
     @Test
