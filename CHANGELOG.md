@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### «Risoluzione» solo per i giochi
+- Richiesta: "controlla cio che non hai controllato e eventualmente aggiustalo".
+- In tendina → Altro compariva anche «Risoluzione: Calcolatrice», che non può funzionare. Ora la riga c'è solo per i giochi.
+
 ### La tendina si riapre anche mentre si sta chiudendo
 - Richiesta: "risolvi le cose ancora aperte".
 - Tirando giù la tendina subito dopo averla chiusa, si apriva solo quella di Android. Ora si apre quella di NOVA.
