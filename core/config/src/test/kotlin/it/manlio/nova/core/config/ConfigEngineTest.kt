@@ -12,7 +12,14 @@ class ConfigEngineTest {
     private fun read(path: String) = File(configDir, path).readText()
 
     private fun repoDefaults(theme: String = "theme/light.json"): JsonObject =
-        ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"), read("modes.json"))
+        ConfigEngine.assemble(
+            read("meta.json"),
+            read("brand.json"),
+            read(theme),
+            read("modules.json"),
+            read("modes.json"),
+            read("debloat.json"),
+        )
 
     @Test
     fun `every config file in the repository loads and validates`() {
@@ -30,6 +37,13 @@ class ConfigEngineTest {
         val r = engine.applyBundle("""{"modes":{"modes":{"studio":{"actions":[],"maxMinutes":0}}}}""")
         assertTrue(r is ApplyResult.Rejected)
         assertEquals(240, engine.current.value.modes.modes.getValue("studio").maxMinutes)
+    }
+
+    @Test
+    fun `an unknown debloat level is refused`() {
+        val engine = ConfigEngine(1, repoDefaults())
+        val r = engine.applyBundle("""{"debloat":{"apps":{"com.x.y":{"name":"X","level":"forse","note":"n"}}}}""")
+        assertTrue(r is ApplyResult.Rejected)
     }
 
     @Test

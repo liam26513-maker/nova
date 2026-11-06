@@ -64,6 +64,11 @@
     <string name="updates_rollback_config_summary">Instant, no network needed</string>
     <string name="system_background">Let NOVA work in the background</string>
     <string name="system_background_summary">Turn on NOVA and NOVA Keyboard: otherwise the tablet stops the control centre and notifications</string>
+    <string name="debloat_title">Apps you can turn off</string>
+    <string name="debloat_footer">Tap one to turn it off: it moves to the frozen apps above, where one tap turns it back on. Needs Shizuku.</string>
+    <string name="debloat_show">Show the list (%1$d)</string>
+    <string name="debloat_safe">Safe</string>
+    <string name="debloat_consider">Consider</string>
     <string name="system_title">System tools</string>
     <string name="system_footer">Shizuku gives NOVA the permissions for system features without root. Every change is recorded and can always be undone.</string>
     <string name="system_shizuku_ready">Active</string>

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App che si possono spegnere
+- Richiesta: "continua con altri parti non rimanere mai fermo senza fare niente".
+- In Impostazioni → Prestazioni c'è l'elenco delle app del produttore e di Google che non servono, con la spiegazione di ognuna: «Sicuro» o «Valuta». Toccandone una si spegne, e si riaccende con un tocco.
+
 ### Tastiera: tasto «Invia a Claude»
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nella barra strumenti della tastiera si può aggiungere «Invia a Claude»: copia il testo selezionato, o tutto il campo, e lo apre nell'app Claude. È spento di serie: si attiva nelle impostazioni della tastiera.

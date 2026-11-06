@@ -121,6 +121,11 @@ sealed interface SystemCommand {
         override val argv = listOf("cmd", "statusbar", "send-disable-flag", if (locked) "statusbar-expansion" else "none")
     }
 
+    /** Elenca i pacchetti del tablet, solo lettura: NOVA da sola non vede quelli di sistema senza icona. */
+    data object ListPackages : SystemCommand {
+        override val argv = listOf("pm", "list", "packages")
+    }
+
     /** Chiude la tendina di Android: sul tablet di riferimento l'azione di accessibilità non fa niente. Non cambia impostazioni. */
     data object CollapseShade : SystemCommand {
         override val argv = listOf("cmd", "statusbar", "collapse")
@@ -236,6 +241,15 @@ enum class QuickToggle(private val onCommand: String, private val offCommand: St
     /** Gli argomenti del comando: una lista fissa, mai una stringa interpretata da una shell. */
     internal fun argv(on: Boolean): List<String> = (if (on) onCommand else offCommand).split(' ')
 }
+
+/** Legge l'uscita di `pm list packages`: una riga «package:nome» per pacchetto. */
+fun parsePackages(output: String): Set<String> =
+    output
+        .lineSequence()
+        .map { it.trim() }
+        .filter { it.startsWith("package:") }
+        .map { it.removePrefix("package:") }
+        .toSet()
 
 /** Pacchetti che NOVA non disattiva né chiude mai (SPEC §7.1). */
 object ProtectedPackages {

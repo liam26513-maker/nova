@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App del produttore e di Google che si possono spegnere: safe = sicuro, consider = valuta. Quelle da non toccare qui non ci sono",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "apps"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "apps": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_]+)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "level", "note"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "level": { "enum": ["safe", "consider"] },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

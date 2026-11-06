@@ -61,6 +61,7 @@ fun PerformanceSection(
         Choice(R.string.perf_dns_adblock, listOf(true, false), ui.adBlock, { onOff(it) }, onSelect = ui::chooseAdBlock)
     }
     FreezeSection(backdrop, ui)
+    DebloatSection(backdrop, ui)
 }
 
 @Composable

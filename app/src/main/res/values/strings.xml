@@ -67,6 +67,11 @@
     <string name="updates_rollback_config_summary">Istantaneo, senza rete</string>
     <string name="system_background">Lascia lavorare NOVA in secondo piano</string>
     <string name="system_background_summary">Attiva NOVA e Tastiera NOVA: senza, il tablet ferma tendina e notifiche</string>
+    <string name="debloat_title">App che si possono spegnere</string>
+    <string name="debloat_footer">Toccane una per spegnerla: finisce tra le app congelate qui sopra, da dove si riaccende con un tocco. Serve Shizuku.</string>
+    <string name="debloat_show">Mostra l\'elenco (%1$d)</string>
+    <string name="debloat_safe">Sicuro</string>
+    <string name="debloat_consider">Valuta</string>
     <string name="system_title">Strumenti di sistema</string>
     <string name="system_footer">Shizuku dà a NOVA i permessi per le funzioni di sistema senza root. Ogni modifica viene registrata e si può sempre annullare.</string>
     <string name="system_shizuku_ready">Attivo</string>

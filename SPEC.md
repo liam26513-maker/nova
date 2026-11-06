@@ -473,6 +473,8 @@ Implementate tutte e tre le disposizioni di §6.1: **Griglia** (stile iPadOS, **
 
 ### 7.2 Debloat guidato
 
+> **Stato:** fatto in Prestazioni → «App che si possono spegnere», con `config/debloat.json`. Le app da non toccare semplicemente non sono in elenco.
+
 - Elenco delle app e dei servizi del produttore e di Google classificati: **Sicuro da disattivare** / **Valuta** / **Non toccare**, con spiegazione in italiano. Database delle classificazioni in `config/debloat.json` (basato sulle liste pubbliche note, es. Universal Android Debloater), estendibile.
 - Usa `pm disable-user` (reversibile), mai disinstallazione per l'utente 0 senza conferma esplicita e spiegazione.
 
