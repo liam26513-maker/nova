@@ -2,6 +2,7 @@ package it.manlio.nova
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Handler
 import android.widget.Toast
 import it.manlio.nova.core.system.ShizukuStatus
@@ -37,11 +38,13 @@ internal class GameTools(
                 },
             )
             app.lastGame?.let { game ->
-                add(
-                    MoreItem(context.getString(R.string.more_game_scale, label(game)), scaleText(scale(game))) { fix ->
-                        changeScale(game, fix)
-                    },
-                )
+                if (isGame(game)) {
+                    add(
+                        MoreItem(context.getString(R.string.more_game_scale, label(game)), scaleText(scale(game))) { fix ->
+                            changeScale(game, fix)
+                        },
+                    )
+                }
                 add(
                     MoreItem(context.getString(R.string.more_close_game, label(game))) { _ ->
                         close(game)
@@ -50,6 +53,10 @@ internal class GameTools(
                 )
             }
         }
+
+    /** Android cambia la risoluzione solo ai giochi: per un'app qualsiasi la riga non servirebbe a niente. */
+    private fun isGame(pkg: String): Boolean =
+        runCatching { context.packageManager.getApplicationInfo(pkg, 0).category == ApplicationInfo.CATEGORY_GAME }.getOrDefault(false)
 
     private fun share(text: String) {
         val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)
