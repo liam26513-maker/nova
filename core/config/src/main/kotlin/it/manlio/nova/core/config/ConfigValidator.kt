@@ -11,6 +11,8 @@ object ConfigValidator {
     private const val MIN_DAMPING = 0.1f
     private const val MAX_DAMPING = 2f
     private val DAMPING_RANGE = MIN_DAMPING..MAX_DAMPING
+    private const val MAX_MODE_MINUTES = 24 * 60
+    private val MODE_MINUTES = 1..MAX_MODE_MINUTES
 
     fun validate(c: NovaConfig): List<String> =
         buildList {
@@ -19,6 +21,7 @@ object ConfigValidator {
                 "brand" to c.brand.schemaVersion,
                 "theme" to c.theme.schemaVersion,
                 "modules" to c.modules.schemaVersion,
+                "modes" to c.modes.schemaVersion,
             ).forEach { (name, v) ->
                 if (v != SUPPORTED_SCHEMA_VERSION) {
                     add("$name.schemaVersion=$v non supportato (atteso $SUPPORTED_SCHEMA_VERSION)")
@@ -28,6 +31,9 @@ object ConfigValidator {
             color("brand.accentColor", c.brand.accentColor)
             addAll(validateTheme(c.theme))
             c.modules.modules.keys.filterNot { ID.matches(it) }.forEach { add("modules: id non valido '$it'") }
+            c.modes.modes.forEach { (id, mode) ->
+                if (mode.maxMinutes !in MODE_MINUTES) add("modes.$id.maxMinutes fuori da $MODE_MINUTES")
+            }
         }
 
     private fun validateTheme(t: ThemeConfig): List<String> =

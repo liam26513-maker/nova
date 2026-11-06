@@ -40,13 +40,24 @@ data class ModeDefinition(
     val maxMinutes: Int,
 )
 
+/**
+ * La modalità come la vuole `config/modes.json`. Un nome sconosciuto (di una versione più nuova) si ignora.
+ * Il Turbo resta solo alla Gaming: chiude le app, in una modalità di lavoro farebbe perdere cose.
+ */
+fun ModeDefinition.withConfig(
+    actions: List<String>,
+    maxMinutes: Int,
+): ModeDefinition {
+    val known = actions.mapNotNull { name -> ModeAction.entries.firstOrNull { it.name == name } }.distinct()
+    return copy(actions = known.filter { it != ModeAction.TURBO || id == Modes.GAMING.id }, maxMinutes = maxMinutes)
+}
+
 object Modes {
     /**
      * Gaming di base (SPEC §8.2), solo manuale. Il Turbo va per ultimo perché è la parte lenta.
      * Non c'è il Wi-Fi a bassa latenza: per Android il blocco funziona solo se l'app che lo tiene è in primo piano,
      * e durante il gioco NOVA non lo è.
-     * shortcut: le modalità sono nel codice e non in config/modes/<nome>.json (SPEC §8.1);
-     * passare al JSON quando si vorrà cambiarle senza un nuovo APK.
+     * Queste definizioni sono il ripiego: quelle vere stanno in `config/modes.json`, che si aggiorna senza un nuovo APK.
      */
     val GAMING =
         ModeDefinition(

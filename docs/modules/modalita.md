@@ -56,7 +56,7 @@ In Impostazioni → Modalità Gaming: le app con categoria gioco, aperte con un 
 ## Scelte e limiti
 
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.
-- **Modalità definite nel codice:** `shortcut:` in `Modes.kt`; passare a `config/modes/<nome>.json` (con schema e test di caricamento, come chiede CLAUDE.md) quando le modalità saranno più d'una.
+- **Modalità in `config/modes.json`:** azioni e durata massima, lette a ogni ingresso da `ModeController.configured`. `Modes.kt` resta come ripiego e `ModesConfigTest` li tiene uguali. Un nome sconosciuto si ignora e il Turbo resta solo alla Gaming (`withConfig`). Una versione vecchia dell'app rifiuta un pacchetto che contiene `modes` e resta sulla configurazione di prima.
 - **Modalità provvisoria:** il registro delle modalità non è ancora azzerato da `core/safemode` (lo fa «Annulla tutte le modifiche» solo per gli interruttori di sistema); da aggiungere.
 
 ## Strumenti per i giochi (Altro)

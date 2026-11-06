@@ -493,9 +493,9 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.1 Motore delle modalità
 
-> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Le modalità sono ancora definite nel codice (`Modes.kt`), non in `config/modes/*.json`. Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, pannello di §8.2, desktop e finestre flottanti di §8.3, Home portfolio e PIN di §8.6. Dettagli: `docs/modules/modalita.md`.
+> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Azioni e durata massima stanno in `config/modes.json` (`Modes.kt` è il ripiego). Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, pannello di §8.2, desktop e finestre flottanti di §8.3, Home portfolio e PIN di §8.6. Dettagli: `docs/modules/modalita.md`.
 
-- Una modalità è un JSON in `config/modes/` che descrive: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
+- Le modalità stanno in `config/modes.json`. Oggi ognuna descrive azioni all'ingresso e durata massima; sono ancora da fare: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
 - **Attivazione:** manuale (centro di controllo, ricerca, widget), automatica (app aperta, accessorio collegato, orario, rete Wi-Fi), o da ADAM.
 - **Uscita:** ripristina esattamente lo stato precedente (snapshot prima dell'ingresso).
 - Una sola modalità "principale" attiva per volta; la modalità ospite è separata.

@@ -113,6 +113,7 @@ class ConfigEngine(
             brand: String,
             theme: String,
             modules: String,
+            modes: String,
         ): JsonObject =
             JsonObject(
                 mapOf(
@@ -120,6 +121,7 @@ class ConfigEngine(
                     "brand" to JSON.parseToJsonElement(brand),
                     "theme" to JSON.parseToJsonElement(theme),
                     "modules" to JSON.parseToJsonElement(modules),
+                    "modes" to JSON.parseToJsonElement(modes),
                 ),
             )
     }

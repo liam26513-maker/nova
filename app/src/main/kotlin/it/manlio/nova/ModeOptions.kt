@@ -24,7 +24,7 @@ class ModeOptions(private val file: File) {
 
     /** Le azioni da fare entrando: nella Gaming si sceglie tutto, nelle altre solo le voci facoltative come il filtro caldo. */
     fun chosen(mode: ModeDefinition): List<ModeAction> =
-        mode.actions.filter { (mode != Modes.GAMING && it != ModeAction.NIGHT_LIGHT_ON) || enabled(it) }
+        mode.actions.filter { (mode.id != Modes.GAMING.id && it != ModeAction.NIGHT_LIGHT_ON) || enabled(it) }
 
     /**
      * La tendina di NOVA dentro i giochi: predefinito acceso, ma durante la Gaming la striscia si riduce a un angolo (in alto a

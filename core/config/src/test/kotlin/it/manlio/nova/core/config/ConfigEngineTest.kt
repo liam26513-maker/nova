@@ -12,7 +12,7 @@ class ConfigEngineTest {
     private fun read(path: String) = File(configDir, path).readText()
 
     private fun repoDefaults(theme: String = "theme/light.json"): JsonObject =
-        ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"))
+        ConfigEngine.assemble(read("meta.json"), read("brand.json"), read(theme), read("modules.json"), read("modes.json"))
 
     @Test
     fun `every config file in the repository loads and validates`() {
@@ -22,6 +22,14 @@ class ConfigEngineTest {
             val config = ConfigEngine(appVersionCode = 1, defaults = repoDefaults(theme)).current.value
             assertEquals(emptyList<String>(), ConfigValidator.validate(config))
         }
+    }
+
+    @Test
+    fun `a mode that would never end is refused and the previous config stays`() {
+        val engine = ConfigEngine(1, repoDefaults())
+        val r = engine.applyBundle("""{"modes":{"modes":{"studio":{"actions":[],"maxMinutes":0}}}}""")
+        assertTrue(r is ApplyResult.Rejected)
+        assertEquals(240, engine.current.value.modes.modes.getValue("studio").maxMinutes)
     }
 
     @Test

@@ -60,6 +60,19 @@ data class ModulesConfig(
     val modules: Map<String, Boolean>,
 )
 
+/** Una modalità: nomi delle azioni, in ordine, e durata massima. I nomi li capisce `core/modes`; quelli sconosciuti si ignorano. */
+@Serializable
+data class ModeConfig(
+    val actions: List<String>,
+    val maxMinutes: Int,
+)
+
+@Serializable
+data class ModesConfig(
+    val schemaVersion: Int,
+    val modes: Map<String, ModeConfig>,
+)
+
 /** Configurazione completa risultante dalla fusione degli strati. */
 @Serializable
 data class NovaConfig(
@@ -67,4 +80,5 @@ data class NovaConfig(
     val brand: BrandConfig,
     val theme: ThemeConfig,
     val modules: ModulesConfig,
+    val modes: ModesConfig,
 )

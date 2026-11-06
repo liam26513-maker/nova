@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cosa fa ogni modalità: azioni all'ingresso, in ordine, e durata massima in minuti",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "modes"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "modes": {
+      "type": "object",
+      "propertyNames": { "enum": ["gaming", "studio", "lavoro", "creativa", "presentazione"] },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["actions", "maxMinutes"],
+        "properties": {
+          "actions": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "PERFORMANCE_GRAPHICS",
+                "DO_NOT_DISTURB",
+                "LOCK_ROTATION",
+                "KEEP_SCREEN_ON",
+                "PAUSE_SYNC",
+                "NIGHT_LIGHT_OFF",
+                "NIGHT_LIGHT_ON",
+                "FULL_BRIGHTNESS",
+                "TURBO"
+              ]
+            }
+          },
+          "maxMinutes": { "type": "integer", "minimum": 1, "maximum": 1440 }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Le modalità si possono cambiare senza una nuova versione
+- Richiesta: "le parti da fare del piano sono indifferenti scegli tu".
+- Cosa fa ogni modalità ora sta in un file di configurazione. Se chiedi di cambiarla con «Migliora», può bastare un aggiornamento in silenzio. Oggi le modalità fanno le stesse cose di prima.
+
 ### Il tuo tempo
 - Richiesta: "passa ad un altra parte del piano che puoi fare da solo".
 - Nuova pagina in Impostazioni: quanto tempo passi in ogni modalità negli ultimi 7 giorni e, se dai il permesso, in ogni app.
