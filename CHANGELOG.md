@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Correzioni trovate provando sul tablet
+- Richiesta: "controlla quello che non hai controllato".
+- «Il tuo tempo» contava troppo: ogni ritorno sulla Home ripeteva il conteggio, e pochi minuti diventavano ore. Ora ogni uscita conta una volta. I numeri sbagliati sono stati azzerati.
+- «Schermo diviso» non faceva niente su questo tablet. Ora apre le app recenti, dove tocchi «Dividi» e poi la seconda app.
+
 ### Le modalità si possono cambiare senza una nuova versione
 - Richiesta: "le parti da fare del piano sono indifferenti scegli tu".
 - Cosa fa ogni modalità ora sta in un file di configurazione. Se chiedi di cambiarla con «Migliora», può bastare un aggiornamento in silenzio. Oggi le modalità fanno le stesse cose di prima.

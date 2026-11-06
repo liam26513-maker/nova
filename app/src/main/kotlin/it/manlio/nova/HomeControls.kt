@@ -343,7 +343,7 @@ private fun pomodoroItem(
     }
 }
 
-/** Durante il Lavoro: mette l'app aperta in schermo diviso, o lo toglie (SPEC §8.3). */
+/** Durante il Lavoro: apre le app recenti, dove Android ha il tasto «Dividi» (SPEC §8.3). */
 private fun splitScreenItem(
     context: Context,
     app: NovaApp,

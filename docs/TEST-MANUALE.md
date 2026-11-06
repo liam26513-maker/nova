@@ -38,7 +38,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Con il filtro luce blu acceso, Creativa lo spegne e all'uscita lo riaccende. Con il filtro spento resta spento anche all'uscita.
 - [ ] Tendina → Altro → Note rapide: scrivi, chiudi, riapri: il testo c'è. Ruota il tablet mentre scrivi: il testo resta. «Condividi» apre l'elenco delle app.
 - [ ] Impostazioni → Modalità Studio → Filtro caldo: accendi la Studio, lo schermo diventa caldo; uscendo torna com'era. Se il filtro era già acceso, resta acceso.
-- [ ] Con Lavoro acceso, sopra un'app aperta: tendina → Altro → Schermo diviso. L'app va a metà schermo; la tendina si chiude da sola?
+- [ ] Con Lavoro acceso, sopra un'app aperta: tendina → Altro → Schermo diviso apre le app recenti; «Dividi» e poi una seconda app le mettono affiancate.
 - [ ] Con Presentazione accesa, la riga della trasmissione è in cima ad Altro.
 - [ ] Blocca pubblicità, con la rete normale: si accende. Con il Wi-Fi spento: resta spento e compare il messaggio.
 - [ ] Tendina → Altro → Schermo sempre acceso: la riga dice «Sì» e lo schermo non si spegne da solo. Ritoccandola torna il tempo di prima.

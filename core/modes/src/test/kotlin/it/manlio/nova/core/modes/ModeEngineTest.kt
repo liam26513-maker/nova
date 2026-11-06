@@ -41,6 +41,25 @@ private class MemoryStore : SessionStore {
 }
 
 class ModeEngineTest {
+    @Test
+    fun `the time in a mode is reported once, also when an undo has to be retried`() =
+        runTest {
+            var now = 0L
+            val env = FakeEnv().apply { failUndo += ModeAction.DO_NOT_DISTURB.name }
+            val store = MemoryStore()
+            val spent = mutableListOf<Pair<String, Int>>()
+            val mode = ModeDefinition("studio", listOf(ModeAction.DO_NOT_DISTURB), 240)
+            val engine = ModeEngine(env, store, { now }, onFinished = { id, minutes -> spent += id to minutes })
+
+            engine.enter(mode)
+            now = 5 * 60_000L
+            engine.exit()
+            now = 500 * 60_000L
+            engine.recover()
+
+            assertEquals(listOf("studio" to 5), spent)
+        }
+
     // Una modalità di prova fissa: i test non devono cambiare quando si aggiungono azioni a Gaming vera.
     private val gaming =
         ModeDefinition(
