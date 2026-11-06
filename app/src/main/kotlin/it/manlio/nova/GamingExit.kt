@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.os.PowerManager
 import android.view.Gravity
 import android.view.KeyEvent
@@ -106,6 +107,36 @@ internal class DoubleSwipe(private val clock: () -> Long) {
     }
 }
 
+/**
+ * Riconosce uno swipe dal bordo verso l'interno, una volta per gesto. Con la navigazione a gesti Android prende lo swipe per sé
+ * come «Indietro» e annulla il tocco prima della fine: un tocco annullato dopo essersi mosso verso l'interno vale come swipe.
+ */
+internal class EdgeGesture(private val distance: Float) {
+    private var start = 0f
+    private var last = 0f
+    private var counted = false
+
+    fun down(x: Float) {
+        start = x
+        last = x
+        counted = false
+    }
+
+    /** @return vero la prima volta che il dito supera [distance]. */
+    fun moved(x: Float): Boolean {
+        last = x
+        if (counted || start - x <= distance) return false
+        counted = true
+        return true
+    }
+
+    fun cancelled(): Boolean {
+        val stolen = !counted && last < start
+        counted = true
+        return stolen
+    }
+}
+
 /** Dice se il gioco è fermo: il conto dei fotogrammi non cresce tra due letture. Senza dati non dà mai l'allarme. */
 internal class FreezeDetector {
     private var last: Int? = null
@@ -136,14 +167,20 @@ internal class EdgeSwipeWindow(
     fun add() {
         if (view != null) return
         val density = service.resources.displayMetrics.density
-        var startX = 0f
+        val gesture = EdgeGesture(SWIPE_DP * density)
         val edge = View(service)
         edge.setOnTouchListener { _, event ->
             when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> startX = event.rawX
-                MotionEvent.ACTION_UP -> if (startX - event.rawX > SWIPE_DP * density) onSwipe()
+                MotionEvent.ACTION_DOWN -> gesture.down(event.rawX)
+                MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> if (gesture.moved(event.rawX)) onSwipe()
+                MotionEvent.ACTION_CANCEL -> if (gesture.cancelled()) onSwipe()
             }
             true
+        }
+        // Android lascia libero dal gesto «Indietro» al massimo questo tratto: al centro del bordo lo swipe resta tutto nostro.
+        edge.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
+            val half = (EXCLUSION_DP * density / 2).toInt()
+            v.systemGestureExclusionRects = listOf(Rect(0, v.height / 2 - half, v.width, v.height / 2 + half))
         }
         val params =
             WindowManager.LayoutParams(
@@ -167,6 +204,7 @@ internal class EdgeSwipeWindow(
     private companion object {
         const val EDGE_DP = 16
         const val SWIPE_DP = 48
+        const val EXCLUSION_DP = 200
     }
 }
 

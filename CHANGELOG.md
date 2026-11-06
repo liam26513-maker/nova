@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il doppio swipe funziona con i gesti di Android
+- Richiesta: "Accesa, prova".
+- Sul tablet lo swipe dal bordo destro era preso da Android come «Indietro» e NOVA non lo contava. Ora lo conta, e al centro del bordo non scatta «Indietro».
+
 ### «Risoluzione» solo per i giochi
 - Richiesta: "controlla cio che non hai controllato e eventualmente aggiustalo".
 - In tendina → Altro compariva anche «Risoluzione: Calcolatrice», che non può funzionare. Ora la riga c'è solo per i giochi.
