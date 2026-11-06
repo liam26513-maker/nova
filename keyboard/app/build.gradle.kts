@@ -9,6 +9,11 @@ plugins {
 android {
     compileSdk = 37
 
+    // NOVA: solo italiano e inglese, le traduzioni di HeliBoard nelle altre lingue pesano e basta.
+    androidResources {
+        localeFilters += listOf("en", "it")
+    }
+
     defaultConfig {
         applicationId = "it.manlio.nova.keyboard"
         minSdk = 21

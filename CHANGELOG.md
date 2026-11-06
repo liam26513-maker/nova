@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### NOVA più leggera
+- Richiesta: "tutto cio inutile, che appesantisce eliminalo".
+- Da tendina → Altro spariscono le righe che qui non servono: NFC, hotspot e risparmio dati (il tablet non ha NFC né SIM). Inversione e correzione dei colori restano dentro «Accessibilità».
+- La tastiera tiene solo italiano e inglese, così pesa meno. Tolto anche il vecchio codice di misura che non si usava più.
+
 ### App che si possono spegnere
 - Richiesta: "continua con altri parti non rimanere mai fermo senza fare niente".
 - In Impostazioni → Prestazioni c'è l'elenco delle app del produttore e di Google che non servono, con la spiegazione di ognuna: «Sicuro» o «Valuta». Toccandone una si spegne, e si riaccende con un tocco.

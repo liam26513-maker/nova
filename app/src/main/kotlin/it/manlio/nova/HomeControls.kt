@@ -2,6 +2,7 @@ package it.manlio.nova
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
@@ -156,6 +157,9 @@ class HomeControls(
                 text(next)
             }
         }
+        // Solo ciò che il tablet ha: senza SIM e senza NFC quelle righe non servirebbero a niente.
+        val features = context.packageManager
+        val hasSim = features.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
         val cast = go(R.string.more_cast, Settings.ACTION_CAST_SETTINGS)
         val presenting = app.modes.isActive(Modes.PRESENTATION)
         return listOfNotNull(
@@ -177,16 +181,14 @@ class HomeControls(
             toggle(R.string.more_airplane, QuickToggle.AIRPLANE, Settings.ACTION_AIRPLANE_MODE_SETTINGS),
             toggle(R.string.more_location, QuickToggle.LOCATION, Settings.ACTION_LOCATION_SOURCE_SETTINGS),
             toggle(R.string.more_battery_saver, QuickToggle.BATTERY_SAVER, Settings.ACTION_BATTERY_SAVER_SETTINGS),
-            toggle(R.string.more_data, QuickToggle.DATA_SAVER, ACTION_DATA_USAGE),
+            toggle(R.string.more_data, QuickToggle.DATA_SAVER, ACTION_DATA_USAGE).takeIf { hasSim },
             toggle(R.string.more_dark_theme, QuickToggle.DARK_THEME, Settings.ACTION_DISPLAY_SETTINGS),
             toggle(R.string.more_night_light, QuickToggle.NIGHT_LIGHT, ACTION_NIGHT_DISPLAY),
-            toggle(R.string.more_color_inversion, QuickToggle.INVERSION, ACTION_COLOR_INVERSION),
-            go(R.string.more_hotspot, Settings.ACTION_WIRELESS_SETTINGS),
-            go(R.string.more_nfc, Settings.ACTION_NFC_SETTINGS),
+            go(R.string.more_hotspot, Settings.ACTION_WIRELESS_SETTINGS).takeIf { hasSim },
+            go(R.string.more_nfc, Settings.ACTION_NFC_SETTINGS).takeIf { features.hasSystemFeature(PackageManager.FEATURE_NFC) },
             cast.takeUnless { presenting },
             go(R.string.more_sound, Settings.ACTION_SOUND_SETTINGS),
             go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
-            go(R.string.more_color_correction, ACTION_COLOR_CORRECTION),
             go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
         ) + GameTools(context, app).items()
@@ -311,8 +313,6 @@ class HomeControls(
         // Azioni di Android non esposte come costanti pubbliche in tutte le versioni: se mancano, il tocco non fa nulla.
         const val ACTION_DATA_USAGE = "android.settings.DATA_USAGE_SETTINGS"
         const val ACTION_NIGHT_DISPLAY = "android.settings.NIGHT_DISPLAY_SETTINGS"
-        const val ACTION_COLOR_INVERSION = "android.settings.COLOR_INVERSION_SETTINGS"
-        const val ACTION_COLOR_CORRECTION = "android.settings.COLOR_CORRECTION_SETTINGS"
     }
 }
 

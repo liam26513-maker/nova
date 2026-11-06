@@ -85,19 +85,6 @@ sealed interface SystemCommand {
     }
 
     /**
-     * Legge i tempi degli ultimi fotogrammi di un livello grafico (`dumpsys SurfaceFlinger --latency`): serve a misurare FPS e scatti
-     * di un gioco. Solo lettura. Il nome del livello (es. `SurfaceView[com.gioco/com.gioco.Main](BLAST)#0`) ha un insieme chiuso
-     * di caratteri; niente virgolette, punti e virgola o altro che una shell potrebbe interpretare (comunque non c'è shell: è una lista).
-     */
-    data class SurfaceLatency(val layer: String) : SystemCommand {
-        init {
-            require(LAYER.matches(layer)) { "Nome di livello non consentito" }
-        }
-
-        override val argv = listOf("dumpsys", "SurfaceFlinger", "--latency", layer)
-    }
-
-    /**
      * Le statistiche dei fotogrammi di SurfaceFlinger (`dumpsys SurfaceFlinger --timestats`): su Android 12+ è dove si leggono FPS e
      * fotogrammi persi dei giochi, perché `--latency` non dà più nulla per i livelli BLAST. Accendere è temporaneo (si spegne con
      * [Step.DISABLE], e al riavvio comunque) e non cambia nessuna impostazione salvata.
@@ -106,11 +93,6 @@ sealed interface SystemCommand {
         enum class Step(val flag: String) { ENABLE("-enable"), CLEAR("-clear"), DUMP("-dump"), DISABLE("-disable") }
 
         override val argv = listOf("dumpsys", "SurfaceFlinger", "--timestats", step.flag)
-    }
-
-    /** I tempi dei fotogrammi per livello (`dumpsys SurfaceFlinger --frametimeline`), solo lettura: per la diagnosi dei giochi. */
-    data object FrameTimeline : SystemCommand {
-        override val argv = listOf("dumpsys", "SurfaceFlinger", "--frametimeline")
     }
 
     /**
@@ -204,7 +186,6 @@ sealed interface SystemCommand {
             if (percent == null) GAME_SCALES.first() else GAME_SCALES.getOrNull(GAME_SCALES.indexOf(percent) + 1)
 
         private const val MAX_PACKAGE_LENGTH = 128
-        private val LAYER = Regex("^[A-Za-z0-9_.#/\\[\\]()\\$:=, -]{1,250}$")
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
         private val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
