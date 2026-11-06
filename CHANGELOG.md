@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Trovato perché il servizio di NOVA si fermava
+- Richiesta: "controlla quello che non hai controllato".
+- Il tablet ha un gestore del produttore, «Background Manage», che ferma le app non autorizzate. Ora in Impostazioni → Strumenti di sistema c'è la riga che ci porta: lì NOVA e Tastiera NOVA vanno attivate.
+
 ### Correzioni trovate provando sul tablet
 - Richiesta: "controlla quello che non hai controllato".
 - «Il tuo tempo» contava troppo: ogni ritorno sulla Home ripeteva il conteggio, e pochi minuti diventavano ore. Ora ogni uscita conta una volta. I numeri sbagliati sono stati azzerati.

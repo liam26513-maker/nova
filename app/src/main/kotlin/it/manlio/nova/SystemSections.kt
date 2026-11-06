@@ -249,6 +249,7 @@ fun SystemToolsSection(
             showDivider = true,
             onClick = actions.onRedoOnboarding,
         )
+        BackgroundManagerRow()
         if (state.systemChanges > 0) {
             SettingsRow(
                 stringResource(R.string.system_revert, state.systemChanges),
