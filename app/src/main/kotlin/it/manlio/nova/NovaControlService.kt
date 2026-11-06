@@ -308,8 +308,14 @@ class NovaControlService : AccessibilityService() {
 
     /** Chiude con l'animazione; se per qualunque motivo non finisse, la finestra viene tolta comunque. */
     private fun requestClose() {
-        if (panel == null) return
+        val host = panel ?: return
         closing = true
+        // Mentre si chiude la finestra copre ancora tutto: il tocco deve passare alla striscia, o il gesto va solo ad Android.
+        val params = host.layoutParams as? WindowManager.LayoutParams
+        params?.let {
+            it.flags = it.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            runCatching { windows.updateViewLayout(host, it) }
+        }
         handler.removeCallbacks(forceRemove)
         handler.postDelayed(forceRemove, FORCE_REMOVE_MS)
     }
