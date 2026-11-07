@@ -4,9 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera su misura per la modalità Lavoro
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Con Lavoro accesa, sulla tastiera hai sempre copia, incolla, taglia, annulla, ripeti e seleziona tutto. Quando esci torna tutto com'era.
+
 ### StandBy con il tuo sfondo
 - Richiesta: "sentiti libero di aggiungere o migliorare qualcosa".
 - Di giorno lo StandBy mostra lo sfondo della Home, velato perché l'ora si legga bene. Di notte resta nero con l'ora in rosso scuro.
+
 ### La tastiera prende il tuo colore
 - Richiesta: "bilancia leggerezza e personalizzazione/bello esteticamente".
 - Se scegli un colore d'accento in Personalizza la Home, anche il tasto Invio e gli altri dettagli della tastiera lo seguono, subito.

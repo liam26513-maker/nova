@@ -51,6 +51,7 @@ import helium314.keyboard.latin.utils.addPinnedKey
 import helium314.keyboard.latin.utils.createToolbarKey
 import helium314.keyboard.latin.utils.dpToPx
 import helium314.keyboard.latin.utils.getEnabledToolbarKeys
+import helium314.keyboard.keyboard.NovaAccent
 import helium314.keyboard.latin.utils.getPinnedToolbarKeys
 import helium314.keyboard.latin.utils.prefs
 import helium314.keyboard.latin.utils.removeFirst
@@ -161,7 +162,8 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             setupKey(button, colors)
             toolbar.addView(button)
         }
-        for (pinnedKey in getPinnedToolbarKeys(context.prefs())) {
+        val pinned = if (NovaAccent.working(context)) NovaAccent.WORK_KEYS else getPinnedToolbarKeys(context.prefs())
+        for (pinnedKey in pinned) {
             val button = createToolbarKey(context, pinnedKey)
             button.layoutParams = toolbarKeyLayoutParams
             setupKey(button, colors)
