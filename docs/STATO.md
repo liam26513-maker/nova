@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.880. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.950. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -12,13 +12,14 @@ Aggiornato a: release 0.1.880. Per riprendere il lavoro in una chat nuova basta 
 - **Fase 2** strumenti di sistema (Shizuku): Turbo, animazioni, densità, DNS anti-pubblicità, congelamento, stato, interruttori rapidi.
 - **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano widget, foto e Stato PC nello StandBy.
 - **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio con Pomodoro, blocco app, note e filtro caldo; Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Doppio swipe e watchdog ci sono, spenti di serie. Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
-- **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release.
+- **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release, con varianti Lavoro, Studio e Gaming (bassa e semitrasparente).
+- **7 novembre (0.1.800 → 0.1.950):** pannello Gaming in sovrimpressione con registrazione, avviso di temperatura, Gaming automatica facoltativa; PIN della Presentazione; finestre flottanti e set di finestre nel Lavoro; Foglio rapido; evento del calendario nello StandBy; grafico della settimana; pannello privacy e blocco di Internet per app; Novità; app suggerite nella ricerca.
 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
 2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi aspetto iOS. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
-3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie (l'attivazione automatica della Gaming ora c'è, spenta di serie). Poi barra desktop e set di finestre per Lavoro (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora), profili automatici.
-4. **Fase 4** penna (fatto il Foglio rapido di base), **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
+3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe, watchdog e Gaming automatica restano spenti di serie. Poi barra desktop del Lavoro e altri profili automatici (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora).
+4. **Fase 4** penna: barra scorciatoie per le app di disegno, controllo di compatibilità, disegno a bassa latenza. **Fase 5** PC e streaming (serve il PC). **Fase 6**: testo dalle immagini, automazioni, cartella privata, permessi pericolosi per app, confronto prestazioni nelle Novità.
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso
