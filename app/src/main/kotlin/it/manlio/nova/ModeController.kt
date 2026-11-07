@@ -6,8 +6,8 @@ import android.os.Looper
 import android.widget.Toast
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.modes.ActionOutcome
-import it.manlio.nova.core.modes.ExitPin
 import it.manlio.nova.core.modes.EnterReport
+import it.manlio.nova.core.modes.ExitPin
 import it.manlio.nova.core.modes.ModeAction
 import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.ModeEngine
