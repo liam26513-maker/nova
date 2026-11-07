@@ -202,7 +202,8 @@ private fun SheetTools(sheet: QuickSheetView) {
                     .size(if (chosen) TOOL_BIG else TOOL_SMALL)
                     .clip(CircleShape)
                     .background(Color(c))
-                    .border(2.dp, if (chosen) Color.White else Color.Transparent, CircleShape)
+                    // Bordo grigio sempre: il nero sulla barra scura altrimenti non si vede.
+                    .border(if (chosen) 2.dp else 1.dp, if (chosen) Color.White else HINT_GRAY, CircleShape)
                     .semantics { contentDescription = colorLabels[i] }
                     .clickable(role = Role.Button) {
                         color = c
