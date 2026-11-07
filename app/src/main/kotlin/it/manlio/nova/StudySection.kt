@@ -53,6 +53,14 @@ internal fun StudySection(
         }
         SettingsRow(stringResource(R.string.study_stats, today, week), showDivider = true)
     }
+    SettingsSection(backdrop, footer = stringResource(R.string.study_auto_footer)) {
+        var hour by remember { mutableStateOf(StudySchedule.hour(context)) }
+        val off = stringResource(R.string.more_off)
+        Choice(R.string.study_auto, StudySchedule.CHOICES, hour, { if (it == StudySchedule.OFF) off else "$it:00" }) {
+            hour = it
+            StudySchedule.setHour(context, it)
+        }
+    }
     SettingsSection(backdrop, header = stringResource(R.string.study_reading), footer = stringResource(R.string.study_reading_footer)) {
         val key = ModeAction.NIGHT_LIGHT_ON.name
         val warm = options[key] == true

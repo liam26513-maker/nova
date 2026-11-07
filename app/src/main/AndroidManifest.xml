@@ -96,6 +96,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
         <!-- Sveglia del Pomodoro: fa ripartire NOVA se Android l'ha chiusa. Non esce dall'app. -->
         <receiver android:name=".PomodoroAlarm" android:exported="false" />
+        <receiver android:name=".StudyStartAlarm" android:exported="false" />
 
         <service
             android:name=".NovaNotificationListener"

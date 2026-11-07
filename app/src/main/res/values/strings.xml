@@ -409,6 +409,8 @@
     <string name="auto_footer">Spenti di serie. Si accendono collegando l\'accessorio, se nessun\'altra modalità è accesa, e si spengono scollegandolo. Servono il servizio di accessibilità e un accessorio collegato con il cavo o il Bluetooth.</string>
     <string name="auto_work">Lavoro quando colleghi una tastiera</string>
     <string name="auto_creative">Creativa quando colleghi una penna o tavoletta</string>
+    <string name="study_auto">Accendi da sola alle</string>
+    <string name="study_auto_footer">Dal lunedì al venerdì, all\'ora scelta, la Studio parte da sola se nessuna modalità è accesa. Può tardare di qualche minuto.</string>
     <string name="desk_bar">Barra delle app preferite</string>
     <string name="pen_bar">Barra Annulla e Ripeti</string>
     <string name="pen_bar_undo">Annulla</string>

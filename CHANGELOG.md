@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Studio all'orario che scegli
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Modalità Studio puoi scegliere un'ora, dalle 15 alle 20: dal lunedì al venerdì la Studio parte da sola, se non hai già un'altra modalità accesa. È spenta di serie.
+
 ### Lavoro e Creativa automatici (facoltativi)
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Modalità Gaming, in fondo, puoi far partire il Lavoro quando colleghi una tastiera e la Creativa quando colleghi una penna o tavoletta. Scollegandole la modalità si spegne. Sono spenti di serie.

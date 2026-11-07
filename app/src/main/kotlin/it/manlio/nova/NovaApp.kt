@@ -171,6 +171,7 @@ class NovaApp :
         }
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }
+        StudySchedule.arm(this)
         announceAccentChanges()
         gameMeter = GameMeter(this, appScope)
         LockScreenWallpaper.start(this) // lo sfondo di NOVA anche sulla schermata di blocco

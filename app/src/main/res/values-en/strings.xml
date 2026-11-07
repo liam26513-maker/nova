@@ -361,6 +361,8 @@
     <string name="auto_footer">Off by default. They turn on when you connect the accessory, if no other mode is on, and off when you disconnect it. They need the accessibility service and an accessory connected by cable or Bluetooth.</string>
     <string name="auto_work">Work when you connect a keyboard</string>
     <string name="auto_creative">Creative when you connect a pen or tablet</string>
+    <string name="study_auto">Turn on by itself at</string>
+    <string name="study_auto_footer">Monday to Friday, at the chosen time, Study starts by itself if no mode is on. It can be a few minutes late.</string>
     <string name="desk_bar">Favourite apps bar</string>
     <string name="pen_bar">Undo and redo bar</string>
     <string name="pen_bar_undo">Undo</string>
