@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Blocca Internet a un'app
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Privacy puoi togliere Internet a una singola app con un tocco, e ridarlo con un altro. Dopo un riavvio NOVA rimette i blocchi da sola. NOVA e le app di sistema non si possono bloccare.
+
 ### Pannello privacy
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nuova pagina Impostazioni → Privacy: mostra quali app hanno usato fotocamera, microfono e posizione, e quando. Tocca un'app per cambiarne i permessi. Serve Shizuku e non esce niente dal tablet.

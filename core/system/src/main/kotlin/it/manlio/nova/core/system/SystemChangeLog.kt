@@ -50,6 +50,10 @@ sealed interface SystemChange {
     @Serializable
     data class ShadeLock(override val time: Long) : SystemChange
 
+    /** Un'app senza Internet (si annulla ridandole la rete; dopo un riavvio NOVA la riblocca, vedi `reapplyFirewall`). */
+    @Serializable
+    data class AppOffline(val packageName: String, override val time: Long) : SystemChange
+
     /** Risoluzione di un gioco abbassata (si annulla tornando alla modalità normale del gioco). */
     @Serializable
     data class GameScale(val packageName: String, val applied: Int, override val time: Long) : SystemChange
@@ -193,6 +197,30 @@ class SystemChangeLog(
         return result
     }
 
+    /** Toglie ([blocked]) o rida Internet a un'app. Il filtro di Android si spegne quando non resta nessuna app bloccata. */
+    suspend fun setAppNetwork(
+        packageName: String,
+        blocked: Boolean,
+    ): ShellResult {
+        if (blocked) runner.run(SystemCommand.NetFilter(true)).let { if (!it.ok) return it }
+        val result = runner.run(SystemCommand.AppNetwork(packageName, enabled = !blocked))
+        if (!result.ok) return result
+        synchronized(changes) { changes.removeAll { it is SystemChange.AppOffline && it.packageName == packageName } }
+        if (blocked) record(SystemChange.AppOffline(packageName, clock())) else save()
+        if (!blocked && offlineApps().isEmpty()) runner.run(SystemCommand.NetFilter(false))
+        return result
+    }
+
+    fun offlineApps(): Set<String> = entries().filterIsInstance<SystemChange.AppOffline>().map { it.packageName }.toSet()
+
+    /** Android dimentica il filtro a ogni riavvio: all'avvio di NOVA si rimettono i blocchi registrati. */
+    suspend fun reapplyFirewall() {
+        val apps = offlineApps()
+        if (apps.isEmpty()) return
+        runner.run(SystemCommand.NetFilter(true))
+        apps.forEach { runner.run(SystemCommand.AppNetwork(it, enabled = false)) }
+    }
+
     /** Blocca o sblocca la tendina di Android: una sola voce nel registro, nessuna se è sbloccata. */
     suspend fun setShadeLock(locked: Boolean): ShellResult {
         val result = runner.run(SystemCommand.ShadeLock(locked))
@@ -231,6 +259,10 @@ class SystemChangeLog(
                         is SystemChange.Density -> runner.run(SystemCommand.SetDensity(change.previous))
                         is SystemChange.Toggle -> runner.run(SystemCommand.SetToggle(change.toggle, change.previous))
                         is SystemChange.GameScale -> runner.run(SystemCommand.GameScale(change.packageName, null))
+                        is SystemChange.AppOffline ->
+                            runner.run(SystemCommand.AppNetwork(change.packageName, enabled = true)).also {
+                                runner.run(SystemCommand.NetFilter(false))
+                            }
                         is SystemChange.ShadeLock -> runner.run(SystemCommand.ShadeLock(false))
                         is SystemChange.RestrictedSettings ->
                             runner.run(SystemCommand.SetRestrictedSettings(change.packageName, allow = false))

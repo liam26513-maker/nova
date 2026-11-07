@@ -383,4 +383,31 @@ class GameScaleTest {
         assertTrue(runCatching { SystemCommand.OpenInWindow("com.example;rm", "com.example.Main") }.isFailure)
         assertTrue(runCatching { SystemCommand.OpenInWindow("com.example", "x y") }.isFailure)
     }
+
+    @Test
+    fun `blocking internet turns the filter on, is logged and fully reverted`() =
+        runTest {
+            val ran = mutableListOf<SystemCommand>()
+            val shell =
+                CommandRunner {
+                    ran += it
+                    ShellResult(0, "")
+                }
+            val log = SystemChangeLog(File(tmp.root, "firewall.json"), shell)
+
+            log.setAppNetwork("com.example.app", blocked = true)
+            assertEquals(setOf("com.example.app"), log.offlineApps())
+            assertEquals(listOf(SystemCommand.NetFilter(true), SystemCommand.AppNetwork("com.example.app", false)), ran)
+
+            ran.clear()
+            log.revertAll()
+            assertEquals(listOf(SystemCommand.AppNetwork("com.example.app", true), SystemCommand.NetFilter(false)), ran)
+            assertTrue(log.offlineApps().isEmpty())
+        }
+
+    @Test
+    fun `NOVA and protected packages never lose internet`() {
+        assertTrue(runCatching { SystemCommand.AppNetwork(SystemCommand.OWN_PACKAGE, false) }.isFailure)
+        assertTrue(runCatching { SystemCommand.AppNetwork("com.android.systemui", false) }.isFailure)
+    }
 }

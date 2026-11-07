@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -21,8 +22,10 @@ import it.manlio.nova.core.design.Nova
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
 import it.manlio.nova.core.system.AppOpsParser
+import it.manlio.nova.core.system.ProtectedPackages
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
+import kotlinx.coroutines.launch
 
 private const val MAX_ROWS = 30
 private const val MS_PER_MINUTE = 60_000L
@@ -83,6 +86,46 @@ internal fun PrivacySection(backdrop: ImageBitmap) {
                         trailing = { BasicText(ago(context, access.agoMs), style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 15.sp)) },
                     )
                 }
+        }
+    }
+    if (ready) Firewall(backdrop, app)
+}
+
+/** Blocca Internet a singole app (SPEC §13.2). NOVA e le app di sistema protette non compaiono. */
+@Composable
+private fun Firewall(
+    backdrop: ImageBitmap,
+    app: NovaApp,
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var offline by remember { mutableStateOf(app.systemChanges.offlineApps()) }
+    val apps =
+        remember {
+            val pm = context.packageManager
+            pm
+                .queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
+                .map { it.activityInfo.applicationInfo }
+                .filter { !ProtectedPackages.isProtected(it.packageName) && it.packageName != context.packageName }
+                .distinctBy { it.packageName }
+                .map { it.packageName to pm.getApplicationLabel(it).toString() }
+                .sortedBy { it.second.lowercase() }
+        }
+    SettingsSection(backdrop, header = stringResource(R.string.firewall_title), footer = stringResource(R.string.firewall_footer)) {
+        apps.forEachIndexed { index, (pkg, name) ->
+            val blocked = pkg in offline
+            SettingsRow(
+                name,
+                summary = if (blocked) stringResource(R.string.firewall_blocked) else null,
+                showDivider = index > 0,
+                onClick = {
+                    scope.launch {
+                        app.systemChanges.setAppNetwork(pkg, !blocked)
+                        offline = app.systemChanges.offlineApps()
+                    }
+                },
+                trailing = { if (blocked) Check() },
+            )
         }
     }
 }

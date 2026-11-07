@@ -167,6 +167,7 @@ class NovaApp :
             // Una dimensione dello schermo provata e mai confermata (l'app si è chiusa a metà) torna com'era appena Shizuku risponde.
             shizuku.status.first { it == ShizukuStatus.READY }
             systemTools.revertUnconfirmedDensity()
+            systemChanges.reapplyFirewall()
         }
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }

@@ -165,6 +165,21 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "start", "--windowingMode", "5", "-n", "$packageName/$activity")
     }
 
+    /** Il filtro di rete per app di Android (SPEC §13.2): senza, il blocco di una singola app non ha effetto. Si perde al riavvio. */
+    data class NetFilter(val on: Boolean) : SystemCommand {
+        override val argv = listOf("cmd", "connectivity", "set-chain3-enabled", on.toString())
+    }
+
+    /** Toglie o rida Internet a un'app. Mai ai pacchetti protetti né a NOVA, che senza rete non si aggiornerebbe. */
+    data class AppNetwork(val packageName: String, val enabled: Boolean) : SystemCommand {
+        init {
+            requirePackage(packageName)
+            require(!ProtectedPackages.isProtected(packageName) && packageName != OWN_PACKAGE) { "Il pacchetto $packageName è protetto" }
+        }
+
+        override val argv = listOf("cmd", "connectivity", "set-package-networking-enabled", enabled.toString(), packageName)
+    }
+
     /** Legge i permessi usati da un'app e quando (`appops get`, SPEC §13.3). Solo lettura. */
     data class AppOps(val packageName: String) : SystemCommand {
         init {
