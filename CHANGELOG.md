@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Consiglio di risoluzione per i giochi
+- Richiesta: "continua ora".
+- Dopo aver misurato un gioco, se va sotto i 45 FPS, in tendina → Altro compare un consiglio, per esempio «risoluzione al 80%». Un tocco lo applica, e vale da quando riapri il gioco.
+
 ### Tolto il Foglio rapido
 - Richiesta: "togli il foglio rapido tanto è inutile e occupa spazio, si userà solo ibispaint e note eventualmente".
 - Il Foglio rapido non c'è più, e con lui le due librerie che usava. Restano le Note rapide e la barra Annulla/Ripeti per ibisPaint nella Creativa.

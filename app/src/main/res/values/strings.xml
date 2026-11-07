@@ -449,6 +449,7 @@
     <string name="more_meter">Misura il gioco (2 minuti)</string>
     <string name="meter_running">in corso</string>
     <string name="more_meter_share">Condividi l\'ultima misura</string>
+    <string name="more_scale_tip">Consiglio: risoluzione al %1$s (ultima misura %2$d FPS)</string>
     <string name="more_game_scale">Risoluzione: %1$s</string>
     <string name="game_scale_percent">%1$d%%</string>
     <string name="game_scale_done">Fatto: vale da quando riapri il gioco.</string>

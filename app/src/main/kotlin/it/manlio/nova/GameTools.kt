@@ -38,6 +38,7 @@ internal class GameTools(
                 },
             )
             app.lastGame?.let { game ->
+                suggestion(game)?.let(::add)
                 if (isGame(game)) {
                     add(
                         MoreItem(context.getString(R.string.more_game_scale, label(game)), scaleText(scale(game))) { fix ->
@@ -53,6 +54,18 @@ internal class GameTools(
                 )
             }
         }
+
+    /**
+     * Il profilo intelligente (SPEC §8.2): dopo una misura sotto [SLOW_FPS], propone il passo di risoluzione successivo, con un tocco.
+     * Applicato, la misura vecchia si dimentica e il consiglio sparisce fino alla prossima.
+     */
+    private fun suggestion(game: String): MoreItem? {
+        if (!isGame(game)) return null
+        val fps = GameFps(context).of(game)
+        val next = suggestedScale(fps, scale(game)) ?: return null
+        val label = context.getString(R.string.more_scale_tip, scaleText(next), fps?.toInt() ?: 0)
+        return MoreItem(label) { fix -> changeScale(game, fix) }
+    }
 
     /** Android cambia la risoluzione solo ai giochi: per un'app qualsiasi la riga non servirebbe a niente. */
     fun isGame(pkg: String): Boolean =
@@ -115,7 +128,21 @@ internal class GameTools(
         Handler(context.mainLooper).post { Toast.makeText(context, id, Toast.LENGTH_LONG).show() }
     }
 
-    private companion object {
-        const val FULL_SCALE = 100
+    companion object {
+        private const val FULL_SCALE = 100
+        private const val SLOW_FPS = 45f
+
+        /** Il passo successivo se l'ultima misura è lenta; null se va bene o se è già al minimo. */
+        fun suggestedScale(
+            fps: Float?,
+            current: Int?,
+        ): Int? =
+            if (fps != null && fps < SLOW_FPS && current != SystemCommand.GAME_SCALES.last()) {
+                SystemCommand.nextGameScale(
+                    current,
+                )
+            } else {
+                null
+            }
     }
 }

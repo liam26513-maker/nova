@@ -450,6 +450,7 @@
     <string name="privacy_minutes">%1$d min ago</string>
     <string name="privacy_hours">%1$d h ago</string>
     <string name="privacy_days">%1$d d ago</string>
+    <string name="more_scale_tip">Tip: resolution at %1$s (last measure %2$d FPS)</string>
     <string name="more_close_game">Close the game: %1$s</string>
     <string name="meter_needs_shizuku">Shizuku must be on.</string>
     <string name="meter_started">Measuring for %1$d minutes: open the game and play. Then come back: More, Measure the game shows the result.</string>
