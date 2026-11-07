@@ -641,7 +641,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 10.6 Tastiera fisica e mouse
 
-- **Layout italiano corretto** configurato dalla procedura guidata (scelta del layout in `InputManager`/impostazioni di sistema, con verifica interattiva "premi il tasto à").
+- **Layout italiano corretto**: con una tastiera fisica collegata, in tendina → Altro compare «Tastiera fisica», che apre la schermata di Android dove si sceglie il layout; la prova si fa scrivendo nelle Note rapide.
 - Scorciatoie di sistema NOVA: `Ctrl+Spazio` ricerca, `Alt+Tab` cambio app, tasto Meta/Windows → home, `Meta+freccia` split-screen, `Ctrl+Alt+T` Turbo.
 - **Elenco scorciatoie**: tenendo premuto `Ctrl` compare l'elenco delle scorciatoie dell'app in primo piano (`Activity.onProvideKeyboardShortcuts` / `requestShowKeyboardShortcuts`) più quelle NOVA.
 - Tasti rimappabili (AccessibilityService key filtering, entro i limiti di piattaforma).
