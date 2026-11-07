@@ -413,6 +413,16 @@
     <string name="perm_body">Sensors and activity</string>
     <string name="perm_notifications">Notifications</string>
     <string name="perm_other">Other</string>
+    <string name="pen_title">Pen and tablet</string>
+    <string name="pen_found">Connected now</string>
+    <string name="pen_footer">Updates by itself when you connect or disconnect. A graphics tablet pen does not draw on the screen: it works on the connected tablet. To try pressure and eraser use the Quick sheet (sheet, More).</string>
+    <string name="pen_none">No pen or tablet</string>
+    <string name="pen_none_summary">Connect it with a cable (OTG) or Bluetooth: it will appear here.</string>
+    <string name="pen_details">%1$s · pressure: %2$s · tilt: %3$s</string>
+    <string name="pen_external">connected</string>
+    <string name="pen_builtin">built in</string>
+    <string name="pen_yes">yes</string>
+    <string name="pen_no">no</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Who used camera, microphone and location</string>
     <string name="privacy_footer">Read from Android with Shizuku, only while this page is open; nothing leaves the tablet. Tap an app to change its permissions.</string>

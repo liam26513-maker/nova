@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Penna e tavoletta
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nuova pagina Impostazioni → Penna e tavoletta: mostra la penna o la tavoletta collegata e dice se il tablet riceve la pressione e l'inclinazione. Si aggiorna da sola quando la colleghi.
+
 ### Permessi più leggibili
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Privacy → Permessi concessi ogni app mostra poche parole chiare, come «Fotocamera, Posizione, Contatti», invece dei lunghi nomi di Android.
