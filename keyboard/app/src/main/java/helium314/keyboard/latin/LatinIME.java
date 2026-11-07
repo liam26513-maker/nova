@@ -492,9 +492,15 @@ public class LatinIME extends InputMethodService implements
         Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
     }
 
+    private android.database.ContentObserver mNovaAccentObserver;
+
     @Override
     public void onCreate() {
         mSettings.startListener();
+        mNovaAccentObserver = helium314.keyboard.keyboard.NovaAccent.INSTANCE.watch(this, () -> {
+            KeyboardSwitcher.getInstance().setThemeNeedsReload();
+            return kotlin.Unit.INSTANCE;
+        });
         KeyboardIconsSet.Companion.getInstance().loadIcons(this);
         mRichImm = RichInputMethodManager.getInstance();
         AudioAndHapticFeedbackManager.init(this);
@@ -621,6 +627,7 @@ public class LatinIME extends InputMethodService implements
 
     @Override
     public void onDestroy() {
+        if (mNovaAccentObserver != null) getContentResolver().unregisterContentObserver(mNovaAccentObserver);
         mClipboardHistoryManager.onDestroy();
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();

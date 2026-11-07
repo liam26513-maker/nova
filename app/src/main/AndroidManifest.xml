@@ -112,6 +112,11 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service" />
         </service>
+        <!-- Il colore d'accento per la tastiera: sola lettura, nessun dato personale. -->
+        <provider
+            android:name=".AccentProvider"
+            android:authorities="${applicationId}.accent"
+            android:exported="true" />
         <!-- Home di NOVA (Fase 0, punto 11): Android la propone come app Home predefinita. -->
         <activity
             android:name=".HomeActivity"
