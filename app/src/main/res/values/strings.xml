@@ -299,29 +299,6 @@
     <string name="read_copy">Copia</string>
     <string name="read_copied">Testo copiato.</string>
     <string name="read_claude">Invia a Claude</string>
-    <string name="sheet_title">Foglio rapido</string>
-    <string name="sheet_undo">Annulla</string>
-    <string name="sheet_clear">Pulisci</string>
-    <string name="sheet_redo">Ripeti</string>
-    <string name="sheet_eraser">Gomma</string>
-    <string name="sheet_pen">Penna</string>
-    <string-array name="sheet_colors">
-        <item>Nero</item>
-        <item>Blu</item>
-        <item>Rosso</item>
-        <item>Verde</item>
-        <item>Arancio</item>
-    </string-array>
-    <string-array name="sheet_sizes">
-        <item>Tratto sottile</item>
-        <item>Tratto medio</item>
-        <item>Tratto spesso</item>
-    </string-array>
-    <string name="sheet_pdf">PDF</string>
-    <string name="sheet_pdf_saved">PDF salvato in Download, nella cartella NOVA.</string>
-    <string name="sheet_save">Salva</string>
-    <string name="sheet_saved">Salvato in Galleria, nella cartella NOVA.</string>
-    <string name="sheet_failed">Non sono riuscita a salvare il foglio.</string>
     <string name="notes_title">Note rapide</string>
     <string name="notes_short">Note</string>
     <string name="notes_hint">Scrivi qui: si salva da solo.</string>
@@ -377,7 +354,7 @@
     <string name="perm_other">Altro</string>
     <string name="pen_title">Penna e tavoletta</string>
     <string name="pen_found">Collegate adesso</string>
-    <string name="pen_footer">Si aggiorna da sola quando colleghi o scolleghi. Una penna da tavoletta grafica non disegna sullo schermo: funziona sulla tavoletta collegata. Per provare pressione e gomma usa il Foglio rapido (tendina → Altro).</string>
+    <string name="pen_footer">Si aggiorna da sola quando colleghi o scolleghi. Una penna da tavoletta grafica non disegna sullo schermo: funziona sulla tavoletta collegata.</string>
     <string name="pen_none">Nessuna penna o tavoletta</string>
     <string name="pen_none_summary">Collegala con il cavo (OTG) o il Bluetooth: comparirà qui.</string>
     <string name="pen_details">%1$s · pressione: %2$s · inclinazione: %3$s</string>

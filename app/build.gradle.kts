@@ -89,8 +89,6 @@ dependencies {
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:improve"))
     implementation(project(":feature:ocr"))
-    implementation(libs.androidx.motionprediction)
-    implementation(libs.androidx.graphics.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

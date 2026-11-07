@@ -175,6 +175,7 @@ class NovaApp :
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }
         StudySchedule.arm(this)
+        File(filesDir, "foglio-rapido.png").delete() // il Foglio rapido è stato tolto: niente file rimasti
         announceAccentChanges()
         gameMeter = GameMeter(this, appScope)
         LockScreenWallpaper.start(this) // lo sfondo di NOVA anche sulla schermata di blocco

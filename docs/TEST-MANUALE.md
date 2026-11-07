@@ -61,7 +61,6 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Con il PIN impostato, uscire dalla Presentazione chiede il PIN, sia dalla Home sia sopra un'altra app; un PIN sbagliato non fa uscire; un'altra modalità non si accende.
 - [ ] Accendendo «Prossimo evento del calendario nello StandBy» NOVA chiede il permesso; negandolo la voce torna spenta; con un evento in calendario lo StandBy lo mostra.
 - [ ] Durante il Lavoro, «Apri in una finestra» dal menu di un'app la apre flottante; la finestra si sposta, si ridimensiona e si chiude; fuori dal Lavoro la voce non c'è.
-- [ ] Foglio rapido: si disegna senza scatti, Annulla e Pulisci funzionano, girando il tablet il disegno resta, riaprendolo c'è ancora, Salva lo mette in Galleria. Con una penna: pressione, gomma e palmo.
 - [ ] Con «Accendi da sola quando apri un gioco»: aprendo un gioco parte la Gaming, tornando alla Home si spegne; aprendo la tendina in gioco non si spegne; uscendo a mano in gioco non riparte subito.
 - [ ] Privacy → Blocca Internet: un'app bloccata non carica niente, sbloccata torna a funzionare; dopo un riavvio resta bloccata; le altre app navigano.
 - [ ] Lavoro: apri due app in finestra, Altro → «Salva le finestre aperte», chiudile, poi «Riapri: …» le riapre in finestra.
