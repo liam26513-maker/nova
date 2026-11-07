@@ -572,7 +572,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.7 Profili automatici
 
-Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gaming, uscita tornando alla Home; tastiera fisica collegata → Lavoro e penna/tavoletta → Creativa, uscita scollegandole. Manca l'orario di studio. Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni (§12.4): gioco aperto → Gaming; tastiera fisica collegata → Lavoro; orario di studio → Studio; penna/tavoletta collegata → Creativa.
+Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gaming, uscita tornando alla Home; tastiera fisica collegata → Lavoro e penna/tavoletta → Creativa, uscita scollegandole. Fatto anche l'orario di studio (Impostazioni → Modalità Studio, dal lunedì al venerdì, spento di serie). Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni (§12.4): gioco aperto → Gaming; tastiera fisica collegata → Lavoro; orario di studio → Studio; penna/tavoletta collegata → Creativa.
 
 ---
 
