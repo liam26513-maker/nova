@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -83,6 +84,11 @@ class QuickSheetActivity : ComponentActivity() {
                 onClose = ::finish,
             )
         }
+    }
+
+    override fun onDestroy() {
+        sheet.front?.release()
+        super.onDestroy()
     }
 
     override fun onPause() {
@@ -163,7 +169,16 @@ private fun SheetScreen(
             SheetButton(stringResource(R.string.notes_close), onClose)
         }
         SheetTools(sheet)
-        AndroidView({ sheet }, Modifier.fillMaxSize())
+        AndroidView(
+            {
+                FrameLayout(it).apply {
+                    addView(sheet)
+                    // Lo strato veloce solo se il tablet lo permette; altrimenti la tela disegna da sola.
+                    if (FrontInk.supported()) addView(FrontInk(it, sheet).also { ink -> sheet.front = ink })
+                }
+            },
+            Modifier.fillMaxSize(),
+        )
     }
 }
 

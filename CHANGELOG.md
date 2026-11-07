@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tratto ancora più veloce
+- Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
+- Se il tablet lo permette, nel Foglio rapido il tratto viene scritto direttamente sullo schermo, senza aspettare il fotogramma successivo. Se non lo permette, resta il modo di prima.
+
 ### Foglio rapido più completo e più pronto
 - Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
 - Nel Foglio rapido ci sono 5 colori, 3 spessori, la gomma e Ripeti.

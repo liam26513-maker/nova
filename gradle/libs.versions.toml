@@ -17,8 +17,10 @@ shizuku = "13.1.5"
 work = "2.10.0"
 onnxruntime = "1.31.1"
 motionprediction = "1.0.1"
+graphicsCore = "1.0.4"
 
 [libraries]
+androidx-graphics-core = { module = "androidx.graphics:graphics-core", version.ref = "graphicsCore" }
 androidx-motionprediction = { module = "androidx.input:input-motionprediction", version.ref = "motionprediction" }
 onnxruntime-android = { module = "com.microsoft.onnxruntime:onnxruntime-android", version.ref = "onnxruntime" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
