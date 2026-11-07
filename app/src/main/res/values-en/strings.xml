@@ -362,6 +362,7 @@
     <string name="record_started">Recording for up to 3 minutes. Reopen the panel to stop.</string>
     <string name="record_done">Recording saved in Movies.</string>
     <string name="record_failed">I could not record the screen.</string>
+    <string name="gaming_hot">The tablet is very hot: take a break if you can.</string>
     <string name="panel_turbo">Turbo</string>
     <string name="panel_close_game">Close the game</string>
     <string name="panel_exit">Leave the mode</string>

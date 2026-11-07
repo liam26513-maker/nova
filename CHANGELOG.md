@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Avviso di temperatura in Gaming
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Se durante la Gaming la batteria arriva a 45 °C compare un avviso, una volta sola finché non si raffredda.
+
 ### Foglio rapido
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In tendina → Altro c'è «Foglio rapido»: una tela per disegnare con penna o dito, che si salva da sola uscendo. Con la penna il tratto segue la pressione e il palmo appoggiato non disegna. Puoi annullare, pulire, salvare in Galleria e condividere.
