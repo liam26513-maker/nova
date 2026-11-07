@@ -55,7 +55,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Cambiando l'accento in Personalizza la Home, la tastiera prende lo stesso colore senza riavvii; con «Automatico» torna al suo.
 - [ ] Con Lavoro accesa, sopra la tastiera ci sono i sei tasti di modifica e funzionano; uscendo tornano i tasti di prima.
 - [ ] Con Studio accesa, in cima alla tastiera c'è la riga di simboli, si scrivono e la pressione lunga mostra gli altri; uscendo sparisce.
-- [ ] Con Gaming accesa la tastiera è più bassa e si scrive bene; uscendo torna normale.
+- [ ] Con Gaming accesa la tastiera è più bassa e semitrasparente e si scrive bene; uscendo torna normale.
 - [ ] In Gaming, da Altro → Pannello Gaming: i numeri si aggiornano, il gioco non va in pausa, Screenshot non riprende il pannello, Turbo lascia aperto il gioco, Esci rimette tutto com'era; con lo swipe acceso si apre dal bordo sinistro.
 - [ ] In Gaming, dal pannello: «Registra lo schermo» salva un video in Movies che si vede nella Galleria; «Ferma la registrazione» e l'uscita dalla Gaming lo chiudono bene.
 - [ ] Con il PIN impostato, uscire dalla Presentazione chiede il PIN, sia dalla Home sia sopra un'altra app; un PIN sbagliato non fa uscire; un'altra modalità non si accende.

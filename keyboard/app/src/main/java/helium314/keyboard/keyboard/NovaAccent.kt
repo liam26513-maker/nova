@@ -14,6 +14,14 @@ object NovaAccent {
     /** In Gaming la tastiera copre meno gioco (SPEC §10.5). */
     const val GAMING_HEIGHT = 0.75f
 
+    private const val GAMING_ALPHA = 0xCC
+
+    /** Sfondi semitrasparenti in Gaming, per vedere il gioco sotto la tastiera; altrimenti restano come sono. */
+    fun seeThrough(context: Context): (Int) -> Int {
+        val on = gaming(context)
+        return { if (on) androidx.core.graphics.ColorUtils.setAlphaComponent(it, GAMING_ALPHA) else it }
+    }
+
     /** La riga della modalità Lavoro (SPEC §10.5). */
     val WORK_KEYS = listOf(
         ToolbarKey.COPY, ToolbarKey.PASTE, ToolbarKey.CUT, ToolbarKey.UNDO, ToolbarKey.REDO, ToolbarKey.SELECT_ALL

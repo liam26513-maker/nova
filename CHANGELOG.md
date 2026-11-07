@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera semitrasparente in Gaming
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Con Gaming accesa la tastiera lascia intravedere il gioco. Le scritte restano ben leggibili. Quando esci torna normale.
+
 ### PIN per uscire dalla Presentazione
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Modalità Presentazione puoi scegliere un PIN: senza, nessuno può uscire dalla modalità o accenderne un'altra. È facoltativo. Se lo dimentichi, la Presentazione si spegne da sola dopo 3 ore.
