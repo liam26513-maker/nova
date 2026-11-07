@@ -33,6 +33,17 @@ internal class ModeSettings(private val context: Context) {
         return ActionOutcome.Applied(UndoToken(KIND_ROTATION, "$auto|$user"))
     }
 
+    /** Di nuovo bloccata com'è adesso, dopo un riavvio di NOVA: i valori da rimettere all'uscita restano quelli già salvati. */
+    fun relockRotation() {
+        if (!Settings.System.canWrite(context)) return
+        val resolver = context.contentResolver
+        val now = context.getSystemService(DisplayManager::class.java).getDisplay(Display.DEFAULT_DISPLAY)?.rotation ?: return
+        runCatching {
+            Settings.System.putInt(resolver, Settings.System.USER_ROTATION, now)
+            Settings.System.putInt(resolver, Settings.System.ACCELEROMETER_ROTATION, 0)
+        }
+    }
+
     /** [value] è «automatica|orientamento»; un segnalibro vecchio ha solo la rotazione automatica. */
     fun restoreRotation(value: String): Boolean {
         if (!Settings.System.canWrite(context)) return false

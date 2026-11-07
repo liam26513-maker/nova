@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Le modalità restano com'erano se NOVA si riavvia
+- Richiesta: "controlla e continua con tutto il resto".
+- Dopo un riavvio di NOVA la Gaming risultava accesa ma con la rotazione sbloccata e la grafica su Automatico. Ora le rimette a posto da sola, e all'uscita torna tutto come prima di entrare.
+
 ### Il controllo gioco bloccato ora legge i dati
 - Richiesta: "controlla il controllo gioco boccato".
 - Sul tablet non scattava mai: i dati da leggere erano diventati troppi. Ora riparte da zero ogni volta che si accende.

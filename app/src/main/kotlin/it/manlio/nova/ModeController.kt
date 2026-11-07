@@ -87,6 +87,12 @@ class ModeController(
             engine.exitIfExpired()
             if (isActive(Modes.STUDY)) pomodoro.restore()
             if (watching.compareAndSet(false, true)) {
+                // NOVA riavviata con una modalità accesa: si rimettono grafica e rotazione senza toccare i segnalibri, così all'uscita
+                // torna ciò che c'era prima. Solo al primo avvio: dopo decide l'utente.
+                engine.active.value?.tokens?.forEach { token ->
+                    if (token.kind == KIND_GRAPHICS) app.graphicsController.setManual(GraphicsLevel.PERFORMANCE)
+                    if (token.kind == ModeSettings.KIND_ROTATION) settings.relockRotation()
+                }
                 engine.active.collect { if (it?.modeId != Modes.STUDY.id) pomodoro.stop() }
             }
         }
