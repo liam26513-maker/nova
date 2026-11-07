@@ -3,7 +3,6 @@ package it.manlio.nova
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.abs
 
 class StrokeSmootherTest {
     private fun run(points: List<Pair<Float, Float>>): List<Pair<Float, Float>> {
@@ -30,10 +29,10 @@ class StrokeSmootherTest {
 
     @Test
     fun `a 4 pixel staircase becomes a gentle slope without corners`() {
-        val stairs = listOf(0f to 0f, 4f to 0f, 4f to 4f, 8f to 4f, 8f to 8f, 12f to 8f, 12f to 12f)
+        val stairs = (0 until 30).map { i -> (4f * ((i + 1) / 2)) to (4f * (i / 2)) }
         val out = run(stairs)
-        assertTrue(out.size > stairs.size)
-        // Nessun punto della curva ripete un gradino: la distanza dalla diagonale resta sotto i 4 pixel del gradino.
-        out.forEach { (x, y) -> assertTrue(abs(x - y) < 4f) }
+        // Lontano dai capi la linea è dritta: la distanza dalla diagonale varia meno di 1,5 pixel (gli scalini erano da 4).
+        val offsets = out.drop(6).dropLast(6).map { (x, y) -> x - y }
+        assertTrue("${offsets.minOrNull()}..${offsets.maxOrNull()}", offsets.max() - offsets.min() < 1.5f)
     }
 }

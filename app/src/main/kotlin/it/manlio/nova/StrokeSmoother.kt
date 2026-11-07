@@ -4,13 +4,16 @@ import kotlin.math.hypot
 
 /**
  * Ammorbidisce il tratto. Lo schermo del tablet (gslX680) manda la posizione solo dopo circa 4 pixel di movimento, quindi una linea
- * lenta arriva a scatti, a scalini. Qui i punti diventano una curva liscia: curve quadratiche tra i punti medi, il metodo usato dalle
- * app di disegno. I movimenti più piccoli di quella soglia non arrivano mai ad Android e non si possono recuperare.
+ * lenta arriva a scatti, a scalini. Qui ogni punto è la media degli ultimi [WINDOW] (la scala diventa una diagonale),
+ * poi una curva liscia: curve quadratiche tra i punti medi, il metodo usato dalle app di disegno.
+ * I movimenti più piccoli di quella soglia non arrivano mai ad Android e non si possono recuperare.
  * Puro: riceve punti (x, y, spessore) e restituisce quelli da disegnare.
  */
 @Suppress("MagicNumber") // gli ultimi tre punti della curva
 internal class StrokeSmoother {
     private val raw = ArrayList<FloatArray>()
+    private val recent = ArrayDeque<FloatArray>()
+    private var lastInput: FloatArray? = null
 
     /** Un punto nuovo; restituisce i punti di curva da aggiungere al tratto (x, y, spessore in fila). */
     fun add(
@@ -18,9 +21,18 @@ internal class StrokeSmoother {
         y: Float,
         width: Float,
     ): FloatArray {
-        val last = raw.lastOrNull()
+        val last = lastInput
         if (last != null && last[0] == x && last[1] == y) return EMPTY // lo schermo ripete la stessa posizione: niente da aggiungere
-        raw += floatArrayOf(x, y, width)
+        lastInput = floatArrayOf(x, y, width)
+        recent.addLast(floatArrayOf(x, y, width))
+        if (recent.size > WINDOW) recent.removeFirst()
+        raw +=
+            floatArrayOf(
+                recent.sumOf {
+                    it[0].toDouble()
+                }.toFloat() / recent.size,
+                recent.sumOf { it[1].toDouble() }.toFloat() / recent.size, width,
+            )
         val n = raw.size
         if (n == 1) return floatArrayOf(x, y, width)
         if (n == 2) return EMPTY
@@ -33,9 +45,8 @@ internal class StrokeSmoother {
 
     /** Fine del tratto: l'ultimo pezzo arriva fino al punto vero, non al punto medio. */
     fun finish(): FloatArray {
-        val n = raw.size
-        if (n < 2) return EMPTY
-        val last = raw[n - 1]
+        val last = lastInput ?: return EMPTY
+        if (raw.size < 2) return EMPTY
         return floatArrayOf(last[0], last[1], last[2])
     }
 
@@ -69,5 +80,6 @@ internal class StrokeSmoother {
         const val POINT = 3
         const val STEP_PX = 2f
         const val MAX_STEPS = 32
+        const val WINDOW = 4
     }
 }
