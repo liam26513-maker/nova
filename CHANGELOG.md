@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera fisica
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Quando colleghi una tastiera fisica, in tendina → Altro compare «Tastiera fisica»: da lì scegli il layout italiano, così i tasti à, è, ò scrivono la lettera giusta.
+
 ### La tastiera ha i colori di NOVA
 - Richiesta: "bilancia leggerezza e personalizzazione/bello esteticamente".
 - Nuovo tema «NOVA», chiaro e scuro, con gli stessi colori del resto. Parte da solo una volta; se ne preferisci un altro lo cambi in Impostazioni della tastiera → Aspetto.

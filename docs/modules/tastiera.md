@@ -45,5 +45,5 @@ Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impo
 
 ## Da fare (SPEC §10)
 
-Aspetto iOS, tema di NOVA che segue i colori scelti in NOVA (`ContentProvider` dei token: ora il tema «NOVA» ha i colori fissi di `config/theme`), selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, layout italiano della
-tastiera fisica e scorciatoie. Prima installazione dall'app.
+Aspetto iOS, tema di NOVA che segue i colori scelti in NOVA (`ContentProvider` dei token: ora il tema «NOVA» ha i colori fissi di `config/theme`), selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, scorciatoie della
+tastiera fisica. Prima installazione dall'app.
