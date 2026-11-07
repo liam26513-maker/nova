@@ -13,23 +13,38 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -141,14 +156,74 @@ private fun SheetScreen(
                 style = TextStyle(Color.White, 22.sp, fontWeight = FontWeight.SemiBold),
             )
             SheetButton(stringResource(R.string.sheet_undo), sheet::undo)
+            SheetButton(stringResource(R.string.sheet_redo), sheet::redo)
             SheetButton(stringResource(R.string.sheet_clear), sheet::clear)
             SheetButton(stringResource(R.string.sheet_save), onSave)
             SheetButton(stringResource(R.string.notes_share), onShare)
             SheetButton(stringResource(R.string.notes_close), onClose)
         }
+        SheetTools(sheet)
         AndroidView({ sheet }, Modifier.fillMaxSize())
     }
 }
+
+/** Seconda riga della barra: colori, tre spessori e gomma. Lo stato vive nella tela; qui solo cosa è scelto. */
+@Composable
+private fun SheetTools(sheet: QuickSheetView) {
+    var color by remember { mutableIntStateOf(sheet.color) }
+    var size by remember { mutableFloatStateOf(sheet.size) }
+    var eraser by remember { mutableStateOf(sheet.eraser) }
+    val colorLabels = stringArrayResource(R.array.sheet_colors)
+    val sizeLabels = stringArrayResource(R.array.sheet_sizes)
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        QuickSheetView.COLORS.forEachIndexed { i, c ->
+            val chosen = !eraser && c == color
+            Box(
+                Modifier
+                    .size(if (chosen) TOOL_BIG else TOOL_SMALL)
+                    .clip(CircleShape)
+                    .background(Color(c))
+                    .border(2.dp, if (chosen) Color.White else Color.Transparent, CircleShape)
+                    .semantics { contentDescription = colorLabels[i] }
+                    .clickable(role = Role.Button) {
+                        color = c
+                        eraser = false
+                        sheet.color = c
+                        sheet.eraser = false
+                    },
+            )
+        }
+        Spacer(Modifier.width(10.dp))
+        QuickSheetView.SIZES.forEachIndexed { i, s ->
+            val chosen = s == size
+            Box(
+                Modifier.size(TOOL_BIG).semantics { contentDescription = sizeLabels[i] }.clickable(role = Role.Button) {
+                    size = s
+                    sheet.size = s
+                },
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(Modifier.size((DOT_DP * s).dp).clip(CircleShape).background(if (chosen) Color.White else HINT_GRAY))
+            }
+        }
+        Spacer(Modifier.width(10.dp))
+        SheetButton(stringResource(if (eraser) R.string.sheet_pen else R.string.sheet_eraser)) {
+            eraser = !eraser
+            sheet.eraser = eraser
+        }
+    }
+}
+
+private val TOOL_BIG = 30.dp
+private val TOOL_SMALL = 24.dp
+private const val DOT_DP = 10f
+
+@Suppress("MagicNumber") // colore
+private val HINT_GRAY = Color(0xFF8E8E93)
 
 @Composable
 private fun SheetButton(

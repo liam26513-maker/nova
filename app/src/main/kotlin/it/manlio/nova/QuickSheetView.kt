@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.View
+import androidx.input.motionprediction.MotionEventPredictor
 
 /** Le regole del foglio (SPEC §9.3), senza disegno, così si provano. */
 internal object SheetRules {
@@ -37,7 +38,8 @@ internal object SheetRules {
 /**
  * La tela del foglio rapido. Il tratto in corso si disegna sopra l'immagine e ci entra solo alla fine: così l'immagine non si
  * ricarica a ogni fotogramma. La gomma dipinge col colore della carta.
- * shortcut: disegno normale, non front-buffered (§9.2); da rivedere se sul tablet il tratto resta indietro rispetto alla penna.
+ * Per sembrare più pronto, il tratto in corso disegna anche il punto dove la penna sta per arrivare ([MotionEventPredictor], §9.2).
+ * shortcut: disegno normale, non front-buffered; da rivedere se sul tablet il tratto resta ancora indietro rispetto alla penna.
  */
 @SuppressLint("ViewConstructor") // nasce solo dal codice, con la misura della tela
 internal class QuickSheetView(
@@ -48,6 +50,7 @@ internal class QuickSheetView(
     private class Stroke(
         val erasing: Boolean,
         val clear: Boolean = false,
+        val color: Int = INK,
     ) {
         val points = ArrayList<Float>()
     }
@@ -64,6 +67,14 @@ internal class QuickSheetView(
         }
     private var current: Stroke? = null
     private var stylusNear = false
+    private val undone = ArrayList<Stroke>()
+    private val predictor = MotionEventPredictor.newInstance(this)
+    private val ahead = ArrayList<Float>()
+
+    /** Strumenti scelti nella barra: colore, spessore (moltiplica quello della pressione) e gomma. */
+    var color = INK
+    var size = 1f
+    var eraser = false
 
     init {
         contentDescription = context.getString(R.string.sheet_title)
@@ -80,18 +91,48 @@ internal class QuickSheetView(
 
     fun undo() {
         if (strokes.isEmpty()) return
-        strokes.removeAt(strokes.lastIndex)
+        undone += strokes.removeAt(strokes.lastIndex)
+        replay()
+    }
+
+    fun redo() {
+        if (undone.isEmpty()) return
+        strokes += undone.removeAt(undone.lastIndex)
         replay()
     }
 
     fun clear() {
         strokes.add(Stroke(erasing = false, clear = true))
+        undone.clear()
         replay()
     }
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawBitmap(image, 0f, 0f, null)
-        current?.let { draw(canvas, it) }
+        current?.let {
+            draw(canvas, it)
+            drawAhead(canvas, it)
+        }
+    }
+
+    /** Il pezzetto previsto: dall'ultimo punto vero a dove arriverà la penna. Non entra mai nel disegno. */
+    private fun drawAhead(
+        target: Canvas,
+        stroke: Stroke,
+    ) {
+        val p = stroke.points
+        if (ahead.isEmpty() || p.size < POINT) return
+        paint.color = if (stroke.erasing) PAPER else stroke.color
+        var x = p[p.size - POINT]
+        var y = p[p.size - POINT + 1]
+        paint.strokeWidth = p[p.size - 1]
+        var i = 0
+        while (i < ahead.size) {
+            target.drawLine(x, y, ahead[i], ahead[i + 1], paint)
+            x = ahead[i]
+            y = ahead[i + 1]
+            i += 2
+        }
     }
 
     override fun onHoverEvent(event: MotionEvent): Boolean {
@@ -105,16 +146,30 @@ internal class QuickSheetView(
         if (event.actionMasked == MotionEvent.ACTION_DOWN) {
             if (!SheetRules.accepts(tool, stylusNear)) return false
             requestUnbufferedDispatch(event)
-            current = Stroke(SheetRules.erasing(tool, event.buttonState))
+            current = Stroke(eraser || SheetRules.erasing(tool, event.buttonState), color = color)
         }
         val stroke = current ?: return false
+        predictor.record(event)
+        ahead.clear()
         when (event.actionMasked) {
             MotionEvent.ACTION_CANCEL -> current = null // Android l'ha riconosciuto come palmo
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> addPoints(stroke, event)
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                addPoints(stroke, event)
+                predictor.predict()?.let { predicted ->
+                    for (i in 0 until predicted.historySize) {
+                        ahead += predicted.getHistoricalX(0, i)
+                        ahead += predicted.getHistoricalY(0, i)
+                    }
+                    ahead += predicted.x
+                    ahead += predicted.y
+                    predicted.recycle()
+                }
+            }
             MotionEvent.ACTION_UP -> {
                 addPoints(stroke, event)
                 draw(canvas, stroke)
                 strokes.add(stroke)
+                undone.clear()
                 current = null
             }
         }
@@ -141,7 +196,7 @@ internal class QuickSheetView(
     ) {
         stroke.points.add(x)
         stroke.points.add(y)
-        stroke.points.add(SheetRules.widthDp(stroke.erasing, pressure) * density)
+        stroke.points.add(SheetRules.widthDp(stroke.erasing, pressure) * density * size)
     }
 
     private fun draw(
@@ -150,7 +205,7 @@ internal class QuickSheetView(
     ) {
         if (stroke.clear) return target.drawColor(PAPER)
         val p = stroke.points
-        paint.color = if (stroke.erasing) PAPER else INK
+        paint.color = if (stroke.erasing) PAPER else stroke.color
         var i = 0
         while (i < p.size) {
             val from = maxOf(i - POINT, 0)
@@ -166,9 +221,14 @@ internal class QuickSheetView(
         invalidate()
     }
 
-    private companion object {
-        const val POINT = 3
-        val PAPER = Color.rgb(0xF7, 0xF6, 0xF3)
+    companion object {
+        private const val POINT = 3
+        private val PAPER = Color.rgb(0xF7, 0xF6, 0xF3)
         val INK = Color.rgb(0x1D, 0x1D, 0x1F)
+
+        /** I colori della barra: inchiostro, blu, rosso, verde, arancio. */
+        val COLORS =
+            listOf(INK, Color.rgb(0x2F, 0x6F, 0xD6), Color.rgb(0xD6, 0x3A, 0x3A), Color.rgb(0x3F, 0xA3, 0x4D), Color.rgb(0xE0, 0x92, 0x2F))
+        val SIZES = listOf(0.6f, 1f, 2.2f)
     }
 }

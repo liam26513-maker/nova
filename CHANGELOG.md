@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Foglio rapido più completo e più pronto
+- Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
+- Nel Foglio rapido ci sono 5 colori, 3 spessori, la gomma e Ripeti.
+- Mentre disegni, il tratto anticipa di poco dove sta andando la penna, così sembra più attaccato alla punta.
+
 ### Lettura del testo più sicura
 - Richiesta: "riparti subito".
 - La lettura del testo ora gira separata dal resto di NOVA: se mai dovesse bloccarsi, la Home e la tendina restano aperte.
