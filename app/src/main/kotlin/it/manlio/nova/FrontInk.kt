@@ -48,7 +48,7 @@ internal class FrontInk(
                     bufferWidth: Int,
                     bufferHeight: Int,
                     param: InkSegment,
-                ) = draw(canvas, param)
+                ) = paintSegment(canvas, param)
 
                 // Lo strato «normale» tiene il tratto appena finito finché la tela sotto non l'ha ridisegnato.
                 override fun onDrawMultiBufferedLayer(
@@ -58,7 +58,7 @@ internal class FrontInk(
                     params: Collection<InkSegment>,
                 ) {
                     canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                    params.forEach { draw(canvas, it) }
+                    params.forEach { paintSegment(canvas, it) }
                 }
             },
         )
@@ -83,7 +83,7 @@ internal class FrontInk(
 
     fun release() = renderer.release(true)
 
-    private fun draw(
+    private fun paintSegment(
         canvas: Canvas,
         s: InkSegment,
     ) {
