@@ -22,6 +22,8 @@ android {
     }
 
     sourceSets["main"].assets.srcDir(rootProject.file("config"))
+    // Il CHANGELOG viaggia nell'app per la schermata Novità (SPEC §4.8).
+    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/novita"))
 
     // Chiave di firma definitiva: solo in CI, dai segreti del repository (mai nel codice).
     val keystore = System.getenv("NOVA_KEYSTORE_FILE")?.let(::file)?.takeIf { it.exists() }
@@ -103,3 +105,10 @@ dependencies {
 androidComponents {
     beforeVariants(selector().withBuildType("release")) { it.enableUnitTest = false }
 }
+
+val copyChangelog =
+    tasks.register<Copy>("copyChangelog") {
+        from(rootProject.file("CHANGELOG.md"))
+        into(layout.buildDirectory.dir("generated/novita"))
+    }
+tasks.named("preBuild") { dependsOn(copyChangelog) }

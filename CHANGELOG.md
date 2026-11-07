@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Novità
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nuova pagina in cima alle Impostazioni: «Novità» mostra cosa è cambiato, con la tua richiesta, e segna «Nuovo» quello che non hai ancora letto. Dopo ogni aggiornamento un avviso sulla Home dice quante novità ci sono.
+
 ### Blocca Internet a un'app
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Privacy puoi togliere Internet a una singola app con un tocco, e ridarlo con un altro. Dopo un riavvio NOVA rimette i blocchi da sola. NOVA e le app di sistema non si possono bloccare.

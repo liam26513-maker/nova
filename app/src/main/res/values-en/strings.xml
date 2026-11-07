@@ -388,6 +388,13 @@
     <string name="firewall_title">Block internet for an app</string>
     <string name="firewall_footer">Tap an app to take away or give back its internet (Wi-Fi and data); Tailscale keeps working. After a restart NOVA puts the blocks back as soon as Shizuku is ready. NOVA and system apps are not listed.</string>
     <string name="firewall_blocked">No internet</string>
+    <string name="news_title">What\'s new</string>
+    <string name="news_title_count">What\'s new (%1$d new)</string>
+    <string name="news_recent">What changed</string>
+    <string name="news_footer">The same words as the change log: the original request and what NOVA does now.</string>
+    <string name="news_none">Nothing new to show.</string>
+    <string name="news_new">New</string>
+    <string name="news_toast">NOVA updated: %1$d new things in Settings → What\'s new.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Who used camera, microphone and location</string>
     <string name="privacy_footer">Read from Android with Shizuku, only while this page is open; nothing leaves the tablet. Tap an app to change its permissions.</string>

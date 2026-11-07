@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -56,14 +57,14 @@ fun SettingsScreen(
         onSelect = { selected = it },
     ) { entry, backdrop ->
         when (entry.id) {
+            CAT_NEWS -> NewsSection(backdrop)
             CAT_IMPROVE -> ImproveSection(backdrop, systemActions)
             CAT_GRAPHICS -> GraphicsSection(backdrop, graphics, onChoose)
             CAT_DEVICE -> DeviceSection(backdrop, profile, onMeasure, onShowReport)
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
-            CAT_PRIVACY -> performance?.let { PrivacySection(backdrop) }
-            CAT_GAMING, CAT_STUDY, CAT_PRESENTATION, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
+            CAT_PRIVACY, CAT_GAMING, CAT_STUDY, CAT_PRESENTATION, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
                 val context = androidx.compose.ui.platform.LocalContext.current
@@ -87,6 +88,9 @@ fun SettingsScreen(
 @Composable
 private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     val improve = stringResource(R.string.improve_section)
+    val context = LocalContext.current
+    val fresh = remember { NewsStore(context).fresh.size }
+    val news = if (fresh > 0) stringResource(R.string.news_title_count, fresh) else stringResource(R.string.news_title)
     val graphics = stringResource(R.string.graphics_level_title)
     val device = stringResource(R.string.device_title)
     val home = stringResource(R.string.home_section_title)
@@ -121,6 +125,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
         }
     return remember(improve, graphics, device, home, updates, tools, status, performance, withPerformance, gaming) {
         listOf(
+            SidebarEntry(CAT_NEWS, news, SidebarGlyph.DOWNLOAD, Color(0xFFE0603A)),
             SidebarEntry(CAT_IMPROVE, improve, SidebarGlyph.SPARKLE, Color(0xFF7B68D8)),
             SidebarEntry(CAT_GRAPHICS, graphics, SidebarGlyph.LAYERS, Color(0xFF2FA39A)),
             SidebarEntry(CAT_DEVICE, device, SidebarGlyph.TABLET, Color(0xFF6B7684)),
@@ -148,11 +153,13 @@ private fun ModeCategory(
         }
         CAT_STUDY -> StudySection(backdrop, ui.modes)
         CAT_PRESENTATION -> PresentationSection(backdrop, ui.modes)
+        CAT_PRIVACY -> PrivacySection(backdrop)
         else -> TimeSection(backdrop, ui.modes)
     }
 }
 
 private const val CAT_IMPROVE = "improve"
+private const val CAT_NEWS = "news"
 private const val CAT_GRAPHICS = "graphics"
 private const val CAT_DEVICE = "device"
 private const val CAT_HOME = "home"

@@ -102,6 +102,10 @@ class HomeActivity : ComponentActivity() {
             finish()
             return
         }
+        lifecycleScope.launch {
+            val news = withContext(Dispatchers.IO) { NewsStore(this@HomeActivity).announce(BuildConfig.VERSION_CODE) }
+            news?.let { Toast.makeText(this@HomeActivity, getString(R.string.news_toast, it), Toast.LENGTH_LONG).show() }
+        }
         catalog = AppCatalog(this)
         favorites = Favorites(File(filesDir, "home-favorites.txt"))
         layoutStore = HomeLayoutStore(File(filesDir, "home-layout.txt"))

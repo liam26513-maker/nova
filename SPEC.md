@@ -338,6 +338,7 @@ Se Claude Code nel cloud non è raggiungibile (limiti d'uso esauriti, servizio n
 
 ### 4.8 Registro modifiche e "Novità"
 
+- **Fatto di base:** Impostazioni → Novità mostra le voci del CHANGELOG (viaggia nell'app) con «Nuovo» su quelle non ancora lette; dopo un aggiornamento un avviso sulla Home dice quante sono. Manca il confronto delle prestazioni.
 - Ogni aggiornamento mostra una schermata "Novità": cosa è cambiato in italiano semplice, **la richiesta originale** del proprietario (se la PR la cita), confronto prestazioni prima/dopo.
 - Archivio consultabile di tutti gli aggiornamenti con pulsante "Torna a questa versione".
 
