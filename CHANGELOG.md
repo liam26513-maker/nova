@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La tastiera prende il tuo colore
+- Richiesta: "bilancia leggerezza e personalizzazione/bello esteticamente".
+- Se scegli un colore d'accento in Personalizza la Home, anche il tasto Invio e gli altri dettagli della tastiera lo seguono, subito.
+
 ### Tastiera fisica
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Quando colleghi una tastiera fisica, in tendina → Altro compare «Tastiera fisica»: da lì scegli il layout italiano, così i tasti à, è, ò scrivono la lettera giusta.

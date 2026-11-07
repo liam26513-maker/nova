@@ -43,7 +43,11 @@ Anche le espansioni di testo ci sono: Impostazioni della tastiera → Correzione
 
 Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impostazioni della tastiera → Barra degli strumenti. Copia il testo selezionato (o tutto il campo) e lo condivide con `com.anthropic.claude`. Nessuna rete, nessuna chiave.
 
+## Tema NOVA (§10.1)
+
+Tema «NOVA» chiaro e scuro, predefinito, con i colori di `config/theme`. L'accento scelto in Personalizza la Home arriva da `AccentProvider` di NOVA (sola lettura, solo quel colore) e la tastiera si ricolora subito; con l'accento automatico resta quello del tema. Chiaro o scuro seguono Android, non la scelta di tema della Home.
+
 ## Da fare (SPEC §10)
 
-Aspetto iOS, tema di NOVA che segue i colori scelti in NOVA (`ContentProvider` dei token: ora il tema «NOVA» ha i colori fissi di `config/theme`), selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, scorciatoie della
+Aspetto iOS, selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, scorciatoie della
 tastiera fisica. Prima installazione dall'app.

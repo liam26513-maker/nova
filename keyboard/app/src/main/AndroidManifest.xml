@@ -138,5 +138,6 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+        <provider android:authorities="it.manlio.nova.accent" />
     </queries>
 </manifest>
