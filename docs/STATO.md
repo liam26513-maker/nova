@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.780. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.880. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -17,7 +17,7 @@ Aggiornato a: release 0.1.780. Per riprendere il lavoro in una chat nuova basta 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
 2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi aspetto iOS. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
-3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie e se serve l'attivazione automatica della Gaming. Poi barra desktop e set di finestre per Lavoro (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora), profili automatici.
+3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie (l'attivazione automatica della Gaming ora c'è, spenta di serie). Poi barra desktop e set di finestre per Lavoro (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora), profili automatici.
 4. **Fase 4** penna (fatto il Foglio rapido di base), **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
 
 ## Regole che contano (CLAUDE.md)
@@ -37,6 +37,9 @@ Provati il 7 novembre: «Invia a Claude», elenco delle app da spegnere (nessuna
 
 ## Tastiera (7 novembre, 0.1.780)
 Sul tablet provati tema NOVA scuro e accento scelto in NOVA. Da provare a mano: cambio d'accento senza riavvii, voce «Tastiera fisica» (serve una tastiera), StandBy con lo sfondo (di giorno), righe di Lavoro e Studio, tastiera bassa in Gaming. L'interruttore «Tema chiaro/scuro automatico» della tastiera era spento sul tablet: acceso il 7 novembre.
+
+## Sul tablet (7 novembre, 0.1.880)
+Provati da me: Foglio rapido (disegno, salvataggio uscendo, Pulisci e Annulla), grafico della settimana in «Il tuo tempo», pagina Modalità Presentazione con la finestra del PIN (tastiera numerica di NOVA), voce «Foglio rapido» in Altro. Da provare a mano perché servono le modalità accese: pannello Gaming e registrazione, PIN all'uscita, finestre flottanti nel Lavoro, tastiera semitrasparente, avviso di temperatura, evento nello StandBy.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).

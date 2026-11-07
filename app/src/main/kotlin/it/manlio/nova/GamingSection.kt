@@ -51,6 +51,14 @@ fun GamingSection(
             trailing = { if (swipe) Check() },
         )
     }
+    SettingsSection(backdrop, footer = stringResource(R.string.gaming_auto_footer)) {
+        val auto = values[ModeOptions.AUTO_GAMING] == true
+        SettingsRow(
+            stringResource(R.string.gaming_auto),
+            onClick = { options.set(ModeOptions.AUTO_GAMING, !auto) },
+            trailing = { if (auto) Check() },
+        )
+    }
 }
 
 /** Le uscite di emergenza che costano qualcosa al gioco: le accende l'utente. */

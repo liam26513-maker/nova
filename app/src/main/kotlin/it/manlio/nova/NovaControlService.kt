@@ -86,6 +86,7 @@ class NovaControlService : AccessibilityService() {
         }
     }
     private val heat by lazy { GameHeatWatch(this) }
+    private val autoGaming = AutoGaming()
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
@@ -143,6 +144,7 @@ class NovaControlService : AccessibilityService() {
         // Cambia la finestra davanti (un'app aperta da una voce, Home, recenti): la tendina non ha più senso. Non vale per la
         // tendina di Android (SystemUI), che si apre insieme alla nostra durante il gesto e che chiudiamo noi: scambiarla per
         // «un'altra finestra davanti» richiudeva la tendina di NOVA un attimo dopo averla aperta.
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && app.safeModeReason == null) autoGaming(event)
         val other = event.packageName != packageName && event.packageName != SYSTEM_UI
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
         requestClose()
@@ -151,6 +153,21 @@ class NovaControlService : AccessibilityService() {
             app.noteForeground(it)
             if (app.safeModeReason == null) studyGuard.check(it)
         }
+    }
+
+    /** Gioco aperto → Gaming, se l'utente l'ha acceso. La Home è solo la sua activity: la tendina e il pannello non contano. */
+    private fun autoGaming(event: AccessibilityEvent) {
+        if (app.modes.options.values.value[ModeOptions.AUTO_GAMING] != true) return
+        val pkg = event.packageName?.toString()?.takeUnless { it == SYSTEM_UI || it.contains("inputmethod") } ?: return
+        val step =
+            autoGaming.onForeground(
+                pkg,
+                isGame = GameTools(this, app).isGame(pkg),
+                isHome = event.className == HomeActivity::class.java.name,
+                anyModeOn = app.modes.engine.active.value != null,
+                gamingOn = app.modes.isActive(Modes.GAMING),
+            )
+        if (step != AutoGaming.Step.NONE) app.modes.toggle(Modes.GAMING) {}
     }
 
     override fun onInterrupt() = requestClose()
