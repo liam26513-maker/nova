@@ -1,6 +1,8 @@
 package it.manlio.nova
 
+import android.Manifest.permission.READ_CALENDAR
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
@@ -64,10 +66,14 @@ fun HomeCustomizeRoute(
             }
         }
 
+    val askCalendar = rememberCalendarAsk(app)
     HomeCustomizeScreen(
         prefs,
         CustomizeActions(
-            onChange = { change -> scope.launch { app.homePrefs.update(change) } },
+            onChange = { change ->
+                scope.launch { app.homePrefs.update(change) }
+                if (change(app.homePrefs.prefs.value).standbyCalendar) askCalendar()
+            },
             onDone = onDone,
             onPickPhoto = pickPhoto,
             onExportTheme = { exportTheme.launch("tema.novatheme") },
@@ -83,6 +89,18 @@ fun HomeCustomizeRoute(
             canReadWallpaper = canRead,
         ),
     )
+}
+
+/** Chiede il permesso del calendario se manca. Senza, la voce torna spenta: non deve sembrare accesa e non mostrare niente. */
+@Composable
+private fun rememberCalendarAsk(app: NovaApp): () -> Unit {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted) scope.launch { app.homePrefs.update { it.copy(standbyCalendar = false) } }
+        }
+    return { if (context.checkSelfPermission(READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) launcher.launch(READ_CALENDAR) }
 }
 
 /** Galleria di Android: la foto scelta diventa lo sfondo della Home. */

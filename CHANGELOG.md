@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Prossimo evento nello StandBy
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Personalizza la Home puoi accendere «Prossimo evento del calendario nello StandBy»: mostra il prossimo impegno delle 24 ore. NOVA chiede il permesso solo quando lo accendi e il calendario non esce dal tablet.
+
 ### Tastiera semitrasparente in Gaming
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Con Gaming accesa la tastiera lascia intravedere il gioco. Le scritte restano ben leggibili. Quando esci torna normale.

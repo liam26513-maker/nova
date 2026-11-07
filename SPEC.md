@@ -707,7 +707,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.6 StandBy
 
-> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Mancano calendario, widget a scelta, Stato PC. Lo sfondo di NOVA sulla schermata di blocco (`LockWallpaper`, §2.2) è fatto.
+> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Il prossimo evento del calendario c'è, spento di serie (permesso chiesto quando lo si accende). Mancano widget a scelta, foto, Stato PC. Lo sfondo di NOVA sulla schermata di blocco (`LockWallpaper`, §2.2) è fatto.
 
 - Quando il tablet è in carica, sbloccato e in orizzontale (o su richiesta): schermo a tutto campo con orologio grande, calendario, foto, Stato PC, widget a scelta; luminosità ridotta, notte in rosso scuro per non disturbare.
 

@@ -28,19 +28,21 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/** Cosa mostra il StandBy oltre all'ora: batteria, se è in carica, se è notte (rosso scuro) e la prossima sveglia, se c'è. */
+/** Cosa mostra il StandBy oltre all'ora: batteria, se è in carica, se è notte (rosso scuro), la prossima sveglia e il prossimo evento. */
 @Immutable
 data class StandbyInfo(
     val battery: Int,
     val charging: Boolean,
     val night: Boolean,
     val alarm: String?,
+    val event: String? = null,
 )
 
 /** Le regole del StandBy (SPEC §12.6), senza Android, così si provano. */
@@ -116,6 +118,10 @@ fun StandbyScreen(
                 info.alarm?.let {
                     BasicText(stringResource(R.string.standby_alarm, it), style = TextStyle(muted, 26.sp, fontFamily = look.family))
                 }
+            }
+            info.event?.let {
+                Spacer(Modifier.height(16.dp))
+                BasicText(it, style = TextStyle(muted, 26.sp, fontFamily = look.family), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
