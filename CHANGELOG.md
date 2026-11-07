@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Foglio rapido
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In tendina → Altro c'è «Foglio rapido»: una tela per disegnare con penna o dito, che si salva da sola uscendo. Con la penna il tratto segue la pressione e il palmo appoggiato non disegna. Puoi annullare, pulire, salvare in Galleria e condividere.
+
 ### App in finestre flottanti
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Durante il Lavoro, tieni premuta un'app nella Home e scegli «Apri in una finestra»: si apre flottante sopra la Home, con i tasti ingrandisci e chiudi. Serve Shizuku.

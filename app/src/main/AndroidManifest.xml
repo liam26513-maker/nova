@@ -88,6 +88,12 @@
             android:label="@string/notes_title"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
+        <activity
+            android:name=".QuickSheetActivity"
+            android:exported="false"
+            android:taskAffinity=""
+            android:label="@string/sheet_title"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
         <!-- Sveglia del Pomodoro: fa ripartire NOVA se Android l'ha chiusa. Non esce dall'app. -->
         <receiver android:name=".PomodoroAlarm" android:exported="false" />
 

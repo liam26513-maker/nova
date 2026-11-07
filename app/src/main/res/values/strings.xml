@@ -293,6 +293,12 @@
     <string name="study_block_pick">Scegli le app da bloccare</string>
     <string name="study_block_remove">Tocca per sbloccarla</string>
     <string name="more_screen_awake">Schermo sempre acceso</string>
+    <string name="sheet_title">Foglio rapido</string>
+    <string name="sheet_undo">Annulla</string>
+    <string name="sheet_clear">Pulisci</string>
+    <string name="sheet_save">Salva</string>
+    <string name="sheet_saved">Salvato in Galleria, nella cartella NOVA.</string>
+    <string name="sheet_failed">Non sono riuscita a salvare il foglio.</string>
     <string name="notes_title">Note rapide</string>
     <string name="notes_short">Note</string>
     <string name="notes_hint">Scrivi qui: si salva da solo.</string>
