@@ -6,6 +6,8 @@
 | Kotlin, kotlinx.coroutines, kotlinx.serialization | Apache-2.0 | Linguaggio e librerie |
 | detekt, ktlint-gradle | Apache-2.0 / MIT | Solo in fase di build |
 | jsonschema (Python) | MIT | Solo in CI |
+| ONNX Runtime (`com.microsoft.onnxruntime:onnxruntime-android`) | MIT | Esegue i modelli della lettura del testo (`feature/ocr`) |
+| Modelli PaddleOCR PP-OCRv6 tiny (`det.onnx`, `rec.onnx`), di PaddlePaddle, convertiti in ONNX da RapidAI/RapidOCR | Apache-2.0 | Lettura del testo dalle foto, sul tablet (`feature/ocr/src/main/assets/ocr`) |
 
 Coefficienti degli angoli continui (`SquircleShape`): costanti geometriche, nessun codice di terzi.
 Nessun font, icona o asset proprietario è incluso.
