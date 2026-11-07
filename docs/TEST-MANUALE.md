@@ -51,6 +51,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Impostazioni → Prestazioni → «App che si possono spegnere»: l'elenco si apre, ogni riga spiega cosa fa l'app. Toccandone una passa tra le congelate; toccandola lì si riaccende.
 - [ ] Con la Gaming accesa, dopo un aggiornamento di NOVA: rotazione bloccata e grafica su Prestazioni; uscendo tornano come prima.
 - [ ] Con una tastiera fisica collegata, in Altro compare «Tastiera fisica» e apre la scelta del layout; senza, la voce non c'è. Scelto Italiano, nelle Note rapide il tasto à scrive à.
+- [ ] StandBy di giorno mostra lo sfondo della Home velato, senza icone; dalle 21 alle 7 è nero con l'ora rossa.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### StandBy con il tuo sfondo
+- Richiesta: "sentiti libero di aggiungere o migliorare qualcosa".
+- Di giorno lo StandBy mostra lo sfondo della Home, velato perché l'ora si legga bene. Di notte resta nero con l'ora in rosso scuro.
+
 ### Tastiera fisica
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Quando colleghi una tastiera fisica, in tendina → Altro compare «Tastiera fisica»: da lì scegli il layout italiano, così i tasti à, è, ò scrivono la lettera giusta.
