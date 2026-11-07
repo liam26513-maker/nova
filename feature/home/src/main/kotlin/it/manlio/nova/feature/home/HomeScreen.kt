@@ -234,7 +234,7 @@ fun HomeScreen(
                     ipadActions,
                 ) { menuFor = null }.copy(onClearNotification = clear)
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
-            standby?.let { StandbyScreen(it, nowMillis, onStandbyExit) }
+            standby?.let { StandbyScreen(it, nowMillis, onStandbyExit) { HomeBackground(prefs, wallpaper) } }
         }
     }
 }

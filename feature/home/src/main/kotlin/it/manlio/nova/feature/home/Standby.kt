@@ -64,8 +64,11 @@ object StandbyRules {
     fun brightness(night: Boolean): Float = if (night) 0.03f else 0.3f
 }
 
+private const val DAY_VEIL = 0.5f
+
 /**
- * StandBy (SPEC §12.6): schermo nero a tutto campo con l'ora grande, la data, la batteria e la sveglia. Un tocco, o Indietro, esce.
+ * StandBy (SPEC §12.6): a tutto campo, di giorno sullo sfondo della Home velato e di notte sul nero,
+ * con l'ora grande, la data, la batteria e la sveglia. Un tocco, o Indietro, esce.
  * Colori sobri, e di notte rosso scuro per non disturbare. È dentro la Home: non apre finestre sopra le altre app.
  */
 @Composable
@@ -73,6 +76,7 @@ fun StandbyScreen(
     info: StandbyInfo,
     nowMillis: Long,
     onExit: () -> Unit,
+    background: @Composable () -> Unit = {},
 ) {
     BackHandler(onBack = onExit)
     val look = LocalHomeLook.current
@@ -97,6 +101,10 @@ fun StandbyScreen(
             },
         contentAlignment = Alignment.Center,
     ) {
+        if (!info.night) {
+            background()
+            Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = DAY_VEIL)))
+        }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             BasicText(time, style = TextStyle(ink, 220.sp, FontWeight.Thin, fontFamily = look.family))
             BasicText(date, style = TextStyle(muted, 36.sp, FontWeight.Light, fontFamily = look.family))
