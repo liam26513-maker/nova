@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Registrare lo schermo dal pannello Gaming
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nel pannello c'è «Registra lo schermo»: registra per massimo 3 minuti e salva in Movies. Per fermare prima riapri il pannello; uscendo dalla Gaming si ferma da sola. Serve Shizuku.
+
 ### Pannello sopra i giochi
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Durante la Gaming, nella tendina in Altro c'è «Pannello Gaming»: mostra temperatura, batteria, ping, memoria libera e gli FPS dell'ultima misura, con i pulsanti Screenshot, Turbo, Risoluzione, Chiudi il gioco ed Esci. Un tocco fuori lo chiude e il gioco non va in pausa.
