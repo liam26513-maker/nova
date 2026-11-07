@@ -366,4 +366,13 @@ class GameScaleTest {
             assertFalse(log.setGameScale(game, 70).ok)
             assertTrue(log.entries().isEmpty())
         }
+
+    @Test
+    fun `screen recording stays in Movies and refuses anything but digits`() {
+        val record = SystemCommand.ScreenRecord("20261107")
+        assertEquals(listOf("screenrecord", "--time-limit", "180", "/sdcard/Movies/nova-20261107.mp4"), record.argv)
+        listOf("", "../x", "1 2", "1;rm").forEach { bad ->
+            assertTrue(runCatching { SystemCommand.ScreenRecord(bad) }.isFailure)
+        }
+    }
 }

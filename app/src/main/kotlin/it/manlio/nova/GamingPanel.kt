@@ -75,6 +75,7 @@ internal class GamingPanel(
     private val windows = service.getSystemService(WindowManager::class.java)
     private val tools = GameTools(service, app)
     private var host: NovaControlService.PanelHost? = null
+    val recorder = GameRecorder(service, app)
 
     fun show() {
         if (host != null || service.getSystemService(KeyguardManager::class.java).isKeyguardLocked) return
@@ -173,6 +174,11 @@ internal class GamingPanel(
         val game = app.lastGame
         Action(stringResource(R.string.panel_screenshot), ::screenshot)
         if (shizuku) {
+            val recording by recorder.recording.collectAsState()
+            Action(stringResource(if (recording) R.string.panel_record_stop else R.string.panel_record)) {
+                dismiss()
+                recorder.toggle()
+            }
             Action(stringResource(R.string.panel_turbo)) { HomeSystem.turboWithToast(service, scope, PerformanceUi(app, scope)) }
         }
         if (shizuku && game != null && tools.isGame(game)) ScaleAction(game)

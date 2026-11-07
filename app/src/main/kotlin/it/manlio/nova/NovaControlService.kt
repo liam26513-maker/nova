@@ -119,6 +119,7 @@ class NovaControlService : AccessibilityService() {
         if (app.safeModeReason == null) {
             scope.watchGaming(app) { shape ->
                 gamingPanel.dismiss()
+                gamingPanel.recorder.stop()
                 removeStrip()
                 if (shape != StripShape.NONE) addStrip(shape)
                 app.log.i(LOG_TAG, "striscia: $shape")

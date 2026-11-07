@@ -130,6 +130,28 @@ sealed interface SystemCommand {
         override val argv = listOf("wm", "density", dpi?.toString() ?: "reset")
     }
 
+    /**
+     * Registra lo schermo in `Movies` per al massimo [LIMIT_S] secondi: il comando resta in corso finché non finisce o non arriva
+     * [ScreenRecordStop]. [stamp] sono solo cifre, così il percorso non può uscire dalla cartella. Non cambia impostazioni.
+     */
+    data class ScreenRecord(val stamp: String) : SystemCommand {
+        init {
+            require(stamp.isNotEmpty() && stamp.all(Char::isDigit)) { "Nome di registrazione non consentito" }
+        }
+
+        val path = "/sdcard/Movies/nova-$stamp.mp4"
+        override val argv = listOf("screenrecord", "--time-limit", LIMIT_S.toString(), path)
+
+        companion object {
+            const val LIMIT_S = 180
+        }
+    }
+
+    /** Ferma [ScreenRecord] e chiude il file come si deve. */
+    data object ScreenRecordStop : SystemCommand {
+        override val argv = listOf("pkill", "-INT", "screenrecord")
+    }
+
     /** Spegne lo schermo (come il tasto di accensione). Non cambia impostazioni: niente da annullare. */
     data object Sleep : SystemCommand {
         override val argv = listOf("input", "keyevent", "KEYCODE_SLEEP")

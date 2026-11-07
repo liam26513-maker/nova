@@ -352,6 +352,11 @@
     <string name="panel_ping">Ping</string>
     <string name="panel_ram">Memoria libera</string>
     <string name="panel_screenshot">Screenshot</string>
+    <string name="panel_record">Registra lo schermo</string>
+    <string name="panel_record_stop">Ferma la registrazione</string>
+    <string name="record_started">Registro per massimo 3 minuti. Per fermare riapri il pannello.</string>
+    <string name="record_done">Registrazione salvata in Movies.</string>
+    <string name="record_failed">Non sono riuscita a registrare lo schermo.</string>
     <string name="panel_turbo">Turbo</string>
     <string name="panel_close_game">Chiudi il gioco</string>
     <string name="panel_exit">Esci dalla modalità</string>
