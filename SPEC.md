@@ -532,7 +532,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 **Libreria giochi unica** (fatti: giochi locali e scorciatoie cloud in Impostazioni → Modalità Gaming; mancano streaming dal PC e copertine): giochi locali + giochi PC in streaming (Moonlight, §11.4) + cloud gaming (scorciatoie a Xbox Cloud Gaming, GeForce NOW). Copertine dai metadati o icone.
 
-**Profili intelligenti:** per ogni gioco si salvano impostazioni e statistiche (FPS medi, minimi, temperatura). Dopo ogni sessione, suggerimenti: "Ha fatto 24 FPS medi: provo la risoluzione al 75%?" (un tocco per applicare).
+**Profili intelligenti (fatto di base: dopo una misura sotto 45 FPS, tendina → Altro propone il passo di risoluzione successivo, un tocco per applicarlo):** per ogni gioco si salvano impostazioni e statistiche (FPS medi, minimi, temperatura). Dopo ogni sessione, suggerimenti: "Ha fatto 24 FPS medi: provo la risoluzione al 75%?" (un tocco per applicare).
 
 **Controller:** riconoscimento gamepad Bluetooth/USB, stato batteria del controller, mappatura tasti per i giochi che lo prevedono.
 
