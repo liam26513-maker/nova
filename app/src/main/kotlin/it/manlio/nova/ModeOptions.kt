@@ -68,6 +68,9 @@ class ModeOptions(private val file: File) {
         /** Il pannello con uno swipe dal bordo sinistro: spento di serie, la fascia prende tocchi al gioco. */
         const val PANEL_SWIPE = "PANEL_SWIPE"
 
+        /** Gaming da sola quando si apre un gioco (SPEC §8.7): spenta di serie. */
+        const val AUTO_GAMING = "AUTO_GAMING"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)

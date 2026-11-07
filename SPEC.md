@@ -569,7 +569,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.7 Profili automatici
 
-Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni (§12.4): gioco aperto → Gaming; tastiera fisica collegata → Lavoro; orario di studio → Studio; penna/tavoletta collegata → Creativa.
+Fatto il primo, spento di serie: gioco aperto → Gaming, uscita tornando alla Home (Impostazioni → Modalità Gaming). Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni (§12.4): gioco aperto → Gaming; tastiera fisica collegata → Lavoro; orario di studio → Studio; penna/tavoletta collegata → Creativa.
 
 ---
 

@@ -351,6 +351,8 @@
     <string name="gaming_panel_title">Panel over games</string>
     <string name="gaming_panel_footer">During the mode it opens from the sheet, under More. A swipe from the left edge is quicker, but that thin strip takes taps from the game: this is why it is off by default.</string>
     <string name="gaming_panel_swipe">Open with a swipe from the left edge</string>
+    <string name="gaming_auto">Turn on by itself when you open a game</string>
+    <string name="gaming_auto_footer">Off by default. It turns on when you switch to a game, if no other mode is on, and off when you go back to Home. Needs the accessibility service.</string>
     <string name="panel_fps">FPS (last measure)</string>
     <string name="panel_temp">Temperature</string>
     <string name="panel_battery">Battery</string>

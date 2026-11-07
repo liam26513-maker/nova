@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Gaming automatica (facoltativa)
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Modalità Gaming puoi far accendere la modalità da sola quando apri un gioco: si spegne quando torni alla Home. È spenta di serie e non tocca le altre modalità.
+
 ### Grafico della settimana
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Il tuo tempo c'è un grafico con i minuti passati nelle modalità negli ultimi 7 giorni. Tocca una barra per vedere il valore di quel giorno.

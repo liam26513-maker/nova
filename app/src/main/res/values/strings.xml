@@ -353,6 +353,8 @@
     <string name="gaming_panel_title">Pannello sopra i giochi</string>
     <string name="gaming_panel_footer">Durante la modalità si apre dalla tendina, in Altro. Con lo swipe dal bordo sinistro fai prima, ma quella sottile fascia prende i tocchi al gioco: per questo è spento di serie.</string>
     <string name="gaming_panel_swipe">Apri con uno swipe dal bordo sinistro</string>
+    <string name="gaming_auto">Accendi da sola quando apri un gioco</string>
+    <string name="gaming_auto_footer">Spenta di serie. Si accende passando a un gioco, se nessun\'altra modalità è accesa, e si spegne quando torni alla Home. Serve il servizio di accessibilità.</string>
     <string name="panel_fps">FPS (ultima misura)</string>
     <string name="panel_temp">Temperatura</string>
     <string name="panel_battery">Batteria</string>
