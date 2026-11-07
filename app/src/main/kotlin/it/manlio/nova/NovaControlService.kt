@@ -85,6 +85,7 @@ class NovaControlService : AccessibilityService() {
             if (doubleSwipe.swipe()) exitMenu.show() else Toast.makeText(this, R.string.edge_again, Toast.LENGTH_SHORT).show()
         }
     }
+    private val heat by lazy { GameHeatWatch(this) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
@@ -120,6 +121,7 @@ class NovaControlService : AccessibilityService() {
             scope.watchGaming(app) { shape ->
                 gamingPanel.dismiss()
                 gamingPanel.recorder.stop()
+                heat.set(app.modes.isActive(Modes.GAMING))
                 removeStrip()
                 if (shape != StripShape.NONE) addStrip(shape)
                 app.log.i(LOG_TAG, "striscia: $shape")
@@ -163,6 +165,7 @@ class NovaControlService : AccessibilityService() {
         exitMenu.dismiss()
         studyGuard.dismiss()
         edge.remove()
+        heat.set(false)
         panelEdge.remove()
         gamingPanel.dismiss()
         removePanel()
