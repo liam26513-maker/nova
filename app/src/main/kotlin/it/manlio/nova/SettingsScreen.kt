@@ -57,8 +57,7 @@ fun SettingsScreen(
         onSelect = { selected = it },
     ) { entry, backdrop ->
         when (entry.id) {
-            CAT_NEWS -> NewsSection(backdrop)
-            CAT_PEN -> PenSection(backdrop)
+            CAT_NEWS, CAT_PEN, CAT_PRIVATE -> PlainCategory(entry.id, backdrop)
             CAT_IMPROVE -> ImproveSection(backdrop, systemActions)
             CAT_GRAPHICS -> GraphicsSection(backdrop, graphics, onChoose)
             CAT_DEVICE -> DeviceSection(backdrop, profile, onMeasure, onShowReport)
@@ -113,6 +112,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     val time = stringResource(R.string.time_title)
     val privacy = stringResource(R.string.privacy_title)
     val pen = stringResource(R.string.pen_title)
+    val private = stringResource(R.string.private_title)
     val game =
         if (withPerformance) {
             listOf(
@@ -132,6 +132,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
             SidebarEntry(CAT_GRAPHICS, graphics, SidebarGlyph.LAYERS, Color(0xFF2FA39A)),
             SidebarEntry(CAT_DEVICE, device, SidebarGlyph.TABLET, Color(0xFF6B7684)),
             SidebarEntry(CAT_PEN, pen, SidebarGlyph.DROP, Color(0xFF9A6BD8)),
+            SidebarEntry(CAT_PRIVATE, private, SidebarGlyph.EYE, Color(0xFF55606E)),
             SidebarEntry(CAT_HOME, home, SidebarGlyph.HOUSE, Color(0xFFE0922F)),
             SidebarEntry(CAT_UPDATES, updates, SidebarGlyph.DOWNLOAD, Color(0xFF3B8BD4)),
         ) + perf + game +
@@ -139,6 +140,19 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
                 SidebarEntry(CAT_TOOLS, tools, SidebarGlyph.SLIDERS, Color(0xFF8A8F98)),
                 SidebarEntry(CAT_STATUS, status, SidebarGlyph.CHECK, Color(0xFF3FA34D)),
             )
+    }
+}
+
+/** Le pagine che non chiedono niente alla schermata: Novità, Penna, Cartella privata. */
+@Composable
+private fun PlainCategory(
+    id: String,
+    backdrop: ImageBitmap,
+) {
+    when (id) {
+        CAT_NEWS -> NewsSection(backdrop)
+        CAT_PEN -> PenSection(backdrop)
+        else -> PrivateSection(backdrop)
     }
 }
 
@@ -164,6 +178,7 @@ private fun ModeCategory(
 private const val CAT_IMPROVE = "improve"
 private const val CAT_NEWS = "news"
 private const val CAT_PEN = "pen"
+private const val CAT_PRIVATE = "private"
 private const val CAT_GRAPHICS = "graphics"
 private const val CAT_DEVICE = "device"
 private const val CAT_HOME = "home"

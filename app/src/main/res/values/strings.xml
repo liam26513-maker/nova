@@ -362,6 +362,11 @@
     <string name="pen_builtin">integrata</string>
     <string name="pen_yes">sì</string>
     <string name="pen_no">no</string>
+    <string name="private_title">Cartella privata</string>
+    <string name="private_footer">Qui trovi le app che hai nascosto dalla Home (tienile premute → Nascondi). Si aprono solo dopo l\'impronta o il blocco schermo di Android.</string>
+    <string name="private_unlock">Sblocca la cartella</string>
+    <string name="private_empty">Nessuna app nascosta.</string>
+    <string name="private_no_lock">Per usarla imposta un blocco schermo nelle Impostazioni di Android.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Chi ha usato fotocamera, microfono e posizione</string>
     <string name="privacy_footer">Letto da Android con Shizuku, solo mentre questa pagina è aperta; niente esce dal tablet. Tocca un\'app per cambiarne i permessi.</string>

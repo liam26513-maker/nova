@@ -760,6 +760,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 13.5 Cartella privata
 
+- **Fatto di base:** Impostazioni → Cartella privata apre le app nascoste dalla Home dopo impronta o blocco schermo di Android. Mancano i file cifrati.
 - App e file protetti da PIN/biometria (`BiometricPrompt`): nascondimento dalla home e dalla ricerca; file in archivio cifrato nell'area privata dell'app.
 
 ### 13.6 Salute della batteria

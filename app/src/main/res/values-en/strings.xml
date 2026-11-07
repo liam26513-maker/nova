@@ -433,6 +433,11 @@
     <string name="pen_builtin">built in</string>
     <string name="pen_yes">yes</string>
     <string name="pen_no">no</string>
+    <string name="private_title">Private folder</string>
+    <string name="private_footer">Here you find the apps you hid from Home (long press → Hide). They open only after Android\'s fingerprint or screen lock.</string>
+    <string name="private_unlock">Unlock the folder</string>
+    <string name="private_empty">No hidden apps.</string>
+    <string name="private_no_lock">To use it, set a screen lock in Android settings.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Who used camera, microphone and location</string>
     <string name="privacy_footer">Read from Android with Shizuku, only while this page is open; nothing leaves the tablet. Tap an app to change its permissions.</string>
