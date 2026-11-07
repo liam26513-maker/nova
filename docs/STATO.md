@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.770. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.780. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -34,6 +34,9 @@ Provate: Studio, Lavoro e l'aggiornamento automatico della tastiera (0.1.340 →
 Provate sul tablet: tendina con gesti veloci e lenti (la tendina di Android si chiude con Shizuku: l'azione di accessibilità `GLOBAL_ACTION_DISMISS_NOTIFICATION_SHADE` qui non fa niente), note rapide, pagine Studio, Gaming, Aggiornamenti e Prestazioni. Provati anche: pastiglia e uscita della Studio, avvio del Pomodoro, blocco e sblocco delle app, Lavoro con schermo diviso, ingresso e uscita dalla Creativa, minuti di «Il tuo tempo». Provati in Gaming: doppio swipe dal centro del bordo e le tre voci del menu di uscita, con ripristino completo. Il proprietario ha provato volume giù tenuto col tasto vero: funziona (i tasti inviati da adb non arrivano al servizio). Provato anche il tempo per ogni app, con il permesso concesso. Provata anche la Presentazione: la barra della luminosità segue il cambiamento (confermato dal proprietario). Con Shizuku la tendina di Android è bloccata (`AndroidShade`): dal gesto parte solo quella di NOVA, «Notifiche di Android» in Altro la apre e il gesto dopo la riblocca. Non ancora provati a mano: filtro caldo (per il proprietario poco importa), misura e 65% in partita, blocco della tendina sopra un'app esterna. Brawl Stars è al 65%, anche nel registro di NOVA. Il servizio di accessibilità si fermava perché il gestore Allwinner «Background Manage» bloccava NOVA (`awbms skipService`): il 6 novembre il proprietario ha autorizzato NOVA e Tastiera NOVA. Se la tendina veniva tirata mentre si chiudeva si apriva solo quella di Android: corretto; altri due casi simili, con più di un secondo di distanza, non si sono più ripetuti in oltre 30 prove.
 
 Provati il 7 novembre: «Invia a Claude», elenco delle app da spegnere (nessuna spenta), tastiera con solo italiano e inglese, controllo gioco bloccato (su un browser fermo, dopo 18 secondi). Il repository è **pubblico solo per ora**: GitHub Actions si era fermato per il limite del repository privato; va rimesso privato quando il limite si rinnova.
+
+## Tastiera (7 novembre, 0.1.780)
+Sul tablet provati tema NOVA scuro e accento scelto in NOVA. Da provare a mano: cambio d'accento senza riavvii, voce «Tastiera fisica» (serve una tastiera), StandBy con lo sfondo (di giorno), righe di Lavoro e Studio, tastiera bassa in Gaming. L'interruttore «Tema chiaro/scuro automatico» della tastiera era spento sul tablet: acceso il 7 novembre.
 
 ## Cose da sapere
 - La CI di `ci.yml` controlla NOVA; `tastiera.yml` controlla `keyboard/` (progetto Gradle separato, strumenti più nuovi).

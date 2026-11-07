@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 /**
- * Dice alla tastiera il colore d'accento scelto in Personalizza la Home (SPEC §10.1) e se Lavoro o Studio sono accese (§10.5).
+ * Dice alla tastiera il colore d'accento scelto in Personalizza la Home (SPEC §10.1)
+ * e quale modalità con tastiera propria è accesa (§10.5).
  * Solo lettura e solo questi valori: non sono dati personali, perciò non serve un permesso. Con l'accento automatico
  * il colore è vuoto e la tastiera usa il suo.
  */
@@ -57,8 +58,8 @@ internal fun accentCursor(
     accent: Int?,
     mode: String?,
 ): Cursor =
-    MatrixCursor(arrayOf("accent", "work", "study")).apply {
-        addRow(arrayOf(accent, if (mode == Modes.WORK.id) 1 else 0, if (mode == Modes.STUDY.id) 1 else 0))
+    MatrixCursor(arrayOf("accent", "work", "study", "gaming")).apply {
+        addRow(listOf(accent) + listOf(Modes.WORK, Modes.STUDY, Modes.GAMING).map { if (mode == it.id) 1 else 0 })
     }
 
 /** La tastiera si aggiorna subito quando cambia l'accento o si entra e si esce da una modalità. */

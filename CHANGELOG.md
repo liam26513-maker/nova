@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera più bassa in Gaming
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Con Gaming accesa la tastiera è più bassa e copre meno gioco. Quando esci torna normale.
+
 ### Simboli per lo studio sulla tastiera
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Con Studio accesa, in cima alla tastiera c'è una riga con √ π ² ≠ ≤ ≥ ± ∑ ° α. Tieni premuto un tasto per gli altri, come ³ ∫ ∞ → β Δ. Quando esci torna la tastiera di prima.

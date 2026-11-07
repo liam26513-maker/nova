@@ -12,10 +12,10 @@ import org.robolectric.annotation.Config
 @Config(application = android.app.Application::class)
 class AccentProviderTest {
     @Test
-    fun `the keyboard reads only the accent and whether Work or Study are on`() {
+    fun `the keyboard reads only the accent and which mode is on`() {
         accentCursor(0xFF4F6D8A.toInt(), Modes.WORK.id).use {
             assertEquals(1, it.count)
-            assertEquals(3, it.columnCount)
+            assertEquals(4, it.columnCount)
             it.moveToFirst()
             assertEquals(0xFF4F6D8A.toInt(), it.getInt(0))
             assertEquals(1, it.getInt(1))
@@ -30,6 +30,7 @@ class AccentProviderTest {
             assertTrue(it.isNull(0))
             assertEquals(0, it.getInt(1))
             assertEquals(1, it.getInt(2))
+            assertEquals(0, it.getInt(3))
         }
     }
 }

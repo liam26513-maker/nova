@@ -53,7 +53,11 @@ Con la modalità Lavoro accesa, accanto ai suggerimenti ci sono copia, incolla, 
 
 ## Variante Studio (§10.5)
 
-Con la modalità Studio accesa, in cima alla tastiera c'è una riga di dieci simboli (√ π ² ≠ ≤ ≥ ± ∑ ° α); gli altri si trovano tenendo premuto il tasto (³ ∫ ∞ → β Δ). Uscendo torna la tastiera di prima. La variante Gaming non c'è ancora.
+Con la modalità Studio accesa, in cima alla tastiera c'è una riga di dieci simboli (√ π ² ≠ ≤ ≥ ± ∑ ° α); gli altri si trovano tenendo premuto il tasto (³ ∫ ∞ → β Δ). Uscendo torna la tastiera di prima. 
+
+## Variante Gaming (§10.5)
+
+Con la modalità Gaming accesa la tastiera è alta il 75%, per coprire meno gioco. La semitrasparenza non c'è ancora.
 
 ## Da fare (SPEC §10)
 
