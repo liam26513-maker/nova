@@ -96,6 +96,13 @@ internal fun TimeSection(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { resumed++ }
     var usage by remember { mutableStateOf<Usage?>(null) }
     LaunchedEffect(resumed) { usage = readUsage(context) }
+    SettingsSection(backdrop, header = stringResource(R.string.time_chart)) {
+        val bars =
+            remember(resumed) {
+                weekBars(LocalDate.now()) { day -> Modes.all.sumOf { modes.minutes.on(it.id, day) } }
+            }
+        WeekChart(bars)
+    }
     SettingsSection(backdrop, header = stringResource(R.string.time_modes), footer = stringResource(R.string.time_footer)) {
         val today = remember(resumed) { LocalDate.now() }
         Modes.all.forEachIndexed { index, mode ->
