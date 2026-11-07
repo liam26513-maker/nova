@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Foglio rapido in PDF
+- Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
+- Nel Foglio rapido c'è il tasto PDF: salva il disegno in Download, nella cartella NOVA, ritagliato attorno a quello che hai disegnato.
+
 ### Pallino del nero visibile
 - Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
 - Nel Foglio rapido il colore nero ora si vede anche quando non è scelto.

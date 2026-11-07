@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -80,6 +81,7 @@ class QuickSheetActivity : ComponentActivity() {
             SheetScreen(
                 sheet,
                 onSave = { export { Toast.makeText(this, R.string.sheet_saved, Toast.LENGTH_LONG).show() } },
+                onPdf = ::exportPdf,
                 onShare = { export(::share) },
                 onClose = ::finish,
             )
@@ -123,6 +125,32 @@ class QuickSheetActivity : ComponentActivity() {
         return uri
     }
 
+    /** PDF in Download/NOVA, ritagliato attorno al disegno: la tela è quadrata e quasi tutta vuota. */
+    private fun exportPdf() {
+        val image = sheet.snapshot()
+        lifecycleScope.launch {
+            val ok = withContext(Dispatchers.IO) { runCatching { writePdf(SheetCrop.crop(image)) }.getOrDefault(false) }
+            Toast.makeText(this@QuickSheetActivity, if (ok) R.string.sheet_pdf_saved else R.string.sheet_failed, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun writePdf(image: Bitmap): Boolean {
+        val pdf = PdfDocument()
+        val page = pdf.startPage(PdfDocument.PageInfo.Builder(image.width, image.height, 1).create())
+        page.canvas.drawBitmap(image, 0f, 0f, null)
+        pdf.finishPage(page)
+        val values =
+            ContentValues().apply {
+                put(MediaStore.Downloads.DISPLAY_NAME, "foglio-${System.currentTimeMillis()}.pdf")
+                put(MediaStore.Downloads.MIME_TYPE, "application/pdf")
+                put(MediaStore.Downloads.RELATIVE_PATH, "Download/NOVA")
+            }
+        val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+        val written = uri?.let { contentResolver.openOutputStream(it)?.use { out -> pdf.writeTo(out) } } != null
+        pdf.close()
+        return written
+    }
+
     private fun share(uri: Uri) {
         val send =
             Intent(Intent.ACTION_SEND)
@@ -147,6 +175,7 @@ internal fun quickSheetItem(context: Context) =
 private fun SheetScreen(
     sheet: QuickSheetView,
     onSave: () -> Unit,
+    onPdf: () -> Unit,
     onShare: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -168,7 +197,7 @@ private fun SheetScreen(
             SheetButton(stringResource(R.string.notes_share), onShare)
             SheetButton(stringResource(R.string.notes_close), onClose)
         }
-        SheetTools(sheet)
+        SheetTools(sheet, onPdf)
         AndroidView(
             {
                 FrameLayout(it).apply {
@@ -184,7 +213,10 @@ private fun SheetScreen(
 
 /** Seconda riga della barra: colori, tre spessori e gomma. Lo stato vive nella tela; qui solo cosa è scelto. */
 @Composable
-private fun SheetTools(sheet: QuickSheetView) {
+private fun SheetTools(
+    sheet: QuickSheetView,
+    onPdf: () -> Unit,
+) {
     var color by remember { mutableIntStateOf(sheet.color) }
     var size by remember { mutableFloatStateOf(sheet.size) }
     var eraser by remember { mutableStateOf(sheet.eraser) }
@@ -231,6 +263,7 @@ private fun SheetTools(sheet: QuickSheetView) {
             eraser = !eraser
             sheet.eraser = eraser
         }
+        SheetButton(stringResource(R.string.sheet_pdf), onPdf)
     }
 }
 
@@ -253,3 +286,41 @@ private fun SheetButton(
 
 @Suppress("MagicNumber") // colore
 private val BAR = Color(0xFF1C1C1E)
+
+/** Il ritaglio attorno al disegno (con un margine), per il PDF. Pura sui pixel, così si prova. */
+@Suppress("MagicNumber") // gli indici del riquadro: sinistra, alto, destra, basso
+internal object SheetCrop {
+    private const val MARGIN = 32
+
+    /** Il riquadro dei pixel diversi da [paper], o null se il foglio è vuoto: sinistra, alto, destra, basso (esclusi). */
+    fun bounds(
+        pixels: IntArray,
+        width: Int,
+        paper: Int,
+    ): IntArray? {
+        var left = width
+        var top = Int.MAX_VALUE
+        var right = -1
+        var bottom = -1
+        for (i in pixels.indices) {
+            if (pixels[i] == paper) continue
+            val x = i % width
+            val y = i / width
+            left = minOf(left, x)
+            right = maxOf(right, x)
+            top = minOf(top, y)
+            bottom = maxOf(bottom, y)
+        }
+        return if (right < 0) null else intArrayOf(left, top, right + 1, bottom + 1)
+    }
+
+    fun crop(image: Bitmap): Bitmap {
+        val pixels = IntArray(image.width * image.height).also { image.getPixels(it, 0, image.width, 0, 0, image.width, image.height) }
+        val box = bounds(pixels, image.width, image.getPixel(0, 0)) ?: return image
+        val l = maxOf(0, box[0] - MARGIN)
+        val t = maxOf(0, box[1] - MARGIN)
+        val r = minOf(image.width, box[2] + MARGIN)
+        val b = minOf(image.height, box[3] + MARGIN)
+        return Bitmap.createBitmap(image, l, t, r - l, b - t)
+    }
+}
