@@ -71,6 +71,7 @@ fun upgradeKind(oldVersion: Int, currentVersion: Int): UpgradeKind = when {
 fun checkVersionUpgrade(context: Context) {
     val prefs = context.prefs()
     val oldVersion = prefs.getInt(Settings.PREF_VERSION_CODE, 0)
+    applyNovaThemeOnce(prefs)
     when (upgradeKind(oldVersion, BuildConfig.VERSION_CODE)) {
         UpgradeKind.NONE -> Unit
         UpgradeKind.REGULAR -> AppUpgrade.onUpgrade(context)
@@ -81,6 +82,18 @@ fun checkVersionUpgrade(context: Context) {
         }
     }
 }
+
+/** Chi aveva già la tastiera riceve i colori di NOVA una volta sola: dopo, la scelta in Aspetto resta sua. */
+private fun applyNovaThemeOnce(prefs: SharedPreferences) {
+    if (prefs.getBoolean(NOVA_THEME_APPLIED, false)) return
+    prefs.edit {
+        putString(Settings.PREF_THEME_COLORS, KeyboardTheme.THEME_NOVA)
+        putString(Settings.PREF_THEME_COLORS_NIGHT, KeyboardTheme.THEME_NOVA)
+        putBoolean(NOVA_THEME_APPLIED, true)
+    }
+}
+
+private const val NOVA_THEME_APPLIED = "nova_theme_applied"
 
 /** Gli stessi valori dei nuovi predefiniti di NOVA (`Defaults`), scritti esplicitamente per chi ha già usato la tastiera. */
 private fun applyNovaFeel(context: Context, prefs: SharedPreferences) = prefs.edit {

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La tastiera ha i colori di NOVA
+- Richiesta: "bilancia leggerezza e personalizzazione/bello esteticamente".
+- Nuovo tema «NOVA», chiaro e scuro, con gli stessi colori del resto. Parte da solo una volta; se ne preferisci un altro lo cambi in Impostazioni della tastiera → Aspetto.
+
 ### Le modalità restano com'erano se NOVA si riavvia
 - Richiesta: "controlla e continua con tutto il resto".
 - Dopo un riavvio di NOVA la Gaming risultava accesa ma con la rotazione sbloccata e la grafica su Automatico. Ora le rimette a posto da sola, e all'uscita torna tutto come prima di entrare.
