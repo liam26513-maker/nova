@@ -584,6 +584,7 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 - Lettura di pressione, inclinazione, orientamento, hover, pulsanti (`getButtonState`), estremità gomma.
 - **Fatto di base:** Impostazioni → Penna e tavoletta mostra cosa è collegato, se arrivano pressione e inclinazione, e si aggiorna al collegamento; la prova del tratto si fa nel Foglio rapido. Mancano i consigli per modello.
 - **Controllo di compatibilità** al collegamento (`InputManager.InputDeviceListener`): cosa è stato rilevato, se arrivano pressione e inclinazione (test interattivo "disegna una linea premendo di più"), supporto OTG, suggerimenti (es. "Per le Wacom One pen tablet su Android 8–13 serve l'app Wacom Center"; "Aggiorna il firmware della tavoletta da PC").
+- **Misurato sul tablet di riferimento (7 novembre 2026):** il touchscreen gslX680 manda la posizione solo per spostamenti di almeno 4 pixel (~0,7 mm) e circa 52 volte al secondo, senza pressione: è il firmware, `/proc/gsl_config` è solo per root. Il Foglio rapido ammorbidisce i punti (`StrokeSmoother`); per la precisione vera serve una tavoletta grafica via OTG.
 - Nota per il proprietario: una penna di tavoletta grafica **non funziona sullo schermo** del tablet senza digitalizzatore; funziona tramite la tavoletta collegata.
 
 ### 9.2 Bassa latenza

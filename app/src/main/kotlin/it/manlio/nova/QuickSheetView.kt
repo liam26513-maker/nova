@@ -53,6 +53,7 @@ internal class QuickSheetView(
         val color: Int = INK,
     ) {
         val points = ArrayList<Float>()
+        val smoother = StrokeSmoother()
     }
 
     private val base = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888).apply { eraseColor(PAPER) }
@@ -182,6 +183,7 @@ internal class QuickSheetView(
             }
             MotionEvent.ACTION_UP -> {
                 addPoints(stroke, event)
+                stroke.smoother.finish().forEach(stroke.points::add)
                 front?.let { sendNew(it, stroke) }
                 draw(canvas, stroke)
                 strokes.add(stroke)
@@ -224,9 +226,7 @@ internal class QuickSheetView(
         y: Float,
         pressure: Float,
     ) {
-        stroke.points.add(x)
-        stroke.points.add(y)
-        stroke.points.add(SheetRules.widthDp(stroke.erasing, pressure) * density * size)
+        stroke.smoother.add(x, y, SheetRules.widthDp(stroke.erasing, pressure) * density * size).forEach(stroke.points::add)
     }
 
     private fun draw(
