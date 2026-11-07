@@ -214,9 +214,15 @@ class HomeControls(
         val modes = app.modes
         val live = modes.engine.active.map { text(it?.modeId == mode.id) }
         return MoreItem(modes.name(mode), text(modes.isActive(mode)), live) { report ->
-            val next = !modes.isActive(mode)
-            modes.toggle(mode) { report(text(it)) }
-            text(next)
+            val on = modes.isActive(mode)
+            val flip = { modes.toggle(mode) { report(text(it)) } }
+            if (on && mode == Modes.PRESENTATION && modes.exitPin.isSet) {
+                askPin(context, modes.exitPin, flip)
+                text(on)
+            } else {
+                flip()
+                text(!on)
+            }
         }
     }
 

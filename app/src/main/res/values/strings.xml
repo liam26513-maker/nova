@@ -361,6 +361,15 @@
     <string name="panel_close_game">Chiudi il gioco</string>
     <string name="panel_exit">Esci dalla modalità</string>
     <string name="panel_dismiss">Chiudi il pannello</string>
+    <string name="presentation_pin">PIN per uscire</string>
+    <string name="presentation_pin_footer">Facoltativo: chi ha il tablet in mano non può uscire dalla modalità né accenderne un\'altra senza PIN. Se lo dimentichi, la Presentazione si spegne da sola dopo 3 ore.</string>
+    <string name="presentation_pin_set">Imposta il PIN</string>
+    <string name="presentation_pin_remove">Togli il PIN</string>
+    <string name="presentation_pin_choose">Scegli un PIN da 4 a 8 cifre</string>
+    <string name="presentation_pin_ask">Scrivi il PIN</string>
+    <string name="presentation_pin_invalid">Il PIN deve avere da 4 a 8 cifre.</string>
+    <string name="presentation_pin_wrong">PIN sbagliato.</string>
+    <string name="presentation_pin_first">Esci prima dalla Presentazione, con il PIN.</string>
     <string name="more_meter">Misura il gioco (2 minuti)</string>
     <string name="meter_running">in corso</string>
     <string name="more_meter_share">Condividi l\'ultima misura</string>
