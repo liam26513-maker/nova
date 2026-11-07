@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Cartella privata
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nuova pagina Impostazioni → Cartella privata: le app che hai nascosto dalla Home si aprono da qui, dopo l'impronta o il blocco schermo del tablet.
+
 ### Studio all'orario che scegli
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Modalità Studio puoi scegliere un'ora, dalle 15 alle 20: dal lunedì al venerdì la Studio parte da sola, se non hai già un'altra modalità accesa. È spenta di serie.
