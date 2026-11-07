@@ -59,6 +59,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] In Gaming, da Altro → Pannello Gaming: i numeri si aggiornano, il gioco non va in pausa, Screenshot non riprende il pannello, Turbo lascia aperto il gioco, Esci rimette tutto com'era; con lo swipe acceso si apre dal bordo sinistro.
 - [ ] In Gaming, dal pannello: «Registra lo schermo» salva un video in Movies che si vede nella Galleria; «Ferma la registrazione» e l'uscita dalla Gaming lo chiudono bene.
 - [ ] Con il PIN impostato, uscire dalla Presentazione chiede il PIN, sia dalla Home sia sopra un'altra app; un PIN sbagliato non fa uscire; un'altra modalità non si accende.
+- [ ] Accendendo «Prossimo evento del calendario nello StandBy» NOVA chiede il permesso; negandolo la voce torna spenta; con un evento in calendario lo StandBy lo mostra.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».

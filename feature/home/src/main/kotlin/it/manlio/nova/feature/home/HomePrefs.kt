@@ -87,6 +87,8 @@ data class HomePrefs(
     val lockWallpaper: Boolean = true,
     /** StandBy automatico: in carica, in orizzontale e fermo per un po' parte da solo (SPEC §12.6). A mano è sempre disponibile. */
     val standbyAuto: Boolean = false,
+    /** Il prossimo evento del calendario nello StandBy: spento di serie, chiede il permesso quando lo accendi. */
+    val standbyCalendar: Boolean = false,
     /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
     val controlTiles: List<ControlTileId> = ControlTileId.DEFAULT,
     /** App nascoste: chiave → nome al momento in cui è stata nascosta (per mostrarle nelle Impostazioni). */
@@ -108,11 +110,19 @@ data class HomePrefs(
             layout = HomeLayoutStyle.IPAD,
             controlTiles = ControlTileId.DEFAULT,
             standbyAuto = false,
+            standbyCalendar = false,
         )
 
     /** Applica l'aspetto di [theme] tenendo app nascoste, nomi e disposizione di queste preferenze. */
     fun withLookOf(theme: HomePrefs): HomePrefs =
-        theme.copy(hidden = hidden, renamed = renamed, layout = layout, controlTiles = controlTiles, standbyAuto = standbyAuto)
+        theme.copy(
+            hidden = hidden,
+            renamed = renamed,
+            layout = layout,
+            controlTiles = controlTiles,
+            standbyAuto = standbyAuto,
+            standbyCalendar = standbyCalendar,
+        )
 
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
     val iconSignature: String get() = "$iconShape/$iconStyle/${iconPack.orEmpty()}"
@@ -214,6 +224,7 @@ internal object PrefsCodec {
             doubleTapSleep = bool("doubleTapSleep", d.doubleTapSleep),
             lockWallpaper = bool("lockWallpaper", d.lockWallpaper),
             standbyAuto = bool("standbyAuto", d.standbyAuto),
+            standbyCalendar = bool("standbyCalendar", d.standbyCalendar),
             controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
             renamed =
@@ -253,6 +264,7 @@ internal object PrefsCodec {
         p["doubleTapSleep"] = prefs.doubleTapSleep.toString()
         p["lockWallpaper"] = prefs.lockWallpaper.toString()
         p["standbyAuto"] = prefs.standbyAuto.toString()
+        p["standbyCalendar"] = prefs.standbyCalendar.toString()
         p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
         prefs.renamed.forEach { (key, name) -> p["$RENAMED$key"] = name }

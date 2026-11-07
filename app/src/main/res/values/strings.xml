@@ -341,6 +341,7 @@
     <string name="watchdog_frozen">Il gioco sembra bloccato</string>
     <string name="more_standby">StandBy</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco</string>
+    <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>
     <string name="more_gaming_panel">Pannello Gaming</string>
     <string name="gaming_panel_title">Pannello sopra i giochi</string>

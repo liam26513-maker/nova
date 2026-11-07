@@ -49,6 +49,8 @@ class StandbyAndLockTest {
         val read = PrefsCodec.read(PrefsCodec.write(HomePrefs(lockWallpaper = false, standbyAuto = true)))
         assertFalse(read.lockWallpaper)
         assertTrue(read.standbyAuto)
+        assertFalse(d.standbyCalendar)
+        assertTrue(PrefsCodec.read(PrefsCodec.write(HomePrefs(standbyCalendar = true))).standbyCalendar)
     }
 
     @Test

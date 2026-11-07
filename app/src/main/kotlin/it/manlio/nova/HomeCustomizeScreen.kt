@@ -341,6 +341,9 @@ private fun LayoutSection(
         Choice(R.string.customize_standby_auto, listOf(true, false), prefs.standbyAuto, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(standbyAuto = v) }
         }
+        Choice(R.string.customize_standby_calendar, listOf(true, false), prefs.standbyCalendar, { onOff(it) }, divider = true) { v ->
+            onChange { it.copy(standbyCalendar = v) }
+        }
     }
 }
 

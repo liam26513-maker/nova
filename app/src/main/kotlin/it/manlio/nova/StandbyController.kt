@@ -1,15 +1,19 @@
 package it.manlio.nova
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlarmManager
 import android.content.BroadcastReceiver
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
+import android.provider.CalendarContract
 import android.view.WindowManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,8 +23,10 @@ import androidx.core.content.ContextCompat
 import it.manlio.nova.feature.home.StandbyInfo
 import it.manlio.nova.feature.home.StandbyRules
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -42,6 +48,7 @@ class StandbyController(
     private var battery by mutableIntStateOf(FULL)
     private var charging by mutableStateOf(false)
     private var alarm: String? = null
+    private var event by mutableStateOf<String?>(null)
     private var request: Job? = null
     private val handler = Handler(Looper.getMainLooper())
     private val idle = Runnable { if (wantedAutomatically()) show() }
@@ -60,7 +67,7 @@ class StandbyController(
     fun info(): StandbyInfo? =
         if (shown) {
             val night = StandbyRules.isNight(Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
-            StandbyInfo(battery, charging, night, alarm)
+            StandbyInfo(battery, charging, night, alarm, event)
         } else {
             null
         }
@@ -99,6 +106,7 @@ class StandbyController(
         if (shown) return
         handler.removeCallbacks(idle)
         alarm = nextAlarm()
+        scope.launch { event = withContext(Dispatchers.IO) { nextEvent() } }
         shown = true
         activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setBrightness(StandbyRules.brightness(StandbyRules.isNight(Calendar.getInstance().get(Calendar.HOUR_OF_DAY))))
@@ -134,7 +142,32 @@ class StandbyController(
             SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(it.triggerTime))
         }
 
+    /** Il prossimo evento con un orario nelle 24 ore, se l'utente lo vuole e ha dato il permesso. Resta sul tablet. */
+    private fun nextEvent(): String? {
+        val granted = activity.checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED
+        if (!app.homePrefs.prefs.value.standbyCalendar || !granted) return null
+        val now = System.currentTimeMillis()
+        val uri = CalendarContract.Instances.CONTENT_URI.buildUpon()
+        ContentUris.appendId(uri, now)
+        ContentUris.appendId(uri, now + DAY_MS)
+        val columns = arrayOf(CalendarContract.Instances.TITLE, CalendarContract.Instances.BEGIN)
+        val timed = "${CalendarContract.Instances.ALL_DAY} = 0 AND ${CalendarContract.Instances.BEGIN} >= $now"
+        return runCatching {
+            activity.contentResolver.query(uri.build(), columns, timed, null, "${CalendarContract.Instances.BEGIN} ASC")?.use {
+                if (it.moveToFirst()) {
+                    "${SimpleDateFormat(
+                        "HH:mm",
+                        Locale.getDefault(),
+                    ).format(Date(it.getLong(1)))} · ${it.getString(0)}"
+                } else {
+                    null
+                }
+            }
+        }.getOrNull()
+    }
+
     private companion object {
         const val FULL = 100
+        const val DAY_MS = 24 * 60 * 60 * 1000L
     }
 }
