@@ -77,6 +77,10 @@ class ModeOptions(private val file: File) {
         /** La barra del desktop nel Lavoro (SPEC §8.3): spenta di serie. */
         const val DESK_BAR = "DESK_BAR"
 
+        /** Tastiera fisica collegata → Lavoro; penna o tavoletta → Creativa (SPEC §8.7). Spenti di serie. */
+        const val AUTO_WORK = "AUTO_WORK"
+        const val AUTO_CREATIVE = "AUTO_CREATIVE"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)

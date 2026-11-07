@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -89,6 +90,7 @@ class NovaControlService : AccessibilityService() {
     private val autoGaming = AutoGaming()
     private val penBar by lazy { PenBar(this, app) }
     private val deskBar by lazy { DeskBar(this, app) }
+    private val autoDevices by lazy { AutoDevices(this, app) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
@@ -148,6 +150,12 @@ class NovaControlService : AccessibilityService() {
                     active?.modeId == Modes.WORK.id && values[ModeOptions.DESK_BAR] == true
                 }.distinctUntilChanged().collect(deskBar::set)
             }
+            scope.launch {
+                app.modes.options.values
+                    .map { it[ModeOptions.AUTO_WORK] == true || it[ModeOptions.AUTO_CREATIVE] == true }
+                    .distinctUntilChanged()
+                    .collect(autoDevices::set)
+            }
             scope.launch { gamingOption(ModeOptions.WATCHDOG).collectLatest { on -> if (on) watchdog.watch() } }
         }
     }
@@ -197,6 +205,7 @@ class NovaControlService : AccessibilityService() {
         heat.set(false)
         penBar.set(false)
         deskBar.set(false)
+        autoDevices.set(false)
         panelEdge.remove()
         gamingPanel.dismiss()
         removePanel()
