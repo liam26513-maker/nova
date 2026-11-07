@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import it.manlio.nova.core.design.NovaTheme
+import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.safemode.SafeModeActivity
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
@@ -191,6 +192,12 @@ class HomeActivity : ComponentActivity() {
             onAppInfo = { entry -> catalog.openInfo(entry) },
             onUninstall = { entry ->
                 runCatching { startActivity(Intent(Intent.ACTION_DELETE, Uri.fromParts("package", entry.component.packageName, null))) }
+            },
+            canOpenWindow = { app.modes.isActive(Modes.WORK) && app.shizuku.status.value == ShizukuStatus.READY },
+            onOpenWindow = { entry ->
+                val target = entry.component
+                val open = runCatching { SystemCommand.OpenInWindow(target.packageName, target.className) }.getOrNull()
+                if (open != null) lifecycleScope.launch { app.shizuku.run(open) }
             },
             onSwipeDown = { HomeSystem.expandNotifications(this) },
             onSleep = ::sleep,

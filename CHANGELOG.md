@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App in finestre flottanti
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Durante il Lavoro, tieni premuta un'app nella Home e scegli «Apri in una finestra»: si apre flottante sopra la Home, con i tasti ingrandisci e chiudi. Serve Shizuku.
+
 ### Prossimo evento nello StandBy
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Personalizza la Home puoi accendere «Prossimo evento del calendario nello StandBy»: mostra il prossimo impegno delle 24 ore. NOVA chiede il permesso solo quando lo accendi e il calendario non esce dal tablet.

@@ -122,6 +122,12 @@ private fun MenuContent(
                 actions.onToggleFavorite(app)
                 onDismiss()
             }
+            if (actions.canOpenWindow()) {
+                MenuItem(stringResource(R.string.home_menu_window)) {
+                    actions.onOpenWindow(app)
+                    onDismiss()
+                }
+            }
             extras.onClearNotification?.let { MenuItem(stringResource(R.string.home_menu_clear_notification), onClick = it) }
             extras.onEdit?.let { MenuItem(stringResource(R.string.home_edit_enter), onClick = it) }
             extras.onTakeOut?.let { MenuItem(stringResource(R.string.home_menu_take_out), onClick = it) }

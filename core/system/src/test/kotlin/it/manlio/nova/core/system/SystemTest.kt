@@ -375,4 +375,12 @@ class GameScaleTest {
             assertTrue(runCatching { SystemCommand.ScreenRecord(bad) }.isFailure)
         }
     }
+
+    @Test
+    fun `a floating window opens one app and nothing else`() {
+        val open = SystemCommand.OpenInWindow("com.example.app", "com.example.app.Main")
+        assertEquals(listOf("am", "start", "--windowingMode", "5", "-n", "com.example.app/com.example.app.Main"), open.argv)
+        assertTrue(runCatching { SystemCommand.OpenInWindow("com.example;rm", "com.example.Main") }.isFailure)
+        assertTrue(runCatching { SystemCommand.OpenInWindow("com.example", "x y") }.isFailure)
+    }
 }

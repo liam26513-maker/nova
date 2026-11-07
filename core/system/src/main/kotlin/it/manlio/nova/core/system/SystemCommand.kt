@@ -152,6 +152,19 @@ sealed interface SystemCommand {
         override val argv = listOf("pkill", "-INT", "screenrecord")
     }
 
+    /**
+     * Apre un'app in una finestra flottante (SPEC §8.3). Android non dà questa scelta alle app normali; `5` è la modalità freeform.
+     * Sul tablet di riferimento funziona senza cambiare impostazioni. Non modifica niente: niente da annullare.
+     */
+    data class OpenInWindow(val packageName: String, val activity: String) : SystemCommand {
+        init {
+            requirePackage(packageName)
+            require(ACTIVITY.matches(activity)) { "Nome di activity non valido: $activity" }
+        }
+
+        override val argv = listOf("am", "start", "--windowingMode", "5", "-n", "$packageName/$activity")
+    }
+
     /** Spegne lo schermo (come il tasto di accensione). Non cambia impostazioni: niente da annullare. */
     data object Sleep : SystemCommand {
         override val argv = listOf("input", "keyevent", "KEYCODE_SLEEP")
@@ -210,6 +223,7 @@ sealed interface SystemCommand {
         private const val MAX_PACKAGE_LENGTH = 128
         private val KEY = Regex("^[A-Za-z0-9_.]{1,64}$")
         private val VALUE = Regex("^[A-Za-z0-9_.:,/+-]{0,128}$")
+        private val ACTIVITY = Regex("^[A-Za-z][A-Za-z0-9_.$]*$")
         private val PACKAGE = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
 
         private fun requireKey(key: String) = require(KEY.matches(key)) { "Chiave non consentita: $key" }
