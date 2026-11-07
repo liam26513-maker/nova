@@ -57,7 +57,7 @@ Con la modalità Studio accesa, in cima alla tastiera c'è una riga di dieci sim
 
 ## Variante Gaming (§10.5)
 
-Con la modalità Gaming accesa la tastiera è alta il 75%, per coprire meno gioco. La semitrasparenza non c'è ancora.
+Con la modalità Gaming accesa la tastiera è alta il 75%, per coprire meno gioco. Sfondo e tasti diventano semitrasparenti (80%), con il tema NOVA; le scritte restano piene.
 
 ## Da fare (SPEC §10)
 
