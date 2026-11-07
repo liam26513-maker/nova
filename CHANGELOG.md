@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Set di finestre nel Lavoro
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Durante il Lavoro, dalla tendina → Altro puoi salvare le app che hai aperto in finestra e riaprirle tutte insieme più tardi. NOVA ricorda gli ultimi 3 set. Le finestre si dispongono da sole: Android non permette di rimetterle nella stessa posizione.
+
 ### App suggerite nella ricerca
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Aprendo «Cerca app» senza scrivere, in alto ci sono le 5 app che usi di più a quest'ora. Le calcola il tablet dai dati di utilizzo, e niente esce dal tablet.

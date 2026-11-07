@@ -377,6 +377,10 @@
     <string name="gaming_panel_swipe">Apri con uno swipe dal bordo sinistro</string>
     <string name="gaming_auto">Accendi da sola quando apri un gioco</string>
     <string name="gaming_auto_footer">Spenta di serie. Si accende passando a un gioco, se nessun\'altra modalità è accesa, e si spegne quando torni alla Home. Serve il servizio di accessibilità.</string>
+    <string name="window_set_save">Salva le finestre aperte</string>
+    <string name="window_set_open">Riapri: %1$s</string>
+    <string name="window_set_saved">Set di finestre salvato: lo trovi qui, in Altro.</string>
+    <string name="window_set_none">Nessuna app aperta in una finestra: aprile con «Apri in una finestra» dalla Home.</string>
     <string name="panel_fps">FPS (ultima misura)</string>
     <string name="panel_temp">Temperatura</string>
     <string name="panel_battery">Batteria</string>
