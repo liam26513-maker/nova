@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Linee lente ancora più dritte
+- Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
+- Nel Foglio rapido una linea disegnata piano ora viene dritta: prima restava un po' ondulata dove lo schermo andava a scatti.
+
 ### Linee più morbide nel Foglio rapido
 - Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
 - Ho misurato lo schermo del tablet: manda la posizione solo dopo circa 0,7 mm di movimento, per questo i movimenti piccolissimi non arrivano a nessuna app, ibisPaint compreso. Non si può cambiare senza permessi di root.
