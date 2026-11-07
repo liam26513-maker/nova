@@ -295,7 +295,8 @@ public class SettingsValues {
         mFloatingWidth = SettingsKt.readFloatingWidth(context);
         mFloatingHeight = mIsFloatingKeyboard && mHasHardwareKeyboard && prefs.getBoolean(Settings.PREF_SHOW_ONLY_TOOLBAR_WITH_HARDWARE_KEYBOARD, Defaults.PREF_SHOW_ONLY_TOOLBAR_WITH_HARDWARE_KEYBOARD)
                           ? 0 : SettingsKt.readFloatingHeight(context);
-        mKeyboardHeightScale = mIsFloatingKeyboard ? 1f : Settings.readHeightScale(prefs, isLandscape, isFolded);
+        mKeyboardHeightScale = (mIsFloatingKeyboard ? 1f : Settings.readHeightScale(prefs, isLandscape, isFolded))
+                * (helium314.keyboard.keyboard.NovaAccent.INSTANCE.gaming(context) ? helium314.keyboard.keyboard.NovaAccent.GAMING_HEIGHT : 1f);
         mOneHandedModeEnabled = !mIsFloatingKeyboard && Settings.readOneHandedModeEnabled(prefs, isLandscape, mIsSplitKeyboardEnabled, isFolded);
         mOneHandedModeGravity = Settings.readOneHandedModeGravity(prefs, isLandscape, mIsSplitKeyboardEnabled, isFolded);
         if (mOneHandedModeEnabled) {

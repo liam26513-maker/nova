@@ -7,9 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import helium314.keyboard.latin.utils.ToolbarKey
 
-/** Il colore d'accento scelto in NOVA e le modalità Lavoro e Studio (`AccentProvider`). Senza NOVA vale il tema. */
+/** Il colore d'accento scelto in NOVA e la modalità accesa (`AccentProvider`). Senza NOVA vale il tema. */
 object NovaAccent {
     private val URI by lazy { Uri.parse("content://it.manlio.nova.accent") }
+
+    /** In Gaming la tastiera copre meno gioco (SPEC §10.5). */
+    const val GAMING_HEIGHT = 0.75f
 
     /** La riga della modalità Lavoro (SPEC §10.5). */
     val WORK_KEYS = listOf(
@@ -25,6 +28,8 @@ object NovaAccent {
     fun working(context: Context) = flag(context, 1)
 
     fun studying(context: Context) = flag(context, 2)
+
+    fun gaming(context: Context) = flag(context, 3)
 
     private fun flag(context: Context, column: Int): Boolean = runCatching {
         context.contentResolver.query(URI, null, null, null, null)?.use { it.moveToFirst() && it.getInt(column) == 1 }
