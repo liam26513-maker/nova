@@ -64,6 +64,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Foglio rapido: si disegna senza scatti, Annulla e Pulisci funzionano, girando il tablet il disegno resta, riaprendolo c'è ancora, Salva lo mette in Galleria. Con una penna: pressione, gomma e palmo.
 - [ ] Con «Accendi da sola quando apri un gioco»: aprendo un gioco parte la Gaming, tornando alla Home si spegne; aprendo la tendina in gioco non si spegne; uscendo a mano in gioco non riparte subito.
 - [ ] Privacy → Blocca Internet: un'app bloccata non carica niente, sbloccata torna a funzionare; dopo un riavvio resta bloccata; le altre app navigano.
+- [ ] Lavoro: apri due app in finestra, Altro → «Salva le finestre aperte», chiudile, poi «Riapri: …» le riapre in finestra.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».

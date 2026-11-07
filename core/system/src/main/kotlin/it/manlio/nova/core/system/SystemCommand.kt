@@ -180,6 +180,11 @@ sealed interface SystemCommand {
         override val argv = listOf("cmd", "connectivity", "set-package-networking-enabled", enabled.toString(), packageName)
     }
 
+    /** L'elenco dei task recenti, per sapere quali app sono aperte in finestra (SPEC §8.3). Solo lettura. */
+    data object ListRecents : SystemCommand {
+        override val argv = listOf("dumpsys", "activity", "recents")
+    }
+
     /** Legge i permessi usati da un'app e quando (`appops get`, SPEC §13.3). Solo lettura. */
     data class AppOps(val packageName: String) : SystemCommand {
         init {

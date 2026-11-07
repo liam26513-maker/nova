@@ -353,6 +353,10 @@
     <string name="gaming_panel_swipe">Open with a swipe from the left edge</string>
     <string name="gaming_auto">Turn on by itself when you open a game</string>
     <string name="gaming_auto_footer">Off by default. It turns on when you switch to a game, if no other mode is on, and off when you go back to Home. Needs the accessibility service.</string>
+    <string name="window_set_save">Save the open windows</string>
+    <string name="window_set_open">Reopen: %1$s</string>
+    <string name="window_set_saved">Window set saved: you find it here, under More.</string>
+    <string name="window_set_none">No app is open in a window: open them with «Open in a window» from Home.</string>
     <string name="panel_fps">FPS (last measure)</string>
     <string name="panel_temp">Temperature</string>
     <string name="panel_battery">Battery</string>

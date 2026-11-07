@@ -198,7 +198,7 @@ class HomeControls(
             go(R.string.more_physical_keyboard, ACTION_HARD_KEYBOARD).takeIf { hasPhysicalKeyboard() },
             go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
-        ) + GameTools(context, app).items()
+        ) + WindowSets(context, app).items() + GameTools(context, app).items()
     }
 
     /** StandBy (SPEC §12.6): chiede alla Home di mostrarlo e la porta in primo piano (anche da sopra un'altra app). */
