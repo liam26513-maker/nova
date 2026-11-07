@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il controllo gioco bloccato ora legge i dati
+- Richiesta: "controlla il controllo gioco boccato".
+- Sul tablet non scattava mai: i dati da leggere erano diventati troppi. Ora riparte da zero ogni volta che si accende.
+
 ### La tastiera si chiama Tastiera NOVA ovunque
 - Richiesta: "continua con tutto il resto".
 - Il titolo delle impostazioni e il controllo ortografico dicevano ancora «HeliBoard».

@@ -222,6 +222,8 @@ internal class GameWatchdog(
     suspend fun watch() {
         try {
             stats(Step.ENABLE)
+            // Accumulate da ore superano 1 MB: oltre quel limite la lettura da Shizuku fallisce e il blocco non si vede mai.
+            stats(Step.CLEAR)
             while (true) {
                 delay(CHECK_MS)
                 if (!check()) continue
