@@ -7,6 +7,9 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 ### Tolto il Foglio rapido
 - Richiesta: "togli il foglio rapido tanto è inutile e occupa spazio, si userà solo ibispaint e note eventualmente".
 - Il Foglio rapido non c'è più, e con lui le due librerie che usava. Restano le Note rapide e la barra Annulla/Ripeti per ibisPaint nella Creativa.
+### Linee lente ancora più dritte
+- Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
+- Nel Foglio rapido una linea disegnata piano ora viene dritta: prima restava un po' ondulata dove lo schermo andava a scatti.
 
 ### Linee più morbide nel Foglio rapido
 - Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
