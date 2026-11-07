@@ -62,6 +62,7 @@ fun SettingsScreen(
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
+            CAT_PRIVACY -> performance?.let { PrivacySection(backdrop) }
             CAT_GAMING, CAT_STUDY, CAT_PRESENTATION, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
@@ -105,6 +106,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
     val study = stringResource(R.string.more_study)
     val presentation = stringResource(R.string.more_presentation)
     val time = stringResource(R.string.time_title)
+    val privacy = stringResource(R.string.privacy_title)
     val game =
         if (withPerformance) {
             listOf(
@@ -112,6 +114,7 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
                 SidebarEntry(CAT_STUDY, study, SidebarGlyph.TEXT, Color(0xFF4C9A6A)),
                 SidebarEntry(CAT_PRESENTATION, presentation, SidebarGlyph.IMAGE, Color(0xFFB0793A)),
                 SidebarEntry(CAT_TIME, time, SidebarGlyph.EYE, Color(0xFF5B7FD6)),
+                SidebarEntry(CAT_PRIVACY, privacy, SidebarGlyph.DROP, Color(0xFF4A8C8C)),
             )
         } else {
             emptyList()
@@ -160,6 +163,7 @@ private const val CAT_GAMING = "gaming"
 private const val CAT_STUDY = "study"
 private const val CAT_PRESENTATION = "presentation"
 private const val CAT_TIME = "time"
+private const val CAT_PRIVACY = "privacy"
 private const val CAT_STATUS = "status"
 
 @Composable

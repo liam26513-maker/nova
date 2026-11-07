@@ -744,6 +744,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 ### 13.3 Pannello privacy
 
 - Cronologia accessi a fotocamera, microfono, posizione (AppOps via Shizuku: `appops get`), permessi pericolosi per app, revoca rapida.
+- **Fatto di base:** Impostazioni → Privacy elenca gli ultimi accessi a fotocamera, microfono e posizione; un tocco apre i permessi dell'app in Android. Manca l'elenco dei permessi pericolosi per app.
 
 ### 13.4 Credenziali
 

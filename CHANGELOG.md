@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Pannello privacy
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nuova pagina Impostazioni → Privacy: mostra quali app hanno usato fotocamera, microfono e posizione, e quando. Tocca un'app per cambiarne i permessi. Serve Shizuku e non esce niente dal tablet.
+
 ### Gaming automatica (facoltativa)
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Modalità Gaming puoi far accendere la modalità da sola quando apri un gioco: si spegne quando torni alla Home. È spenta di serie e non tocca le altre modalità.
