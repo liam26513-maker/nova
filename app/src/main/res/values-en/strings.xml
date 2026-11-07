@@ -399,6 +399,8 @@
     <string name="news_none">Nothing new to show.</string>
     <string name="news_new">New</string>
     <string name="news_toast">NOVA updated: %1$d new things in Settings → What\'s new.</string>
+    <string name="granted_title">Granted permissions</string>
+    <string name="granted_footer">Apps holding sensitive permissions, most first. Tap an app to remove some in Android.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Who used camera, microphone and location</string>
     <string name="privacy_footer">Read from Android with Shizuku, only while this page is open; nothing leaves the tablet. Tap an app to change its permissions.</string>
