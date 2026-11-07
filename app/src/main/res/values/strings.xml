@@ -377,8 +377,6 @@
     <string name="more_nfc">NFC</string>
     <string name="more_cast">Trasmetti schermo</string>
     <string name="more_sound">Suoni e vibrazione</string>
-    <string name="more_color_inversion">Inversione dei colori</string>
-    <string name="more_color_correction">Correzione dei colori</string>
     <string name="more_accessibility">Accessibilità</string>
     <string name="more_alarms">Sveglie</string>
     <string name="perf_title">Prestazioni</string>

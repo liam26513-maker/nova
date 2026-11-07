@@ -37,11 +37,13 @@ tocco al tasto, apertura della tastiera, memoria) prima e dopo.
 
 Tastiera divisa, flottante e riga numeri, tutte spente di serie (§10.3). Cursore con lo swipe sulla barra spaziatrice, cronologia appunti, italiano e inglese insieme.
 
+Anche le espansioni di testo ci sono: Impostazioni della tastiera → Correzione testo → Dizionario personale, campo «Scorciatoia».
+
 ## Invia a Claude (§10.4)
 
 Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impostazioni della tastiera → Barra degli strumenti. Copia il testo selezionato (o tutto il campo) e lo condivide con `com.anthropic.claude`. Nessuna rete, nessuna chiave.
 
 ## Da fare (SPEC §10)
 
-Aspetto iOS e tema di NOVA (`ContentProvider` dei token), selezione con due dita sulla barra spaziatrice, espansioni di testo, appunti → PC, scrittura a mano → testo, varianti per modalità, layout italiano della
+Aspetto iOS e tema di NOVA (`ContentProvider` dei token), selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, layout italiano della
 tastiera fisica e scorciatoie. Prima installazione dall'app.

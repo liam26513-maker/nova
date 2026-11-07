@@ -13,6 +13,9 @@ object TimeStatsParser {
     private val BIN = Regex("(\\d+)ms\\s*=\\s*(\\d+)")
     private val HEADER = Regex("present(2|To)[Pp]resent")
     private const val MIN_FRAMES = 20
+
+    /** Uno stop più lungo di questo è un caricamento o un menu, non uno scatto. */
+    private const val PAUSE_MS = 750.0
     private const val SLOW_MS = 25 // oltre una volta e mezza il ritmo di un 60 Hz
     private const val ONE_PERCENT = 100
     private const val MS_PER_S = 1000.0
@@ -53,7 +56,7 @@ object TimeStatsParser {
         if (total < MIN_FRAMES || fps <= 0) return null
         val bins = block.substring(start).lines().drop(1).takeWhile { "histogram" !in it }.flatMap { BIN.findAll(it).toList() }
         val deltas = bins.flatMap { m -> List(m.groupValues[2].toInt()) { m.groupValues[1].toInt() } }
-        val moving = deltas.filter { it < FrameCollector.PAUSE_MS }
+        val moving = deltas.filter { it < PAUSE_MS }
         if (moving.size < MIN_FRAMES) return null
         val worst = moving.sortedDescending()
         val lowest = worst.take(maxOf(1, moving.size / ONE_PERCENT)).average()
