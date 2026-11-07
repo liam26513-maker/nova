@@ -74,6 +74,9 @@ class ModeOptions(private val file: File) {
         /** La barra Annulla/Ripeti nella Creativa (SPEC §9.4): spenta di serie. */
         const val PEN_BAR = "PEN_BAR"
 
+        /** La barra del desktop nel Lavoro (SPEC §8.3): spenta di serie. */
+        const val DESK_BAR = "DESK_BAR"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)
