@@ -175,6 +175,7 @@ class HomeControls(
             mode(Modes.STUDY),
             pomodoroItem(context, app),
             notesItem(context),
+            quickSheetItem(context),
             mode(Modes.WORK),
             splitScreenItem(context, app, onSplitScreen),
             mode(Modes.CREATIVE),

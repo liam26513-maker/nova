@@ -597,7 +597,7 @@ Regole del tipo "quando X allora modalità Y" definite con l'editor automazioni 
 
 - **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`.
 - **Tasti penna personalizzabili** dove Android li espone; nelle superfici NOVA sempre.
-- **Foglio rapido:** gesto dalla home o dalla lista apre subito una tela (penna o dito), salvataggio automatico, esportazione PNG/PDF, condivisione.
+- **Foglio rapido (fatto di base):** da tendina → Altro si apre subito una tela (penna o dito) con pressione, gomma, rifiuto del palmo, Annulla e Pulisci; si salva da solo uscendo; esportazione PNG in Galleria e condivisione. Mancano gesto dalla Home, PDF, colori e il disegno front-buffered di §9.2.
 - **Galleria lavori:** widget con ultimi disegni (cartelle configurate) e riapertura nell'app di origine.
 - **Disegno via PC:** dalla modalità Creativa, scorciatoia "Disegna sul PC" che avvia lo streaming (§11.4) per usare Krita/Photoshop sul PC; la tavoletta resta collegata al tablet.
 
