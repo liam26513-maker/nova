@@ -62,7 +62,7 @@ fun SettingsScreen(
             CAT_HOME -> HomeSection(backdrop, system, systemActions)
             CAT_UPDATES -> UpdatesSection(backdrop, system, systemActions)
             CAT_PERFORMANCE -> performance?.let { PerformanceSection(backdrop, it, systemActions.onShizukuAction) }
-            CAT_GAMING, CAT_STUDY, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
+            CAT_GAMING, CAT_STUDY, CAT_PRESENTATION, CAT_TIME -> performance?.let { ModeCategory(entry.id, backdrop, it) }
             CAT_TOOLS -> SystemToolsSection(backdrop, system, systemActions)
             else -> {
                 val context = androidx.compose.ui.platform.LocalContext.current
@@ -103,12 +103,14 @@ private fun settingsEntries(withPerformance: Boolean): List<SidebarEntry> {
             emptyList()
         }
     val study = stringResource(R.string.more_study)
+    val presentation = stringResource(R.string.more_presentation)
     val time = stringResource(R.string.time_title)
     val game =
         if (withPerformance) {
             listOf(
                 SidebarEntry(CAT_GAMING, gaming, SidebarGlyph.GRID, Color(0xFFE0603A)),
                 SidebarEntry(CAT_STUDY, study, SidebarGlyph.TEXT, Color(0xFF4C9A6A)),
+                SidebarEntry(CAT_PRESENTATION, presentation, SidebarGlyph.IMAGE, Color(0xFFB0793A)),
                 SidebarEntry(CAT_TIME, time, SidebarGlyph.EYE, Color(0xFF5B7FD6)),
             )
         } else {
@@ -142,6 +144,7 @@ private fun ModeCategory(
             GamingSection(backdrop, ui.modeOptions)
         }
         CAT_STUDY -> StudySection(backdrop, ui.modes)
+        CAT_PRESENTATION -> PresentationSection(backdrop, ui.modes)
         else -> TimeSection(backdrop, ui.modes)
     }
 }
@@ -155,6 +158,7 @@ private const val CAT_TOOLS = "tools"
 private const val CAT_PERFORMANCE = "performance"
 private const val CAT_GAMING = "gaming"
 private const val CAT_STUDY = "study"
+private const val CAT_PRESENTATION = "presentation"
 private const val CAT_TIME = "time"
 private const val CAT_STATUS = "status"
 

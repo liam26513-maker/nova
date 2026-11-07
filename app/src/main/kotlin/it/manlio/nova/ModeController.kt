@@ -6,6 +6,7 @@ import android.os.Looper
 import android.widget.Toast
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.modes.ActionOutcome
+import it.manlio.nova.core.modes.ExitPin
 import it.manlio.nova.core.modes.EnterReport
 import it.manlio.nova.core.modes.ModeAction
 import it.manlio.nova.core.modes.ModeDefinition
@@ -69,6 +70,9 @@ class ModeController(
     /** [start] gira a ogni ritorno sulla Home: chi ascolta il motore deve essere uno solo. */
     private val watching = AtomicBoolean(false)
 
+    /** Il PIN facoltativo per uscire dalla Presentazione. */
+    val exitPin = ExitPin(File(app.filesDir, "presentation-pin.txt"))
+
     val studyStore = StudyStore(File(app.filesDir, "studio.properties"))
     val studyGate = StudyGate(System::currentTimeMillis, studyStore)
 
@@ -103,6 +107,11 @@ class ModeController(
         mode: ModeDefinition,
         onDone: (Boolean) -> Unit,
     ) {
+        // Accendere un'altra modalità spegnerebbe la Presentazione senza chiedere il PIN.
+        if (mode != Modes.PRESENTATION && isActive(Modes.PRESENTATION) && exitPin.isSet) {
+            say(context.getString(R.string.presentation_pin_first))
+            return onDone(isActive(mode))
+        }
         scope.launch {
             val on = !isActive(mode)
             if (on) {

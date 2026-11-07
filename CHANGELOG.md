@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### PIN per uscire dalla Presentazione
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Modalità Presentazione puoi scegliere un PIN: senza, nessuno può uscire dalla modalità o accenderne un'altra. È facoltativo. Se lo dimentichi, la Presentazione si spegne da sola dopo 3 ore.
+
 ### Registrare lo schermo dal pannello Gaming
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nel pannello c'è «Registra lo schermo»: registra per massimo 3 minuti e salva in Movies. Per fermare prima riapri il pannello; uscendo dalla Gaming si ferma da sola. Serve Shizuku.

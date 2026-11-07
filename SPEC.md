@@ -495,7 +495,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 ### 8.1 Motore delle modalità
 
-> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Azioni e durata massima stanno in `config/modes.json` (`Modes.kt` è il ripiego). Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, desktop e finestre flottanti di §8.3, Home portfolio e PIN di §8.6. Dettagli: `docs/modules/modalita.md`.
+> **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Azioni e durata massima stanno in `config/modes.json` (`Modes.kt` è il ripiego). Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, desktop e finestre flottanti di §8.3, Home portfolio di §8.6. Dettagli: `docs/modules/modalita.md`.
 
 - Le modalità stanno in `config/modes.json`. Oggi ognuna descrive azioni all'ingresso e durata massima; sono ancora da fare: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
 - **Attivazione:** manuale (centro di controllo, ricerca, widget), automatica (app aperta, accessorio collegato, orario, rete Wi-Fi), o da ADAM.
@@ -564,7 +564,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 - Home "portfolio": cartella di lavori/siti da mostrare ai clienti, a schermo intero.
 - Notifiche bloccate, schermo sempre acceso, luminosità alta, trasmissione schermo (Cast di sistema) con un tocco.
-- Uscita protetta da PIN opzionale.
+- Uscita protetta da PIN opzionale (Impostazioni → Modalità Presentazione): serve anche per accendere un'altra modalità. La scadenza di 3 ore vale comunque, così un PIN dimenticato non blocca il tablet.
 
 ### 8.7 Profili automatici
 
