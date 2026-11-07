@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### La tastiera si chiama Tastiera NOVA ovunque
+- Richiesta: "continua con tutto il resto".
+- Il titolo delle impostazioni e il controllo ortografico dicevano ancora «HeliBoard».
+
 ### NOVA più leggera
 - Richiesta: "tutto cio inutile, che appesantisce eliminalo".
 - Da tendina → Altro spariscono le righe che qui non servono: NFC, hotspot e risparmio dati (il tablet non ha NFC né SIM). Inversione e correzione dei colori restano dentro «Accessibilità».
