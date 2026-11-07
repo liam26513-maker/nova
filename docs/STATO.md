@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.1030. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.1100. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -13,13 +13,13 @@ Aggiornato a: release 0.1.1030. Per riprendere il lavoro in una chat nuova basta
 - **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano widget, foto e Stato PC nello StandBy.
 - **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio con Pomodoro, blocco app, note e filtro caldo; Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Doppio swipe e watchdog ci sono, spenti di serie. Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
 - **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release, con varianti Lavoro, Studio e Gaming (bassa e semitrasparente).
-- **7 novembre (0.1.800 → 0.1.950):** pannello Gaming in sovrimpressione con registrazione, avviso di temperatura, Gaming automatica facoltativa; PIN della Presentazione; finestre flottanti e set di finestre nel Lavoro; Foglio rapido; evento del calendario nello StandBy; grafico della settimana; pannello privacy e blocco di Internet per app; Novità; app suggerite nella ricerca. Poi (fino alla 0.1.1030): permessi concessi, pagina Penna e tavoletta, barra Annulla/Ripeti nella Creativa, barra delle app preferite nel Lavoro, profili automatici con tastiera, penna e orario di studio, cartella privata.
+- **7 novembre (0.1.800 → 0.1.950):** pannello Gaming in sovrimpressione con registrazione, avviso di temperatura, Gaming automatica facoltativa; PIN della Presentazione; finestre flottanti e set di finestre nel Lavoro; Foglio rapido; evento del calendario nello StandBy; grafico della settimana; pannello privacy e blocco di Internet per app; Novità; app suggerite nella ricerca. Poi (fino alla 0.1.1030): permessi concessi, pagina Penna e tavoletta, barra Annulla/Ripeti nella Creativa, barra delle app preferite nel Lavoro, profili automatici con tastiera, penna e orario di studio, cartella privata. Sera del 7 novembre (fino alla 0.1.1100): meteo nello StandBy; testo dalle foto con PaddleOCR PP-OCRv6 tiny su ONNX Runtime (`feature/ocr`, processo separato `:ocr`, APK ~22 MB su 25 di budget, provato sul tablet: meno di 2 s); Foglio rapido con colori, spessori, gomma, Ripeti, previsione del tratto, disegno front-buffered (`FrontInk`, attivo sul tablet) ed esportazione PDF.
 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
 2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi aspetto iOS. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
 3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe, watchdog e Gaming automatica restano spenti di serie. Poi altri profili automatici (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora).
-4. **Fase 4** penna: altri strumenti della barra e profili per app (prima vedere sul tablet cosa capisce ibisPaint), disegno a bassa latenza se il Foglio rapido resta indietro. **Fase 5** PC e streaming (serve il PC). **Fase 6**: editor delle automazioni, file cifrati nella cartella privata, confronto prestazioni nelle Novità, widget nello StandBy.
+4. **Fase 4** penna: profili della barra per app (serve l'elenco delle scorciatoie di ibisPaint, da chiedere al proprietario), prova con la penna vera del tratto veloce, galleria lavori. **Fase 5** PC e streaming (serve il PC). **Fase 6**: editor delle automazioni, file cifrati nella cartella privata, confronto prestazioni nelle Novità, widget nello StandBy.
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso
