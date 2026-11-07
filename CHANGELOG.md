@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Permessi concessi
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Privacy c'è l'elenco delle app con permessi delicati (fotocamera, microfono, posizione, contatti…), dalla più permessa. Tocca un'app per toglierne qualcuno.
+
 ### Set di finestre nel Lavoro
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Durante il Lavoro, dalla tendina → Altro puoi salvare le app che hai aperto in finestra e riaprirle tutte insieme più tardi. NOVA ricorda gli ultimi 3 set. Le finestre si dispongono da sole: Android non permette di rimetterle nella stessa posizione.

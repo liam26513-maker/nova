@@ -88,6 +88,7 @@ internal fun PrivacySection(backdrop: ImageBitmap) {
                 }
         }
     }
+    GrantedSection(backdrop)
     if (ready) Firewall(backdrop, app)
 }
 
@@ -151,7 +152,7 @@ private fun ago(
     }
 }
 
-private fun openPermissions(
+internal fun openPermissions(
     context: Context,
     pkg: String,
 ) {

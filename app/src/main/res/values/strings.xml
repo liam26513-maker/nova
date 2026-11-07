@@ -338,6 +338,8 @@
     <string name="news_none">Nessuna novità da mostrare.</string>
     <string name="news_new">Nuovo</string>
     <string name="news_toast">NOVA aggiornata: %1$d novità in Impostazioni → Novità.</string>
+    <string name="granted_title">Permessi concessi</string>
+    <string name="granted_footer">Le app che hanno permessi delicati, dalla più permessa. Tocca un\'app per toglierne qualcuno in Android.</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Chi ha usato fotocamera, microfono e posizione</string>
     <string name="privacy_footer">Letto da Android con Shizuku, solo mentre questa pagina è aperta; niente esce dal tablet. Tocca un\'app per cambiarne i permessi.</string>
