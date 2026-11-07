@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App suggerite nella ricerca
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Aprendo «Cerca app» senza scrivere, in alto ci sono le 5 app che usi di più a quest'ora. Le calcola il tablet dai dati di utilizzo, e niente esce dal tablet.
+
 ### Il tuo tempo senza la tastiera
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nell'elenco delle app di «Il tuo tempo» non compare più la tastiera: il tempo in cui scrivi conta già per l'app in cui stai scrivendo.

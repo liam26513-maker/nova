@@ -26,6 +26,8 @@ class HomeActions(
     val onOpenWindow: (AppEntry) -> Unit = {},
     /** Scorrimento verso il basso sulla home: apre le notifiche. */
     val onSwipeDown: () -> Unit = {},
+    /** Pacchetti suggeriti nella ricerca vuota (SPEC §12.5); vuoto = nessun suggerimento. */
+    val suggestions: suspend () -> List<String> = { emptyList() },
     /** Doppio tocco sull'alfabeto: spegne lo schermo. */
     val onSleep: () -> Unit = {},
     /** «Cerca sul web» dalla ricerca universale (apre il browser: NOVA non ha accesso a Internet). */
