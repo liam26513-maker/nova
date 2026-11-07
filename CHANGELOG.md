@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Correzione: leggere il testo chiudeva NOVA
+- Richiesta: "per leggere il testo cerca la soluzione migliore cerca il meglio e gratis".
+- Nella prima versione, leggere una foto chiudeva NOVA. Ora funziona.
+
 ### Testo dalle foto
 - Richiesta: "per leggere il testo cerca la soluzione migliore cerca il meglio e gratis".
 - Condividi una foto a NOVA, oppure apri tendina → Altro → «Leggi il testo di una foto»: NOVA trova il testo e puoi copiarlo, condividerlo o inviarlo a Claude. Legge tutto sul tablet: niente esce, niente costa. Usa PaddleOCR, gratuito e open source, che nelle prove ha letto bene anche accenti, numeri ed €.
