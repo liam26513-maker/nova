@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tolto il Foglio rapido
+- Richiesta: "togli il foglio rapido tanto è inutile e occupa spazio, si userà solo ibispaint e note eventualmente".
+- Il Foglio rapido non c'è più, e con lui le due librerie che usava. Restano le Note rapide e la barra Annulla/Ripeti per ibisPaint nella Creativa.
+
 ### Linee più morbide nel Foglio rapido
 - Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
 - Ho misurato lo schermo del tablet: manda la posizione solo dopo circa 0,7 mm di movimento, per questo i movimenti piccolissimi non arrivano a nessuna app, ibisPaint compreso. Non si può cambiare senza permessi di root.

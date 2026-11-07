@@ -582,9 +582,9 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 
 - Rilevamento di ogni input penna tramite `MotionEvent.getToolType()` (`TOOL_TYPE_STYLUS`, `TOOL_TYPE_ERASER`): penne integrate (EMR/USI) e tavolette esterne via USB OTG o Bluetooth (Wacom, XP-Pen, Huion e simili).
 - Lettura di pressione, inclinazione, orientamento, hover, pulsanti (`getButtonState`), estremità gomma.
-- **Fatto di base:** Impostazioni → Penna e tavoletta mostra cosa è collegato, se arrivano pressione e inclinazione, e si aggiorna al collegamento; la prova del tratto si fa nel Foglio rapido. Mancano i consigli per modello.
+- **Fatto di base:** Impostazioni → Penna e tavoletta mostra cosa è collegato, se arrivano pressione e inclinazione, e si aggiorna al collegamento; Mancano i consigli per modello.
 - **Controllo di compatibilità** al collegamento (`InputManager.InputDeviceListener`): cosa è stato rilevato, se arrivano pressione e inclinazione (test interattivo "disegna una linea premendo di più"), supporto OTG, suggerimenti (es. "Per le Wacom One pen tablet su Android 8–13 serve l'app Wacom Center"; "Aggiorna il firmware della tavoletta da PC").
-- **Misurato sul tablet di riferimento (7 novembre 2026):** il touchscreen gslX680 manda la posizione solo per spostamenti di almeno 4 pixel (~0,7 mm) e circa 52 volte al secondo, senza pressione: è il firmware, `/proc/gsl_config` è solo per root. Il Foglio rapido ammorbidisce i punti (`StrokeSmoother`); per la precisione vera serve una tavoletta grafica via OTG.
+- **Misurato sul tablet di riferimento (7 novembre 2026):** il touchscreen gslX680 manda la posizione solo per spostamenti di almeno 4 pixel (~0,7 mm) e circa 52 volte al secondo, senza pressione: è il firmware, `/proc/gsl_config` è solo per root. Per la precisione vera serve una tavoletta grafica via OTG.
 - Nota per il proprietario: una penna di tavoletta grafica **non funziona sullo schermo** del tablet senza digitalizzatore; funziona tramite la tavoletta collegata.
 
 ### 9.2 Bassa latenza
@@ -603,7 +603,7 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 - **Fatto di base:** durante la Creativa, tendina → Altro → «Barra Annulla e Ripeti» mette sul bordo destro due tasti che inviano Ctrl+Z e Ctrl+Shift+Z (`input keycombination`, Shizuku) all'app davanti. Mancano gli altri strumenti e i profili per app.
 - **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`.
 - **Tasti penna personalizzabili** dove Android li espone; nelle superfici NOVA sempre.
-- **Foglio rapido (fatto di base):** da tendina → Altro si apre subito una tela (penna o dito) con pressione, gomma, rifiuto del palmo, Annulla e Pulisci; si salva da solo uscendo; esportazione PNG in Galleria e condivisione. Ci sono anche 5 colori, 3 spessori, gomma, Ripeti e la previsione del tratto (`MotionEventPredictor`). Il disegno front-buffered (`CanvasFrontBufferedRenderer`) si usa se il tablet lo permette, altrimenti la tela normale con la previsione. C'è l'esportazione PDF (Download/NOVA, ritagliata attorno al disegno). Manca il gesto dalla Home.
+- **Foglio rapido:** fatto e poi tolto il 7 novembre 2026 su richiesta del proprietario («inutile e occupa spazio»): si usano ibisPaint e le Note.
 - **Galleria lavori:** widget con ultimi disegni (cartelle configurate) e riapertura nell'app di origine.
 - **Disegno via PC:** dalla modalità Creativa, scorciatoia "Disegna sul PC" che avvia lo streaming (§11.4) per usare Krita/Photoshop sul PC; la tavoletta resta collegata al tablet.
 

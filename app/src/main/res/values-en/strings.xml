@@ -398,29 +398,6 @@
     <string name="read_copy">Copy</string>
     <string name="read_copied">Text copied.</string>
     <string name="read_claude">Send to Claude</string>
-    <string name="sheet_title">Quick sheet</string>
-    <string name="sheet_undo">Undo</string>
-    <string name="sheet_clear">Clear</string>
-    <string name="sheet_redo">Redo</string>
-    <string name="sheet_eraser">Eraser</string>
-    <string name="sheet_pen">Pen</string>
-    <string-array name="sheet_colors">
-        <item>Black</item>
-        <item>Blue</item>
-        <item>Red</item>
-        <item>Green</item>
-        <item>Orange</item>
-    </string-array>
-    <string-array name="sheet_sizes">
-        <item>Thin stroke</item>
-        <item>Medium stroke</item>
-        <item>Thick stroke</item>
-    </string-array>
-    <string name="sheet_pdf">PDF</string>
-    <string name="sheet_pdf_saved">PDF saved in Download, in the NOVA folder.</string>
-    <string name="sheet_save">Save</string>
-    <string name="sheet_saved">Saved in the Gallery, in the NOVA folder.</string>
-    <string name="sheet_failed">I could not save the sheet.</string>
     <string name="time_chart">Minutes in modes, last 7 days</string>
     <string name="firewall_title">Block internet for an app</string>
     <string name="firewall_footer">Tap an app to take away or give back its internet (Wi-Fi and data); Tailscale keeps working. After a restart NOVA puts the blocks back as soon as Shizuku is ready. NOVA and system apps are not listed.</string>
@@ -448,7 +425,7 @@
     <string name="perm_other">Other</string>
     <string name="pen_title">Pen and tablet</string>
     <string name="pen_found">Connected now</string>
-    <string name="pen_footer">Updates by itself when you connect or disconnect. A graphics tablet pen does not draw on the screen: it works on the connected tablet. To try pressure and eraser use the Quick sheet (sheet, More).</string>
+    <string name="pen_footer">Updates by itself when you connect or disconnect. A graphics tablet pen does not draw on the screen: it works on the connected tablet.</string>
     <string name="pen_none">No pen or tablet</string>
     <string name="pen_none_summary">Connect it with a cable (OTG) or Bluetooth: it will appear here.</string>
     <string name="pen_details">%1$s · pressure: %2$s · tilt: %3$s</string>
