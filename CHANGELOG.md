@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il tuo tempo senza la tastiera
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Nell'elenco delle app di «Il tuo tempo» non compare più la tastiera: il tempo in cui scrivi conta già per l'app in cui stai scrivendo.
+
 ### Novità
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nuova pagina in cima alle Impostazioni: «Novità» mostra cosa è cambiato, con la tua richiesta, e segna «Nuovo» quello che non hai ancora letto. Dopo ogni aggiornamento un avviso sulla Home dice quante novità ci sono.
