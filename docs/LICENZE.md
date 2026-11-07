@@ -6,6 +6,7 @@
 | Kotlin, kotlinx.coroutines, kotlinx.serialization | Apache-2.0 | Linguaggio e librerie |
 | detekt, ktlint-gradle | Apache-2.0 / MIT | Solo in fase di build |
 | jsonschema (Python) | MIT | Solo in CI |
+| AndroidX Graphics Core (`androidx.graphics:graphics-core`) | Apache-2.0 | Disegno «front-buffered» nel Foglio rapido |
 | AndroidX Input Motion Prediction (`androidx.input:input-motionprediction`) | Apache-2.0 | Previsione del tratto nel Foglio rapido |
 | ONNX Runtime (`com.microsoft.onnxruntime:onnxruntime-android`) | MIT | Esegue i modelli della lettura del testo (`feature/ocr`) |
 | Modelli PaddleOCR PP-OCRv6 tiny (`det.onnx`, `rec.onnx`), di PaddlePaddle, convertiti in ONNX da RapidAI/RapidOCR | Apache-2.0 | Lettura del testo dalle foto, sul tablet (`feature/ocr/src/main/assets/ocr`) |

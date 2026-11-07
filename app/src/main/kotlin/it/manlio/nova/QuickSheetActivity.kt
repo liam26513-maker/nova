@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -83,6 +84,11 @@ class QuickSheetActivity : ComponentActivity() {
                 onClose = ::finish,
             )
         }
+    }
+
+    override fun onDestroy() {
+        sheet.front?.release()
+        super.onDestroy()
     }
 
     override fun onPause() {
@@ -163,7 +169,16 @@ private fun SheetScreen(
             SheetButton(stringResource(R.string.notes_close), onClose)
         }
         SheetTools(sheet)
-        AndroidView({ sheet }, Modifier.fillMaxSize())
+        AndroidView(
+            {
+                FrameLayout(it).apply {
+                    addView(sheet)
+                    // Lo strato veloce solo se il tablet lo permette; altrimenti la tela disegna da sola.
+                    if (FrontInk.supported()) addView(FrontInk(it, sheet).also { ink -> sheet.front = ink })
+                }
+            },
+            Modifier.fillMaxSize(),
+        )
     }
 }
 
@@ -187,7 +202,8 @@ private fun SheetTools(sheet: QuickSheetView) {
                     .size(if (chosen) TOOL_BIG else TOOL_SMALL)
                     .clip(CircleShape)
                     .background(Color(c))
-                    .border(2.dp, if (chosen) Color.White else Color.Transparent, CircleShape)
+                    // Bordo grigio sempre: il nero sulla barra scura altrimenti non si vede.
+                    .border(if (chosen) 2.dp else 1.dp, if (chosen) Color.White else HINT_GRAY, CircleShape)
                     .semantics { contentDescription = colorLabels[i] }
                     .clickable(role = Role.Button) {
                         color = c

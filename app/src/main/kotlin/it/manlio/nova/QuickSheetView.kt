@@ -39,7 +39,7 @@ internal object SheetRules {
  * La tela del foglio rapido. Il tratto in corso si disegna sopra l'immagine e ci entra solo alla fine: così l'immagine non si
  * ricarica a ogni fotogramma. La gomma dipinge col colore della carta.
  * Per sembrare più pronto, il tratto in corso disegna anche il punto dove la penna sta per arrivare ([MotionEventPredictor], §9.2).
- * shortcut: disegno normale, non front-buffered; da rivedere se sul tablet il tratto resta ancora indietro rispetto alla penna.
+ * Se il tablet lo permette, il tratto in corso lo disegna lo strato veloce [FrontInk] e questa tela ridisegna solo a tratto finito.
  */
 @SuppressLint("ViewConstructor") // nasce solo dal codice, con la misura della tela
 internal class QuickSheetView(
@@ -71,6 +71,10 @@ internal class QuickSheetView(
     private val predictor = MotionEventPredictor.newInstance(this)
     private val ahead = ArrayList<Float>()
 
+    /** Lo strato veloce sopra la tela, se il tablet lo permette: allora il tratto in corso lo disegna lui. */
+    var front: FrontInk? = null
+    private var sent = 0
+
     /** Strumenti scelti nella barra: colore, spessore (moltiplica quello della pressione) e gomma. */
     var color = INK
     var size = 1f
@@ -92,26 +96,31 @@ internal class QuickSheetView(
     fun undo() {
         if (strokes.isEmpty()) return
         undone += strokes.removeAt(strokes.lastIndex)
+        front?.clear()
         replay()
     }
 
     fun redo() {
         if (undone.isEmpty()) return
         strokes += undone.removeAt(undone.lastIndex)
+        front?.clear()
         replay()
     }
 
     fun clear() {
         strokes.add(Stroke(erasing = false, clear = true))
         undone.clear()
+        front?.clear()
         replay()
     }
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawBitmap(image, 0f, 0f, null)
-        current?.let {
-            draw(canvas, it)
-            drawAhead(canvas, it)
+        if (front == null) {
+            current?.let {
+                draw(canvas, it)
+                drawAhead(canvas, it)
+            }
         }
     }
 
@@ -147,14 +156,20 @@ internal class QuickSheetView(
             if (!SheetRules.accepts(tool, stylusNear)) return false
             requestUnbufferedDispatch(event)
             current = Stroke(eraser || SheetRules.erasing(tool, event.buttonState), color = color)
+            sent = 0
         }
         val stroke = current ?: return false
         predictor.record(event)
         ahead.clear()
         when (event.actionMasked) {
-            MotionEvent.ACTION_CANCEL -> current = null // Android l'ha riconosciuto come palmo
+            MotionEvent.ACTION_CANCEL -> {
+                current = null // Android l'ha riconosciuto come palmo
+                front?.clear()
+            }
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                 addPoints(stroke, event)
+                val fast = front
+                if (fast != null) return true.also { sendNew(fast, stroke) }
                 predictor.predict()?.let { predicted ->
                     for (i in 0 until predicted.historySize) {
                         ahead += predicted.getHistoricalX(0, i)
@@ -167,14 +182,29 @@ internal class QuickSheetView(
             }
             MotionEvent.ACTION_UP -> {
                 addPoints(stroke, event)
+                front?.let { sendNew(it, stroke) }
                 draw(canvas, stroke)
                 strokes.add(stroke)
                 undone.clear()
                 current = null
+                front?.commit()
             }
         }
         invalidate()
         return true
+    }
+
+    /** Allo strato veloce solo i pezzi nuovi del tratto, da dove si era arrivati. */
+    private fun sendNew(
+        fast: FrontInk,
+        stroke: Stroke,
+    ) {
+        val p = stroke.points
+        while (sent + POINT <= p.size) {
+            val from = maxOf(sent - POINT, 0)
+            fast.segment(InkSegment(p[from], p[from + 1], p[sent], p[sent + 1], p[sent + 2], if (stroke.erasing) PAPER else stroke.color))
+            sent += POINT
+        }
     }
 
     /** Anche i punti intermedi: la penna ne manda più di uno per fotogramma, senza il tratto viene spigoloso. */
