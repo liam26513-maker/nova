@@ -234,7 +234,9 @@ fun HomeScreen(
                     ipadActions,
                 ) { menuFor = null }.copy(onClearNotification = clear)
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
-            standby?.let { StandbyScreen(it, nowMillis, onStandbyExit) { HomeBackground(prefs, wallpaper) } }
+            standby?.let {
+                StandbyScreen(it, nowMillis, onStandbyExit, weatherCity(layout), actions.weather) { HomeBackground(prefs, wallpaper) }
+            }
         }
     }
 }
@@ -491,3 +493,7 @@ private val BLURRED_ALPHA = 0.30f to 0.62f
 
 @Suppress("MagicNumber")
 private val SOLID_ALPHA = 0.46f to 0.82f
+
+/** La città del primo widget Meteo della Home, se c'è: lo StandBy mostra lo stesso tempo. */
+private fun weatherCity(layout: HomeLayout): String? =
+    layout.items.filterIsInstance<WidgetItem>().firstOrNull { it.kind == WidgetKind.WEATHER && it.text.isNotBlank() }?.text
