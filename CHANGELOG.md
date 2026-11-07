@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Simboli per lo studio sulla tastiera
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Con Studio accesa, in cima alla tastiera c'è una riga con √ π ² ≠ ≤ ≥ ± ∑ ° α. Tieni premuto un tasto per gli altri, come ³ ∫ ∞ → β Δ. Quando esci torna la tastiera di prima.
+
 ### Tastiera su misura per la modalità Lavoro
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Con Lavoro accesa, sulla tastiera hai sempre copia, incolla, taglia, annulla, ripeti e seleziona tutto. Quando esci torna tutto com'era.

@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 /**
- * Dice alla tastiera il colore d'accento scelto in Personalizza la Home (SPEC §10.1) e se la modalità Lavoro è accesa (§10.5).
- * Solo lettura e solo questi due valori: non sono dati personali, perciò non serve un permesso. Con l'accento automatico
+ * Dice alla tastiera il colore d'accento scelto in Personalizza la Home (SPEC §10.1) e se Lavoro o Studio sono accese (§10.5).
+ * Solo lettura e solo questi valori: non sono dati personali, perciò non serve un permesso. Con l'accento automatico
  * il colore è vuoto e la tastiera usa il suo.
  */
 class AccentProvider : ContentProvider() {
@@ -28,8 +28,8 @@ class AccentProvider : ContentProvider() {
     ): Cursor {
         val app = context?.applicationContext as? NovaApp
         // In modalità provvisoria le modalità non partono: la tastiera deve avere risposta lo stesso.
-        val working = runCatching { app?.modes?.isActive(Modes.WORK) }.getOrNull() == true
-        return accentCursor(app?.homePrefs?.prefs?.value?.accent, working)
+        val mode = runCatching { app?.modes?.engine?.active?.value?.modeId }.getOrNull()
+        return accentCursor(app?.homePrefs?.prefs?.value?.accent, mode)
     }
 
     override fun getType(uri: Uri): String? = null
@@ -55,14 +55,17 @@ class AccentProvider : ContentProvider() {
 
 internal fun accentCursor(
     accent: Int?,
-    working: Boolean,
-): Cursor = MatrixCursor(arrayOf("accent", "work")).apply { addRow(arrayOf(accent, if (working) 1 else 0)) }
+    mode: String?,
+): Cursor =
+    MatrixCursor(arrayOf("accent", "work", "study")).apply {
+        addRow(arrayOf(accent, if (mode == Modes.WORK.id) 1 else 0, if (mode == Modes.STUDY.id) 1 else 0))
+    }
 
-/** La tastiera si aggiorna subito quando cambia l'accento o si entra e si esce dalla Lavoro. */
+/** La tastiera si aggiorna subito quando cambia l'accento o si entra e si esce da una modalità. */
 internal fun NovaApp.announceAccentChanges() {
     val uri = Uri.parse("content://$packageName.accent")
     appScope.launch {
-        combine(homePrefs.prefs, modes.engine.active) { prefs, session -> prefs.accent to (session?.modeId == Modes.WORK.id) }
+        combine(homePrefs.prefs, modes.engine.active) { prefs, session -> prefs.accent to session?.modeId }
             .distinctUntilChanged()
             .drop(1)
             .collect { contentResolver.notifyChange(uri, null) }

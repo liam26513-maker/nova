@@ -23,6 +23,7 @@ nativo con NDK): si compila da qui (`./gradlew :app:assembleRelease`) e lo contr
 | Traduzioni solo italiano e inglese (`localeFilters`) | Peso. |
 | Tema «NOVA» predefinito, chiaro e scuro, con i colori di `config/theme` e l'accento scelto in NOVA (`NovaAccent`, `<queries>` nel manifest) | SPEC §10.1. |
 | Riga di tasti della modalità Lavoro (`SuggestionStripView`, `NovaAccent.WORK_KEYS`) | SPEC §10.5. |
+| Riga di simboli della modalità Studio (`nova_study.txt`, `SettingsValues.mNovaStudy`, `LayoutParser`) | SPEC §10.5. |
 | Nessun permesso Internet | SPEC §10.1: lo verifica `tools/check_keyboard.py` sul manifest unito. |
 
 ## Come aggiungere un dizionario

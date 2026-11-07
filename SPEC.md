@@ -636,7 +636,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 ### 10.5 Varianti per modalità
 
 - Gaming: compatta e semitrasparente.
-- Studio: riga extra di simboli (√ π ² ³ ≠ ≤ ≥ ± ∑ ∫ ∞ ° → α β Δ).
+- Studio: riga extra di dieci simboli, gli altri a pressione lunga (√ π ² ³ ≠ ≤ ≥ ± ∑ ∫ ∞ ° → α β Δ).
 - Lavoro: riga con copia, incolla, taglia, annulla, ripeti, seleziona tutto.
 
 ### 10.6 Tastiera fisica e mouse

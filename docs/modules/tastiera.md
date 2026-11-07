@@ -49,7 +49,11 @@ Tema «NOVA» chiaro e scuro, predefinito, con i colori di `config/theme`. L'acc
 
 ## Variante Lavoro (§10.5)
 
-Con la modalità Lavoro accesa, accanto ai suggerimenti ci sono copia, incolla, taglia, annulla, ripeti e seleziona tutto, al posto dei tasti fissati. Uscendo tornano quelli di prima; nessuna preferenza viene toccata. Le varianti Gaming e Studio non ci sono ancora.
+Con la modalità Lavoro accesa, accanto ai suggerimenti ci sono copia, incolla, taglia, annulla, ripeti e seleziona tutto, al posto dei tasti fissati. Uscendo tornano quelli di prima; nessuna preferenza viene toccata. 
+
+## Variante Studio (§10.5)
+
+Con la modalità Studio accesa, in cima alla tastiera c'è una riga di dieci simboli (√ π ² ≠ ≤ ≥ ± ∑ ° α); gli altri si trovano tenendo premuto il tasto (³ ∫ ∞ → β Δ). Uscendo torna la tastiera di prima. La variante Gaming non c'è ancora.
 
 ## Da fare (SPEC §10)
 
