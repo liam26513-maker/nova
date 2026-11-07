@@ -47,6 +47,10 @@ Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impo
 
 Tema «NOVA» chiaro e scuro, predefinito, con i colori di `config/theme`. L'accento scelto in Personalizza la Home arriva da `AccentProvider` di NOVA (sola lettura, solo quel colore) e la tastiera si ricolora subito; con l'accento automatico resta quello del tema. Chiaro o scuro seguono Android, non la scelta di tema della Home.
 
+## Variante Lavoro (§10.5)
+
+Con la modalità Lavoro accesa, accanto ai suggerimenti ci sono copia, incolla, taglia, annulla, ripeti e seleziona tutto, al posto dei tasti fissati. Uscendo tornano quelli di prima; nessuna preferenza viene toccata. Le varianti Gaming e Studio non ci sono ancora.
+
 ## Da fare (SPEC §10)
 
 Aspetto iOS, selezione con due dita sulla barra spaziatrice, appunti → PC, scrittura a mano → testo, varianti per modalità, scorciatoie della

@@ -5,14 +5,26 @@ import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import helium314.keyboard.latin.utils.ToolbarKey
 
-/** Il colore d'accento scelto in NOVA (`AccentProvider`). Senza NOVA, o con l'accento automatico, non c'è e vale quello del tema. */
+/** Il colore d'accento scelto in NOVA e la modalità Lavoro (`AccentProvider`). Senza NOVA valgono il tema e i tasti fissati. */
 object NovaAccent {
-    private val URI = Uri.parse("content://it.manlio.nova.accent")
+    private val URI by lazy { Uri.parse("content://it.manlio.nova.accent") }
+
+    /** La riga della modalità Lavoro (SPEC §10.5). */
+    val WORK_KEYS = listOf(
+        ToolbarKey.COPY, ToolbarKey.PASTE, ToolbarKey.CUT, ToolbarKey.UNDO, ToolbarKey.REDO, ToolbarKey.SELECT_ALL
+    )
 
     fun read(context: Context): Int? = runCatching {
-        context.contentResolver.query(URI, null, null, null, null)?.use { if (it.moveToFirst()) it.getInt(0) else null }
+        context.contentResolver.query(URI, null, null, null, null)?.use {
+            if (it.moveToFirst() && !it.isNull(0)) it.getInt(0) else null
+        }
     }.getOrNull()
+
+    fun working(context: Context): Boolean = runCatching {
+        context.contentResolver.query(URI, null, null, null, null)?.use { it.moveToFirst() && it.getInt(1) == 1 }
+    }.getOrNull() == true
 
     /** Android rifiuta l'osservatore se NOVA non è installata: la tastiera deve funzionare lo stesso. */
     fun watch(context: Context, reload: () -> Unit): ContentObserver? {

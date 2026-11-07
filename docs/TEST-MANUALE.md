@@ -53,6 +53,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Con una tastiera fisica collegata, in Altro compare «Tastiera fisica» e apre la scelta del layout; senza, la voce non c'è. Scelto Italiano, nelle Note rapide il tasto à scrive à.
 - [ ] StandBy di giorno mostra lo sfondo della Home velato, senza icone; dalle 21 alle 7 è nero con l'ora rossa.
 - [ ] Cambiando l'accento in Personalizza la Home, la tastiera prende lo stesso colore senza riavvii; con «Automatico» torna al suo.
+- [ ] Con Lavoro accesa, sopra la tastiera ci sono i sei tasti di modifica e funzionano; uscendo tornano i tasti di prima.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».

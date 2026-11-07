@@ -169,8 +169,8 @@ class NovaApp :
             systemTools.revertUnconfirmedDensity()
         }
         setUpUpdates()
-        announceAccentChanges()
         modes = ModeController(this, appScope).also { it.start() }
+        announceAccentChanges()
         gameMeter = GameMeter(this, appScope)
         LockScreenWallpaper.start(this) // lo sfondo di NOVA anche sulla schermata di blocco
 
