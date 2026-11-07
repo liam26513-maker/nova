@@ -94,6 +94,7 @@
         <activity
             android:name=".ReadTextActivity"
             android:exported="true"
+            android:process=":ocr"
             android:taskAffinity=""
             android:label="@string/read_title"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density">

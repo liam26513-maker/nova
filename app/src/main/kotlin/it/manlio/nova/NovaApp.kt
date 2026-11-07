@@ -146,6 +146,9 @@ class NovaApp :
 
     override fun onCreate() {
         super.onCreate()
+        // La lettura del testo gira in un processo a parte (`:ocr`): lì NOVA non avvia niente, e se il motore nativo cade la Home
+        // e la tendina restano su. Non conta nemmeno come avvio per la modalità provvisoria.
+        if (getProcessName().endsWith(OCR_PROCESS)) return
         // Per primi: il gestore dei crash deve coprire anche gli errori dell'avvio.
         bootGuard = BootGuard(KeyValueFile(SafeModeActivity.bootFile(this)))
         CrashReporter(SafeModeActivity.crashDir(this), log, bootGuard, BuildConfig.VERSION_NAME).install()
@@ -235,6 +238,8 @@ class NovaApp :
     }
 
     companion object {
+        const val OCR_PROCESS = ":ocr"
+
         private const val TAG = "nova"
         private const val ONBOARDING_DONE = "done"
 
