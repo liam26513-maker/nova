@@ -17,6 +17,8 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,8 +80,13 @@ fun StandbyScreen(
     info: StandbyInfo,
     nowMillis: Long,
     onExit: () -> Unit,
+    /** Il tempo della città del widget Meteo, se sulla Home ce n'è uno; null = niente meteo. */
+    city: String? = null,
+    weather: (suspend (String) -> Result<Weather>)? = null,
     background: @Composable () -> Unit = {},
 ) {
+    // La chiave è la città: l'ora che cambia ogni minuto non rifà la richiesta.
+    val forecast by produceState<Weather?>(null, city) { value = city?.let { weather?.invoke(it)?.getOrNull() } }
     BackHandler(onBack = onExit)
     val look = LocalHomeLook.current
     val ink = if (info.night) Color(0xFFB02A2A) else Color(0xFFF2F2F2)
@@ -118,6 +125,10 @@ fun StandbyScreen(
                 info.alarm?.let {
                     BasicText(stringResource(R.string.standby_alarm, it), style = TextStyle(muted, 26.sp, fontFamily = look.family))
                 }
+            }
+            forecast?.let {
+                Spacer(Modifier.height(16.dp))
+                BasicText("${it.tempC}° · ${it.city}", style = TextStyle(muted, 26.sp, fontFamily = look.family))
             }
             info.event?.let {
                 Spacer(Modifier.height(16.dp))

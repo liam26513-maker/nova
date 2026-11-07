@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Meteo nello StandBy
+- Richiesta: "controlla ora e continua".
+- Se sulla Home hai il widget Meteo, lo StandBy mostra anche la temperatura della stessa città.
+
 ### Cartella privata
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nuova pagina Impostazioni → Cartella privata: le app che hai nascosto dalla Home si aprono da qui, dopo l'impronta o il blocco schermo del tablet.
