@@ -385,6 +385,9 @@
     <string name="sheet_saved">Saved in the Gallery, in the NOVA folder.</string>
     <string name="sheet_failed">I could not save the sheet.</string>
     <string name="time_chart">Minutes in modes, last 7 days</string>
+    <string name="firewall_title">Block internet for an app</string>
+    <string name="firewall_footer">Tap an app to take away or give back its internet (Wi-Fi and data); Tailscale keeps working. After a restart NOVA puts the blocks back as soon as Shizuku is ready. NOVA and system apps are not listed.</string>
+    <string name="firewall_blocked">No internet</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Who used camera, microphone and location</string>
     <string name="privacy_footer">Read from Android with Shizuku, only while this page is open; nothing leaves the tablet. Tap an app to change its permissions.</string>

@@ -739,7 +739,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 13.2 Firewall per app
 
-- Tramite Shizuku con i comandi di connettività di sistema (su Android 14 esiste la possibilità di limitare la rete per package; **verificare a runtime** la disponibilità esatta del comando, es. `cmd connectivity set-package-networking-enabled`). Se non disponibile: modalità alternativa basata su VPN locale, attivabile solo quando Tailscale non serve, con avviso chiaro.
+- Tramite Shizuku con i comandi di connettività di sistema (su Android 14 esiste la possibilità di limitare la rete per package; **verificare a runtime** la disponibilità esatta del comando, es. `cmd connectivity set-package-networking-enabled`). **Fatto:** sul tablet di riferimento il comando c'è (`set-chain3-enabled` + `set-package-networking-enabled`); Impostazioni → Privacy → «Blocca Internet a un'app», registrato e reversibile, rimesso all'avvio perché Android lo dimentica al riavvio. Se non disponibile: modalità alternativa basata su VPN locale, attivabile solo quando Tailscale non serve, con avviso chiaro.
 
 ### 13.3 Pannello privacy
 
