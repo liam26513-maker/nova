@@ -581,6 +581,7 @@ Fatto il primo, spento di serie: gioco aperto → Gaming, uscita tornando alla H
 
 - Rilevamento di ogni input penna tramite `MotionEvent.getToolType()` (`TOOL_TYPE_STYLUS`, `TOOL_TYPE_ERASER`): penne integrate (EMR/USI) e tavolette esterne via USB OTG o Bluetooth (Wacom, XP-Pen, Huion e simili).
 - Lettura di pressione, inclinazione, orientamento, hover, pulsanti (`getButtonState`), estremità gomma.
+- **Fatto di base:** Impostazioni → Penna e tavoletta mostra cosa è collegato, se arrivano pressione e inclinazione, e si aggiorna al collegamento; la prova del tratto si fa nel Foglio rapido. Mancano i consigli per modello.
 - **Controllo di compatibilità** al collegamento (`InputManager.InputDeviceListener`): cosa è stato rilevato, se arrivano pressione e inclinazione (test interattivo "disegna una linea premendo di più"), supporto OTG, suggerimenti (es. "Per le Wacom One pen tablet su Android 8–13 serve l'app Wacom Center"; "Aggiorna il firmware della tavoletta da PC").
 - Nota per il proprietario: una penna di tavoletta grafica **non funziona sullo schermo** del tablet senza digitalizzatore; funziona tramite la tavoletta collegata.
 

@@ -352,6 +352,16 @@
     <string name="perm_body">Sensori e attività</string>
     <string name="perm_notifications">Notifiche</string>
     <string name="perm_other">Altro</string>
+    <string name="pen_title">Penna e tavoletta</string>
+    <string name="pen_found">Collegate adesso</string>
+    <string name="pen_footer">Si aggiorna da sola quando colleghi o scolleghi. Una penna da tavoletta grafica non disegna sullo schermo: funziona sulla tavoletta collegata. Per provare pressione e gomma usa il Foglio rapido (tendina → Altro).</string>
+    <string name="pen_none">Nessuna penna o tavoletta</string>
+    <string name="pen_none_summary">Collegala con il cavo (OTG) o il Bluetooth: comparirà qui.</string>
+    <string name="pen_details">%1$s · pressione: %2$s · inclinazione: %3$s</string>
+    <string name="pen_external">collegata</string>
+    <string name="pen_builtin">integrata</string>
+    <string name="pen_yes">sì</string>
+    <string name="pen_no">no</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_recent">Chi ha usato fotocamera, microfono e posizione</string>
     <string name="privacy_footer">Letto da Android con Shizuku, solo mentre questa pagina è aperta; niente esce dal tablet. Tocca un\'app per cambiarne i permessi.</string>
