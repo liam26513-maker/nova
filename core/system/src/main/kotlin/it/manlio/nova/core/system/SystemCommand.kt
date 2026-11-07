@@ -165,6 +165,15 @@ sealed interface SystemCommand {
         override val argv = listOf("am", "start", "--windowingMode", "5", "-n", "$packageName/$activity")
     }
 
+    /** Legge i permessi usati da un'app e quando (`appops get`, SPEC §13.3). Solo lettura. */
+    data class AppOps(val packageName: String) : SystemCommand {
+        init {
+            requirePackage(packageName)
+        }
+
+        override val argv = listOf("appops", "get", packageName)
+    }
+
     /** Spegne lo schermo (come il tasto di accensione). Non cambia impostazioni: niente da annullare. */
     data object Sleep : SystemCommand {
         override val argv = listOf("input", "keyevent", "KEYCODE_SLEEP")
