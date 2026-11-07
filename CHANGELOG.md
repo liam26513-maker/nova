@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Lettura del testo più sicura
+- Richiesta: "riparti subito".
+- La lettura del testo ora gira separata dal resto di NOVA: se mai dovesse bloccarsi, la Home e la tendina restano aperte.
+
 ### Correzione: leggere il testo chiudeva NOVA
 - Richiesta: "per leggere il testo cerca la soluzione migliore cerca il meglio e gratis".
 - Nella prima versione, leggere una foto chiudeva NOVA. Ora funziona.
