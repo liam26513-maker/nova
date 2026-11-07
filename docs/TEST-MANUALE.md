@@ -50,6 +50,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Impostazioni della tastiera → Barra degli strumenti → attiva «Invia a Claude»: scrivi una frase, tocca il tasto e si apre l'app Claude con il testo.
 - [ ] Impostazioni → Prestazioni → «App che si possono spegnere»: l'elenco si apre, ogni riga spiega cosa fa l'app. Toccandone una passa tra le congelate; toccandola lì si riaccende.
 - [ ] Con la Gaming accesa, dopo un aggiornamento di NOVA: rotazione bloccata e grafica su Prestazioni; uscendo tornano come prima.
+- [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
 - [ ] Con Studio accesa, tocca Lavoro: resta accesa solo Lavoro e all'uscita tutto torna come prima di Studio.
