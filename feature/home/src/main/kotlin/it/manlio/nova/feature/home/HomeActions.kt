@@ -21,6 +21,9 @@ class HomeActions(
     val onRename: (AppEntry, String) -> Unit = { _, _ -> },
     val onAppInfo: (AppEntry) -> Unit = {},
     val onUninstall: (AppEntry) -> Unit = {},
+    /** Vero se ora si può aprire un'app in una finestra flottante (modalità Lavoro con Shizuku). */
+    val canOpenWindow: () -> Boolean = { false },
+    val onOpenWindow: (AppEntry) -> Unit = {},
     /** Scorrimento verso il basso sulla home: apre le notifiche. */
     val onSwipeDown: () -> Unit = {},
     /** Doppio tocco sull'alfabeto: spegne lo schermo. */
