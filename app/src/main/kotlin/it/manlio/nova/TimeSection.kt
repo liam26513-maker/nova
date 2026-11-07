@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Process
 import android.provider.Settings
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,10 +64,12 @@ private fun topApps(
 ): List<AppTime> {
     val pm = context.packageManager
     val begin = from.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    // La tastiera è «davanti» mentre si scrive in un'altra app: contarla raddoppierebbe quel tempo.
+    val keyboards = context.getSystemService(InputMethodManager::class.java).enabledInputMethodList.map { it.packageName }.toSet()
     return context
         .getSystemService(UsageStatsManager::class.java)
         .queryAndAggregateUsageStats(begin, System.currentTimeMillis())
-        .filterKeys { it != context.packageName && pm.getLaunchIntentForPackage(it) != null }
+        .filterKeys { it != context.packageName && it !in keyboards && pm.getLaunchIntentForPackage(it) != null }
         .map { (pkg, stats) ->
             val name = runCatching { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }.getOrDefault(pkg)
             AppTime(name, (stats.totalTimeInForeground / MS_PER_MINUTE).toInt())
