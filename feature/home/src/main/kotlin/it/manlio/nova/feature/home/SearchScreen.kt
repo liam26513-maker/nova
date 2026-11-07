@@ -68,6 +68,7 @@ internal fun SearchScreen(
     val results = remember(apps, query) { if (query.isBlank()) emptyList() else AppSearch.search(apps, query) { it.label } }
     val novaLabel = stringResource(R.string.home_search_nova_settings)
     val calc = remember(query) { Calc.answer(query) }
+    val suggested = rememberSuggested(apps, actions)
     val showNova = query.isNotBlank() && (listOf(novaLabel) + NOVA_WORDS).any { AppSearch.score(query, it) != null }
     Box(
         Modifier
@@ -91,6 +92,11 @@ internal fun SearchScreen(
                 verticalArrangement = Arrangement.Top,
             ) {
                 if (query.isBlank()) {
+                    if (suggested.isNotEmpty()) item("h-suggested") { SectionTitle(stringResource(R.string.home_search_suggested)) }
+                    items(
+                        suggested,
+                        key = { "s-" + it.key },
+                    ) { app -> ResultRow(app.label, app, actions) { launch(app, actions, onClose) } }
                     item("all") { ResultRow(stringResource(R.string.home_search_all_apps) + "  ›", null, actions) { onShowAll() } }
                 } else {
                     if (results.isNotEmpty()) item("h-apps") { SectionTitle(stringResource(R.string.home_search_apps_section)) }
@@ -98,14 +104,9 @@ internal fun SearchScreen(
                     commandRows(query, commands)
                     calc?.let { answer -> item("calc") { CalcRow(answer) } }
                     if (showNova) item("nova") { ResultRow(novaLabel, null, actions) { actions.onOpenSettings() } }
-                    item(
-                        "web",
-                    ) {
-                        ResultRow(
-                            stringResource(R.string.home_search_web, query.trim()),
-                            null,
-                            actions,
-                        ) { actions.onWebSearch(query.trim()) }
+                    item("web") {
+                        val web = query.trim()
+                        ResultRow(stringResource(R.string.home_search_web, web), null, actions) { actions.onWebSearch(web) }
                     }
                     if (results.isEmpty() && !showNova && calc == null) {
                         item("empty") { SectionTitle(stringResource(R.string.home_search_empty)) }

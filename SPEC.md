@@ -705,6 +705,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.5 Suggerimenti locali
 
+- **Fatto di base:** nella ricerca vuota, «Suggerite per quest'ora»: 5 app dalle aperture degli ultimi 14 giorni (dati di utilizzo), con più peso alle recenti e alla stessa ora. Mancano accessori, modalità e «Perché questo suggerimento?».
 - Riga di 4–6 app previste in base a ora, giorno, accessori collegati, modalità, ultime app. Modello semplice e trasparente (frequenze condizionate con decadimento temporale) calcolato sul tablet; dati in Room, mai esportati. Pulsante "Perché questo suggerimento?".
 
 ### 12.6 StandBy

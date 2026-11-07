@@ -7,6 +7,7 @@
     <string name="home_back_to_favorites">Preferiti</string>
     <string name="home_menu_favorite">Aggiungi ai preferiti</string>
     <string name="home_menu_unfavorite">Togli dai preferiti</string>
+    <string name="home_search_suggested">Suggerite per quest\'ora</string>
     <string name="home_menu_window">Apri in una finestra</string>
     <string name="home_menu_rename">Rinomina</string>
     <string name="home_menu_rename_save">Salva il nome</string>

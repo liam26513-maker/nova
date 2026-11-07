@@ -3,6 +3,9 @@ package it.manlio.nova
 import android.app.ActivityOptions
 import android.app.WallpaperColors
 import android.app.WallpaperManager
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -39,6 +42,7 @@ import it.manlio.nova.feature.home.HomeLayoutStore
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
 import it.manlio.nova.feature.home.PreparedWallpaper
+import it.manlio.nova.feature.home.Suggestions
 import it.manlio.nova.feature.home.TILE_ICON
 import it.manlio.nova.feature.home.WallpaperLoader
 import it.manlio.nova.feature.home.WallpaperSource
@@ -204,6 +208,7 @@ class HomeActivity : ComponentActivity() {
                 if (open != null) lifecycleScope.launch { app.shizuku.run(open) }
             },
             onSwipeDown = { HomeSystem.expandNotifications(this) },
+            suggestions = { withContext(Dispatchers.IO) { suggestedApps(this@HomeActivity) } },
             onSleep = ::sleep,
             onWebSearch = { HomeSystem.webSearch(this, it) },
             widgets = widgets,
@@ -315,3 +320,18 @@ class HomeActivity : ComponentActivity() {
         super.onDestroy()
     }
 }
+
+/** Le aperture delle app negli ultimi 14 giorni, dai dati di utilizzo (se l'utente li ha concessi), trasformate in suggerimenti. */
+private fun suggestedApps(context: Context): List<String> {
+    val usage = context.getSystemService(UsageStatsManager::class.java) ?: return emptyList()
+    val now = System.currentTimeMillis()
+    val events = runCatching { usage.queryEvents(now - SUGGESTION_DAYS_MS, now) }.getOrNull() ?: return emptyList()
+    val opens = ArrayList<Pair<String, Long>>()
+    val event = UsageEvents.Event()
+    while (events.getNextEvent(event)) {
+        if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED) opens += event.packageName to event.timeStamp
+    }
+    return Suggestions.rank(opens, now, skip = setOf(context.packageName))
+}
+
+private const val SUGGESTION_DAYS_MS = 14 * 86_400_000L
