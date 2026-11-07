@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Permessi più leggibili
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Privacy → Permessi concessi ogni app mostra poche parole chiare, come «Fotocamera, Posizione, Contatti», invece dei lunghi nomi di Android.
+
 ### Permessi concessi
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - In Impostazioni → Privacy c'è l'elenco delle app con permessi delicati (fotocamera, microfono, posizione, contatti…), dalla più permessa. Tocca un'app per toglierne qualcuno.
