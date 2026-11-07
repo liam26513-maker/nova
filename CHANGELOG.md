@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Grafico della settimana
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Il tuo tempo c'è un grafico con i minuti passati nelle modalità negli ultimi 7 giorni. Tocca una barra per vedere il valore di quel giorno.
+
 ### Avviso di temperatura in Gaming
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Se durante la Gaming la batteria arriva a 45 °C compare un avviso, una volta sola finché non si raffredda.
