@@ -317,6 +317,8 @@
         <item>Tratto medio</item>
         <item>Tratto spesso</item>
     </string-array>
+    <string name="sheet_pdf">PDF</string>
+    <string name="sheet_pdf_saved">PDF salvato in Download, nella cartella NOVA.</string>
     <string name="sheet_save">Salva</string>
     <string name="sheet_saved">Salvato in Galleria, nella cartella NOVA.</string>
     <string name="sheet_failed">Non sono riuscita a salvare il foglio.</string>

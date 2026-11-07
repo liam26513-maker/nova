@@ -416,6 +416,8 @@
         <item>Medium stroke</item>
         <item>Thick stroke</item>
     </string-array>
+    <string name="sheet_pdf">PDF</string>
+    <string name="sheet_pdf_saved">PDF saved in Download, in the NOVA folder.</string>
     <string name="sheet_save">Save</string>
     <string name="sheet_saved">Saved in the Gallery, in the NOVA folder.</string>
     <string name="sheet_failed">I could not save the sheet.</string>
