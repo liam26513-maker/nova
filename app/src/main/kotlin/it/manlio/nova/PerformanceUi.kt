@@ -194,7 +194,8 @@ class PerformanceUi(
                 .resolveActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY)
                 ?.activityInfo
                 ?.packageName
-        return (favorites + listOfNotNull(ime, home, app.nowPlayingPackage)).toSet()
+        // Il Turbo si può lanciare in partita, dal pannello della Gaming: il gioco non va chiuso.
+        return (favorites + listOfNotNull(ime, home, app.nowPlayingPackage, app.foreground.value, app.lastGame)).toSet()
     }
 
     private fun act(block: suspend () -> Boolean) {

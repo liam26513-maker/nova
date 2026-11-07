@@ -55,7 +55,7 @@ internal class GameTools(
         }
 
     /** Android cambia la risoluzione solo ai giochi: per un'app qualsiasi la riga non servirebbe a niente. */
-    private fun isGame(pkg: String): Boolean =
+    fun isGame(pkg: String): Boolean =
         runCatching { context.packageManager.getApplicationInfo(pkg, 0).category == ApplicationInfo.CATEGORY_GAME }.getOrDefault(false)
 
     private fun share(text: String) {

@@ -17,7 +17,7 @@ Aggiornato a: release 0.1.780. Per riprendere il lavoro in una chat nuova basta 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
 2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi aspetto iOS. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
-3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie e se serve l'attivazione automatica della Gaming. Poi pannello in sovrimpressione, libreria giochi, desktop e finestre flottanti per Lavoro, PIN per Presentazione (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora), profili automatici.
+3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe e watchdog restano spenti di serie e se serve l'attivazione automatica della Gaming. Poi registrazione nel pannello, desktop e finestre flottanti per Lavoro, PIN per Presentazione (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora), profili automatici.
 4. **Fase 4** penna, **Fase 5** PC e streaming, **Fase 6** intelligenza e rifiniture.
 
 ## Regole che contano (CLAUDE.md)

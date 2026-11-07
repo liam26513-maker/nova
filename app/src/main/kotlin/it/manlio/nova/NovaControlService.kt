@@ -85,6 +85,8 @@ class NovaControlService : AccessibilityService() {
             if (doubleSwipe.swipe()) exitMenu.show() else Toast.makeText(this, R.string.edge_again, Toast.LENGTH_SHORT).show()
         }
     }
+    private val gamingPanel by lazy { GamingPanel(this, app, scope) }
+    private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
         GameWatchdog(app) {
             Toast.makeText(this, R.string.watchdog_frozen, Toast.LENGTH_LONG).show()
@@ -116,6 +118,7 @@ class NovaControlService : AccessibilityService() {
         // Per uscire dalla modalità resta la tendina della Home.
         if (app.safeModeReason == null) {
             scope.watchGaming(app) { shape ->
+                gamingPanel.dismiss()
                 removeStrip()
                 if (shape != StripShape.NONE) addStrip(shape)
                 app.log.i(LOG_TAG, "striscia: $shape")
@@ -128,6 +131,7 @@ class NovaControlService : AccessibilityService() {
                 }
             }
             scope.launch { gamingOption(ModeOptions.EDGE_SWIPE).collect { on -> if (on) edge.add() else edge.remove() } }
+            scope.launch { gamingOption(ModeOptions.PANEL_SWIPE).collect { on -> if (on) panelEdge.add() else panelEdge.remove() } }
             scope.launch { gamingOption(ModeOptions.WATCHDOG).collectLatest { on -> if (on) watchdog.watch() } }
         }
     }
@@ -158,6 +162,8 @@ class NovaControlService : AccessibilityService() {
         exitMenu.dismiss()
         studyGuard.dismiss()
         edge.remove()
+        panelEdge.remove()
+        gamingPanel.dismiss()
         removePanel()
         strip?.let { runCatching { windows.removeView(it) } }
         strip = null
@@ -313,6 +319,10 @@ class NovaControlService : AccessibilityService() {
             controls = it
             // L'azione di schermo diviso qui non fa niente: nelle app recenti c'è il tasto «Dividi».
             it.onSplitScreen = { performGlobalAction(GLOBAL_ACTION_RECENTS) }
+            it.onGamingPanel = {
+                requestClose()
+                gamingPanel.show()
+            }
             it.start()
         }.actions()
 
@@ -343,7 +353,7 @@ class NovaControlService : AccessibilityService() {
     }
 
     /** La radice della finestra del pannello: dà a Compose ciclo di vita e stato salvato (non c'è un'Activity) e riceve Indietro. */
-    private class PanelHost(
+    internal class PanelHost(
         context: Context,
     ) : FrameLayout(context),
         LifecycleOwner,
