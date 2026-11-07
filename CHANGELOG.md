@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Linee più morbide nel Foglio rapido
+- Richiesta: "non rileva i piccoli movimenti sia nel foglio veloce e sia su ibispaint".
+- Ho misurato lo schermo del tablet: manda la posizione solo dopo circa 0,7 mm di movimento, per questo i movimenti piccolissimi non arrivano a nessuna app, ibisPaint compreso. Non si può cambiare senza permessi di root.
+- Nel Foglio rapido le linee ora vengono ammorbidite: niente più scalini quando disegni piano.
+
 ### Foglio rapido in PDF
 - Richiesta: "parti con l'ottimizzazione e il miglioramento per il disegno".
 - Nel Foglio rapido c'è il tasto PDF: salva il disegno in Download, nella cartella NOVA, ritagliato attorno a quello che hai disegnato.
