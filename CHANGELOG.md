@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Annulla e Ripeti mentre disegni
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Durante la Creativa, dalla tendina → Altro puoi accendere una piccola barra sul bordo destro con Annulla e Ripeti, che funziona nelle app di disegno che capiscono le scorciatoie da tastiera. È spenta di serie e serve Shizuku.
+
 ### Penna e tavoletta
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Nuova pagina Impostazioni → Penna e tavoletta: mostra la penna o la tavoletta collegata e dice se il tablet riceve la pressione e l'inclinazione. Si aggiorna da sola quando la colleghi.

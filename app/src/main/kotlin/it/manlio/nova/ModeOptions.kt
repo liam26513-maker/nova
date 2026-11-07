@@ -71,6 +71,9 @@ class ModeOptions(private val file: File) {
         /** Gaming da sola quando si apre un gioco (SPEC §8.7): spenta di serie. */
         const val AUTO_GAMING = "AUTO_GAMING"
 
+        /** La barra Annulla/Ripeti nella Creativa (SPEC §9.4): spenta di serie. */
+        const val PEN_BAR = "PEN_BAR"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)

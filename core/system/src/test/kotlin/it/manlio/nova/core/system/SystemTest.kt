@@ -410,4 +410,11 @@ class GameScaleTest {
         assertTrue(runCatching { SystemCommand.AppNetwork(SystemCommand.OWN_PACKAGE, false) }.isFailure)
         assertTrue(runCatching { SystemCommand.AppNetwork("com.android.systemui", false) }.isFailure)
     }
+
+    @Test
+    fun `undo is a fixed key combination and a single key is refused`() {
+        val undo = SystemCommand.KeyCombo(listOf(SystemCommand.KeyCombo.Key.CTRL, SystemCommand.KeyCombo.Key.Z))
+        assertEquals(listOf("input", "keycombination", "KEYCODE_CTRL_LEFT", "KEYCODE_Z"), undo.argv)
+        assertTrue(runCatching { SystemCommand.KeyCombo(listOf(SystemCommand.KeyCombo.Key.Z)) }.isFailure)
+    }
 }

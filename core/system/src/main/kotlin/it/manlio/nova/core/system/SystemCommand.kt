@@ -180,6 +180,21 @@ sealed interface SystemCommand {
         override val argv = listOf("cmd", "connectivity", "set-package-networking-enabled", enabled.toString(), packageName)
     }
 
+    /** Una scorciatoia da tastiera per l'app davanti (SPEC §9.4): solo i tasti di [Key], niente testo libero. */
+    data class KeyCombo(val keys: List<Key>) : SystemCommand {
+        enum class Key(val code: String) { CTRL("KEYCODE_CTRL_LEFT"), SHIFT("KEYCODE_SHIFT_LEFT"), Z("KEYCODE_Z"), Y("KEYCODE_Y") }
+
+        init {
+            require(keys.size in 2..MAX_KEYS) { "Scorciatoia non valida" }
+        }
+
+        override val argv = listOf("input", "keycombination") + keys.map { it.code }
+
+        private companion object {
+            const val MAX_KEYS = 3
+        }
+    }
+
     /** L'elenco dei task recenti, per sapere quali app sono aperte in finestra (SPEC §8.3). Solo lettura. */
     data object ListRecents : SystemCommand {
         override val argv = listOf("dumpsys", "activity", "recents")

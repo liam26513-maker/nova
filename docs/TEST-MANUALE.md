@@ -66,6 +66,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Privacy → Blocca Internet: un'app bloccata non carica niente, sbloccata torna a funzionare; dopo un riavvio resta bloccata; le altre app navigano.
 - [ ] Lavoro: apri due app in finestra, Altro → «Salva le finestre aperte», chiudile, poi «Riapri: …» le riapre in finestra.
 - [ ] Impostazioni → Penna e tavoletta: collegando una tavoletta compare con pressione «sì»; scollegandola sparisce.
+- [ ] Creativa → Altro → Barra Annulla e Ripeti: in ibisPaint (o un'altra app di disegno) i due tasti annullano e ripetono; uscendo dalla Creativa la barra sparisce.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
