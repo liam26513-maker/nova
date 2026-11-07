@@ -598,6 +598,7 @@ Fatto il primo, spento di serie: gioco aperto → Gaming, uscita tornando alla H
 
 ### 9.4 Strumenti
 
+- **Fatto di base:** durante la Creativa, tendina → Altro → «Barra Annulla e Ripeti» mette sul bordo destro due tasti che inviano Ctrl+Z e Ctrl+Shift+Z (`input keycombination`, Shizuku) all'app davanti. Mancano gli altri strumenti e i profili per app.
 - **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`.
 - **Tasti penna personalizzabili** dove Android li espone; nelle superfici NOVA sempre.
 - **Foglio rapido (fatto di base):** da tendina → Altro si apre subito una tela (penna o dito) con pressione, gomma, rifiuto del palmo, Annulla e Pulisci; si salva da solo uscendo; esportazione PNG in Galleria e condivisione. Mancano gesto dalla Home, PDF, colori e il disegno front-buffered di §9.2.

@@ -405,6 +405,9 @@
     <string name="window_set_open">Riapri: %1$s</string>
     <string name="window_set_saved">Set di finestre salvato: lo trovi qui, in Altro.</string>
     <string name="window_set_none">Nessuna app aperta in una finestra: aprile con «Apri in una finestra» dalla Home.</string>
+    <string name="pen_bar">Barra Annulla e Ripeti</string>
+    <string name="pen_bar_undo">Annulla</string>
+    <string name="pen_bar_redo">Ripeti</string>
     <string name="panel_fps">FPS (ultima misura)</string>
     <string name="panel_temp">Temperatura</string>
     <string name="panel_battery">Batteria</string>
