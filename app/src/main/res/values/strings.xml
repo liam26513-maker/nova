@@ -377,6 +377,7 @@
     <string name="more_nfc">NFC</string>
     <string name="more_cast">Trasmetti schermo</string>
     <string name="more_sound">Suoni e vibrazione</string>
+    <string name="more_physical_keyboard">Tastiera fisica</string>
     <string name="more_accessibility">Accessibilità</string>
     <string name="more_alarms">Sveglie</string>
     <string name="perf_title">Prestazioni</string>

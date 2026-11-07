@@ -13,6 +13,7 @@ import android.os.Looper
 import android.provider.AlarmClock
 import android.provider.Settings
 import android.text.format.DateFormat
+import android.view.InputDevice
 import it.manlio.nova.core.design.GraphicsLevel
 import it.manlio.nova.core.modes.ModeDefinition
 import it.manlio.nova.core.modes.Modes
@@ -189,6 +190,7 @@ class HomeControls(
             cast.takeUnless { presenting },
             go(R.string.more_sound, Settings.ACTION_SOUND_SETTINGS),
             go(R.string.more_display, Settings.ACTION_DISPLAY_SETTINGS),
+            go(R.string.more_physical_keyboard, ACTION_HARD_KEYBOARD).takeIf { hasPhysicalKeyboard() },
             go(R.string.more_accessibility, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             go(R.string.more_alarms, AlarmClock.ACTION_SHOW_ALARMS),
         ) + GameTools(context, app).items()
@@ -313,8 +315,15 @@ class HomeControls(
         // Azioni di Android non esposte come costanti pubbliche in tutte le versioni: se mancano, il tocco non fa nulla.
         const val ACTION_DATA_USAGE = "android.settings.DATA_USAGE_SETTINGS"
         const val ACTION_NIGHT_DISPLAY = "android.settings.NIGHT_DISPLAY_SETTINGS"
+        const val ACTION_HARD_KEYBOARD = "android.settings.HARD_KEYBOARD_SETTINGS"
     }
 }
+
+/** I tasti del tablet (accensione, volume) non sono alfabetici: la voce compare solo con una tastiera vera collegata. */
+private fun hasPhysicalKeyboard() =
+    InputDevice.getDeviceIds().any { id ->
+        InputDevice.getDevice(id)?.let { !it.isVirtual && it.keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC } == true
+    }
 
 /** Il testo del Pomodoro: «Studio fino alle 12:45». */
 private fun pomodoroText(
