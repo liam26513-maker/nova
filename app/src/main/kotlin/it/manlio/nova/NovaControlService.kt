@@ -88,6 +88,7 @@ class NovaControlService : AccessibilityService() {
     private val heat by lazy { GameHeatWatch(this) }
     private val autoGaming = AutoGaming()
     private val penBar by lazy { PenBar(this, app) }
+    private val deskBar by lazy { DeskBar(this, app) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
@@ -142,6 +143,11 @@ class NovaControlService : AccessibilityService() {
                     active?.modeId == Modes.CREATIVE.id && values[ModeOptions.PEN_BAR] == true
                 }.distinctUntilChanged().collect(penBar::set)
             }
+            scope.launch {
+                combine(app.modes.engine.active, app.modes.options.values) { active, values ->
+                    active?.modeId == Modes.WORK.id && values[ModeOptions.DESK_BAR] == true
+                }.distinctUntilChanged().collect(deskBar::set)
+            }
             scope.launch { gamingOption(ModeOptions.WATCHDOG).collectLatest { on -> if (on) watchdog.watch() } }
         }
     }
@@ -190,6 +196,7 @@ class NovaControlService : AccessibilityService() {
         edge.remove()
         heat.set(false)
         penBar.set(false)
+        deskBar.set(false)
         panelEdge.remove()
         gamingPanel.dismiss()
         removePanel()

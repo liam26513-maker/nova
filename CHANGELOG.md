@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Barra delle app nel Lavoro
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Durante il Lavoro, dalla tendina → Altro puoi accendere una barra in basso con le tue app preferite della Home: un tocco le apre in una finestra flottante. È spenta di serie.
+
 ### Annulla e Ripeti mentre disegni
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Durante la Creativa, dalla tendina → Altro puoi accendere una piccola barra sul bordo destro con Annulla e Ripeti, che funziona nelle app di disegno che capiscono le scorciatoie da tastiera. È spenta di serie e serve Shizuku.

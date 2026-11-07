@@ -178,6 +178,7 @@ class HomeControls(
             quickSheetItem(context),
             mode(Modes.WORK),
             splitScreenItem(context, app, onSplitScreen),
+            deskBarItem(context, app),
             mode(Modes.CREATIVE),
             penBarItem(context, app),
             mode(Modes.PRESENTATION),

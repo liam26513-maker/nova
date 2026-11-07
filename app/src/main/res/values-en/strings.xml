@@ -357,6 +357,7 @@
     <string name="window_set_open">Reopen: %1$s</string>
     <string name="window_set_saved">Window set saved: you find it here, under More.</string>
     <string name="window_set_none">No app is open in a window: open them with «Open in a window» from Home.</string>
+    <string name="desk_bar">Favourite apps bar</string>
     <string name="pen_bar">Undo and redo bar</string>
     <string name="pen_bar_undo">Undo</string>
     <string name="pen_bar_redo">Redo</string>
