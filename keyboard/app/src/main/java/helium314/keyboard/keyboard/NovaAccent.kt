@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import helium314.keyboard.latin.utils.ToolbarKey
 
-/** Il colore d'accento scelto in NOVA e la modalità Lavoro (`AccentProvider`). Senza NOVA valgono il tema e i tasti fissati. */
+/** Il colore d'accento scelto in NOVA e le modalità Lavoro e Studio (`AccentProvider`). Senza NOVA vale il tema. */
 object NovaAccent {
     private val URI by lazy { Uri.parse("content://it.manlio.nova.accent") }
 
@@ -22,8 +22,12 @@ object NovaAccent {
         }
     }.getOrNull()
 
-    fun working(context: Context): Boolean = runCatching {
-        context.contentResolver.query(URI, null, null, null, null)?.use { it.moveToFirst() && it.getInt(1) == 1 }
+    fun working(context: Context) = flag(context, 1)
+
+    fun studying(context: Context) = flag(context, 2)
+
+    private fun flag(context: Context, column: Int): Boolean = runCatching {
+        context.contentResolver.query(URI, null, null, null, null)?.use { it.moveToFirst() && it.getInt(column) == 1 }
     }.getOrNull() == true
 
     /** Android rifiuta l'osservatore se NOVA non è installata: la tastiera deve funzionare lo stesso. */

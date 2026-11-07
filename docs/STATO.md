@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.750. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.770. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)

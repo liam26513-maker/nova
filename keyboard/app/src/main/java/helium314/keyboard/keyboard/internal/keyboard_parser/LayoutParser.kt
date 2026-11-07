@@ -38,6 +38,7 @@ object LayoutParser {
         if (layoutType == LayoutType.FUNCTIONAL && !params.mId.element.takesFunctionalKeys)
             return mutableListOf(mutableListOf()) // no functional keys
         val layoutName = if (layoutType == LayoutType.MAIN) params.mId.subtype.mainLayoutName
+            else if (layoutType == LayoutType.NUMBER_ROW && Settings.getValues().mNovaStudy) "nova_study"
             else params.mId.subtype.layouts[layoutType] ?: Settings.readDefaultLayoutName(layoutType, context.prefs())
         return layoutCache.getOrPut(layoutType.name + layoutName) {
             createCacheLambda(layoutType, layoutName, context)
