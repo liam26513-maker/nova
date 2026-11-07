@@ -21,7 +21,17 @@ internal class InkSegment(
     val y1: Float,
     val width: Float,
     val color: Int,
-)
+) {
+    /** Fuori dallo strato: il renderer lo chiama dal suo thread, non da quello dello schermo. */
+    fun paintOn(
+        canvas: Canvas,
+        paint: Paint,
+    ) {
+        paint.color = color
+        paint.strokeWidth = width
+        canvas.drawLine(x0, y0, x1, y1, paint)
+    }
+}
 
 /**
  * Lo strato trasparente sopra il Foglio rapido che disegna i pezzi nuovi del tratto direttamente sul buffer dello schermo
@@ -48,7 +58,7 @@ internal class FrontInk(
                     bufferWidth: Int,
                     bufferHeight: Int,
                     param: InkSegment,
-                ) = paintSegment(canvas, param)
+                ) = param.paintOn(canvas, paint)
 
                 // Lo strato «normale» tiene il tratto appena finito finché la tela sotto non l'ha ridisegnato.
                 override fun onDrawMultiBufferedLayer(
@@ -58,7 +68,7 @@ internal class FrontInk(
                     params: Collection<InkSegment>,
                 ) {
                     canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                    params.forEach { paintSegment(canvas, it) }
+                    params.forEach { it.paintOn(canvas, paint) }
                 }
             },
         )
@@ -82,15 +92,6 @@ internal class FrontInk(
     fun clear() = renderer.renderMultiBufferedLayer(emptyList())
 
     fun release() = renderer.release(true)
-
-    private fun paintSegment(
-        canvas: Canvas,
-        s: InkSegment,
-    ) {
-        paint.color = s.color
-        paint.strokeWidth = s.width
-        canvas.drawLine(s.x0, s.y0, s.x1, s.y1, paint)
-    }
 
     companion object {
         private const val PROBE = 64
