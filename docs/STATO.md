@@ -19,7 +19,7 @@ Aggiornato a: release 0.1.1030. Per riprendere il lavoro in una chat nuova basta
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
 2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): NOVA la aggiorna già con Shizuku; manca la prima installazione dall'app, poi aspetto iOS. Misurare la velocità sul tablet prima e dopo ogni ottimizzazione.
 3. **Fase 3, seguito:** decidere con il proprietario se doppio swipe, watchdog e Gaming automatica restano spenti di serie. Poi altri profili automatici (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora).
-4. **Fase 4** penna: altri strumenti della barra e profili per app (prima vedere sul tablet cosa capisce ibisPaint), disegno a bassa latenza se il Foglio rapido resta indietro. **Fase 5** PC e streaming (serve il PC). **Fase 6**: testo dalle immagini (da decidere col proprietario: ML Kit manda statistiche a Google), editor delle automazioni, file cifrati nella cartella privata, confronto prestazioni nelle Novità, widget nello StandBy.
+4. **Fase 4** penna: altri strumenti della barra e profili per app (prima vedere sul tablet cosa capisce ibisPaint), disegno a bassa latenza se il Foglio rapido resta indietro. **Fase 5** PC e streaming (serve il PC). **Fase 6**: editor delle automazioni, file cifrati nella cartella privata, confronto prestazioni nelle Novità, widget nello StandBy.
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso

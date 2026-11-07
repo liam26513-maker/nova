@@ -392,6 +392,12 @@
     <string name="presentation_pin_invalid">The PIN must have 4 to 8 digits.</string>
     <string name="presentation_pin_wrong">Wrong PIN.</string>
     <string name="presentation_pin_first">Leave Presentation first, with the PIN.</string>
+    <string name="read_title">Read the text in a photo</string>
+    <string name="read_working">Reading the photo…</string>
+    <string name="read_none">I found no text in this photo.</string>
+    <string name="read_copy">Copy</string>
+    <string name="read_copied">Text copied.</string>
+    <string name="read_claude">Send to Claude</string>
     <string name="sheet_title">Quick sheet</string>
     <string name="sheet_undo">Undo</string>
     <string name="sheet_clear">Clear</string>

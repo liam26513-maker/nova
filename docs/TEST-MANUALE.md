@@ -71,6 +71,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Con «Lavoro quando colleghi una tastiera» acceso: collegando una tastiera parte il Lavoro, scollegandola si spegne. Uguale per la penna e la Creativa.
 - [ ] Studio → «Accendi da sola alle» un'ora vicina: a quell'ora (con qualche minuto di ritardo) la Studio parte; con un'altra modalità accesa non parte.
 - [ ] Cartella privata: senza blocco schermo lo dice; con il blocco chiede impronta o PIN di Android e poi mostra le app nascoste, che si aprono.
+- [ ] Leggi il testo di una foto: con una foto di appunti o di un libro il testo esce giusto (accenti compresi) in pochi secondi; Copia, Condividi e Invia a Claude funzionano; condividendo una foto dalla Galleria a NOVA si apre la stessa pagina.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».

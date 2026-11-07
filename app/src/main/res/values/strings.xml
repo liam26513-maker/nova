@@ -293,6 +293,12 @@
     <string name="study_block_pick">Scegli le app da bloccare</string>
     <string name="study_block_remove">Tocca per sbloccarla</string>
     <string name="more_screen_awake">Schermo sempre acceso</string>
+    <string name="read_title">Leggi il testo di una foto</string>
+    <string name="read_working">Sto leggendo la foto…</string>
+    <string name="read_none">Non ho trovato testo in questa foto.</string>
+    <string name="read_copy">Copia</string>
+    <string name="read_copied">Testo copiato.</string>
+    <string name="read_claude">Invia a Claude</string>
     <string name="sheet_title">Foglio rapido</string>
     <string name="sheet_undo">Annulla</string>
     <string name="sheet_clear">Pulisci</string>

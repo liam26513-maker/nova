@@ -19,6 +19,13 @@ android {
         versionName = System.getenv("NOVA_VERSION_NAME") ?: "0.1.0"
         // Repository da cui arrivano gli aggiornamenti (SPEC §4.5).
         buildConfigField("String", "GITHUB_REPO", "\"liam26513-maker/nova\"")
+        // Solo il tablet ARM a 64 bit: la lettura del testo porta librerie native, e le altre architetture peserebbero per niente.
+        ndk { abiFilters += "arm64-v8a" }
+    }
+
+    // Librerie native compresse nell'APK (ONNX Runtime sono 34 MB non compressi): il download dell'aggiornamento resta piccolo.
+    packaging {
+        jniLibs { useLegacyPackaging = true }
     }
 
     sourceSets["main"].assets.srcDir(rootProject.file("config"))
@@ -81,6 +88,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:improve"))
+    implementation(project(":feature:ocr"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

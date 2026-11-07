@@ -90,6 +90,19 @@
             android:label="@string/notes_title"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
+        <!-- Testo dalle immagini: si può condividere una foto a NOVA. Legge tutto sul tablet. -->
+        <activity
+            android:name=".ReadTextActivity"
+            android:exported="true"
+            android:taskAffinity=""
+            android:label="@string/read_title"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".QuickSheetActivity"
             android:exported="false"

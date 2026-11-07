@@ -691,7 +691,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.1 Testo dalle immagini
 
-- Selezione e copia del testo da foto, screenshot, pagine fotografate: ML Kit Text Recognition v2 (latino), offline.
+- Selezione e copia del testo da foto, screenshot, pagine fotografate: **PaddleOCR PP-OCRv6 tiny su ONNX Runtime** (scelto al posto di ML Kit, che invia statistiche d'uso a Google): gratuito, open source, tutto sul tablet. Provato sul PC: 4/4 righe esatte con accenti ed € su testo sfocato e inclinato. **Fatto di base:** condividere una foto a NOVA o tendina → Altro → «Leggi il testo di una foto»; Copia, Condividi, Invia a Claude.
 - Ingressi: condivisione di un'immagine a NOVA, galleria lavori, dopo uno screenshot (anteprima con "Seleziona testo").
 
 ### 12.2 Cerca da schermo

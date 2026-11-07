@@ -30,4 +30,5 @@ include(
     ":feature:home",
     ":feature:onboarding",
     ":feature:improve",
+    ":feature:ocr",
 )

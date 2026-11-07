@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Testo dalle foto
+- Richiesta: "per leggere il testo cerca la soluzione migliore cerca il meglio e gratis".
+- Condividi una foto a NOVA, oppure apri tendina → Altro → «Leggi il testo di una foto»: NOVA trova il testo e puoi copiarlo, condividerlo o inviarlo a Claude. Legge tutto sul tablet: niente esce, niente costa. Usa PaddleOCR, gratuito e open source, che nelle prove ha letto bene anche accenti, numeri ed €.
+
 ### Meteo nello StandBy
 - Richiesta: "controlla ora e continua".
 - Se sulla Home hai il widget Meteo, lo StandBy mostra anche la temperatura della stessa città.
