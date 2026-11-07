@@ -21,7 +21,7 @@ nativo con NDK): si compila da qui (`./gradlew :app:assembleRelease`) e lo contr
 | Numero di versione = 100000 + quello di NOVA | Le migrazioni di HeliBoard (`oldVersion <= 4201`…) non devono rieseguirsi a ogni aggiornamento; test `NovaUpgradeTest`. |
 | Tasto «Invia a Claude» nella barra strumenti, spento di serie (`ToolbarKey.SEND_TO_CLAUDE`, `RichInputConnection.sendToClaude`) | SPEC §10.4. |
 | Traduzioni solo italiano e inglese (`localeFilters`) | Peso. |
-| Tema «NOVA» predefinito, chiaro e scuro, con i colori di `config/theme` | SPEC §10.1. |
+| Tema «NOVA» predefinito, chiaro e scuro, con i colori di `config/theme` e l'accento scelto in NOVA (`NovaAccent`, `<queries>` nel manifest) | SPEC §10.1. |
 | Nessun permesso Internet | SPEC §10.1: lo verifica `tools/check_keyboard.py` sul manifest unito. |
 
 ## Come aggiungere un dizionario

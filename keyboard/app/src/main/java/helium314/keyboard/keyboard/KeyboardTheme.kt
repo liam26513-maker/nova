@@ -151,13 +151,13 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
             return when (themeName) {
                 THEME_NOVA -> if (isNight) {
                     DefaultColors(
-                        themeStyle, hasBorders, "#8FA9C4".toColorInt(), "#0E0F11".toColorInt(), "#2A2A2E".toColorInt(),
+                        themeStyle, hasBorders, NovaAccent.read(context) ?: "#8FA9C4".toColorInt(), "#0E0F11".toColorInt(), "#2A2A2E".toColorInt(),
                         "#1C1C1F".toColorInt(), "#2A2A2E".toColorInt(), "#F2F2F4".toColorInt(), "#9A9AA0".toColorInt(),
                         keyboardBackground = backgroundImage
                     )
                 } else {
                     DefaultColors(
-                        themeStyle, hasBorders, "#4F6D8A".toColorInt(), "#F7F6F3".toColorInt(), "#FFFFFF".toColorInt(),
+                        themeStyle, hasBorders, NovaAccent.read(context) ?: "#4F6D8A".toColorInt(), "#F7F6F3".toColorInt(), "#FFFFFF".toColorInt(),
                         "#E9E7E2".toColorInt(), "#FFFFFF".toColorInt(), "#1D1D1F".toColorInt(), "#6E6E73".toColorInt(),
                         keyboardBackground = backgroundImage
                     )

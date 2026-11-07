@@ -7,6 +7,9 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 ### StandBy con il tuo sfondo
 - Richiesta: "sentiti libero di aggiungere o migliorare qualcosa".
 - Di giorno lo StandBy mostra lo sfondo della Home, velato perché l'ora si legga bene. Di notte resta nero con l'ora in rosso scuro.
+### La tastiera prende il tuo colore
+- Richiesta: "bilancia leggerezza e personalizzazione/bello esteticamente".
+- Se scegli un colore d'accento in Personalizza la Home, anche il tasto Invio e gli altri dettagli della tastiera lo seguono, subito.
 
 ### Tastiera fisica
 - Richiesta: "continua con le restanti cose da fare nel piano".
