@@ -401,6 +401,21 @@
     <string name="sheet_title">Quick sheet</string>
     <string name="sheet_undo">Undo</string>
     <string name="sheet_clear">Clear</string>
+    <string name="sheet_redo">Redo</string>
+    <string name="sheet_eraser">Eraser</string>
+    <string name="sheet_pen">Pen</string>
+    <string-array name="sheet_colors">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Orange</item>
+    </string-array>
+    <string-array name="sheet_sizes">
+        <item>Thin stroke</item>
+        <item>Medium stroke</item>
+        <item>Thick stroke</item>
+    </string-array>
     <string name="sheet_save">Save</string>
     <string name="sheet_saved">Saved in the Gallery, in the NOVA folder.</string>
     <string name="sheet_failed">I could not save the sheet.</string>

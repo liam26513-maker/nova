@@ -302,6 +302,21 @@
     <string name="sheet_title">Foglio rapido</string>
     <string name="sheet_undo">Annulla</string>
     <string name="sheet_clear">Pulisci</string>
+    <string name="sheet_redo">Ripeti</string>
+    <string name="sheet_eraser">Gomma</string>
+    <string name="sheet_pen">Penna</string>
+    <string-array name="sheet_colors">
+        <item>Nero</item>
+        <item>Blu</item>
+        <item>Rosso</item>
+        <item>Verde</item>
+        <item>Arancio</item>
+    </string-array>
+    <string-array name="sheet_sizes">
+        <item>Tratto sottile</item>
+        <item>Tratto medio</item>
+        <item>Tratto spesso</item>
+    </string-array>
     <string name="sheet_save">Salva</string>
     <string name="sheet_saved">Salvato in Galleria, nella cartella NOVA.</string>
     <string name="sheet_failed">Non sono riuscita a salvare il foglio.</string>
