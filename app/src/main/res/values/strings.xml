@@ -405,6 +405,10 @@
     <string name="window_set_open">Riapri: %1$s</string>
     <string name="window_set_saved">Set di finestre salvato: lo trovi qui, in Altro.</string>
     <string name="window_set_none">Nessuna app aperta in una finestra: aprile con «Apri in una finestra» dalla Home.</string>
+    <string name="auto_title">Altri profili automatici</string>
+    <string name="auto_footer">Spenti di serie. Si accendono collegando l\'accessorio, se nessun\'altra modalità è accesa, e si spengono scollegandolo. Servono il servizio di accessibilità e un accessorio collegato con il cavo o il Bluetooth.</string>
+    <string name="auto_work">Lavoro quando colleghi una tastiera</string>
+    <string name="auto_creative">Creativa quando colleghi una penna o tavoletta</string>
     <string name="desk_bar">Barra delle app preferite</string>
     <string name="pen_bar">Barra Annulla e Ripeti</string>
     <string name="pen_bar_undo">Annulla</string>

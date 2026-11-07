@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Lavoro e Creativa automatici (facoltativi)
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- In Impostazioni → Modalità Gaming, in fondo, puoi far partire il Lavoro quando colleghi una tastiera e la Creativa quando colleghi una penna o tavoletta. Scollegandole la modalità si spegne. Sono spenti di serie.
+
 ### Barra delle app nel Lavoro
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Durante il Lavoro, dalla tendina → Altro puoi accendere una barra in basso con le tue app preferite della Home: un tocco le apre in una finestra flottante. È spenta di serie.

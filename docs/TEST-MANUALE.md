@@ -68,6 +68,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Impostazioni → Penna e tavoletta: collegando una tavoletta compare con pressione «sì»; scollegandola sparisce.
 - [ ] Creativa → Altro → Barra Annulla e Ripeti: in ibisPaint (o un'altra app di disegno) i due tasti annullano e ripetono; uscendo dalla Creativa la barra sparisce.
 - [ ] Lavoro → Altro → Barra delle app preferite: in basso compaiono i preferiti, un tocco li apre in finestra; uscendo dal Lavoro la barra sparisce.
+- [ ] Con «Lavoro quando colleghi una tastiera» acceso: collegando una tastiera parte il Lavoro, scollegandola si spegne. Uguale per la penna e la Creativa.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.
 - [ ] Tendina → Altro: ci sono Studio, Lavoro, Creativa e Presentazione. Toccandone una compare l'avviso con il suo nome e la riga dice «Sì»; ritoccandola «tutto com'era».
