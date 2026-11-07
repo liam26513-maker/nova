@@ -111,7 +111,10 @@ internal class DoubleSwipe(private val clock: () -> Long) {
  * Riconosce uno swipe dal bordo verso l'interno, una volta per gesto. Con la navigazione a gesti Android prende lo swipe per sé
  * come «Indietro» e annulla il tocco prima della fine: un tocco annullato dopo essersi mosso verso l'interno vale come swipe.
  */
-internal class EdgeGesture(private val distance: Float) {
+internal class EdgeGesture(
+    private val distance: Float,
+    private val fromEnd: Boolean = true,
+) {
     private var start = 0f
     private var last = 0f
     private var counted = false
@@ -125,16 +128,18 @@ internal class EdgeGesture(private val distance: Float) {
     /** @return vero la prima volta che il dito supera [distance]. */
     fun moved(x: Float): Boolean {
         last = x
-        if (counted || start - x <= distance) return false
+        if (counted || inward(x) <= distance) return false
         counted = true
         return true
     }
 
     fun cancelled(): Boolean {
-        val stolen = !counted && last < start
+        val stolen = !counted && inward(last) > 0
         counted = true
         return stolen
     }
+
+    private fun inward(x: Float) = if (fromEnd) start - x else x - start
 }
 
 /** Dice se il gioco è fermo: il conto dei fotogrammi non cresce tra due letture. Senza dati non dà mai l'allarme. */
@@ -153,11 +158,12 @@ internal class FreezeDetector {
 }
 
 /**
- * La sottile fascia sul bordo destro che riconosce il doppio swipe durante la Gaming. Prende i tocchi su quei pochi pixel, perciò
- * è spenta di serie: si accende in Impostazioni → Modalità Gaming.
+ * La sottile fascia sul bordo che riconosce uno swipe durante la Gaming: a destra il doppio swipe, a sinistra il pannello. Prende
+ * i tocchi su quei pochi pixel, perciò è spenta di serie: si accende in Impostazioni → Modalità Gaming.
  */
 internal class EdgeSwipeWindow(
     private val service: AccessibilityService,
+    private val fromEnd: Boolean = true,
     private val onSwipe: () -> Unit,
 ) {
     private val windows = service.getSystemService(WindowManager::class.java)
@@ -167,7 +173,7 @@ internal class EdgeSwipeWindow(
     fun add() {
         if (view != null) return
         val density = service.resources.displayMetrics.density
-        val gesture = EdgeGesture(SWIPE_DP * density)
+        val gesture = EdgeGesture(SWIPE_DP * density, fromEnd)
         val edge = View(service)
         edge.setOnTouchListener { _, event ->
             when (event.actionMasked) {
@@ -190,7 +196,7 @@ internal class EdgeSwipeWindow(
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSPARENT,
             ).apply {
-                gravity = Gravity.END
+                gravity = if (fromEnd) Gravity.END else Gravity.START
                 setFitInsetsTypes(0)
             }
         if (runCatching { windows.addView(edge, params) }.isSuccess) view = edge

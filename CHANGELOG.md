@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Pannello sopra i giochi
+- Richiesta: "continua con le restanti cose da fare nel piano".
+- Durante la Gaming, nella tendina in Altro c'è «Pannello Gaming»: mostra temperatura, batteria, ping, memoria libera e gli FPS dell'ultima misura, con i pulsanti Screenshot, Turbo, Risoluzione, Chiudi il gioco ed Esci. Un tocco fuori lo chiude e il gioco non va in pausa.
+- Se vuoi, in Impostazioni → Modalità Gaming puoi aprirlo con uno swipe dal bordo sinistro (spento di serie).
+- Il Turbo non chiude più il gioco che stai usando.
+
 ### Tastiera più bassa in Gaming
 - Richiesta: "continua con le restanti cose da fare nel piano".
 - Con Gaming accesa la tastiera è più bassa e copre meno gioco. Quando esci torna normale.

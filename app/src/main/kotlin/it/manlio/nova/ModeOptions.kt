@@ -65,6 +65,9 @@ class ModeOptions(private val file: File) {
         const val EDGE_SWIPE = "EDGE_SWIPE"
         const val WATCHDOG = "WATCHDOG"
 
+        /** Il pannello con uno swipe dal bordo sinistro: spento di serie, la fascia prende tocchi al gioco. */
+        const val PANEL_SWIPE = "PANEL_SWIPE"
+
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
             setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)

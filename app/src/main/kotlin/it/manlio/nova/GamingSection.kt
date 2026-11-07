@@ -42,6 +42,15 @@ fun GamingSection(
             trailing = { if (on) Check() },
         )
     }
+    val panelHeader = stringResource(R.string.gaming_panel_title)
+    SettingsSection(backdrop, header = panelHeader, footer = stringResource(R.string.gaming_panel_footer)) {
+        val swipe = values[ModeOptions.PANEL_SWIPE] == true
+        SettingsRow(
+            stringResource(R.string.gaming_panel_swipe),
+            onClick = { options.set(ModeOptions.PANEL_SWIPE, !swipe) },
+            trailing = { if (swipe) Check() },
+        )
+    }
 }
 
 /** Le uscite di emergenza che costano qualcosa al gioco: le accende l'utente. */

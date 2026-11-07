@@ -71,6 +71,9 @@ class HomeControls(
 
     /** Schermo diviso: lo sa fare solo il servizio di accessibilità, quindi esiste solo nella tendina sopra le altre app. */
     var onSplitScreen: (() -> Unit)? = null
+
+    /** Apre il pannello della Gaming: solo il servizio di accessibilità può disegnarlo sopra il gioco. */
+    var onGamingPanel: (() -> Unit)? = null
     private val callback =
         object : CameraManager.TorchCallback() {
             override fun onTorchModeChanged(
@@ -168,6 +171,7 @@ class HomeControls(
             cast.takeIf { presenting },
             standby(),
             mode(Modes.GAMING),
+            gamingPanelItem(context, app, onGamingPanel),
             mode(Modes.STUDY),
             pomodoroItem(context, app),
             notesItem(context),
@@ -382,6 +386,19 @@ private fun splitScreenItem(
     val split = onSplitScreen?.takeIf { app.modes.isActive(Modes.WORK) } ?: return null
     return MoreItem(context.getString(R.string.more_split_screen)) {
         split()
+        null
+    }
+}
+
+/** Durante la Gaming: il pannello in sovrimpressione (SPEC §8.2). */
+private fun gamingPanelItem(
+    context: Context,
+    app: NovaApp,
+    onGamingPanel: (() -> Unit)?,
+): MoreItem? {
+    val open = onGamingPanel?.takeIf { app.modes.isActive(Modes.GAMING) } ?: return null
+    return MoreItem(context.getString(R.string.more_gaming_panel)) {
+        open()
         null
     }
 }
