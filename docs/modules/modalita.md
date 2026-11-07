@@ -57,6 +57,10 @@ In Impostazioni → Modalità Gaming: le app con categoria gioco, aperte con un 
 
 Con la navigazione a gesti Android ruba lo swipe dal bordo e manda `ACTION_CANCEL`: `EdgeGesture` conta anche quello. `systemGestureExclusionRects` libera 200 dp al centro del bordo (il massimo che Android concede). Provato sul tablet: al centro funziona, fuori dal centro scatta solo «Indietro» e il menu non si apre. I tasti inviati con `adb input` non arrivano al filtro del servizio: volume giù si prova solo col tasto vero.
 
+## Riavvio di NOVA durante una modalità
+
+`ModeController.start`, una volta per processo, rimette grafica e rotazione dai segnalibri della sessione, senza cambiarli. Causa del cambio della rotazione non trovata: si è visto dopo un'installazione a Gaming accesa.
+
 ## Scelte e limiti
 
 - **Wi-Fi a bassa latenza non incluso:** `WIFI_MODE_FULL_LOW_LATENCY` ha effetto solo se l'app che tiene il blocco è in primo piano; durante il gioco NOVA non lo è.
