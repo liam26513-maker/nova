@@ -99,11 +99,31 @@ private fun create(
         askWhenArg(context, trigger) { whenArg ->
             val actions = Then.entries
             pick(context, context.getString(R.string.auto_ask_then), actions.map { thenLabel(context, it, "") }) { a ->
-                askThenArg(
-                    context,
-                    actions[a],
-                ) { thenArg -> onDone(Rule(System.currentTimeMillis(), true, trigger, whenArg, actions[a], thenArg)) }
+                askThenArg(context, actions[a]) { thenArg ->
+                    askIf(context) { condition, ifArg ->
+                        onDone(Rule(System.currentTimeMillis(), true, trigger, whenArg, actions[a], thenArg, condition, ifArg))
+                    }
+                }
             }
+        }
+    }
+}
+
+/** L'ultima domanda: «Solo se…», con «Sempre» per prima. Tra due orari chiede l'ora d'inizio e quella di fine. */
+private fun askIf(
+    context: Context,
+    next: (If, String) -> Unit,
+) {
+    val conditions = If.entries
+    pick(
+        context,
+        context.getString(R.string.auto_ask_if),
+        conditions.map { ifLabel(context, it, "").replaceFirstChar(Char::uppercase) },
+    ) { c ->
+        if (conditions[c] != If.BETWEEN_HOURS) return@pick next(conditions[c], "")
+        val hours = HOURS.map { "%02d:00".format(it) }
+        pick(context, context.getString(R.string.auto_ask_from), hours) { from ->
+            pick(context, context.getString(R.string.auto_ask_to), hours) { to -> next(If.BETWEEN_HOURS, "${HOURS[from]}-${HOURS[to]}") }
         }
     }
 }

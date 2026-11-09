@@ -178,6 +178,7 @@ internal class AutomationEngine(private val app: NovaApp) {
     private fun fire(trigger: When) = active(trigger).forEach(::run)
 
     private fun run(rule: Rule) {
+        if (!Conditions.holds(rule.condition, rule.ifArg, moment())) return
         main.post {
             when (rule.action) {
                 Then.OPEN_APP -> openApp(rule.thenArg)
@@ -198,6 +199,14 @@ internal class AutomationEngine(private val app: NovaApp) {
                 Then.NOTIFY -> Toast.makeText(app, rule.thenArg, Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    /** L'ora, il giorno e la carica di adesso, per le condizioni «solo se». La carica dall'ultimo annuncio di sistema, senza ascoltare. */
+    private fun moment(): Moment {
+        val now = ZonedDateTime.now()
+        val sticky = app.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val charging = (sticky?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0) != 0
+        return Moment(now.hour, now.dayOfWeek.value, charging)
     }
 
     private fun openApp(pkg: String) {

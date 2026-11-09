@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Automazioni con «solo se»
+- Richiesta: "si parti" (dal piano: condizioni «se» nelle automazioni).
+- Ogni regola può avere una condizione: solo tra due orari, solo nei giorni feriali, solo nel fine settimana, solo se il tablet è in carica o solo se non lo è. Esempio: «Quando colleghi le cuffie → apri Spotify, solo tra le 08 e le 20». Le regole di prima restano uguali («Sempre»).
+
 ### Foto a rotazione nello StandBy
 - Richiesta: "nello standby per le foto a rotazione mettila in modo opzionale".
 - In Personalizza la Home → Disposizione e gesti puoi accendere «Foto a rotazione nello StandBy» e scegliere fino a 20 foto: lo StandBy ne mostra una al minuto, con una dissolvenza lenta, al posto dello sfondo. Spenta di serie. Di notte resta lo schermo nero.

@@ -8,7 +8,28 @@ import it.manlio.nova.core.system.QuickToggle
 internal fun describe(
     context: Context,
     rule: Rule,
-) = whenLabel(context, rule.trigger, rule.whenArg) + " → " + thenLabel(context, rule.action, rule.thenArg)
+) = whenLabel(context, rule.trigger, rule.whenArg) + " → " + thenLabel(context, rule.action, rule.thenArg) +
+    if (rule.condition == If.ALWAYS) "" else ", " + ifLabel(context, rule.condition, rule.ifArg)
+
+/** «solo tra le 8 e le 20», «solo nel fine settimana»… */
+internal fun ifLabel(
+    context: Context,
+    condition: If,
+    arg: String,
+): String =
+    when (condition) {
+        If.ALWAYS -> context.getString(R.string.auto_if_always)
+        If.BETWEEN_HOURS ->
+            if (arg.isEmpty()) {
+                context.getString(R.string.auto_if_hours_any)
+            } else {
+                context.getString(R.string.auto_if_hours, arg.substringBefore('-'), arg.substringAfter('-'))
+            }
+        If.WEEKDAYS -> context.getString(R.string.auto_if_weekdays)
+        If.WEEKEND -> context.getString(R.string.auto_if_weekend)
+        If.CHARGING -> context.getString(R.string.auto_if_charging)
+        If.NOT_CHARGING -> context.getString(R.string.auto_if_not_charging)
+    }
 
 internal fun whenLabel(
     context: Context,
