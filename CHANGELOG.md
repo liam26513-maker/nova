@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### StandBy automatico puntuale
+- Richiesta: "ora prova lo standby che parte da solo".
+- Lo StandBy automatico ora parte davvero dopo 30 secondi senza toccare lo schermo. Prima, mentre il tablet era in carica, il conto ripartiva da capo a ogni aggiornamento della batteria e poteva metterci molto di più.
+
 ### Testi lunghi nello StandBy
 - Richiesta: "riguarda e prova lo standby con la musica e sistema il testo se è un problema".
 - Se il titolo della canzone è lungo, nello StandBy ora finisce con «…» invece di uscire dai bordi dello schermo. Se il nome dell'artista è già nel titolo (come succede con la musica dal browser), non viene ripetuto.
