@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 
 private const val VEIL = 0.3f
 private const val CARD_HEIGHT = 0.62f
-private const val CLOSE_AT = 0.28f
+private const val CLOSE_AT = 0.2f
+private const val FLICK_PX_S = 900f
 private const val APPEAR_MS = 180
 private const val FLY_MS = 160
 private val CARD_SHAPE = RoundedCornerShape(20.dp)
@@ -193,7 +195,11 @@ private fun Card(
     }
 }
 
-/** Trascinata verso l'alto oltre [CLOSE_AT] dell'altezza la scheda vola via e si chiude; altrimenti torna al suo posto. */
+/**
+ * Trascinata verso l'alto la scheda segue il dito; si chiude se va oltre [CLOSE_AT] dell'altezza o con un colpetto veloce
+ * (più di [FLICK_PX_S] pixel al secondo), altrimenti torna al suo posto. Il gesto si misura fuori dallo spostamento
+ * (pointerInput prima di graphicsLayer): misurato dentro, la scheda scappava dal dito e sembrava dura.
+ */
 @Composable
 private fun Modifier.swipeUpToClose(
     key: Int,
@@ -202,14 +208,14 @@ private fun Modifier.swipeUpToClose(
     onClose: () -> Unit,
 ): Modifier {
     val scope = rememberCoroutineScope()
-    return graphicsLayer {
-        translationY = offset.value
-        alpha = 1f - (-offset.value / heightPx).coerceIn(0f, 1f)
-    }.pointerInput(key) {
+    return pointerInput(key) {
+        val velocity = VelocityTracker()
         detectVerticalDragGestures(
+            onDragStart = { velocity.resetTracking() },
             onDragEnd = {
+                val speed = velocity.calculateVelocity().y
                 scope.launch {
-                    if (-offset.value > heightPx * CLOSE_AT) {
+                    if (-offset.value > heightPx * CLOSE_AT || speed < -FLICK_PX_S) {
                         offset.animateTo(-heightPx * 1.2f, tween(FLY_MS))
                         onClose()
                     } else {
@@ -220,7 +226,11 @@ private fun Modifier.swipeUpToClose(
             onDragCancel = { scope.launch { offset.animateTo(0f, spring()) } },
         ) { change, dy ->
             change.consume()
+            velocity.addPosition(change.uptimeMillis, change.position)
             scope.launch { offset.snapTo((offset.value + dy).coerceAtMost(0f)) }
         }
+    }.graphicsLayer {
+        translationY = offset.value
+        alpha = 1f - (-offset.value / heightPx).coerceIn(0f, 1f)
     }
 }
