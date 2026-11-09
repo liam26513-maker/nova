@@ -12,8 +12,9 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
- * Tiene lo sfondo della schermata di blocco uguale a quello di NOVA (Impostazioni → Personalizza la Home → Sfondo). La schermata
- * di blocco resta quella di Android: cambia solo l'immagine, con il permesso normale `SET_WALLPAPER`. Si riscrive solo se
+ * Tiene lo sfondo della schermata di blocco e quello di sistema uguali a quello di NOVA (Impostazioni → Personalizza la Home →
+ * Sfondo). Lo sfondo di sistema è quello che Android mostra dietro le App recenti, che disegna il launcher di sistema e non NOVA.
+ * Le schermate restano quelle di Android: cambia solo l'immagine, con il permesso normale `SET_WALLPAPER`. Si riscrive solo se
  * l'immagine cambia (la chiave sta in un file), non a ogni avvio.
  */
 internal object LockScreenWallpaper {
@@ -33,12 +34,12 @@ internal object LockScreenWallpaper {
     ): Boolean =
         withContext(Dispatchers.IO) {
             val key = LockWallpaper.key(prefs, WallpaperLoader.photoFile(app).lastModified()) ?: return@withContext false
-            val keyFile = File(app.filesDir, "lock-wallpaper.key")
+            val keyFile = File(app.filesDir, "wallpaper-v2.key") // v2: anche lo sfondo di sistema, si riscrive una volta
             if (keyFile.exists() && keyFile.readText() == key) return@withContext true
             val side = maxOf(app.resources.displayMetrics.widthPixels, app.resources.displayMetrics.heightPixels)
             val bitmap = LockWallpaper.render(app, prefs, side) ?: return@withContext false
-            val ok =
-                runCatching { WallpaperManager.getInstance(app).setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK) }.isSuccess
+            val which = WallpaperManager.FLAG_LOCK or WallpaperManager.FLAG_SYSTEM
+            val ok = runCatching { WallpaperManager.getInstance(app).setBitmap(bitmap, null, true, which) }.isSuccess
             bitmap.recycle()
             if (ok) keyFile.writeText(key)
             ok
