@@ -344,6 +344,9 @@ private fun LayoutSection(
         Choice(R.string.customize_standby_calendar, listOf(true, false), prefs.standbyCalendar, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(standbyCalendar = v) }
         }
+        Choice(R.string.customize_ipad_recents, listOf(true, false), prefs.ipadRecents, { onOff(it) }, divider = true) { v ->
+            onChange { it.copy(ipadRecents = v) }
+        }
     }
 }
 

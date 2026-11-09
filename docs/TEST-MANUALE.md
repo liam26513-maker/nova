@@ -71,6 +71,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Studio → «Accendi da sola alle» un'ora vicina: a quell'ora (con qualche minuto di ritardo) la Studio parte; con un'altra modalità accesa non parte.
 - [ ] Cartella privata: senza blocco schermo lo dice; con il blocco chiede impronta o PIN di Android e poi mostra le app nascoste, che si aprono.
 - [ ] Leggi il testo di una foto: con una foto di appunti o di un libro il testo esce giusto (accenti compresi) in pochi secondi; Copia, Condividi e Invia a Claude funzionano; condividendo una foto dalla Galleria a NOVA si apre la stessa pagina.
+- [ ] App recenti: da un'app trascina su e tieni premuto. Compaiono le schede di NOVA con sfondo sfocato e anteprime; tocco su una scheda la apre, scheda in su la chiude, «Chiudi tutte» e tocco fuori portano alla Home. Prova in verticale e in orizzontale.
 - [ ] Automazioni: crea «Quando colleghi le cuffie → mostra un avviso» e collega le cuffie: compare l'avviso; spegnila e non compare più. Prova anche una regola a orario.
 - [ ] La tastiera ha i colori di NOVA, di giorno e di notte. In Aspetto il tema «NOVA» c'è e se ne può scegliere un altro: resta scelto anche dopo un aggiornamento.
 - [ ] Presentazione porta la luminosità al massimo; all'uscita tornano il livello e la regolazione automatica di prima.

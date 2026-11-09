@@ -443,6 +443,12 @@
     <string name="edge_again">Scorri di nuovo per uscire</string>
     <string name="watchdog_frozen">Il gioco sembra bloccato</string>
     <string name="more_standby">StandBy</string>
+    <string name="customize_ipad_recents">App recenti in stile iPad (con Shizuku)</string>
+    <string name="recents_empty">Nessuna app aperta</string>
+    <string name="recents_close_all">Chiudi tutte</string>
+    <string name="recents_home">Torna alla Home</string>
+    <string name="recents_open">Apri %1$s</string>
+    <string name="recents_close">Chiudi %1$s</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

@@ -111,6 +111,7 @@ La Home ha due disposizioni, scelte in **Personalizza → Disposizione e gesti �
 - **Permessi:** nessuno nuovo nel manifest oltre al servizio (`BIND_NOTIFICATION_LISTENER_SERVICE`, che è del sistema). Il servizio, se l'accesso è dato, resta in memoria: pesa pochi KB (una mappa di anteprime).
 
 ## Sfondo e app recenti
+- **App recenti in stile iPad (SPEC §12.10):** sopra le App recenti di Android il servizio di NOVA mette le sue (`app/RecentsSwitcher`, `SwitcherScreen`), con elenco, anteprime, apertura e chiusura via Shizuku (`core/system/TaskTools`). Lo sfondo di NOVA è anche lo sfondo di sistema, quindi sta anche dietro quelle di Android. Interruttore `ipadRecents` in `HomePrefs`.
 - **Problema risolto:** nelle app recenti a volte traspariva l'app aperta prima. La finestra della home era traslucida; ora **non lo è più**.
 - **Sfondo disegnato da NOVA:** quando NOVA disegna lo sfondo da sé (foto, NOVA, colore, oppure il tuo sfondo se le consenti di leggerlo), la finestra è opaca.
 - **Preparazione dell'immagine:** `WallpaperLoader` rimpicciolisce l'immagine e la sfoca una volta sola, fuori dal thread principale. Più sfocatura significa un'immagine più piccola, quindi anche più leggera. Il colore principale si ricava con `WallpaperColors.fromBitmap`.

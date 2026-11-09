@@ -337,6 +337,12 @@
     <string name="edge_again">Swipe again to leave</string>
     <string name="watchdog_frozen">The game looks frozen</string>
     <string name="more_standby">StandBy</string>
+    <string name="customize_ipad_recents">iPad-style Recents (with Shizuku)</string>
+    <string name="recents_empty">No open apps</string>
+    <string name="recents_close_all">Close all</string>
+    <string name="recents_home">Back to Home</string>
+    <string name="recents_open">Open %1$s</string>
+    <string name="recents_close">Close %1$s</string>
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>

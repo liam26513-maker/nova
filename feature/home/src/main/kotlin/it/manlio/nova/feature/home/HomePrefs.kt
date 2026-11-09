@@ -89,6 +89,8 @@ data class HomePrefs(
     val standbyAuto: Boolean = false,
     /** Il prossimo evento del calendario nello StandBy: spento di serie, chiede il permesso quando lo accendi. */
     val standbyCalendar: Boolean = false,
+    /** Le App recenti di NOVA in stile iPad sopra quelle di Android (SPEC §12.10); servono Shizuku e il servizio di NOVA. */
+    val ipadRecents: Boolean = true,
     /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
     val controlTiles: List<ControlTileId> = ControlTileId.DEFAULT,
     /** App nascoste: chiave → nome al momento in cui è stata nascosta (per mostrarle nelle Impostazioni). */
@@ -111,6 +113,7 @@ data class HomePrefs(
             controlTiles = ControlTileId.DEFAULT,
             standbyAuto = false,
             standbyCalendar = false,
+            ipadRecents = true,
         )
 
     /** Applica l'aspetto di [theme] tenendo app nascoste, nomi e disposizione di queste preferenze. */
@@ -122,6 +125,7 @@ data class HomePrefs(
             controlTiles = controlTiles,
             standbyAuto = standbyAuto,
             standbyCalendar = standbyCalendar,
+            ipadRecents = ipadRecents,
         )
 
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
@@ -225,6 +229,7 @@ internal object PrefsCodec {
             lockWallpaper = bool("lockWallpaper", d.lockWallpaper),
             standbyAuto = bool("standbyAuto", d.standbyAuto),
             standbyCalendar = bool("standbyCalendar", d.standbyCalendar),
+            ipadRecents = bool("ipadRecents", d.ipadRecents),
             controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
             renamed =
@@ -265,6 +270,7 @@ internal object PrefsCodec {
         p["lockWallpaper"] = prefs.lockWallpaper.toString()
         p["standbyAuto"] = prefs.standbyAuto.toString()
         p["standbyCalendar"] = prefs.standbyCalendar.toString()
+        p["ipadRecents"] = prefs.ipadRecents.toString()
         p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
         prefs.renamed.forEach { (key, name) -> p["$RENAMED$key"] = name }
