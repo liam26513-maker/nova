@@ -53,7 +53,7 @@ fun GamingSection(
         )
     }
     SettingsSection(backdrop, footer = stringResource(R.string.gaming_auto_footer)) {
-        val auto = values[ModeOptions.AUTO_GAMING] == true
+        val auto = ModeOptions.isOn(values, ModeOptions.AUTO_GAMING)
         SettingsRow(
             stringResource(R.string.gaming_auto),
             onClick = { options.set(ModeOptions.AUTO_GAMING, !auto) },
@@ -70,8 +70,8 @@ private fun ExitOptions(
     values: Map<String, Boolean>,
 ) {
     SettingsSection(backdrop, header = stringResource(R.string.gaming_exits), footer = stringResource(R.string.gaming_exits_footer)) {
-        val swipe = values[ModeOptions.EDGE_SWIPE] == true
-        val watchdog = values[ModeOptions.WATCHDOG] == true
+        val swipe = ModeOptions.isOn(values, ModeOptions.EDGE_SWIPE)
+        val watchdog = ModeOptions.isOn(values, ModeOptions.WATCHDOG)
         SettingsRow(
             stringResource(R.string.gaming_edge),
             summary = stringResource(R.string.gaming_edge_summary),

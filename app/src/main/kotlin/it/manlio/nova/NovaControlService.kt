@@ -196,7 +196,7 @@ class NovaControlService : AccessibilityService() {
 
     /** Gioco aperto → Gaming, se l'utente l'ha acceso. La Home è solo la sua activity: la tendina e il pannello non contano. */
     private fun autoGaming(event: AccessibilityEvent) {
-        if (app.modes.options.values.value[ModeOptions.AUTO_GAMING] != true) return
+        if (!ModeOptions.isOn(app.modes.options.values.value, ModeOptions.AUTO_GAMING)) return
         val pkg = event.packageName?.toString()?.takeUnless { it == SYSTEM_UI || it.contains("inputmethod") } ?: return
         val step =
             autoGaming.onForeground(
@@ -492,7 +492,7 @@ private object ChoreographerClock : MonotonicFrameClock {
 private fun NovaControlService.gamingOption(key: String): Flow<Boolean> {
     val modes = (application as NovaApp).modes
     return combine(modes.engine.active, modes.options.values) { active, values ->
-        active?.modeId == Modes.GAMING.id && values[key] == true
+        active?.modeId == Modes.GAMING.id && ModeOptions.isOn(values, key)
     }.distinctUntilChanged()
 }
 

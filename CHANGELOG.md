@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Gaming: tre aiuti accesi di serie
+- Richiesta: "per le cose da decidere: si accendile".
+- Ora sono accesi da subito: il doppio swipe dal bordo per uscire, il controllo del gioco bloccato e la Gaming automatica quando apri un gioco. Si spengono in Impostazioni → Modalità Gaming.
+
 ### Chiudere le App recenti è fluido
 - Richiesta: "le app quando le trascino per toglierle sembrano lente e dure da togliere, rendile più fluide".
 - La scheda si muove insieme al dito senza ritardo, vola via alla velocità del tuo gesto e le altre schede scivolano al suo posto.

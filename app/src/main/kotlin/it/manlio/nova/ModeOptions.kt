@@ -61,14 +61,23 @@ class ModeOptions(private val file: File) {
     companion object {
         const val OVERLAY = "OVERLAY_IN_GAMES"
 
-        /** Doppio swipe dal bordo e watchdog: spenti di serie, il primo prende tocchi al gioco e il secondo lo disturba. */
+        /** Le opzioni accese finché l'utente non le spegne; tutte le altre partono spente. */
+        private val ON_BY_DEFAULT = setOf("EDGE_SWIPE", "WATCHDOG", "AUTO_GAMING")
+
+        /** Il valore di un'opzione, con il predefinito se l'utente non l'ha mai toccata. */
+        fun isOn(
+            values: Map<String, Boolean>,
+            key: String,
+        ): Boolean = values[key] ?: (key in ON_BY_DEFAULT)
+
+        /** Doppio swipe dal bordo e controllo del gioco bloccato: accesi di serie per scelta del proprietario (9 novembre 2026). */
         const val EDGE_SWIPE = "EDGE_SWIPE"
         const val WATCHDOG = "WATCHDOG"
 
         /** Il pannello con uno swipe dal bordo sinistro: spento di serie, la fascia prende tocchi al gioco. */
         const val PANEL_SWIPE = "PANEL_SWIPE"
 
-        /** Gaming da sola quando si apre un gioco (SPEC §8.7): spenta di serie. */
+        /** Gaming da sola quando si apre un gioco (SPEC §8.7): accesa di serie per scelta del proprietario. */
         const val AUTO_GAMING = "AUTO_GAMING"
 
         /** La barra Annulla/Ripeti nella Creativa (SPEC §9.4): spenta di serie. */
