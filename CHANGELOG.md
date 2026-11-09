@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App recenti più curate
+- Richiesta: "si costruiscila ma sistemando e togliendo i limiti detti".
+- Con poche app aperte le schede stanno al centro, come sull'iPad. Lo sfondo dietro è sfocato in modo morbido invece che a quadretti.
+
 ### App recenti in stile iPad
 - Richiesta: "si costruiscila ma sistemando e togliendo i limiti detti".
 - Quando trascini su e tieni premuto, al posto della schermata di Android compaiono le App recenti di NOVA: il tuo sfondo sfocato, le schede grandi in fila con l'icona e il nome dell'app sopra e l'anteprima vera di ogni app. Tocca una scheda per tornarci, trascinala verso l'alto per chiuderla, «Chiudi tutte» per chiuderle tutte, tocca fuori per la Home.
