@@ -172,6 +172,7 @@ class HomeControls(
             standby(),
             mode(Modes.GAMING),
             gamingPanelItem(context, app, onGamingPanel),
+            playFromPcItem(context),
             mode(Modes.STUDY),
             pomodoroItem(context, app),
             notesItem(context),

@@ -366,6 +366,7 @@
     <string name="pen_bar_picker">Eyedropper</string>
     <string name="pen_bar_bigger">Bigger brush</string>
     <string name="pen_bar_smaller">Smaller brush</string>
+    <string name="more_play_from_pc">Play from PC</string>
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Gioca dal PC
+- Richiesta: "facciamo il collegamento al pc e streaming".
+- In tendina → Altro compare «Gioca dal PC» quando sul tablet c'è Moonlight: un tocco lo apre e ti collega al PC con Sunshine. Con Tailscale funziona anche fuori casa.
+
 ### Barra della penna per ibisPaint
 - Richiesta: "facciamo il resto delle cose che puoi fare tu" (scorciatoie di ibisPaint).
 - Nella Creativa, con ibisPaint aperto, la barra della penna ha anche pennello, gomma, contagocce e pennello più grande o più piccolo, oltre ad Annulla e Ripeti. Ho letto i tasti giusti dall'elenco di ibisPaint sul tablet, senza bisogno di una tastiera. Nelle altre app restano solo Annulla e Ripeti.
