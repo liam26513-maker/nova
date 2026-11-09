@@ -72,6 +72,7 @@ fun checkVersionUpgrade(context: Context) {
     val prefs = context.prefs()
     val oldVersion = prefs.getInt(Settings.PREF_VERSION_CODE, 0)
     applyNovaThemeOnce(prefs)
+    applyIpadLookOnce(prefs)
     when (upgradeKind(oldVersion, BuildConfig.VERSION_CODE)) {
         UpgradeKind.NONE -> Unit
         UpgradeKind.REGULAR -> AppUpgrade.onUpgrade(context)
@@ -95,9 +96,24 @@ private fun applyNovaThemeOnce(prefs: SharedPreferences) {
 
 private const val NOVA_THEME_APPLIED = "nova_theme_applied"
 
+/**
+ * Aspetto stile iPad (9 novembre 2026): tasti rettangolari con gli angoli arrotondati, tutti della stessa forma (niente tasti a pillola).
+ * Scritto una volta sola anche per chi aveva già la tastiera; dopo, la scelta in Aspetto resta sua.
+ */
+private fun applyIpadLookOnce(prefs: SharedPreferences) {
+    if (prefs.getBoolean(NOVA_IPAD_LOOK, false)) return
+    prefs.edit {
+        putString(Settings.PREF_THEME_STYLE, KeyboardTheme.STYLE_MATERIAL)
+        putBoolean(Settings.PREF_THEME_KEY_BORDERS, true)
+        putBoolean(NOVA_IPAD_LOOK, true)
+    }
+}
+
+private const val NOVA_IPAD_LOOK = "nova_ipad_look"
+
 /** Gli stessi valori dei nuovi predefiniti di NOVA (`Defaults`), scritti esplicitamente per chi ha già usato la tastiera. */
 private fun applyNovaFeel(context: Context, prefs: SharedPreferences) = prefs.edit {
-    putString(Settings.PREF_THEME_STYLE, KeyboardTheme.STYLE_ROUNDED)
+    putString(Settings.PREF_THEME_STYLE, Defaults.PREF_THEME_STYLE)
     putBoolean(Settings.PREF_THEME_KEY_BORDERS, true)
     putBoolean(Settings.PREF_VIBRATE_ON, true)
     putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, Defaults.PREF_VIBRATION_DURATION_SETTINGS)

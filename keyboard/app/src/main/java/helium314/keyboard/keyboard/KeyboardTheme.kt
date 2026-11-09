@@ -153,14 +153,16 @@ private constructor(val themeId: Int, @JvmField val mStyleId: Int) {
                     val see = NovaAccent.seeThrough(context)
                     if (isNight) {
                         DefaultColors(
-                            themeStyle, hasBorders, NovaAccent.read(context) ?: "#8FA9C4".toColorInt(), see("#0E0F11".toColorInt()), see("#2A2A2E".toColorInt()),
-                            see("#1C1C1F".toColorInt()), see("#2A2A2E".toColorInt()), "#F2F2F4".toColorInt(), "#9A9AA0".toColorInt(),
+                            // Stile iPad di notte: fondo grafite, tasti delle lettere grigio chiaro, tasti di funzione più scuri.
+                            themeStyle, hasBorders, NovaAccent.read(context) ?: "#8FA9C4".toColorInt(), see("#232325".toColorInt()), see("#5B5B5F".toColorInt()),
+                            see("#3A3A3D".toColorInt()), see("#5B5B5F".toColorInt()), "#FFFFFF".toColorInt(), "#B4B4B9".toColorInt(),
                             keyboardBackground = backgroundImage
                         )
                     } else {
                         DefaultColors(
-                            themeStyle, hasBorders, NovaAccent.read(context) ?: "#4F6D8A".toColorInt(), see("#F7F6F3".toColorInt()), see("#FFFFFF".toColorInt()),
-                            see("#E9E7E2".toColorInt()), see("#FFFFFF".toColorInt()), "#1D1D1F".toColorInt(), "#6E6E73".toColorInt(),
+                            // Stile iPad di giorno: fondo grigio perla, lettere su tasti bianchi, tasti di funzione grigi.
+                            themeStyle, hasBorders, NovaAccent.read(context) ?: "#4F6D8A".toColorInt(), see("#D3D6DC".toColorInt()), see("#FFFFFF".toColorInt()),
+                            see("#ABB0B9".toColorInt()), see("#FFFFFF".toColorInt()), "#000000".toColorInt(), "#6E6E73".toColorInt(),
                             keyboardBackground = backgroundImage
                         )
                     }

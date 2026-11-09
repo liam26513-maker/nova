@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Tastiera in stile iPad
+- Richiesta: "si parti" (tastiera stile iOS dal piano).
+- La tastiera di NOVA ha ora l'aspetto di quella dell'iPad: tasti rettangolari con gli angoli arrotondati, tutti della stessa forma; di giorno fondo grigio chiaro con tasti bianchi, di notte fondo scuro con tasti grigi. I tasti di funzione (maiuscole, cancella, numeri) sono di un grigio diverso, come sull'iPad.
+
 ### Gaming: tre aiuti accesi di serie
 - Richiesta: "per le cose da decidere: si accendile".
 - Ora sono accesi da subito: il doppio swipe dal bordo per uscire, il controllo del gioco bloccato e la Gaming automatica quando apri un gioco. Si spengono in Impostazioni → Modalità Gaming.
