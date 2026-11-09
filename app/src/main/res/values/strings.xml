@@ -449,9 +449,17 @@
     <string name="recents_home">Torna alla Home</string>
     <string name="recents_open">Apri %1$s</string>
     <string name="recents_close">Chiudi %1$s</string>
+<<<<<<< HEAD
     <string name="keyboard_install">Installa la Tastiera NOVA</string>
     <string name="keyboard_installing">Installo la tastiera…</string>
     <string name="keyboard_install_summary">Con Shizuku, dall\'ultima versione. Poi accendila nelle impostazioni di Android che si aprono.</string>
+=======
+    <string name="customize_standby_photos">Foto a rotazione nello StandBy</string>
+    <string name="standby_photos_pick">Scegli le foto</string>
+    <string name="standby_photos_count">%1$d foto, una al minuto</string>
+    <string name="standby_photos_none">Nessuna foto: resta lo sfondo della Home</string>
+    <string name="standby_photos_clear">Togli le foto</string>
+>>>>>>> c4148ab (feat(standby): foto a rotazione facoltative)
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

@@ -343,9 +343,17 @@
     <string name="recents_home">Back to Home</string>
     <string name="recents_open">Open %1$s</string>
     <string name="recents_close">Close %1$s</string>
+<<<<<<< HEAD
     <string name="keyboard_install">Install NOVA Keyboard</string>
     <string name="keyboard_installing">Installing the keyboard…</string>
     <string name="keyboard_install_summary">With Shizuku, from the latest release. Then turn it on in the Android settings that open.</string>
+=======
+    <string name="customize_standby_photos">Rotating photos in StandBy</string>
+    <string name="standby_photos_pick">Choose photos</string>
+    <string name="standby_photos_count">%1$d photos, one per minute</string>
+    <string name="standby_photos_none">No photos: the Home wallpaper stays</string>
+    <string name="standby_photos_clear">Remove photos</string>
+>>>>>>> c4148ab (feat(standby): foto a rotazione facoltative)
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>

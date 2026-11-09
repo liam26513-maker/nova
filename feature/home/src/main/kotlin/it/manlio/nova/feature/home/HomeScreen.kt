@@ -54,6 +54,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
@@ -251,7 +252,12 @@ fun HomeScreen(
                     weatherCity(layout),
                     actions.weather,
                     extras,
-                ) { HomeBackground(prefs, wallpaper) }
+                ) {
+                    // Le foto scelte, se l'opzione è accesa e ce ne sono; altrimenti lo sfondo della Home.
+                    val context = LocalContext.current
+                    val photos = remember(it) { if (prefs.standbyPhotos) StandbyPhotos.list(context) else emptyList() }
+                    if (photos.isNotEmpty()) StandbyPhotoShow(photos, nowMillis) else HomeBackground(prefs, wallpaper)
+                }
             }
         }
     }

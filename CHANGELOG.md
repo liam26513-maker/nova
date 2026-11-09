@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Foto a rotazione nello StandBy
+- Richiesta: "nello standby per le foto a rotazione mettila in modo opzionale".
+- In Personalizza la Home → Disposizione e gesti puoi accendere «Foto a rotazione nello StandBy» e scegliere fino a 20 foto: lo StandBy ne mostra una al minuto, con una dissolvenza lenta, al posto dello sfondo. Spenta di serie. Di notte resta lo schermo nero.
+
 ### Niente tastiera sopra lo StandBy
 - Richiesta: "la tastiera rimane aperta nella schermata di standby, non va bene".
 - Quando parte lo StandBy la tastiera si chiude: si vede solo lo StandBy.
