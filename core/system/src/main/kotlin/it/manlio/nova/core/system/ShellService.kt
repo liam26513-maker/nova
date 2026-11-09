@@ -6,7 +6,8 @@ import kotlin.system.exitProcess
 
 /**
  * Gira in un processo separato con i privilegi della shell, avviato da Shizuku (UserService).
- * Riceve solo liste di argomenti già validate da [SystemCommand]: niente shell, niente interpretazione.
+ * Riceve solo liste di argomenti già validate da [SystemCommand]: niente shell, niente interpretazione. Le recenti passano da
+ * [TaskTools], con numeri di task e non comandi.
  */
 class ShellService : IShellService.Stub() {
     override fun destroy() {
@@ -37,4 +38,15 @@ class ShellService : IShellService.Stub() {
         writer.join()
         return "$code\n$output"
     }
+
+    override fun recentTasks(max: Int): String = TaskTools.recentTasks(max)
+
+    override fun taskSnapshot(
+        taskId: Int,
+        maxSide: Int,
+    ): ByteArray = TaskTools.snapshot(taskId, maxSide)
+
+    override fun openTask(taskId: Int): Boolean = TaskTools.open(taskId)
+
+    override fun removeTask(taskId: Int): Boolean = TaskTools.remove(taskId)
 }

@@ -92,6 +92,7 @@ class NovaControlService : AccessibilityService() {
     private val deskBar by lazy { DeskBar(this, app) }
     private val autoDevices by lazy { AutoDevices(this, app) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
+    private val recents by lazy { RecentsSwitcher(this, app, scope) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
         GameWatchdog(app) {
@@ -164,7 +165,10 @@ class NovaControlService : AccessibilityService() {
         // Cambia la finestra davanti (un'app aperta da una voce, Home, recenti): la tendina non ha più senso. Non vale per la
         // tendina di Android (SystemUI), che si apre insieme alla nostra durante il gesto e che chiudiamo noi: scambiarla per
         // «un'altra finestra davanti» richiudeva la tendina di NOVA un attimo dopo averla aperta.
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && app.safeModeReason == null) autoGaming(event)
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && app.safeModeReason == null) {
+            autoGaming(event)
+            recentsEvent(event)
+        }
         val other = event.packageName != packageName && event.packageName != SYSTEM_UI
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
         requestClose()
@@ -172,6 +176,21 @@ class NovaControlService : AccessibilityService() {
         event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let {
             app.noteForeground(it)
             if (app.safeModeReason == null) studyGuard.check(it)
+        }
+    }
+
+    /**
+     * Le App recenti di Android davanti → sopra quelle di NOVA; un'altra finestra davanti (un'app, la Home) → via. Le finestre
+     * di NOVA stessa (questa sopra, la tendina), la tendina di Android e la tastiera non contano.
+     */
+    private fun recentsEvent(event: AccessibilityEvent) {
+        val pkg = event.packageName?.toString() ?: return
+        val cls = event.className?.toString().orEmpty()
+        when {
+            pkg == RecentsSwitcher.SYSTEM_LAUNCHER && cls == RecentsSwitcher.RECENTS_ACTIVITY -> recents.show()
+            pkg == SYSTEM_UI || pkg.contains("inputmethod") -> Unit
+            pkg == packageName && cls != HomeActivity::class.java.name -> Unit
+            else -> recents.dismiss()
         }
     }
 
@@ -200,6 +219,7 @@ class NovaControlService : AccessibilityService() {
     override fun onDestroy() {
         if (app.safeModeReason == null) AndroidShade.lock(app, false) // senza servizio la tendina di NOVA non si apre più
         exitMenu.dismiss()
+        recents.dismiss()
         studyGuard.dismiss()
         edge.remove()
         heat.set(false)

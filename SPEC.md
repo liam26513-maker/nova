@@ -737,6 +737,12 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ---
 
+### 12.10 App recenti in stile iPad
+- Le App recenti di Android (trascina su e tieni premuto) le disegna il launcher di sistema (`com.android.launcher3/com.android.quickstep.RecentsActivity`, da `config_recentsComponentName`): un launcher di terze parti non le può sostituire senza root.
+- **Fatto (9 novembre 2026):** lo sfondo di NOVA è anche lo sfondo di sistema, quindi sta dietro le App recenti di Android (§12.6, `LockWallpaper`).
+- **Fatto (9 novembre 2026):** quando si aprono le App recenti di Android, il servizio di NOVA ci mette sopra le sue (`app/RecentsSwitcher`, `SwitcherScreen`): sfondo di NOVA sfocato, schede grandi in fila con icona e nome, anteprime vere delle app, tocco per aprire, scheda in su per chiudere, «Chiudi tutte», tocco fuori o Indietro per la Home. Elenco, anteprime, apertura e chiusura passano da Shizuku (`core/system/TaskTools`, API nascoste di `IActivityTaskManager` chiamate per nome; la shell ha i permessi). Interruttore in Personalizza la Home → Disposizione e gesti, acceso di serie; da chiuse non costano nulla.
+- Limiti: senza Shizuku restano quelle di Android; si vedono un attimo quelle di Android prima di quelle di NOVA, che con lo stesso sfondo quasi non si nota. Il gesto resta quello di Android (non si può intercettare).
+
 ## 13. Privacy e sicurezza
 
 ### 13.1 Blocco pubblicità di sistema

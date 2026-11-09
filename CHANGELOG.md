@@ -4,6 +4,11 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App recenti in stile iPad
+- Richiesta: "si costruiscila ma sistemando e togliendo i limiti detti".
+- Quando trascini su e tieni premuto, al posto della schermata di Android compaiono le App recenti di NOVA: il tuo sfondo sfocato, le schede grandi in fila con l'icona e il nome dell'app sopra e l'anteprima vera di ogni app. Tocca una scheda per tornarci, trascinala verso l'alto per chiuderla, «Chiudi tutte» per chiuderle tutte, tocca fuori per la Home.
+- Serve Shizuku acceso. Si può spegnere in Personalizza la Home → Disposizione e gesti.
+
 ### Il tuo sfondo anche nelle App recenti
 - Richiesta: "quando c'è la schermata nelle app, quella che si apre trascinando su e tenendo premuto, rimane la home di android normale [...] vorrei che nova si vedesse anche li".
 - La schermata delle App recenti ora ha lo sfondo di NOVA invece di quello azzurro di Android. Si regola insieme alla schermata di blocco in Personalizza la Home → Sfondo.

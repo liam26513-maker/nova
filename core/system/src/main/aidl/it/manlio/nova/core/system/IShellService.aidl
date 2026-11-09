@@ -18,4 +18,16 @@ interface IShellService {
      * la shell non può leggere le cartelle private dell'app, quindi è l'app a darle il file già aperto.
      */
     String execWithInput(in String[] argv, in ParcelFileDescriptor input) = 2;
+
+    /** Le app recenti, una per riga: «id del task, tab, pacchetto, tab, componente in cima» (le App recenti di NOVA, SPEC §12.10). */
+    String recentTasks(int max) = 3;
+
+    /** L'anteprima di un task come JPEG, con il lato lungo al più [maxSide] pixel; vuota se Android non ce l'ha. */
+    byte[] taskSnapshot(int taskId, int maxSide) = 4;
+
+    /** Riporta davanti un task delle recenti, come toccarne la scheda. */
+    boolean openTask(int taskId) = 5;
+
+    /** Toglie un task dalle recenti, come scorrerne via la scheda. */
+    boolean removeTask(int taskId) = 6;
 }

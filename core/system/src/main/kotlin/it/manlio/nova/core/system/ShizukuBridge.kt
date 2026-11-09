@@ -117,6 +117,28 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
         }
     }
 
+    /** Le app recenti di Android, la più recente per prima; vuota se Shizuku non c'è. */
+    suspend fun recentTasks(max: Int): List<RecentTask> = RecentTasksCodec.decode(shellCall("") { it.recentTasks(max) })
+
+    /** L'anteprima JPEG di un task (vuota se manca). */
+    suspend fun taskSnapshot(
+        taskId: Int,
+        maxSide: Int,
+    ): ByteArray = shellCall(ByteArray(0)) { it.taskSnapshot(taskId, maxSide) }
+
+    suspend fun openTask(taskId: Int): Boolean = shellCall(false) { it.openTask(taskId) }
+
+    suspend fun removeTask(taskId: Int): Boolean = shellCall(false) { it.removeTask(taskId) }
+
+    private suspend fun <T> shellCall(
+        fallback: T,
+        call: (IShellService) -> T,
+    ): T {
+        if (_status.value != ShizukuStatus.READY) return fallback
+        val shell = connect() ?: return fallback
+        return withContext(Dispatchers.IO) { runCatching { call(shell) }.getOrDefault(fallback) }
+    }
+
     private suspend fun connect(): IShellService? {
         service.value?.let { return it }
         withContext(Dispatchers.Main) { Shizuku.bindUserService(args, connection) }
@@ -136,7 +158,7 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
 
     private companion object {
         const val REQUEST_CODE = 4721
-        const val SERVICE_VERSION = 2
+        const val SERVICE_VERSION = 3 // 3: le recenti; un servizio vecchio non ha i metodi nuovi
         const val CONNECT_TIMEOUT_MS = 5_000L
         const val NOT_READY = -100
     }
