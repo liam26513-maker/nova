@@ -21,8 +21,12 @@ import it.manlio.nova.feature.home.LockWallpaper
 import it.manlio.nova.feature.home.WallpaperLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 /** Una scheda delle App recenti di NOVA. */
 internal class RecentCard(
@@ -115,17 +119,25 @@ internal class RecentsSwitcher(
         goHome()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class) // getCompleted: si legge solo dopo isCompleted
     private suspend fun load(current: SwitcherState) {
         val home = ComponentName(service, HomeActivity::class.java).flattenToString()
         val tasks = app.shizuku.recentTasks(MAX_TASKS).filter { it.packageName != SYSTEM_LAUNCHER && it.component != home }
-        current.cards = withContext(Dispatchers.IO) { tasks.map { card(it.id, it.packageName) } }
-        tasks.forEach { task ->
-            scope.launch {
-                val bytes = app.shizuku.taskSnapshot(task.id, SHOT_SIDE_PX)
-                if (bytes.isEmpty()) return@launch
-                val shot = withContext(Dispatchers.Default) { decode(bytes) } ?: return@launch
-                if (state === current) current.shots[task.id] = shot
+        val cards = withContext(Dispatchers.IO) { tasks.map { card(it.id, it.packageName) } }
+        // Le anteprime arrivano in parallelo; le schede compaiono quando ci sono tutte (o dopo poco), così la schermata appare
+        // una volta sola, già completa, invece di cambiare sotto gli occhi.
+        val shots =
+            tasks.map { task ->
+                scope.async {
+                    val bytes = app.shizuku.taskSnapshot(task.id, SHOT_SIDE_PX)
+                    if (bytes.isEmpty()) null else withContext(Dispatchers.Default) { decode(bytes) }?.let { task.id to it }
+                }
             }
+        withTimeoutOrNull(WAIT_SHOTS_MS) { shots.awaitAll() }
+        shots.filter { it.isCompleted }.forEach { done -> done.getCompleted()?.let { current.shots[it.first] = it.second } }
+        current.cards = cards
+        shots.filterNot { it.isCompleted }.forEach { late ->
+            scope.launch { late.await()?.let { if (state === current) current.shots[it.first] = it.second } }
         }
     }
 
@@ -145,7 +157,7 @@ internal class RecentsSwitcher(
     }
 
     /**
-     * Lo sfondo di NOVA disegnato piccolissimo e poi allargato: sembra sfocato senza costare niente. Si rifà solo se cambia lo
+     * Lo sfondo di NOVA disegnato piccolo (256 px) e poi sfocato dalla scheda video: morbido e leggero. Si rifà solo se cambia lo
      * sfondo; con lo sfondo di sistema non c'è (resta il colore scuro).
      */
     private fun backdrop(): ImageBitmap? {
@@ -181,6 +193,7 @@ internal class RecentsSwitcher(
         private const val MAX_TASKS = 16
         private const val SHOT_SIDE_PX = 720
         private const val ICON_PX = 96
-        private const val BACKDROP_PX = 48
+        private const val BACKDROP_PX = 256
+        private const val WAIT_SHOTS_MS = 450L
     }
 }

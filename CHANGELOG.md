@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### App recenti più stabili e sfondo morbido
+- Richiesta: "lo sfondo non sembra sfocato sembra pixellato/ sgranato e il tutto sembra instabile".
+- Lo sfondo dietro le schede ora è sfocato davvero, senza quadretti. La schermata compare una volta sola, già completa con tutte le anteprime, con una dissolvenza morbida: niente più sfondo vuoto prima, schede che spuntano con lo zoom e anteprime che cambiano dopo.
+
 ### App recenti più curate
 - Richiesta: "si costruiscila ma sistemando e togliendo i limiti detti".
 - Con poche app aperte le schede stanno al centro, come sull'iPad. Lo sfondo dietro è sfocato in modo morbido invece che a quadretti.
