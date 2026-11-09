@@ -83,6 +83,8 @@ fun StandbyScreen(
     /** Il tempo della città del widget Meteo, se sulla Home ce n'è uno; null = niente meteo. */
     city: String? = null,
     weather: (suspend (String) -> Result<Weather>)? = null,
+    /** Righe in più, solo quando servono: la musica che suona, il Pomodoro della Studio. */
+    extras: List<String> = emptyList(),
     background: @Composable () -> Unit = {},
 ) {
     // La chiave è la città: l'ora che cambia ogni minuto non rifà la richiesta.
@@ -130,7 +132,7 @@ fun StandbyScreen(
                 Spacer(Modifier.height(16.dp))
                 BasicText("${it.tempC}° · ${it.city}", style = TextStyle(muted, 26.sp, fontFamily = look.family))
             }
-            info.event?.let {
+            (listOfNotNull(info.event) + extras).forEach {
                 Spacer(Modifier.height(16.dp))
                 BasicText(it, style = TextStyle(muted, 26.sp, fontFamily = look.family), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }

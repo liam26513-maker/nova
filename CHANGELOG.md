@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Musica e Pomodoro nello StandBy
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- Lo StandBy mostra anche la canzone che sta suonando e, durante la Studio, il tempo del Pomodoro. Compaiono solo quando c'è qualcosa da mostrare.
+
 ### «Chiudi il gioco» solo per i giochi
 - Richiesta: "fai sicuramente l'1, 2 e 3".
 - In tendina → Altro, «Chiudi il gioco» e la risoluzione compaiono solo per i veri giochi: non più per ibisPaint o altre app. Durante la Gaming «Chiudi il gioco» resta sempre, perché è un'uscita di emergenza.
