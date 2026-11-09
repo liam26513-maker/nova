@@ -351,6 +351,16 @@
     <string name="standby_photos_count">%1$d photos, one per minute</string>
     <string name="standby_photos_none">No photos: the Home wallpaper stays</string>
     <string name="standby_photos_clear">Remove photos</string>
+    <string name="auto_ask_if">Only if…</string>
+    <string name="auto_ask_from">From what time?</string>
+    <string name="auto_ask_to">Until what time?</string>
+    <string name="auto_if_always">Always</string>
+    <string name="auto_if_hours_any">Only between two times</string>
+    <string name="auto_if_hours">only between %1$s and %2$s</string>
+    <string name="auto_if_weekdays">only on weekdays</string>
+    <string name="auto_if_weekend">only at the weekend</string>
+    <string name="auto_if_charging">only while charging</string>
+    <string name="auto_if_not_charging">only when not charging</string>
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>
