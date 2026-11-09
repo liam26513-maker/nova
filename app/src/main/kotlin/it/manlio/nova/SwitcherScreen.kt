@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -63,6 +64,7 @@ private const val APPEAR_FROM = 0.94f
 private const val APPEAR_MS = 160
 private const val FLY_MS = 160
 private val CARD_SHAPE = RoundedCornerShape(20.dp)
+private val BLUR = 40.dp
 private val PLACEHOLDER = Color(0xFF2A2E35)
 
 /**
@@ -86,7 +88,8 @@ internal fun SwitcherScreen(
             .clickable(remember { MutableInteractionSource() }, indication = null, onClickLabel = homeLabel, onClick = onHome),
     ) {
         backdrop?.let {
-            Image(it, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop, filterQuality = FilterQuality.Low)
+            // Lo sfondo è già piccolissimo: la sfocatura della scheda video lo rende morbido invece che a quadretti.
+            Image(it, null, Modifier.fillMaxSize().blur(BLUR), contentScale = ContentScale.Crop, filterQuality = FilterQuality.Low)
         }
         Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = VEIL)))
         val cards = state.cards
@@ -138,7 +141,8 @@ private fun Cards(
                     alpha = (appear.value - APPEAR_FROM) / (1f - APPEAR_FROM)
                 },
             contentPadding = PaddingValues(horizontal = 56.dp),
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
+            // Poche schede stanno al centro, come sull'iPad; tante scorrono dal bordo.
+            horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(cards, key = { it.id }) { card ->
