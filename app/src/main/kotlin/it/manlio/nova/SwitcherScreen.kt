@@ -37,7 +37,6 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -60,8 +59,7 @@ import kotlinx.coroutines.launch
 private const val VEIL = 0.3f
 private const val CARD_HEIGHT = 0.62f
 private const val CLOSE_AT = 0.28f
-private const val APPEAR_FROM = 0.94f
-private const val APPEAR_MS = 160
+private const val APPEAR_MS = 180
 private const val FLY_MS = 160
 private val CARD_SHAPE = RoundedCornerShape(20.dp)
 private val BLUR = 40.dp
@@ -81,15 +79,21 @@ internal fun SwitcherScreen(
     onHome: () -> Unit,
 ) {
     val homeLabel = stringResource(R.string.recents_home)
+    // Invisibile finché le schede non sono pronte (sotto restano le recenti di Android), poi una sola dissolvenza: niente sfondo
+    // vuoto prima e schede che spuntano dopo.
+    val appear = remember { Animatable(0f) }
+    val ready = state.cards != null
+    LaunchedEffect(ready) { if (ready) appear.animateTo(1f, tween(APPEAR_MS)) }
     Box(
         Modifier
             .fillMaxSize()
+            .graphicsLayer { alpha = appear.value }
             .background(Color(0xFF0E1116))
             .clickable(remember { MutableInteractionSource() }, indication = null, onClickLabel = homeLabel, onClick = onHome),
     ) {
         backdrop?.let {
-            // Lo sfondo è già piccolissimo: la sfocatura della scheda video lo rende morbido invece che a quadretti.
-            Image(it, null, Modifier.fillMaxSize().blur(BLUR), contentScale = ContentScale.Crop, filterQuality = FilterQuality.Low)
+            // Sfocato dalla scheda video: morbido, senza quadretti.
+            Image(it, null, Modifier.fillMaxSize().blur(BLUR), contentScale = ContentScale.Crop)
         }
         Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = VEIL)))
         val cards = state.cards
@@ -126,20 +130,12 @@ private fun Cards(
     onOpen: (RecentCard) -> Unit,
     onClose: (RecentCard) -> Unit,
 ) {
-    val appear = remember { Animatable(APPEAR_FROM) }
-    LaunchedEffect(Unit) { appear.animateTo(1f, tween(APPEAR_MS)) }
     val config = LocalConfiguration.current
     val ratio = config.screenWidthDp.toFloat() / config.screenHeightDp.coerceAtLeast(1)
     BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         val height = maxHeight * CARD_HEIGHT
         LazyRow(
-            Modifier
-                .fillMaxWidth()
-                .graphicsLayer {
-                    scaleX = appear.value
-                    scaleY = appear.value
-                    alpha = (appear.value - APPEAR_FROM) / (1f - APPEAR_FROM)
-                },
+            Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = 56.dp),
             // Poche schede stanno al centro, come sull'iPad; tante scorrono dal bordo.
             horizontalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterHorizontally),
