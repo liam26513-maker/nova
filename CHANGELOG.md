@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Chiudere le App recenti è fluido
+- Richiesta: "le app quando le trascino per toglierle sembrano lente e dure da togliere, rendile più fluide".
+- La scheda si muove insieme al dito senza ritardo, vola via alla velocità del tuo gesto e le altre schede scivolano al suo posto.
+
 ### Schede delle App recenti facili da chiudere
 - Richiesta: "le app sono dure da togliere".
 - Ora la scheda segue il dito e basta un colpetto veloce verso l'alto per chiuderla. Prima la scheda scappava dal dito e andava trascinata molto.
