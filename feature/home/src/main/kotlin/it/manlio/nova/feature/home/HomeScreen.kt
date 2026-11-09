@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -48,6 +49,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -156,20 +158,25 @@ fun HomeScreen(
             val grid: @Composable (Modifier) -> Unit = { m ->
                 IpadHome(data.arranged, data.entries, data.dock, nowMillis, prefs, actions, ipadActions, scrollToTop, editing, animate, m)
             }
-            when {
-                ipad ->
-                    AnimatedContent(
-                        targetState = mode == HomeMode.FAVORITES,
-                        transitionSpec = { gridTransition() },
-                        modifier = Modifier.fillMaxSize(),
-                        label = "home-ipad",
-                    ) { showGrid -> if (showGrid) grid(Modifier) else appList() }
-                hybrid ->
-                    Row(Modifier.fillMaxSize()) {
-                        Box(Modifier.weight(1f)) { appList() }
-                        grid(Modifier.weight(HYBRID_GRID_WEIGHT))
-                    }
-                else -> appList()
+            // Con la ricerca aperta le icone della Home si dissolvono: la tastiera alza la barra in basso, che altrimenti si vedeva
+            // attraverso il riquadro dei suggerimenti. Come sull'iPad, resta solo lo sfondo.
+            val homeAlpha by animateFloatAsState(if (searching) 0f else 1f, label = "home-search")
+            Box(Modifier.fillMaxSize().graphicsLayer { alpha = homeAlpha }) {
+                when {
+                    ipad ->
+                        AnimatedContent(
+                            targetState = mode == HomeMode.FAVORITES,
+                            transitionSpec = { gridTransition() },
+                            modifier = Modifier.fillMaxSize(),
+                            label = "home-ipad",
+                        ) { showGrid -> if (showGrid) grid(Modifier) else appList() }
+                    hybrid ->
+                        Row(Modifier.fillMaxSize()) {
+                            Box(Modifier.weight(1f)) { appList() }
+                            grid(Modifier.weight(HYBRID_GRID_WEIGHT))
+                        }
+                    else -> appList()
+                }
             }
             ControlCenterEntry(actions.controls != null, { control = true })
             ControlCenter(
