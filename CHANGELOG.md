@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Barra della penna per ibisPaint
+- Richiesta: "facciamo il resto delle cose che puoi fare tu" (scorciatoie di ibisPaint).
+- Nella Creativa, con ibisPaint aperto, la barra della penna ha anche pennello, gomma, contagocce e pennello più grande o più piccolo, oltre ad Annulla e Ripeti. Ho letto i tasti giusti dall'elenco di ibisPaint sul tablet, senza bisogno di una tastiera. Nelle altre app restano solo Annulla e Ripeti.
+
 ### Ricerca più pulita
 - Richiesta: "si parti" (difetto visto provando la tastiera sul tablet).
 - Con la ricerca aperta le icone della Home spariscono con una dissolvenza: prima la barra in basso saliva con la tastiera e si vedeva in mezzo ai suggerimenti.

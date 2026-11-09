@@ -467,6 +467,11 @@
     <string name="auto_if_weekend">solo nel fine settimana</string>
     <string name="auto_if_charging">solo se è in carica</string>
     <string name="auto_if_not_charging">solo se non è in carica</string>
+    <string name="pen_bar_brush">Pennello</string>
+    <string name="pen_bar_eraser">Gomma</string>
+    <string name="pen_bar_picker">Contagocce</string>
+    <string name="pen_bar_bigger">Pennello più grande</string>
+    <string name="pen_bar_smaller">Pennello più piccolo</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

@@ -417,4 +417,13 @@ class GameScaleTest {
         assertEquals(listOf("input", "keycombination", "KEYCODE_CTRL_LEFT", "KEYCODE_Z"), undo.argv)
         assertTrue(runCatching { SystemCommand.KeyCombo(listOf(SystemCommand.KeyCombo.Key.Z)) }.isFailure)
     }
+
+    @Test
+    fun `tool keys are single fixed key events`() {
+        assertEquals(listOf("input", "keyevent", "KEYCODE_B"), SystemCommand.ToolKey(SystemCommand.ToolKey.Key.B).argv)
+        assertEquals(
+            listOf("input", "keyevent", "KEYCODE_RIGHT_BRACKET"),
+            SystemCommand.ToolKey(SystemCommand.ToolKey.Key.RIGHT_BRACKET).argv,
+        )
+    }
 }

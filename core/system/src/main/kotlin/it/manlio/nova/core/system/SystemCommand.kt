@@ -195,6 +195,22 @@ sealed interface SystemCommand {
         }
     }
 
+    /**
+     * Un solo tasto per gli strumenti delle app di disegno (barra della penna, SPEC §9.4): pennello, gomma, contagocce, dimensione.
+     * Solo questi tasti, mai lettere libere: si mandano solo quando davanti c'è un'app con quel profilo. Non cambia impostazioni.
+     */
+    data class ToolKey(val key: Key) : SystemCommand {
+        enum class Key(val code: String) {
+            B("KEYCODE_B"),
+            E("KEYCODE_E"),
+            I("KEYCODE_I"),
+            LEFT_BRACKET("KEYCODE_LEFT_BRACKET"),
+            RIGHT_BRACKET("KEYCODE_RIGHT_BRACKET"),
+        }
+
+        override val argv = listOf("input", "keyevent", key.code)
+    }
+
     /** L'elenco dei task recenti, per sapere quali app sono aperte in finestra (SPEC §8.3). Solo lettura. */
     data object ListRecents : SystemCommand {
         override val argv = listOf("dumpsys", "activity", "recents")
