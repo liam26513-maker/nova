@@ -13,13 +13,16 @@ import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
 import it.manlio.nova.core.system.SystemCommand.KeyCombo.Key
+import it.manlio.nova.core.system.SystemCommand.ToolKey
 import it.manlio.nova.feature.home.MoreItem
 import kotlinx.coroutines.launch
 
 /**
  * La barra Annulla/Ripeti sopra le app di disegno (SPEC §9.4), durante la Creativa: manda all'app davanti le scorciatoie da tastiera
  * con Shizuku. Non prende il fuoco, così i tasti arrivano all'app. Piccola, sul bordo destro, e si accende da tendina → Altro.
- * shortcut: Ctrl+Z e Ctrl+Shift+Z per tutte le app; i profili per app di `config/pen-apps.json` arriveranno quando servono.
+ * Per tutte le app: Annulla (Ctrl+Z) e Ripeti (Ctrl+Shift+Z). Con ibisPaint davanti anche pennello (B), gomma (E), contagocce (I)
+ * e dimensione del pennello ([ e ]): tasti letti dall'elenco delle scorciatoie di ibisPaint 14.1 sul tablet (9 novembre 2026).
+ * shortcut: un solo profilo, scritto nel codice; un file di profili per più app quando ne servirà un altro.
  */
 internal class PenBar(
     private val service: AccessibilityService,
@@ -27,8 +30,23 @@ internal class PenBar(
 ) {
     private val windows = service.getSystemService(WindowManager::class.java)
     private var view: View? = null
+    private var on = false
+    private var foreground: String? = null
 
-    fun set(on: Boolean) = if (on) show() else hide()
+    fun set(on: Boolean) {
+        this.on = on
+        if (on) show() else hide()
+    }
+
+    /** L'app davanti è cambiata: se cambia il profilo, la barra si rifà con i suoi tasti. */
+    fun foreground(pkg: String) {
+        val before = foreground == IBISPAINT
+        foreground = pkg
+        if (on && before != (pkg == IBISPAINT)) {
+            hide()
+            show()
+        }
+    }
 
     private fun show() {
         if (view != null) return
@@ -43,6 +61,13 @@ internal class PenBar(
                     }
                 addView(button(service, "↶", R.string.pen_bar_undo, density) { send(UNDO) })
                 addView(button(service, "↷", R.string.pen_bar_redo, density) { send(REDO) })
+                if (this@PenBar.foreground == IBISPAINT) {
+                    addView(button(service, "✎", R.string.pen_bar_brush, density) { tool(ToolKey.Key.B) })
+                    addView(button(service, "⌫", R.string.pen_bar_eraser, density) { tool(ToolKey.Key.E) })
+                    addView(button(service, "◉", R.string.pen_bar_picker, density) { tool(ToolKey.Key.I) })
+                    addView(button(service, "+", R.string.pen_bar_bigger, density) { tool(ToolKey.Key.RIGHT_BRACKET) })
+                    addView(button(service, "−", R.string.pen_bar_smaller, density) { tool(ToolKey.Key.LEFT_BRACKET) })
+                }
             }
         val params =
             WindowManager.LayoutParams(
@@ -67,7 +92,12 @@ internal class PenBar(
         if (app.shizuku.status.value == ShizukuStatus.READY) app.appScope.launch { app.shizuku.run(SystemCommand.KeyCombo(keys)) }
     }
 
+    private fun tool(key: ToolKey.Key) {
+        if (app.shizuku.status.value == ShizukuStatus.READY) app.appScope.launch { app.shizuku.run(ToolKey(key)) }
+    }
+
     private companion object {
+        const val IBISPAINT = "jp.ne.ibis.ibispaintx.app"
         val UNDO = listOf(Key.CTRL, Key.Z)
         val REDO = listOf(Key.CTRL, Key.SHIFT, Key.Z)
         const val RADIUS_DP = 22f

@@ -601,7 +601,7 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 ### 9.4 Strumenti
 
 - **Fatto di base:** durante la Creativa, tendina → Altro → «Barra Annulla e Ripeti» mette sul bordo destro due tasti che inviano Ctrl+Z e Ctrl+Shift+Z (`input keycombination`, Shizuku) all'app davanti. Mancano gli altri strumenti e i profili per app.
-- **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`.
+- **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`. **Fatto (9 novembre 2026):** Annulla e Ripeti per tutte le app; con ibisPaint anche pennello (B), gomma (E), contagocce (I) e dimensione ([ ]), tasti letti dall'elenco delle scorciatoie di ibisPaint 14.1 sul tablet (`PenBar`, comando tipizzato `ToolKey`). Il profilo è nel codice: il file `config/pen-apps.json` servirà quando arriverà un'altra app.
 - **Tasti penna personalizzabili** dove Android li espone; nelle superfici NOVA sempre.
 - **Foglio rapido:** fatto e poi tolto il 7 novembre 2026 su richiesta del proprietario («inutile e occupa spazio»): si usano ibisPaint e le Note.
 - **Galleria lavori:** widget con ultimi disegni (cartelle configurate) e riapertura nell'app di origine.
