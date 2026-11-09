@@ -4,6 +4,18 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Fluidità prima e dopo nelle Novità
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- In Impostazioni → Novità compare quanti fotogrammi della Home sono stati lenti con questa versione, accanto alla versione prima. Così si vede se un aggiornamento l'ha resa più fluida o meno. Si conta durante l'uso normale, senza prove apposta.
+
+### Musica e Pomodoro nello StandBy
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- Lo StandBy mostra anche la canzone che sta suonando e, durante la Studio, il tempo del Pomodoro. Compaiono solo quando c'è qualcosa da mostrare.
+
+### «Chiudi il gioco» solo per i giochi
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- In tendina → Altro, «Chiudi il gioco» e la risoluzione compaiono solo per i veri giochi: non più per ibisPaint o altre app. Durante la Gaming «Chiudi il gioco» resta sempre, perché è un'uscita di emergenza.
+
 ### Consiglio di risoluzione per i giochi
 - Richiesta: "continua ora".
 - Dopo aver misurato un gioco, se va sotto i 45 FPS, in tendina → Altro compare un consiglio, per esempio «risoluzione al 80%». Un tocco lo applica, e vale da quando riapri il gioco.

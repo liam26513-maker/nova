@@ -331,6 +331,9 @@
     <string name="firewall_title">Blocca Internet a un\'app</string>
     <string name="firewall_footer">Tocca un\'app per toglierle o ridarle Internet (Wi-Fi e dati); Tailscale continua a funzionare. Dopo un riavvio NOVA rimette i blocchi appena Shizuku è pronto. NOVA e le app di sistema non compaiono.</string>
     <string name="firewall_blocked">Senza Internet</string>
+    <string name="news_fluency_title">Fluidità della Home</string>
+    <string name="news_fluency">Fotogrammi lenti: %1$s (il confronto arriva con il prossimo aggiornamento)</string>
+    <string name="news_fluency_compare">Fotogrammi lenti: %1$s, prima dell\'aggiornamento %2$s</string>
     <string name="news_title">Novità</string>
     <string name="news_title_count">Novità (%1$d nuove)</string>
     <string name="news_recent">Cosa è cambiato</string>

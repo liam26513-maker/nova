@@ -338,7 +338,7 @@ Se Claude Code nel cloud non è raggiungibile (limiti d'uso esauriti, servizio n
 
 ### 4.8 Registro modifiche e "Novità"
 
-- **Fatto di base:** Impostazioni → Novità mostra le voci del CHANGELOG (viaggia nell'app) con «Nuovo» su quelle non ancora lette; dopo un aggiornamento un avviso sulla Home dice quante sono. Manca il confronto delle prestazioni.
+- **Fatto di base:** Impostazioni → Novità mostra le voci del CHANGELOG (viaggia nell'app) con «Nuovo» su quelle non ancora lette; dopo un aggiornamento un avviso sulla Home dice quante sono. C'è anche il confronto della fluidità della Home: fotogrammi lenti (oltre 25 ms) in questa versione e nella precedente, contati durante l'uso normale.
 - Ogni aggiornamento mostra una schermata "Novità": cosa è cambiato in italiano semplice, **la richiesta originale** del proprietario (se la PR la cita), confronto prestazioni prima/dopo.
 - Archivio consultabile di tutti gli aggiornamenti con pulsante "Torna a questa versione".
 
@@ -715,7 +715,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.6 StandBy
 
-> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Il prossimo evento del calendario c'è, spento di serie (permesso chiesto quando lo si accende). C'è anche il meteo della città del widget Meteo. Mancano widget a scelta, Stato PC. Lo sfondo di NOVA sulla schermata di blocco (`LockWallpaper`, §2.2) è fatto.
+> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Il prossimo evento del calendario c'è, spento di serie (permesso chiesto quando lo si accende). C'è anche il meteo della città del widget Meteo, la musica che suona e il Pomodoro della Studio (solo quando ci sono). Manca lo Stato PC. Lo sfondo di NOVA sulla schermata di blocco (`LockWallpaper`, §2.2) è fatto.
 
 - Quando il tablet è in carica, sbloccato e in orizzontale (o su richiesta): schermo a tutto campo con orologio grande, calendario, foto, Stato PC, widget a scelta; luminosità ridotta, notte in rosso scuro per non disturbare.
 

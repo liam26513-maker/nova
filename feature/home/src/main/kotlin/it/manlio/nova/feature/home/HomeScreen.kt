@@ -235,7 +235,23 @@ fun HomeScreen(
                 ) { menuFor = null }.copy(onClearNotification = clear)
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
             standby?.let {
-                StandbyScreen(it, nowMillis, onStandbyExit, weatherCity(layout), actions.weather) { HomeBackground(prefs, wallpaper) }
+                val music = actions.media?.nowPlaying?.collectAsState()?.value?.takeIf { m -> m.playing }
+                val extras =
+                    listOfNotNull(
+                        music?.let {
+                                m ->
+                            "♪ " + listOf(m.title, m.artist).filter(String::isNotBlank).joinToString(" — ")
+                        },
+                        study?.text,
+                    )
+                StandbyScreen(
+                    it,
+                    nowMillis,
+                    onStandbyExit,
+                    weatherCity(layout),
+                    actions.weather,
+                    extras,
+                ) { HomeBackground(prefs, wallpaper) }
             }
         }
     }

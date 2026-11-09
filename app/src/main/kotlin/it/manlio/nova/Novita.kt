@@ -71,6 +71,8 @@ internal fun NewsSection(backdrop: ImageBitmap) {
     val store = remember { NewsStore(context) }
     val fresh = remember { store.fresh.map { it.title }.toSet() }
     DisposableEffect(Unit) { onDispose { store.markSeen() } }
+    val fluency = remember { HomeFluency(context, BuildConfig.VERSION_CODE).summary(context) }
+    fluency?.let { SettingsSection(backdrop, header = stringResource(R.string.news_fluency_title)) { SettingsRow(it) } }
     SettingsSection(backdrop, header = stringResource(R.string.news_recent), footer = stringResource(R.string.news_footer)) {
         if (store.entries.isEmpty()) SettingsRow(stringResource(R.string.news_none))
         store.entries.take(SHOWN).forEachIndexed { index, entry ->

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.os.Handler
 import android.widget.Toast
+import it.manlio.nova.core.modes.Modes
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemChange
 import it.manlio.nova.core.system.SystemCommand
@@ -37,7 +38,8 @@ internal class GameTools(
                     null
                 },
             )
-            app.lastGame?.let { game ->
+            // Solo le app che Android considera giochi: ibisPaint o il browser non sono «il gioco». In Gaming resta sempre, è un'uscita.
+            app.lastGame?.takeIf { isGame(it) || app.modes.isActive(Modes.GAMING) }?.let { game ->
                 suggestion(game)?.let(::add)
                 if (isGame(game)) {
                     add(

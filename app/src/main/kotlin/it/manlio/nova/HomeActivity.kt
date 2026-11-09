@@ -81,9 +81,12 @@ class HomeActivity : ComponentActivity() {
     private val prefs get() = app.homePrefs.prefs.value
     private val wallpapers by lazy { WallpaperManager.getInstance(this) }
     private val frameThread = HandlerThread("nova-home-frames").apply { start() }
+    private val fluency by lazy { HomeFluency(this, BuildConfig.VERSION_CODE) }
     private val frameListener =
         Window.OnFrameMetricsAvailableListener { _, metrics, _ ->
-            app.graphicsController.onFrame(metrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP), metrics.getMetric(FrameMetrics.TOTAL_DURATION))
+            val total = metrics.getMetric(FrameMetrics.TOTAL_DURATION)
+            app.graphicsController.onFrame(metrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP), total)
+            fluency.frame(total)
         }
     private val blurListener =
         Consumer<Boolean> { enabled ->
@@ -312,6 +315,7 @@ class HomeActivity : ComponentActivity() {
 
     override fun onPause() {
         window.removeOnFrameMetricsAvailableListener(frameListener)
+        fluency.save()
         super.onPause()
     }
 
