@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### «Chiudi il gioco» solo per i giochi
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- In tendina → Altro, «Chiudi il gioco» e la risoluzione compaiono solo per i veri giochi: non più per ibisPaint o altre app. Durante la Gaming «Chiudi il gioco» resta sempre, perché è un'uscita di emergenza.
+
 ### Consiglio di risoluzione per i giochi
 - Richiesta: "continua ora".
 - Dopo aver misurato un gioco, se va sotto i 45 FPS, in tendina → Altro compare un consiglio, per esempio «risoluzione al 80%». Un tocco lo applica, e vale da quando riapri il gioco.
