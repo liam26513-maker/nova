@@ -89,6 +89,8 @@ data class HomePrefs(
     val standbyAuto: Boolean = false,
     /** Il prossimo evento del calendario nello StandBy: spento di serie, chiede il permesso quando lo accendi. */
     val standbyCalendar: Boolean = false,
+    /** Le foto scelte a rotazione nello StandBy al posto dello sfondo (SPEC §12.6): spente di serie. */
+    val standbyPhotos: Boolean = false,
     /** Le App recenti di NOVA in stile iPad sopra quelle di Android (SPEC §12.10); servono Shizuku e il servizio di NOVA. */
     val ipadRecents: Boolean = true,
     /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
@@ -113,6 +115,7 @@ data class HomePrefs(
             controlTiles = ControlTileId.DEFAULT,
             standbyAuto = false,
             standbyCalendar = false,
+            standbyPhotos = false,
             ipadRecents = true,
         )
 
@@ -125,6 +128,7 @@ data class HomePrefs(
             controlTiles = controlTiles,
             standbyAuto = standbyAuto,
             standbyCalendar = standbyCalendar,
+            standbyPhotos = standbyPhotos,
             ipadRecents = ipadRecents,
         )
 
@@ -229,6 +233,7 @@ internal object PrefsCodec {
             lockWallpaper = bool("lockWallpaper", d.lockWallpaper),
             standbyAuto = bool("standbyAuto", d.standbyAuto),
             standbyCalendar = bool("standbyCalendar", d.standbyCalendar),
+            standbyPhotos = bool("standbyPhotos", d.standbyPhotos),
             ipadRecents = bool("ipadRecents", d.ipadRecents),
             controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
@@ -270,6 +275,7 @@ internal object PrefsCodec {
         p["lockWallpaper"] = prefs.lockWallpaper.toString()
         p["standbyAuto"] = prefs.standbyAuto.toString()
         p["standbyCalendar"] = prefs.standbyCalendar.toString()
+        p["standbyPhotos"] = prefs.standbyPhotos.toString()
         p["ipadRecents"] = prefs.ipadRecents.toString()
         p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
