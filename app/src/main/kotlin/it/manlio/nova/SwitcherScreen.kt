@@ -3,12 +3,15 @@
 package it.manlio.nova
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,8 +32,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -39,8 +44,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -55,14 +58,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 
 private const val VEIL = 0.3f
 private const val CARD_HEIGHT = 0.62f
 private const val CLOSE_AT = 0.2f
 private const val FLICK_PX_S = 900f
 private const val APPEAR_MS = 180
-private const val FLY_MS = 160
+private const val FLY_TO = 1.3f
+private const val BACK_DAMPING = 0.8f
 private val CARD_SHAPE = RoundedCornerShape(20.dp)
 private val BLUR = 40.dp
 private val PLACEHOLDER = Color(0xFF2A2E35)
@@ -144,7 +147,8 @@ private fun Cards(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(cards, key = { it.id }) { card ->
-                Card(card, state.shots[card.id], height, height * ratio, onOpen, onClose)
+                // Chiusa una scheda, le altre scivolano al suo posto invece di saltare.
+                Card(Modifier.animateItem(), card, state.shots[card.id], height, height * ratio, onOpen, onClose)
             }
         }
     }
@@ -152,6 +156,7 @@ private fun Cards(
 
 @Composable
 private fun Card(
+    modifier: Modifier,
     card: RecentCard,
     shot: ImageBitmap?,
     height: Dp,
@@ -159,11 +164,10 @@ private fun Card(
     onOpen: (RecentCard) -> Unit,
     onClose: (RecentCard) -> Unit,
 ) {
-    val offset = remember { Animatable(0f) }
     val heightPx = with(LocalDensity.current) { height.toPx() }
     val openLabel = stringResource(R.string.recents_open, card.label)
     val closeLabel = stringResource(R.string.recents_close, card.label)
-    Column(Modifier.width(width).swipeUpToClose(card.id, offset, heightPx) { onClose(card) }) {
+    Column(modifier.width(width).swipeUpToClose(heightPx) { onClose(card) }) {
         Row(Modifier.padding(start = 4.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             card.icon?.let { Image(it, null, Modifier.size(26.dp).clip(RoundedCornerShape(7.dp))) }
             Spacer(Modifier.width(8.dp))
@@ -196,41 +200,34 @@ private fun Card(
 }
 
 /**
- * Trascinata verso l'alto la scheda segue il dito; si chiude se va oltre [CLOSE_AT] dell'altezza o con un colpetto veloce
- * (più di [FLICK_PX_S] pixel al secondo), altrimenti torna al suo posto. Il gesto si misura fuori dallo spostamento
- * (pointerInput prima di graphicsLayer): misurato dentro, la scheda scappava dal dito e sembrava dura.
+ * Trascinata verso l'alto la scheda segue il dito nello stesso fotogramma (lo spostamento è uno stato letto solo da graphicsLayer,
+ * niente coroutine per ogni movimento). Lasciata, si chiude se è oltre [CLOSE_AT] dell'altezza o con un colpetto veloce
+ * (più di [FLICK_PX_S] pixel al secondo) e vola via alla velocità del dito; altrimenti torna al suo posto con una molla.
+ * Il gesto si misura fuori dallo spostamento (draggable prima di graphicsLayer), così la scheda non scappa dal dito.
  */
 @Composable
 private fun Modifier.swipeUpToClose(
-    key: Int,
-    offset: Animatable<Float, *>,
     heightPx: Float,
     onClose: () -> Unit,
 ): Modifier {
-    val scope = rememberCoroutineScope()
-    return pointerInput(key) {
-        val velocity = VelocityTracker()
-        detectVerticalDragGestures(
-            onDragStart = { velocity.resetTracking() },
-            onDragEnd = {
-                val speed = velocity.calculateVelocity().y
-                scope.launch {
-                    if (-offset.value > heightPx * CLOSE_AT || speed < -FLICK_PX_S) {
-                        offset.animateTo(-heightPx * 1.2f, tween(FLY_MS))
-                        onClose()
-                    } else {
-                        offset.animateTo(0f, spring())
-                    }
+    var drag by remember { mutableFloatStateOf(0f) }
+    val dragState = rememberDraggableState { delta -> drag = (drag + delta).coerceAtMost(0f) }
+    return draggable(
+        dragState,
+        Orientation.Vertical,
+        onDragStopped = { velocity ->
+            val anim = Animatable(drag)
+            if (-drag > heightPx * CLOSE_AT || velocity < -FLICK_PX_S) {
+                anim.animateTo(-heightPx * FLY_TO, spring(stiffness = Spring.StiffnessMediumLow), minOf(velocity, -FLICK_PX_S)) {
+                    drag = value
                 }
-            },
-            onDragCancel = { scope.launch { offset.animateTo(0f, spring()) } },
-        ) { change, dy ->
-            change.consume()
-            velocity.addPosition(change.uptimeMillis, change.position)
-            scope.launch { offset.snapTo((offset.value + dy).coerceAtMost(0f)) }
-        }
-    }.graphicsLayer {
-        translationY = offset.value
-        alpha = 1f - (-offset.value / heightPx).coerceIn(0f, 1f)
+                onClose()
+            } else {
+                anim.animateTo(0f, spring(dampingRatio = BACK_DAMPING, stiffness = Spring.StiffnessMedium), velocity) { drag = value }
+            }
+        },
+    ).graphicsLayer {
+        translationY = drag
+        alpha = 1f - (-drag / heightPx).coerceIn(0f, 1f)
     }
 }
