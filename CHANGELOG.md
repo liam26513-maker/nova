@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Testi lunghi nello StandBy
+- Richiesta: "riguarda e prova lo standby con la musica e sistema il testo se è un problema".
+- Se il titolo della canzone è lungo, nello StandBy ora finisce con «…» invece di uscire dai bordi dello schermo. Se il nome dell'artista è già nel titolo (come succede con la musica dal browser), non viene ripetuto.
+
 ### Campo dell'avviso più ordinato
 - Richiesta: "continua ora".
 - In Impostazioni → Automazioni, il campo dove scrivi il testo dell'avviso ora ha i margini giusti: il testo non tocca più il bordo.

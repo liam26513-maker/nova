@@ -8,6 +8,13 @@ import org.junit.Test
 
 class StandbyAndLockTest {
     @Test
+    fun `the music line skips an artist that is missing or already in the title`() {
+        assertEquals("♪ Canzone — Artista", StandbyRules.musicLine("Canzone", "Artista"))
+        assertEquals("♪ Canzone", StandbyRules.musicLine("Canzone", ""))
+        assertEquals("♪ sito.org/brano.ogg", StandbyRules.musicLine("sito.org/brano.ogg", "sito.org"))
+    }
+
+    @Test
     fun `night is from 21 to 7`() {
         listOf(21, 22, 23, 0, 3, 6).forEach { assertTrue("$it", StandbyRules.isNight(it)) }
         listOf(7, 8, 12, 18, 20).forEach { assertFalse("$it", StandbyRules.isNight(it)) }

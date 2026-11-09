@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -66,6 +67,12 @@ object StandbyRules {
 
     /** Luminosità della finestra mentre il StandBy è visibile (0..1); poi si torna a quella di sistema. */
     fun brightness(night: Boolean): Float = if (night) 0.03f else 0.3f
+
+    /** «♪ titolo — artista»; l'artista si salta se manca o è già nel titolo (la musica dal browser ripete il sito). */
+    fun musicLine(
+        title: String,
+        artist: String,
+    ): String = "♪ " + if (artist.isBlank() || title.contains(artist, ignoreCase = true)) title else "$title — $artist"
 }
 
 private const val DAY_VEIL = 0.5f
@@ -116,7 +123,8 @@ fun StandbyScreen(
             background()
             Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = DAY_VEIL)))
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Il margine dà un limite alle righe lunghe (titoli, indirizzi), che così finiscono con «…» invece di uscire dallo schermo.
+        Column(Modifier.padding(horizontal = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             BasicText(time, style = TextStyle(ink, 220.sp, FontWeight.Thin, fontFamily = look.family))
             BasicText(date, style = TextStyle(muted, 36.sp, FontWeight.Light, fontFamily = look.family))
             Spacer(Modifier.height(28.dp))
