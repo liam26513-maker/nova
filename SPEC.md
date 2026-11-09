@@ -680,6 +680,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 - **Moonlight** (tablet) + **Sunshine** (PC): configurazione guidata. Il tasto "Gioca dal PC" fa: accendi PC → attendi raggiungibilità → avvia Moonlight sull'host (deep link/intent supportato, da verificare) → modalità Gaming in versione streaming (Wi-Fi a bassa latenza, notifiche bloccate, nessun congelamento necessario).
 - Stesso meccanismo per "Disegna sul PC" e "Desktop remoto".
+- **Fatto (9 novembre 2026), versione base:** sul PC del proprietario Sunshine (e Tailscale per uscire di casa: il PC prende internet dal telefono di casa con il tethering USB automatico); in NOVA la voce «Gioca dal PC» in tendina → Altro apre Moonlight (`PcStreaming`), solo se installato. Mancano l'accensione del PC (senza cavo di rete non c'è Wake-on-LAN) e l'avvio diretto di un gioco.
 
 ### 11.5 Gestore file unico
 
