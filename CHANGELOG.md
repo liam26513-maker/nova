@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Fluidità prima e dopo nelle Novità
+- Richiesta: "fai sicuramente l'1, 2 e 3".
+- In Impostazioni → Novità compare quanti fotogrammi della Home sono stati lenti con questa versione, accanto alla versione prima. Così si vede se un aggiornamento l'ha resa più fluida o meno. Si conta durante l'uso normale, senza prove apposta.
+
 ### Musica e Pomodoro nello StandBy
 - Richiesta: "fai sicuramente l'1, 2 e 3".
 - Lo StandBy mostra anche la canzone che sta suonando e, durante la Studio, il tempo del Pomodoro. Compaiono solo quando c'è qualcosa da mostrare.

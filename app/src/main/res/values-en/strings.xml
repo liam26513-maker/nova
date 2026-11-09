@@ -402,6 +402,9 @@
     <string name="firewall_title">Block internet for an app</string>
     <string name="firewall_footer">Tap an app to take away or give back its internet (Wi-Fi and data); Tailscale keeps working. After a restart NOVA puts the blocks back as soon as Shizuku is ready. NOVA and system apps are not listed.</string>
     <string name="firewall_blocked">No internet</string>
+    <string name="news_fluency_title">Home smoothness</string>
+    <string name="news_fluency">Slow frames: %1$s (the comparison comes with the next update)</string>
+    <string name="news_fluency_compare">Slow frames: %1$s, before the update %2$s</string>
     <string name="news_title">What\'s new</string>
     <string name="news_title_count">What\'s new (%1$d new)</string>
     <string name="news_recent">What changed</string>
