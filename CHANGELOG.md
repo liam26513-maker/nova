@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il tuo sfondo anche nelle App recenti
+- Richiesta: "quando c'è la schermata nelle app, quella che si apre trascinando su e tenendo premuto, rimane la home di android normale [...] vorrei che nova si vedesse anche li".
+- La schermata delle App recenti ora ha lo sfondo di NOVA invece di quello azzurro di Android. Si regola insieme alla schermata di blocco in Personalizza la Home → Sfondo.
+
 ### StandBy automatico puntuale
 - Richiesta: "ora prova lo standby che parte da solo".
 - Lo StandBy automatico ora parte davvero dopo 30 secondi senza toccare lo schermo. Prima, mentre il tablet era in carica, il conto ripartiva da capo a ogni aggiornamento della batteria e poteva metterci molto di più.
