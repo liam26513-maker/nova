@@ -240,7 +240,7 @@ fun HomeScreen(
                     listOfNotNull(
                         music?.let {
                                 m ->
-                            "♪ " + listOf(m.title, m.artist).filter(String::isNotBlank).joinToString(" — ")
+                            StandbyRules.musicLine(m.title, m.artist)
                         },
                         study?.text,
                     )
