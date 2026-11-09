@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Ricerca più pulita
+- Richiesta: "si parti" (difetto visto provando la tastiera sul tablet).
+- Con la ricerca aperta le icone della Home spariscono con una dissolvenza: prima la barra in basso saliva con la tastiera e si vedeva in mezzo ai suggerimenti.
+
 ### Automazioni con «solo se»
 - Richiesta: "si parti" (dal piano: condizioni «se» nelle automazioni).
 - Ogni regola può avere una condizione: solo tra due orari, solo nei giorni feriali, solo nel fine settimana, solo se il tablet è in carica o solo se non lo è. Esempio: «Quando colleghi le cuffie → apri Spotify, solo tra le 08 e le 20». Le regole di prima restano uguali («Sempre»).
