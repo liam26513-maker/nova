@@ -16,6 +16,17 @@ class ModeOptionsTest {
     private fun options() = ModeOptions(File(tmp.root, "mode/options.properties"))
 
     @Test
+    fun `edge swipe, watchdog and auto gaming start on, the rest off, and the user's choice wins`() {
+        listOf(ModeOptions.EDGE_SWIPE, ModeOptions.WATCHDOG, ModeOptions.AUTO_GAMING).forEach {
+            assertTrue(it, ModeOptions.isOn(emptyMap(), it))
+            assertFalse(it, ModeOptions.isOn(mapOf(it to false), it))
+        }
+        listOf(ModeOptions.PANEL_SWIPE, ModeOptions.PEN_BAR, ModeOptions.DESK_BAR).forEach {
+            assertFalse(it, ModeOptions.isOn(emptyMap(), it))
+        }
+    }
+
+    @Test
     fun `the defaults are cautious, with turbo, sync pause and the overlay off`() {
         val o = options()
         assertTrue(o.enabled(ModeAction.PERFORMANCE_GRAPHICS))
