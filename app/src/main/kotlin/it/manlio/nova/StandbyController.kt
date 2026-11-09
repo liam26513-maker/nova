@@ -58,8 +58,10 @@ class StandbyController(
                 context: Context,
                 intent: Intent,
             ) {
+                val was = charging
                 readBattery(intent)
-                arm()
+                // Android manda questo annuncio di continuo in carica (livello, temperatura): solo attaccare o staccare riavvia il conto.
+                if (charging != was) arm()
             }
         }
 
