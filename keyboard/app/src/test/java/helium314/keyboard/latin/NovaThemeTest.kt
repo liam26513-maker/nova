@@ -13,6 +13,11 @@ class NovaThemeTest {
         assertEquals(KeyboardTheme.THEME_NOVA, Defaults.PREF_THEME_COLORS_NIGHT)
     }
 
+    @Test fun `keys are iPad-like rounded rectangles with borders`() {
+        assertEquals(KeyboardTheme.STYLE_MATERIAL, Defaults.PREF_THEME_STYLE)
+        assertEquals(true, Defaults.PREF_THEME_KEY_BORDERS)
+    }
+
     @Test fun `the Work row has the six editing keys`() {
         assertEquals(6, NovaAccent.WORK_KEYS.toSet().size)
     }

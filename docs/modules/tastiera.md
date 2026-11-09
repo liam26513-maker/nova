@@ -16,7 +16,7 @@ Stato: **base inserita e allegata alle release (Fase 4, primi passi)**. Fork di 
 ## Profilo NOVA (sensazione)
 
 Modificati in `Defaults.kt` (valgono per le installazioni nuove) e scritti una volta sola da `AppUpgrade.kt` per chi aveva la prima versione:
-tasti arrotondati con bordo (`STYLE_ROUNDED`, `PREF_THEME_KEY_BORDERS`), **tocco leggero**: vibrazione accesa e brevissima (`PREF_VIBRATION_DURATION_SETTINGS` = 10 ms), clic sommesso (`PREF_KEYPRESS_SOUND_VOLUME` = 0,3), niente fumetto del tasto (`PREF_POPUP_ON` = false), **clic sonoro** acceso se il tablet non ha il
+tasti rettangolari arrotondati con bordo, tutti della stessa forma come sull'iPad (`STYLE_MATERIAL` + `PREF_THEME_KEY_BORDERS`; scritto una volta anche per chi aveva già la tastiera, `applyIpadLookOnce`), **tocco leggero**: vibrazione accesa e brevissima (`PREF_VIBRATION_DURATION_SETTINGS` = 10 ms), clic sommesso (`PREF_KEYPRESS_SOUND_VOLUME` = 0,3), niente fumetto del tasto (`PREF_POPUP_ON` = false), **clic sonoro** acceso se il tablet non ha il
 motorino (`Defaults.hasVibrator`), niente `PREF_SHOW_HINTS`, niente suggerimenti di emoji (`PREF_SUGGEST_EMOJIS`, `PREF_INLINE_EMOJI_SEARCH`) né degli
 appunti (`PREF_SUGGEST_CLIPBOARD_CONTENT`). Il numero di versione è `NOVA_VERSION_BASE` (100000) + quello di NOVA: `upgradeKind` garantisce che le
 migrazioni di HeliBoard non si rieseguano (`NovaUpgradeTest`, girano in `tastiera.yml`).
@@ -45,7 +45,7 @@ Tasto della barra strumenti `SEND_TO_CLAUDE`, spento di serie: si attiva in Impo
 
 ## Tema NOVA (§10.1)
 
-Tema «NOVA» chiaro e scuro, predefinito, con i colori di `config/theme`. L'accento scelto in Personalizza la Home arriva da `AccentProvider` di NOVA (sola lettura, solo quel colore) e la tastiera si ricolora subito; con l'accento automatico resta quello del tema. Chiaro o scuro seguono Android, non la scelta di tema della Home.
+Tema «NOVA» chiaro e scuro, predefinito, con colori in stile iPad: di giorno fondo grigio perla, tasti delle lettere bianchi e tasti di funzione grigi; di notte fondo grafite, lettere su grigio chiaro e funzioni più scure. L'accento scelto in Personalizza la Home arriva da `AccentProvider` di NOVA (sola lettura, solo quel colore) e la tastiera si ricolora subito; con l'accento automatico resta quello del tema. Chiaro o scuro seguono Android, non la scelta di tema della Home.
 
 ## Variante Lavoro (§10.5)
 

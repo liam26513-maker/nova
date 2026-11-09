@@ -49,7 +49,7 @@ object Defaults {
 
     private const val DEFAULT_SIZE_SCALE = 1.0f // 100%
     // NOVA: tasti arrotondati con bordo, più vicini a una tastiera da iPad che al Material piatto.
-    const val PREF_THEME_STYLE = KeyboardTheme.STYLE_ROUNDED
+    const val PREF_THEME_STYLE = KeyboardTheme.STYLE_MATERIAL // NOVA: con i bordi, tasti rettangolari arrotondati come sull'iPad
     fun PREF_ICON_STYLE(prefs: SharedPreferences) = prefs.getString(Settings.PREF_THEME_STYLE, PREF_THEME_STYLE)!!
     const val PREF_ACCENT_SHIFTED_ICON = false
     const val PREF_THEME_COLORS = KeyboardTheme.THEME_NOVA
