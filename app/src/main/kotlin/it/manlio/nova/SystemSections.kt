@@ -113,6 +113,7 @@ fun UpdatesSection(
             )
         }
         if (state.update != UpdateState.NoToken) RollbackApp(actions)
+        KeyboardInstallRow()
     }
 }
 

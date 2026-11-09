@@ -11,7 +11,7 @@ Stato: **base inserita e allegata alle release (Fase 4, primi passi)**. Fork di 
   riportare le correzioni di HeliBoard).
 - **CI:** `.github/workflows/tastiera.yml`, solo quando cambia `keyboard/`: prove di `tools/check_keyboard.py`, `assembleRelease`, controllo del
   **manifest unito** (nessun `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`; pacchetto giusto) e del peso contro `keyboardApkMb` (15 MB).
-- **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. La **prima installazione** è a mano dalla pagina Releases; dopo la aggiorna NOVA (`Updater.updateKeyboard`), solo con Shizuku pronto e quando NOVA stessa non ha aggiornamenti da installare.
+- **Firma e rilascio:** come l'app, con le variabili `NOVA_KEYSTORE_*` (solo in CI). `release.yml` ha un job `tastiera` (facoltativo, in parallelo) che allega alla release `nova-tastiera-<code>.apk` + `.sha256` dopo aver verificato firma, permessi e peso. La **prima installazione** si fa da NOVA (Impostazioni → Aggiornamenti → «Installa la Tastiera NOVA», `Updater.installKeyboard`, con Shizuku; poi si apre `ACTION_INPUT_METHOD_SETTINGS` per accenderla) o a mano dalla pagina Releases; dopo la aggiorna NOVA (`Updater.updateKeyboard`), solo con Shizuku pronto e quando NOVA stessa non ha aggiornamenti da installare.
 
 ## Profilo NOVA (sensazione)
 

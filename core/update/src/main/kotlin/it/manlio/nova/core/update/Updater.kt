@@ -102,6 +102,26 @@ class Updater(
             if (app == null) updateKeyboard(releases)
         }
 
+    /** La tastiera di NOVA è installata? */
+    fun keyboardInstalled(): Boolean = installer.installedVersion(UpdatePlanner.KEYBOARD_PACKAGE) != null
+
+    /**
+     * Prima installazione della tastiera di NOVA (tasto in Aggiornamenti), con Shizuku come gli aggiornamenti: l'ultima tastiera
+     * delle release, scaricata e verificata con il suo .sha256. @return null se è installata, altrimenti il motivo.
+     */
+    suspend fun installKeyboard(): String? =
+        mutex.withLock {
+            if (!tokens.isSet()) return@withLock "Manca il token GitHub"
+            if (shizuku.status.value != ShizukuStatus.READY) return@withLock "Serve Shizuku acceso"
+            val releases = runCatching { client.releases() }.getOrElse { return@withLock reasonFor(it) }
+            val update = UpdatePlanner.keyboard(releases, 0) ?: return@withLock "Nessuna tastiera nelle release"
+            runCatching {
+                val result = shizuku.installApk(fetch(update, UpdatePlanner.KEYBOARD_PACKAGE) {})
+                kotlin.check(result.ok) { result.output }
+                log.i(TAG, "tastiera installata: ${update.tag}")
+            }.fold({ null }, { log.e(TAG, "tastiera non installata", it).let { _ -> reasonFor(it) } })
+        }
+
     /** Installa l'aggiornamento disponibile (tasto "Installa"). */
     suspend fun install(update: AppUpdate) = mutex.withLock { installLocked(update, "app ${update.tag}") }
 

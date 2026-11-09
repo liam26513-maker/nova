@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -26,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -97,6 +100,13 @@ fun StandbyScreen(
     // La chiave è la città: l'ora che cambia ogni minuto non rifà la richiesta.
     val forecast by produceState<Weather?>(null, city) { value = city?.let { weather?.invoke(it)?.getOrNull() } }
     BackHandler(onBack = onExit)
+    // Lo StandBy è a tutto schermo: se prima era aperta la tastiera (per esempio nella ricerca), si chiude e il campo perde il fuoco.
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focus = LocalFocusManager.current
+    LaunchedEffect(Unit) {
+        focus.clearFocus(force = true)
+        keyboard?.hide()
+    }
     val look = LocalHomeLook.current
     val ink = if (info.night) Color(0xFFB02A2A) else Color(0xFFF2F2F2)
     val muted = ink.copy(alpha = 0.62f)
