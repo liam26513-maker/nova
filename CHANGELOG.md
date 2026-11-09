@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Campo dell'avviso più ordinato
+- Richiesta: "continua ora".
+- In Impostazioni → Automazioni, il campo dove scrivi il testo dell'avviso ora ha i margini giusti: il testo non tocca più il bordo.
+
 ### Automazioni
 - Richiesta: "ok si fai anche il 5 ottimmizzato al meglio".
 - Nuova pagina Impostazioni → Automazioni: crei regole come «Quando colleghi le cuffie → apri Spotify», «Alle 22:00 → accendi il filtro caldo» o «Quando la batteria scende sotto il 20% → avvisa». Le scegli da elenchi, senza scrivere niente. Puoi accenderle, spegnerle o eliminarle con un tocco. Spente non consumano nulla.

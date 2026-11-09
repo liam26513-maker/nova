@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +22,9 @@ private val HOURS = (0..23).toList()
 
 @Suppress("MagicNumber") // le soglie tra cui scegliere
 private val BATTERY_LIMITS = listOf(10, 15, 20, 30, 50)
+
+/** Il margine laterale dei dialoghi di Android, uguale a quello del titolo. */
+private const val DIALOG_SIDE_DP = 24
 
 /**
  * Impostazioni → Automazioni (SPEC §12.4): regole «quando → allora» composte scegliendo da elenchi, una domanda alla volta.
@@ -150,11 +154,14 @@ private fun askThenArg(
             pick(context, context.getString(R.string.auto_ask_setting), toggles.map { toggleName(context, it) }) { next(toggles[it].name) }
         }
         Then.NOTIFY -> {
-            val field = EditText(context)
+            val field = EditText(context).apply { isSingleLine = true }
+            val side = (DIALOG_SIDE_DP * context.resources.displayMetrics.density).toInt()
+            val box = FrameLayout(context).apply { setPadding(side, 0, side, 0) }
+            box.addView(field)
             AlertDialog
                 .Builder(context, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                 .setTitle(R.string.auto_ask_text)
-                .setView(field)
+                .setView(box)
                 .setPositiveButton(android.R.string.ok) { _, _ -> field.text.toString().trim().takeIf { it.isNotEmpty() }?.let(next) }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
