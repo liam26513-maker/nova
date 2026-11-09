@@ -449,6 +449,9 @@
     <string name="recents_home">Torna alla Home</string>
     <string name="recents_open">Apri %1$s</string>
     <string name="recents_close">Chiudi %1$s</string>
+    <string name="keyboard_install">Installa la Tastiera NOVA</string>
+    <string name="keyboard_installing">Installo la tastiera…</string>
+    <string name="keyboard_install_summary">Con Shizuku, dall\'ultima versione. Poi accendila nelle impostazioni di Android che si aprono.</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

@@ -4,6 +4,14 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Niente tastiera sopra lo StandBy
+- Richiesta: "la tastiera rimane aperta nella schermata di standby, non va bene".
+- Quando parte lo StandBy la tastiera si chiude: si vede solo lo StandBy.
+
+### Tastiera installabile da NOVA
+- Richiesta: "si parti" (dal piano: prima installazione della tastiera dall'app).
+- Se la Tastiera NOVA non c'è, in Impostazioni → Aggiornamenti compare «Installa la Tastiera NOVA»: un tocco la scarica e la installa con Shizuku, poi si aprono le impostazioni di Android per accenderla.
+
 ### Tastiera in stile iPad
 - Richiesta: "si parti" (tastiera stile iOS dal piano).
 - La tastiera di NOVA ha ora l'aspetto di quella dell'iPad: tasti rettangolari con gli angoli arrotondati, tutti della stessa forma; di giorno fondo grigio chiaro con tasti bianchi, di notte fondo scuro con tasti grigi. I tasti di funzione (maiuscole, cancella, numeri) sono di un grigio diverso, come sull'iPad.
