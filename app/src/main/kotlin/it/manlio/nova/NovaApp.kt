@@ -106,6 +106,9 @@ class NovaApp :
 
     /** L'ultimo gioco visto in primo piano: serve al tasto «Chiudi il gioco» anche quando si è tornati alla Home. */
     @Volatile var lastGame: String? = null
+
+    /** Le regole «quando → allora» dell'utente (SPEC §12.4). */
+    internal lateinit var automations: AutomationEngine
     lateinit var gameMeter: GameMeter
 
     /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */
@@ -175,6 +178,7 @@ class NovaApp :
         setUpUpdates()
         modes = ModeController(this, appScope).also { it.start() }
         StudySchedule.arm(this)
+        automations = AutomationEngine(this).also { it.start() }
         File(filesDir, "foglio-rapido.png").delete() // il Foglio rapido è stato tolto: niente file rimasti
         announceAccentChanges()
         gameMeter = GameMeter(this, appScope)

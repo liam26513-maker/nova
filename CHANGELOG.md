@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Automazioni
+- Richiesta: "ok si fai anche il 5 ottimmizzato al meglio".
+- Nuova pagina Impostazioni → Automazioni: crei regole come «Quando colleghi le cuffie → apri Spotify», «Alle 22:00 → accendi il filtro caldo» o «Quando la batteria scende sotto il 20% → avvisa». Le scegli da elenchi, senza scrivere niente. Puoi accenderle, spegnerle o eliminarle con un tocco. Spente non consumano nulla.
+
 ### Fluidità prima e dopo nelle Novità
 - Richiesta: "fai sicuramente l'1, 2 e 3".
 - In Impostazioni → Novità compare quanti fotogrammi della Home sono stati lenti con questa versione, accanto alla versione prima. Così si vede se un aggiornamento l'ha resa più fluida o meno. Si conta durante l'uso normale, senza prove apposta.
