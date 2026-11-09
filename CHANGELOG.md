@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Schede delle App recenti facili da chiudere
+- Richiesta: "le app sono dure da togliere".
+- Ora la scheda segue il dito e basta un colpetto veloce verso l'alto per chiuderla. Prima la scheda scappava dal dito e andava trascinata molto.
+
 ### App recenti più stabili e sfondo morbido
 - Richiesta: "lo sfondo non sembra sfocato sembra pixellato/ sgranato e il tutto sembra instabile".
 - Lo sfondo dietro le schede ora è sfocato davvero, senza quadretti. La schermata compare una volta sola, già completa con tutte le anteprime, con una dissolvenza morbida: niente più sfondo vuoto prima, schede che spuntano con lo zoom e anteprime che cambiano dopo.
