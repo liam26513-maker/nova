@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **NOVA più fluida: librerie aggiornate** («vorrei velocizzare e rendere più fluido il tutto»): la parte che disegna NOVA (Compose) passa dalla versione di dicembre 2024 alla 1.10 del 2026, più veloce negli scorrimenti e nelle liste. Anche la tastiera, quando NOVA la aggiorna, viene ottimizzata subito.
+
 - **NOVA più veloce dopo ogni aggiornamento** («vorrei velocizzare e rendere più fluido il tutto»): NOVA si installa fuori dal Play Store e Android lasciava il suo codice non ottimizzato fino alla notte. Ora, appena Shizuku risponde, NOVA fa ottimizzare sé stessa e la tastiera; la prima volta che spegni lo schermo si riavvia da sola con il codice veloce.
 
 - **Creativa: tasti in basso al posto dei gesti** («ibispaint non prende tratti»): durante la Creativa Android usa i 3 tasti in basso invece dei gesti, così un tratto che parte vicino al bordo non diventa «Indietro». All'uscita tornano i gesti. Si spegne in Impostazioni → Penna e tavoletta.

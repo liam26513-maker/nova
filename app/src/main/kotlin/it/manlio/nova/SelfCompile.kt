@@ -24,6 +24,7 @@ internal class SelfCompile(
     private val prefs = app.getSharedPreferences("compilazione", Context.MODE_PRIVATE)
 
     fun start() {
+        keyboardUpdates()
         if (prefs.getInt(DONE_FOR, 0) == BuildConfig.VERSION_CODE) return
         app.appScope.launch {
             app.shizuku.status.first { it == ShizukuStatus.READY }
@@ -36,6 +37,27 @@ internal class SelfCompile(
             prefs.edit().putInt(DONE_FOR, BuildConfig.VERSION_CODE).apply()
             restartWhenScreenOff()
         }
+    }
+
+    /** NOVA aggiorna la tastiera dopo sé stessa: anche la tastiera nuova parte in «verify», quindi si compila appena installata. */
+    private fun keyboardUpdates() {
+        val filter =
+            IntentFilter().apply {
+                addAction(Intent.ACTION_PACKAGE_ADDED)
+                addAction(Intent.ACTION_PACKAGE_REPLACED)
+                addDataScheme("package")
+            }
+        val receiver =
+            object : BroadcastReceiver() {
+                override fun onReceive(
+                    context: Context,
+                    intent: Intent,
+                ) {
+                    if (intent.data?.schemeSpecificPart != KEYBOARD) return
+                    app.appScope.launch { runCatching { app.shizuku.run(SystemCommand.CompileOwn(KEYBOARD)) } }
+                }
+            }
+        app.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED) // i messaggi dei pacchetti arrivano dal sistema
     }
 
     private fun restartWhenScreenOff() {
@@ -57,5 +79,6 @@ internal class SelfCompile(
     private companion object {
         const val DONE_FOR = "compilata_per_versione"
         const val MIN_UPTIME_MS = 60_000L
+        const val KEYBOARD = "it.manlio.nova.keyboard"
     }
 }
