@@ -126,9 +126,12 @@ class ModeController(
         }
     }
 
+    private val calmHome by lazy { CalmHome(app) }
+
     override suspend fun apply(action: ModeAction): ActionOutcome =
         when (action) {
             ModeAction.PERFORMANCE_GRAPHICS -> performanceGraphics()
+            ModeAction.CALM_HOME -> calmHome.apply()
             ModeAction.DO_NOT_DISTURB -> doNotDisturb()
             ModeAction.LOCK_ROTATION -> settings.lockRotation()
             ModeAction.KEEP_SCREEN_ON -> settings.keepScreenOn()
@@ -142,6 +145,7 @@ class ModeController(
     override suspend fun undo(token: UndoToken): Boolean =
         when (token.kind) {
             KIND_GRAPHICS -> restoreGraphics(token.value)
+            KIND_CALM_HOME -> calmHome.restore()
             KIND_DND -> !quick.available || app.systemTools.setToggle(QuickToggle.DND, on = false, wasOn = true)
             ModeSettings.KIND_ROTATION -> settings.restoreRotation(token.value)
             ModeSettings.KIND_SCREEN_ON -> settings.restoreScreenTimeout(token.value)
@@ -219,6 +223,7 @@ class ModeController(
     private fun label(action: ModeAction): Int =
         when (action) {
             ModeAction.PERFORMANCE_GRAPHICS -> R.string.mode_action_graphics
+            ModeAction.CALM_HOME -> R.string.mode_action_calm
             ModeAction.DO_NOT_DISTURB -> R.string.mode_action_dnd
             ModeAction.LOCK_ROTATION -> R.string.mode_action_rotation
             ModeAction.KEEP_SCREEN_ON -> R.string.mode_action_screen
@@ -233,11 +238,12 @@ class ModeController(
         main.post { Toast.makeText(context, text, Toast.LENGTH_LONG).show() }
     }
 
-    private companion object {
+    internal companion object {
         const val KIND_GRAPHICS = "graphics"
         const val KIND_DND = "dnd"
         const val KIND_NIGHT_LIGHT = "night_light"
         const val KIND_NIGHT_LIGHT_ON = "night_light_on"
+        const val KIND_CALM_HOME = "calm_home"
         const val AUTO = "auto"
     }
 }

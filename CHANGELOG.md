@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Home essenziale nelle modalità
+- Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: stile della Home per modalità, SPEC §8.1).
+- In Impostazioni → Modalità Studio puoi accendere «Home essenziale durante Studio e Presentazione»: in quelle modalità la Home diventa nera e solo testo, per distrarti meno. Uscendo torna esattamente com'era.
+
 ### Suggerimenti più furbi, con il perché
 - Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: suggerimenti con accessori e modalità, SPEC §12.5).
 - Le app suggerite nella ricerca tengono conto anche della situazione: cuffie collegate, tastiera, modalità accesa. Sotto ogni app c'è il perché, per esempio «Lo usi spesso con le cuffie» o «Lo apri spesso a quest'ora». Tutto resta sul tablet.

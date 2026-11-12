@@ -24,7 +24,7 @@ class ModeOptions(private val file: File) {
 
     /** Le azioni da fare entrando: nella Gaming si sceglie tutto, nelle altre solo le voci facoltative come il filtro caldo. */
     fun chosen(mode: ModeDefinition): List<ModeAction> =
-        mode.actions.filter { (mode.id != Modes.GAMING.id && it != ModeAction.NIGHT_LIGHT_ON) || enabled(it) }
+        mode.actions.filter { (mode.id != Modes.GAMING.id && it !in OPTIONAL) || enabled(it) }
 
     /**
      * La tendina di NOVA dentro i giochi: predefinito acceso, ma durante la Gaming la striscia si riduce a un angolo (in alto a
@@ -60,6 +60,9 @@ class ModeOptions(private val file: File) {
 
     companion object {
         const val OVERLAY = "OVERLAY_IN_GAMES"
+
+        /** Voci che le modalità fanno solo se l'utente le ha accese. */
+        private val OPTIONAL = setOf(ModeAction.NIGHT_LIGHT_ON, ModeAction.CALM_HOME)
 
         /** Le opzioni accese finché l'utente non le spegne; tutte le altre partono spente. */
         private val ON_BY_DEFAULT = setOf("EDGE_SWIPE", "WATCHDOG", "AUTO_GAMING")

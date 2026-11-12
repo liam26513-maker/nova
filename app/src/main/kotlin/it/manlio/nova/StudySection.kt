@@ -69,6 +69,15 @@ internal fun StudySection(
             onClick = { modes.options.set(key, !warm) },
             trailing = { if (warm) Check() },
         )
+        val calmKey = ModeAction.CALM_HOME.name
+        val calm = options[calmKey] == true
+        SettingsRow(
+            stringResource(R.string.mode_calm_home),
+            summary = stringResource(R.string.mode_calm_home_summary),
+            showDivider = true,
+            onClick = { modes.options.set(calmKey, !calm) },
+            trailing = { if (calm) Check() },
+        )
     }
     SettingsSection(backdrop, header = stringResource(R.string.study_block), footer = stringResource(R.string.study_block_footer)) {
         blocked.sorted().forEachIndexed { i, pkg ->

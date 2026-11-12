@@ -91,6 +91,7 @@ private fun ExitOptions(
 private fun gamingTitle(action: ModeAction): Int =
     when (action) {
         ModeAction.PERFORMANCE_GRAPHICS -> R.string.gaming_graphics
+        ModeAction.CALM_HOME -> R.string.mode_action_calm
         ModeAction.DO_NOT_DISTURB -> R.string.gaming_dnd
         ModeAction.LOCK_ROTATION -> R.string.gaming_rotation
         ModeAction.KEEP_SCREEN_ON -> R.string.gaming_screen
@@ -104,6 +105,7 @@ private fun gamingTitle(action: ModeAction): Int =
 private fun gamingSummary(action: ModeAction): Int =
     when (action) {
         ModeAction.PERFORMANCE_GRAPHICS -> R.string.gaming_graphics_summary
+        ModeAction.CALM_HOME -> R.string.mode_action_calm
         ModeAction.DO_NOT_DISTURB -> R.string.gaming_dnd_summary
         ModeAction.LOCK_ROTATION -> R.string.gaming_rotation_summary
         ModeAction.KEEP_SCREEN_ON -> R.string.gaming_screen_summary

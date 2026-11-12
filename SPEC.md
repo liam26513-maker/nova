@@ -498,7 +498,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 
 > **Stato:** fatto il motore (`core/modes`: salva lo stato, ripristina in ordine inverso, recupero dopo chiusura, scadenza) e **Gaming di base solo manuale** (tendina → Altro). Azioni e durata massima stanno in `config/modes.json` (`Modes.kt` è il ripiego). Studio, Lavoro, Creativa e Presentazione ci sono; mancano attivazione automatica, desktop e finestre flottanti di §8.3, Home portfolio di §8.6. Dettagli: `docs/modules/modalita.md`.
 
-- Le modalità stanno in `config/modes.json`. Oggi ognuna descrive azioni all'ingresso e durata massima; sono ancora da fare: azioni all'ingresso, azioni all'uscita (o ripristino automatico dello stato salvato), stile home, tema, livello grafico, regole notifiche, tastiera, moduli da attivare/sospendere.
+- Le modalità stanno in `config/modes.json`. Oggi ognuna descrive azioni all'ingresso e durata massima; il ripristino all'uscita c'è (segnalibri annullabili), il livello grafico c'è (`PERFORMANCE_GRAPHICS`) e dal 12 novembre 2026 anche lo stile della Home (`CALM_HOME`, facoltativa: tema «Essenziale» in Studio e Presentazione). Restano da fare: regole notifiche, tastiera, moduli da attivare/sospendere.
 - **Attivazione:** manuale (centro di controllo, ricerca, widget), automatica (app aperta, accessorio collegato, orario, rete Wi-Fi), o da ADAM.
 - **Uscita:** ripristina esattamente lo stato precedente (snapshot prima dell'ingresso).
 - Una sola modalità "principale" attiva per volta; la modalità ospite è separata.
