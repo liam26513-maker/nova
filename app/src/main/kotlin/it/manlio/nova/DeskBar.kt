@@ -11,16 +11,20 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import it.manlio.nova.core.modes.Modes
+import it.manlio.nova.core.system.RecentTask
 import it.manlio.nova.core.system.ShizukuStatus
 import it.manlio.nova.core.system.SystemCommand
 import it.manlio.nova.feature.home.Favorites
 import it.manlio.nova.feature.home.MoreItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
  * La barra del desktop nel Lavoro (SPEC §8.3): i preferiti della Home in una fila in basso, sopra le altre app; un tocco apre l'app
- * in una finestra flottante. Non prende il fuoco. Si accende da tendina → Altro ed esiste solo durante il Lavoro.
+ * in una finestra flottante. Dopo un separatore, le app aperte (dalle recenti di Android, con Shizuku): un tocco la riporta davanti.
+ * Non prende il fuoco. Si accende da tendina → Altro ed esiste solo durante il Lavoro.
  */
 internal class DeskBar(
     private val service: AccessibilityService,
@@ -28,13 +32,43 @@ internal class DeskBar(
 ) {
     private val windows = service.getSystemService(WindowManager::class.java)
     private var view: View? = null
+    private var on = false
+    private var open = emptyList<RecentTask>()
 
-    fun set(on: Boolean) = if (on) show() else hide()
+    fun set(on: Boolean) {
+        this.on = on
+        if (on) refresh() else hide()
+    }
+
+    /** Un'altra finestra davanti: se sono cambiate le app aperte, la barra si rifà. */
+    fun refresh() {
+        if (!on || app.shizuku.status.value != ShizukuStatus.READY) {
+            if (on && view == null) show()
+            return
+        }
+        app.appScope.launch {
+            val favs = favorites().map { it.packageName }.toSet()
+            val now =
+                app.shizuku
+                    .recentTasks(MAX_RECENT)
+                    .filter { it.packageName != app.packageName && it.packageName != SYSTEM_LAUNCHER && it.packageName !in favs }
+                    .distinctBy { it.packageName }
+                    .take(MAX_OPEN)
+            withContext(Dispatchers.Main) {
+                if (!on) return@withContext
+                if (view == null || now.map { it.id } != open.map { it.id }) {
+                    open = now
+                    hide()
+                    show()
+                }
+            }
+        }
+    }
 
     private fun show() {
         if (view != null) return
         val apps = favorites()
-        if (apps.isEmpty()) return
+        if (apps.isEmpty() && open.isEmpty()) return
         val density = service.resources.displayMetrics.density
         val bar =
             LinearLayout(service).apply {
@@ -47,6 +81,10 @@ internal class DeskBar(
                         setColor(BAR_COLOR)
                     }
                 apps.forEach { addView(icon(it, density)) }
+                if (open.isNotEmpty()) {
+                    if (apps.isNotEmpty()) addView(divider(density))
+                    open.forEach { task -> addView(taskIcon(task, density)) }
+                }
             }
         val params =
             WindowManager.LayoutParams(
@@ -88,6 +126,32 @@ internal class DeskBar(
         }
     }
 
+    /** Una riga verticale sottile tra preferiti e app aperte, come nel dock dell'iPad. */
+    private fun divider(density: Float) =
+        View(service).apply {
+            setBackgroundColor(DIVIDER_COLOR)
+            layoutParams =
+                LinearLayout.LayoutParams((1 * density).toInt().coerceAtLeast(1), (ICON_DP * density * DIVIDER_HEIGHT).toInt()).apply {
+                    marginStart = (GAP_DP * 2 * density).toInt()
+                    marginEnd = (GAP_DP * density).toInt()
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+        }
+
+    private fun taskIcon(
+        task: RecentTask,
+        density: Float,
+    ): ImageView {
+        val pm = service.packageManager
+        val size = (ICON_DP * density).toInt()
+        return ImageView(service).apply {
+            setImageDrawable(runCatching { pm.getApplicationIcon(task.packageName) }.getOrNull())
+            contentDescription = runCatching { pm.getApplicationLabel(pm.getApplicationInfo(task.packageName, 0)) }.getOrNull()
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { marginStart = (GAP_DP * density).toInt() }
+            setOnClickListener { app.appScope.launch { app.shizuku.openTask(task.id) } }
+        }
+    }
+
     private fun open(component: ComponentName) {
         val command = runCatching { SystemCommand.OpenInWindow(component.packageName, component.className) }.getOrNull() ?: return
         if (app.shizuku.status.value == ShizukuStatus.READY) app.appScope.launch { app.shizuku.run(command) }
@@ -95,6 +159,11 @@ internal class DeskBar(
 
     private companion object {
         const val MAX = 6
+        const val MAX_OPEN = 4
+        const val MAX_RECENT = 12
+        const val SYSTEM_LAUNCHER = "com.android.launcher3"
+        const val DIVIDER_HEIGHT = 0.7f
+        const val DIVIDER_COLOR = 0x55FFFFFF
         const val ICON_DP = 44
         const val GAP_DP = 6
         const val PAD_DP = 8

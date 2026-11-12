@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Lavoro: le app aperte nella barra
+- Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: app aperte nella barra, SPEC §8.3).
+- Nella barra delle app del Lavoro, dopo i preferiti e una sottile riga, ci sono le app che hai aperto di recente (fino a 4): un tocco la riporta davanti, come nel dock dell'iPad.
+
 ### Il tuo tempo: grafico delle app
 - Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: grafico per app, SPEC §12.7).
 - In Impostazioni → Il tuo tempo c'è anche il grafico dei minuti passati nelle app, giorno per giorno. Toccando un'app nell'elenco «Ultimi 7 giorni» il grafico mostra solo quella; ritoccandola torna a tutte.
