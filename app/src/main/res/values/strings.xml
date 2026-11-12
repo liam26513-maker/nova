@@ -473,6 +473,7 @@
     <string name="pen_bar_bigger">Pennello più grande</string>
     <string name="pen_bar_smaller">Pennello più piccolo</string>
     <string name="more_play_from_pc">Gioca dal PC</string>
+    <string name="dns_guard_paused">Blocca pubblicità sospeso: questa rete non raggiunge il suo servizio. Tornerà alla prossima rete.</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>
