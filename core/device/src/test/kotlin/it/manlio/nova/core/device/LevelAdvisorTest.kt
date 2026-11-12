@@ -100,4 +100,23 @@ class LevelAdvisorTest {
                 hasStylusDigitizer = false,
             )
     }
+
+    @Test
+    fun `frames lost on screen count even when Android reports a huge deadline`() {
+        // 60 Hz: un fotogramma ogni 16,67 ms; ogni 10 ne salta uno (buco di 2 periodi), con scadenza dichiarata enorme.
+        var t = 0.0
+        val frames =
+            List(100) { i ->
+                t += if (i % 10 == 9) 33.33 else 16.67
+                FrameSample(totalMs = 20f, deadlineMs = 100f, vsyncMs = t)
+            }
+        val (_, jank) = LevelAdvisor.summarize(frames)
+        assertEquals(9.0f, jank, 1.0f)
+    }
+
+    @Test
+    fun `a steady stream of frames has no lost frames`() {
+        val frames = List(60) { i -> FrameSample(totalMs = 12f, deadlineMs = 16.7f, vsyncMs = 1000.0 + i * 16.67) }
+        assertEquals(0f, LevelAdvisor.lostFramesPercent(frames), 0.01f)
+    }
 }

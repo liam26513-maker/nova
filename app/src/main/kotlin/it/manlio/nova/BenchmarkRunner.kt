@@ -44,8 +44,9 @@ class BenchmarkRunner(private val controller: GraphicsLevelController) {
     fun onFrame(
         durationNanos: Long,
         deadlineNanos: Long,
+        vsyncNanos: Long,
     ) {
-        if (collecting) frames += FrameSample(durationNanos / NANOS_PER_MS, deadlineNanos / NANOS_PER_MS)
+        if (collecting) frames += FrameSample(durationNanos / NANOS_PER_MS, deadlineNanos / NANOS_PER_MS, vsyncNanos / NANOS_PER_MS_D)
     }
 
     suspend fun run(onProgress: (GraphicsLevel) -> Unit): BenchmarkResult {
@@ -68,6 +69,7 @@ class BenchmarkRunner(private val controller: GraphicsLevelController) {
 
     private companion object {
         const val NANOS_PER_MS = 1_000_000f
+        const val NANOS_PER_MS_D = 1_000_000.0
         const val WARMUP_MS = 600L
         const val MEASURE_MS = 3_400L
     }

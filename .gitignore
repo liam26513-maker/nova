@@ -17,3 +17,4 @@ keystore.properties
 # Immagini generate dai test (Roborazzi)
 screenshots/
 app/screenshots/
+.kotlin/
