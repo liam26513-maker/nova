@@ -355,6 +355,9 @@ private fun LayoutSection(
         Choice(R.string.customize_ipad_recents, listOf(true, false), prefs.ipadRecents, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(ipadRecents = v) }
         }
+        Choice(R.string.customize_island_everywhere, listOf(false, true), prefs.islandEverywhere, { onOff(it) }, divider = true) { v ->
+            onChange { it.copy(islandEverywhere = v) }
+        }
     }
 }
 

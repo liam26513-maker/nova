@@ -89,6 +89,7 @@ private enum class MediaGlyph { PREVIOUS, PLAY, PAUSE, NEXT, NOTE }
  * allarga con i comandi. Compare solo mentre suona qualcosa (in pausa si riprende dal widget Musica).
  * È una vista della Home, non una finestra sopra le altre app.
  */
+
 @Composable
 internal fun DynamicIsland(
     media: MediaSource?,
@@ -321,3 +322,7 @@ private fun StudyPillButton(
 }
 
 private const val STUDY_PILL_ALPHA = 0.75f
+
+/** L'isola fuori dalla Home (una finestra sopra le altre app), con l'aspetto scuro di serie. */
+@Composable
+fun FloatingIsland(media: MediaSource) = DynamicIsland(media)

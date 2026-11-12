@@ -443,6 +443,7 @@
     <string name="edge_again">Scorri di nuovo per uscire</string>
     <string name="watchdog_frozen">Il gioco sembra bloccato</string>
     <string name="more_standby">StandBy</string>
+    <string name="customize_island_everywhere">Isola della musica sopra le altre app</string>
     <string name="customize_ipad_recents">App recenti in stile iPad (con Shizuku)</string>
     <string name="recents_empty">Nessuna app aperta</string>
     <string name="recents_close_all">Chiudi tutte</string>

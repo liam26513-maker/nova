@@ -84,6 +84,7 @@ class HomePrefsTest {
                     showStatusBar = false,
                     swipeDownNotifications = false,
                     doubleTapSleep = true,
+                    islandEverywhere = true,
                     hidden = mapOf("com.a/.Main#0" to "Caffè = è: #1"),
                     renamed = mapOf("com.b/.X#10" to "Il mio disegno"),
                 )
