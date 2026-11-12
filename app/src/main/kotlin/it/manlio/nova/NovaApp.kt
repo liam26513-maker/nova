@@ -2,6 +2,8 @@ package it.manlio.nova
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.ui.ComposeUiFlags
+import androidx.compose.ui.ExperimentalComposeUiApi
 import it.manlio.nova.core.config.ApplyResult
 import it.manlio.nova.core.config.ConfigEngine
 import it.manlio.nova.core.design.GraphicsLevel
@@ -152,6 +154,10 @@ class NovaApp :
 
     override fun onCreate() {
         super.onCreate()
+        // Compose 1.10 calcola la semantica per l'autocompletamento di Google a ogni cambiamento dello schermo: lavoro in più a
+        // ogni fotogramma per campi che in NOVA non servono (nessuna password, nessun indirizzo). L'accessibilità resta intatta.
+        @OptIn(ExperimentalComposeUiApi::class)
+        ComposeUiFlags.isSemanticAutofillEnabled = false
         // La lettura del testo gira in un processo a parte (`:ocr`): lì NOVA non avvia niente, e se il motore nativo cade la Home
         // e la tendina restano su. Non conta nemmeno come avvio per la modalità provvisoria.
         if (getProcessName().endsWith(OCR_PROCESS)) return
