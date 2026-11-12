@@ -100,6 +100,7 @@ private fun MenuContent(
     onDismiss: () -> Unit,
 ) {
     var renaming by remember(app.key) { mutableStateOf(false) }
+    var replying by remember(app.key) { mutableStateOf(false) }
     Column(Modifier.padding(vertical = 18.dp)) {
         Row(Modifier.padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
             AppIcon(app, actions.icon, 40.dp)
@@ -112,50 +113,114 @@ private fun MenuContent(
             )
         }
         Spacer(Modifier.height(10.dp))
-        if (renaming) {
+        val reply = extras.onReply
+        if (replying && reply != null) {
+            ReplyField(app, extras.replyTo, onSend = { text ->
+                reply(text)
+                onDismiss()
+            }, onCancel = { replying = false })
+        } else if (renaming) {
             RenameField(app, onDone = { name ->
                 actions.onRename(app, name)
                 onDismiss()
             }, onCancel = { renaming = false })
         } else {
-            // Prima le scorciatoie dell'app, come sull'iPad tenendo premuta un'icona.
-            val shortcuts by produceState(emptyList<AppShortcut>(), app.key) { value = actions.shortcuts(app) }
-            shortcuts.forEach { s ->
-                MenuItem(s.label) {
-                    actions.onShortcut(app, s)
-                    onDismiss()
-                }
-            }
-            val favoriteLabel = if (isFavorite) R.string.home_menu_unfavorite else R.string.home_menu_favorite
-            MenuItem(stringResource(favoriteLabel)) {
-                actions.onToggleFavorite(app)
-                onDismiss()
-            }
-            if (actions.canOpenWindow()) {
-                MenuItem(stringResource(R.string.home_menu_window)) {
-                    actions.onOpenWindow(app)
-                    onDismiss()
-                }
-            }
-            extras.onClearNotification?.let { MenuItem(stringResource(R.string.home_menu_clear_notification), onClick = it) }
-            extras.onEdit?.let { MenuItem(stringResource(R.string.home_edit_enter), onClick = it) }
-            extras.onTakeOut?.let { MenuItem(stringResource(R.string.home_menu_take_out), onClick = it) }
-            extras.onRemove?.let { MenuItem(stringResource(R.string.home_edit_remove), onClick = it) }
-            extras.onAddToHome?.let { MenuItem(stringResource(R.string.home_menu_add_to_home), onClick = it) }
-            MenuItem(stringResource(R.string.home_menu_rename)) { renaming = true }
-            MenuItem(stringResource(R.string.home_menu_hide), stringResource(R.string.home_menu_hide_summary)) {
-                actions.onHide(app)
-                onDismiss()
-            }
-            MenuItem(stringResource(R.string.home_menu_info)) {
-                actions.onAppInfo(app)
-                onDismiss()
-            }
-            MenuItem(stringResource(R.string.home_menu_uninstall)) {
-                actions.onUninstall(app)
-                onDismiss()
-            }
+            MenuActions(app, isFavorite, actions, extras, onDismiss, onRename = { renaming = true }, onReply = { replying = true })
         }
+    }
+}
+
+/** Le voci del menu: scorciatoie dell'app, poi le azioni di NOVA. */
+@Composable
+private fun MenuActions(
+    app: AppEntry,
+    isFavorite: Boolean,
+    actions: HomeActions,
+    extras: MenuExtras,
+    onDismiss: () -> Unit,
+    onRename: () -> Unit,
+    onReply: () -> Unit,
+) {
+    // Prima le scorciatoie dell'app, come sull'iPad tenendo premuta un'icona.
+    val shortcuts by produceState(emptyList<AppShortcut>(), app.key) { value = actions.shortcuts(app) }
+    shortcuts.forEach { s ->
+        MenuItem(s.label) {
+            actions.onShortcut(app, s)
+            onDismiss()
+        }
+    }
+    val favoriteLabel = if (isFavorite) R.string.home_menu_unfavorite else R.string.home_menu_favorite
+    MenuItem(stringResource(favoriteLabel)) {
+        actions.onToggleFavorite(app)
+        onDismiss()
+    }
+    if (actions.canOpenWindow()) {
+        MenuItem(stringResource(R.string.home_menu_window)) {
+            actions.onOpenWindow(app)
+            onDismiss()
+        }
+    }
+    extras.onReply?.let {
+        MenuItem(
+            stringResource(R.string.home_menu_reply, extras.replyTo.ifBlank { app.label }),
+        ) { onReply() }
+    }
+    extras.onClearNotification?.let { MenuItem(stringResource(R.string.home_menu_clear_notification), onClick = it) }
+    extras.onEdit?.let { MenuItem(stringResource(R.string.home_edit_enter), onClick = it) }
+    extras.onTakeOut?.let { MenuItem(stringResource(R.string.home_menu_take_out), onClick = it) }
+    extras.onRemove?.let { MenuItem(stringResource(R.string.home_edit_remove), onClick = it) }
+    extras.onAddToHome?.let { MenuItem(stringResource(R.string.home_menu_add_to_home), onClick = it) }
+    MenuItem(stringResource(R.string.home_menu_rename)) { onRename() }
+    MenuItem(stringResource(R.string.home_menu_hide), stringResource(R.string.home_menu_hide_summary)) {
+        actions.onHide(app)
+        onDismiss()
+    }
+    MenuItem(stringResource(R.string.home_menu_info)) {
+        actions.onAppInfo(app)
+        onDismiss()
+    }
+    MenuItem(stringResource(R.string.home_menu_uninstall)) {
+        actions.onUninstall(app)
+        onDismiss()
+    }
+}
+
+/** La risposta rapida a una notifica: una riga di testo, «Invia» e «Annulla». */
+@Composable
+private fun ReplyField(
+    app: AppEntry,
+    to: String,
+    onSend: (String) -> Unit,
+    onCancel: () -> Unit,
+) {
+    var text by remember(app.key) { mutableStateOf("") }
+    val look = LocalHomeLook.current
+    Column {
+        BasicTextField(
+            value = text,
+            onValueChange = { text = it.take(MAX_REPLY) },
+            textStyle = TextStyle(look.ink, 18.sp),
+            cursorBrush = SolidColor(look.ink),
+            decorationBox = { inner ->
+                Box {
+                    if (text.isEmpty()) {
+                        BasicText(
+                            stringResource(R.string.home_menu_reply_hint, to.ifBlank { app.label }),
+                            style = TextStyle(look.muted, 18.sp),
+                        )
+                    }
+                    inner()
+                }
+            },
+            modifier =
+                Modifier
+                    .padding(horizontal = 22.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .background(look.ink.copy(alpha = FIELD_ALPHA), SquircleShape(12.dp))
+                    .padding(12.dp),
+        )
+        if (text.isNotBlank()) MenuItem(stringResource(R.string.home_menu_reply_send)) { onSend(text.trim()) }
+        MenuItem(stringResource(R.string.home_menu_cancel), onClick = onCancel)
     }
 }
 
@@ -219,3 +284,5 @@ private const val POP_DAMPING = 0.72f
 private const val POP_STIFFNESS = 520f
 private const val POP_FROM = 0.86f
 private const val MAX_NAME = 40
+
+private const val MAX_REPLY = 500

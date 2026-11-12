@@ -1,8 +1,11 @@
 package it.manlio.nova
 
 import android.app.Notification
+import android.app.RemoteInput
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -34,6 +37,24 @@ object NotificationHub : NotificationSource {
         runCatching { service?.cancelNotification(key) }
     }
 
+    /** Usa l'azione di risposta dell'app (RemoteInput), come fa la tendina di Android: il testo va solo all'app della notifica. */
+    override fun reply(
+        key: String,
+        text: String,
+    ): Boolean =
+        runCatching {
+            val sbn = service?.activeNotifications?.firstOrNull { it.key == key } ?: return false
+            val action = replyAction(sbn.notification) ?: return false
+            val input = action.remoteInputs.first()
+            val intent = Intent().addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+            RemoteInput.addResultsToIntent(action.remoteInputs, intent, Bundle().apply { putCharSequence(input.resultKey, text) })
+            action.actionIntent.send(appContext, 0, intent)
+            true
+        }.getOrDefault(false)
+
+    private fun replyAction(n: Notification): Notification.Action? =
+        n.actions.orEmpty().firstOrNull { a -> a.remoteInputs?.any { it.allowFreeFormInput } == true }
+
     internal fun attach(s: NotificationListenerService?) {
         service = s
         if (s == null) _previews.value = emptyMap() else refresh(s)
@@ -56,6 +77,7 @@ object NotificationHub : NotificationSource {
             ongoing = sbn.isOngoing,
             groupSummary = n.flags and Notification.FLAG_GROUP_SUMMARY != 0,
             isMedia = extras?.containsKey(Notification.EXTRA_MEDIA_SESSION) == true || n.category == Notification.CATEGORY_TRANSPORT,
+            canReply = replyAction(n) != null,
         )
     }
 

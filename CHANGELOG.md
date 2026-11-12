@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Risposta rapida dalla Home
+- Richiesta: "fai tutti gli altri passaggi che puoi fare tu del piano" (dal piano: risposta rapida dalle notifiche, SPEC §6.2).
+- Se un'app con un messaggio permette di rispondere (WhatsApp, Telegram, Messaggi…), tenendo premuta la sua icona compare «Rispondi a …»: scrivi e tocchi «Invia», senza aprire l'app.
+
 ### Home essenziale nelle modalità
 - Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: stile della Home per modalità, SPEC §8.1).
 - In Impostazioni → Modalità Studio puoi accendere «Home essenziale durante Studio e Presentazione»: in quelle modalità la Home diventa nera e solo testo, per distrarti meno. Uscendo torna esattamente com'era.
