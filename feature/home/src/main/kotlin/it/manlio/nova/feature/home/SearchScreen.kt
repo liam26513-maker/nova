@@ -95,8 +95,8 @@ internal fun SearchScreen(
                     if (suggested.isNotEmpty()) item("h-suggested") { SectionTitle(stringResource(R.string.home_search_suggested)) }
                     items(
                         suggested,
-                        key = { "s-" + it.key },
-                    ) { app -> ResultRow(app.label, app, actions) { launch(app, actions, onClose) } }
+                        key = { "s-" + it.first.key },
+                    ) { (app, why) -> ResultRow(app.label, app, actions, subtitle = why) { launch(app, actions, onClose) } }
                     item("all") { ResultRow(stringResource(R.string.home_search_all_apps) + "  ›", null, actions) { onShowAll() } }
                 } else {
                     if (results.isNotEmpty()) item("h-apps") { SectionTitle(stringResource(R.string.home_search_apps_section)) }
@@ -197,7 +197,7 @@ private fun CommandRow(
             _,
         ->
     }, onToggleFavorite = {}, onOpenSettings = {}),
-    onClick,
+    onClick = onClick,
 )
 
 /** Risultato di un calcolo o di una conversione: si tocca per copiarlo. */
@@ -241,6 +241,7 @@ private fun ResultRow(
     label: String,
     app: AppEntry?,
     actions: HomeActions,
+    subtitle: String? = null,
     onClick: () -> Unit,
 ) {
     val look = LocalHomeLook.current
@@ -258,7 +259,11 @@ private fun ResultRow(
             AppIcon(app, actions.icon, RESULT_ICON)
             Spacer(Modifier.width(14.dp))
         }
-        BasicText(label, style = TextStyle(look.ink, 18.sp, fontFamily = look.family), maxLines = 1)
+        Column {
+            BasicText(label, style = TextStyle(look.ink, 18.sp, fontFamily = look.family), maxLines = 1)
+            // Il perché del suggerimento (SPEC §12.5), discreto.
+            subtitle?.let { BasicText(it, style = TextStyle(look.muted, 13.sp, fontFamily = look.family), maxLines = 1) }
+        }
     }
 }
 

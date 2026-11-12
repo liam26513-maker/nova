@@ -374,6 +374,11 @@
     <string name="standby_widget_battery">Battery</string>
     <string name="time_app_chart">Minutes in apps, last 7 days</string>
     <string name="time_app_chart_one">%1$s, last 7 days</string>
+    <string name="why_this_hour">You often open it at this time</string>
+    <string name="why_often">You open it often</string>
+    <string name="why_headphones">You often use it with headphones</string>
+    <string name="why_keyboard">You often use it with the keyboard</string>
+    <string name="why_mode">You often use it in %1$s</string>
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>

@@ -5,7 +5,6 @@ import android.app.WallpaperColors
 import android.app.WallpaperManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -41,11 +40,14 @@ import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeLayoutStore
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
+import it.manlio.nova.feature.home.Open
 import it.manlio.nova.feature.home.PreparedWallpaper
+import it.manlio.nova.feature.home.Suggested
 import it.manlio.nova.feature.home.Suggestions
 import it.manlio.nova.feature.home.TILE_ICON
 import it.manlio.nova.feature.home.WallpaperLoader
 import it.manlio.nova.feature.home.WallpaperSource
+import it.manlio.nova.feature.home.Why
 import it.manlio.nova.feature.home.rememberMinuteClock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -221,7 +223,7 @@ class HomeActivity : ComponentActivity() {
                 if (open != null) lifecycleScope.launch { app.shizuku.run(open) }
             },
             onSwipeDown = { HomeSystem.expandNotifications(this) },
-            suggestions = { withContext(Dispatchers.IO) { suggestedApps(this@HomeActivity) } },
+            suggestions = { withContext(Dispatchers.IO) { suggestedApps(app) } },
             onSleep = ::sleep,
             onWebSearch = { HomeSystem.webSearch(this, it) },
             widgets = widgets,
@@ -335,17 +337,42 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
-/** Le aperture delle app negli ultimi 14 giorni, dai dati di utilizzo (se l'utente li ha concessi), trasformate in suggerimenti. */
-private fun suggestedApps(context: Context): List<String> {
-    val usage = context.getSystemService(UsageStatsManager::class.java) ?: return emptyList()
+/**
+ * Le aperture delle app negli ultimi 14 giorni, dai dati di utilizzo (se l'utente li ha concessi), con la situazione annotata da
+ * [ContextLog], trasformate in suggerimenti con il loro perché in parole semplici.
+ */
+private fun suggestedApps(app: NovaApp): List<Pair<String, String>> {
+    val usage = app.getSystemService(UsageStatsManager::class.java) ?: return emptyList()
     val now = System.currentTimeMillis()
     val events = runCatching { usage.queryEvents(now - SUGGESTION_DAYS_MS, now) }.getOrNull() ?: return emptyList()
-    val opens = ArrayList<Pair<String, Long>>()
+    val opens = ArrayList<Open>()
     val event = UsageEvents.Event()
     while (events.getNextEvent(event)) {
-        if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED) opens += event.packageName to event.timeStamp
+        if (event.eventType == UsageEvents.Event.ACTIVITY_RESUMED) opens += Open(event.packageName, event.timeStamp)
     }
-    return Suggestions.rank(opens, now, skip = setOf(context.packageName))
+    val log = app.contexts
+    return Suggestions
+        .suggest(log.withTags(opens), now, skip = setOf(app.packageName), tagsNow = log.tagsNow())
+        .map { it.pkg to reason(app, it) }
 }
+
+private fun reason(
+    app: NovaApp,
+    s: Suggested,
+): String =
+    when (s.why) {
+        Why.THIS_HOUR -> app.getString(R.string.why_this_hour)
+        Why.OFTEN -> app.getString(R.string.why_often)
+        Why.CONTEXT ->
+            when (val tag = s.tag.orEmpty()) {
+                "cuffie" -> app.getString(R.string.why_headphones)
+                "tastiera" -> app.getString(R.string.why_keyboard)
+                else ->
+                    Modes.all
+                        .firstOrNull { "mode:${it.id}" == tag }
+                        ?.let { app.getString(R.string.why_mode, app.modes.name(it)) }
+                        ?: app.getString(R.string.why_often)
+            }
+    }
 
 private const val SUGGESTION_DAYS_MS = 14 * 86_400_000L
