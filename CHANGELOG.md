@@ -5,6 +5,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 ## Non rilasciato
 
 - **Isola della musica sopra le altre app** («isola sopra le altre app»): se la accendi in Personalizza, la pillola della musica che suona si vede in alto anche dentro le altre app; si tocca per i comandi. Spenta di serie, sparisce nella Gaming e a schermo bloccato.
+- La voce dell'isola in Personalizza ora ha «Sì» a sinistra e «No» a destra, come le altre.
 
 ### Risposta rapida dalla Home
 - Richiesta: "fai tutti gli altri passaggi che puoi fare tu del piano" (dal piano: risposta rapida dalle notifiche, SPEC §6.2).

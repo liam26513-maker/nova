@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.1380. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.1480. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -32,6 +32,16 @@ Aggiornato a: release 0.1.1380. Per riprendere il lavoro in una chat nuova basta
   - Home: pagine accanto pronte prima e cambio pagina più morbido;
   - misura della tastiera salvata in `docs/modules/tastiera.md`.
   - Home ancora lenta nello scorrimento (mediana ~30 ms, UI thread): tracce Compose aggiunte (PR 148) per trovare il pezzo lento.
+- **12 novembre, sera (fino alla 0.1.1480):**
+  - scorciatoie delle app in cima al menu dell'icona (pressione lunga);
+  - Il tuo tempo: grafico dei minuti per app, anche per una sola app;
+  - Lavoro: le app aperte nella barra del desktop;
+  - suggerimenti nella ricerca con il perché («adesso», «a quest'ora», «spesso»), anche secondo modalità, cuffie e tastiera;
+  - Home essenziale facoltativa durante Studio e Presentazione, che all'uscita torna com'era;
+  - risposta rapida alle notifiche dal menu dell'icona;
+  - isola della musica sopra le altre app, facoltativa e spenta di serie.
+  - Il modello della penna non si fa (detto dal proprietario).
+  - Provati sul tablet con la 0.1.1480: suggerimenti con il perché, scorciatoie (Calendar → «Nuovo evento»), grafico per app, isola sopra YouTube Music (si apre con i comandi, sparisce sulla Home). Da provare a mano: risposta rapida (serve un messaggio vero), Home essenziale in Studio, app aperte nella barra del Lavoro.
 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
@@ -39,9 +49,7 @@ Aggiornato a: release 0.1.1380. Per riprendere il lavoro in una chat nuova basta
 3. **Fase 3, seguito:** altri profili automatici (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora).
 4. **Fase 4** penna: profili della barra per app (serve l'elenco delle scorciatoie di ibisPaint: il proprietario non ha una tastiera da collegare). La galleria dei lavori non serve (detto dal proprietario).
 5. **Fase 5** PC e streaming: serve il PC.
-6. **Fase 6:**
-   - widget nello StandBy;
-   - file cifrati nella cartella privata (il proprietario ha detto «per ora no»).
+6. **Fase 6:** file cifrati nella cartella privata (il proprietario ha detto «per ora no»). Widget nello StandBy fatti.
 7. **Repository:** rimetterlo privato solo quando il limite delle Actions si è rinnovato (lo fa Claude, d'accordo con il proprietario).
 
 ## Regole che contano (CLAUDE.md)
