@@ -50,6 +50,23 @@ sealed interface SystemCommand {
         override val argv = listOf("pm", "enable", "--user", "0", packageName)
     }
 
+    /**
+     * Fa compilare ad ART il codice di un'app di NOVA (tutto, `speed`). Dopo ogni aggiornamento fuori dal Play Store Android lo
+     * lascia in «verify»: interpretato e compilato a pezzi mentre gira, quindi più lento finché non passa l'ottimizzazione notturna.
+     * Solo i pacchetti di NOVA.
+     */
+    data class CompileOwn(val packageName: String) : SystemCommand {
+        init {
+            require(packageName in OWN_PACKAGES) { "Si compilano solo le app di NOVA, non $packageName" }
+        }
+
+        override val argv = listOf("cmd", "package", "compile", "-m", "speed", "-f", packageName)
+
+        companion object {
+            val OWN_PACKAGES = listOf("it.manlio.nova", "it.manlio.nova.keyboard")
+        }
+    }
+
     data class ForceStop(val packageName: String) : SystemCommand {
         init {
             requirePackage(packageName)

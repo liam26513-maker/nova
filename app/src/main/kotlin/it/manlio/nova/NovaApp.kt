@@ -179,6 +179,7 @@ class NovaApp :
             systemChanges.reapplyFirewall()
         }
         setUpUpdates()
+        if (safeModeReason == null) SelfCompile(this).start() // codice ottimizzato dopo ogni aggiornamento
         modes = ModeController(this, appScope).also { it.start() }
         StudySchedule.arm(this)
         automations = AutomationEngine(this).also { it.start() }
