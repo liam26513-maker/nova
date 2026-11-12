@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Lavoro: la barra non copre più il dock della Home** (trovato provando la barra delle app aperte): sulla Home la barra del Lavoro si nasconde, perché lì c'è già il dock con gli stessi preferiti; nelle altre app resta.
+
 - **Isola della musica sopra le altre app** («isola sopra le altre app»): se la accendi in Personalizza, la pillola della musica che suona si vede in alto anche dentro le altre app; si tocca per i comandi. Spenta di serie, sparisce nella Gaming e a schermo bloccato.
 - La voce dell'isola in Personalizza ora ha «Sì» a sinistra e «No» a destra, come le altre.
 

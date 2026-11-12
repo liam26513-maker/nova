@@ -34,10 +34,17 @@ internal class DeskBar(
     private var view: View? = null
     private var on = false
     private var open = emptyList<RecentTask>()
+    private var atHome = false
 
     fun set(on: Boolean) {
         this.on = on
         if (on) refresh() else hide()
+    }
+
+    /** Sulla Home di NOVA la barra si nasconde: lì c'è già il dock con gli stessi preferiti (e le si sovrapponeva). */
+    fun onHome(home: Boolean) {
+        atHome = home
+        view?.visibility = if (home) View.GONE else View.VISIBLE
     }
 
     /** Un'altra finestra davanti: se sono cambiate le app aperte, la barra si rifà. */
@@ -97,6 +104,7 @@ internal class DeskBar(
                 gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                 y = (BOTTOM_DP * density).toInt()
             }
+        bar.visibility = if (atHome) View.GONE else View.VISIBLE
         if (runCatching { windows.addView(bar, params) }.isSuccess) view = bar
     }
 

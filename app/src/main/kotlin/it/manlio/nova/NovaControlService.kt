@@ -190,7 +190,13 @@ class NovaControlService : AccessibilityService() {
     private fun recentsEvent(event: AccessibilityEvent) {
         val pkg = event.packageName?.toString() ?: return
         val cls = event.className?.toString().orEmpty()
-        if (!pkg.contains("inputmethod")) island.update(onHome = pkg == packageName && cls == HomeActivity::class.java.name)
+        // Le finestre di NOVA che non sono activity (tendina, pannelli) non cambiano l'app davanti.
+        val ownOverlay = pkg == packageName && !cls.startsWith(packageName)
+        if (!pkg.contains("inputmethod") && !ownOverlay) {
+            val onHome = pkg == packageName && cls == HomeActivity::class.java.name
+            island.update(onHome)
+            if (pkg != SYSTEM_UI) deskBar.onHome(onHome)
+        }
         when {
             pkg == RecentsSwitcher.SYSTEM_LAUNCHER && cls == RecentsSwitcher.RECENTS_ACTIVITY -> recents.show()
             pkg == SYSTEM_UI || pkg.contains("inputmethod") -> Unit
