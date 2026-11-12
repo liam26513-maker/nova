@@ -37,9 +37,10 @@ private const val MINUTES_PER_HOUR = 60
 private const val WEEK_DAYS = 6L
 
 /** Un'app con i suoi minuti in primo piano. */
-private data class AppTime(val name: String, val minutes: Int)
+private data class AppTime(val pkg: String, val name: String, val minutes: Int)
 
-private class Usage(val today: List<AppTime>, val week: List<AppTime>)
+/** [days]: per ognuno degli ultimi 7 giorni (dal più vecchio a oggi), i minuti di ogni app. */
+private class Usage(val today: List<AppTime>, val week: List<AppTime>, val days: List<Map<String, Int>>, val start: LocalDate)
 
 /** «45 min» o «2 h 5 min». */
 internal fun readableTime(minutes: Int): String {
@@ -58,24 +59,34 @@ private fun hasUsageAccess(context: Context): Boolean {
         AppOpsManager.MODE_ALLOWED
 }
 
-private fun topApps(
+/** I minuti di ogni app nel giorno [day] (solo app avviabili, senza NOVA e senza la tastiera). */
+private fun minutesOn(
     context: Context,
-    from: LocalDate,
-): List<AppTime> {
+    day: LocalDate,
+): Map<String, Int> {
+    val zone = ZoneId.systemDefault()
+    val begin = day.atStartOfDay(zone).toInstant().toEpochMilli()
+    val end = minOf(day.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli(), System.currentTimeMillis())
     val pm = context.packageManager
-    val begin = from.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
     // La tastiera è «davanti» mentre si scrive in un'altra app: contarla raddoppierebbe quel tempo.
     val keyboards = context.getSystemService(InputMethodManager::class.java).enabledInputMethodList.map { it.packageName }.toSet()
     return context
         .getSystemService(UsageStatsManager::class.java)
-        .queryAndAggregateUsageStats(begin, System.currentTimeMillis())
+        .queryAndAggregateUsageStats(begin, end)
         .filterKeys { it != context.packageName && it !in keyboards && pm.getLaunchIntentForPackage(it) != null }
-        .map { (pkg, stats) ->
-            val name = runCatching { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }.getOrDefault(pkg)
-            AppTime(name, (stats.totalTimeInForeground / MS_PER_MINUTE).toInt())
-        }.filter { it.minutes > 0 }
-        .sortedByDescending { it.minutes }
-        .take(TOP_APPS)
+        .mapValues { (it.value.totalTimeInForeground / MS_PER_MINUTE).toInt() }
+        .filterValues { it > 0 }
+}
+
+/** Le app più usate da una somma di minuti per pacchetto. */
+private fun top(
+    context: Context,
+    minutes: Map<String, Int>,
+): List<AppTime> {
+    val pm = context.packageManager
+    return minutes.entries.sortedByDescending { it.value }.take(TOP_APPS).map { (pkg, min) ->
+        AppTime(pkg, runCatching { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }.getOrDefault(pkg), min)
+    }
 }
 
 private suspend fun readUsage(context: Context): Usage? =
@@ -84,7 +95,12 @@ private suspend fun readUsage(context: Context): Usage? =
         if (!hasUsageAccess(context)) {
             null
         } else {
-            runCatching { Usage(topApps(context, today), topApps(context, today.minusDays(WEEK_DAYS))) }.getOrNull()
+            runCatching {
+                val start = today.minusDays(WEEK_DAYS)
+                val days = (0..WEEK_DAYS).map { minutesOn(context, start.plusDays(it)) }
+                val week = days.flatMap { it.entries }.groupBy({ it.key }, { it.value }).mapValues { it.value.sum() }
+                Usage(top(context, days.last()), top(context, week), days, start)
+            }.getOrNull()
         }
     }
 
@@ -123,8 +139,26 @@ internal fun TimeSection(
             )
         }
     } else {
+        // Il grafico delle app: tutte insieme, o quella toccata nell'elenco della settimana (ritoccandola si torna a tutte).
+        var chosen by remember { mutableStateOf<AppTime?>(null) }
+        val pick = chosen
+        SettingsSection(
+            backdrop,
+            header = pick?.let { stringResource(R.string.time_app_chart_one, it.name) } ?: stringResource(R.string.time_app_chart),
+        ) {
+            val bars =
+                remember(apps, pick) {
+                    weekBars(LocalDate.now()) { day ->
+                        val map = apps.days.getOrNull((day.toEpochDay() - apps.start.toEpochDay()).toInt()).orEmpty()
+                        if (pick == null) map.values.sum() else map[pick.pkg] ?: 0
+                    }
+                }
+            WeekChart(bars)
+        }
         AppTimes(backdrop, stringResource(R.string.time_today), apps.today)
-        AppTimes(backdrop, stringResource(R.string.time_week), apps.week)
+        AppTimes(backdrop, stringResource(R.string.time_week), apps.week, chosen?.pkg) { app ->
+            chosen = if (chosen?.pkg == app.pkg) null else app
+        }
     }
 }
 
@@ -133,10 +167,14 @@ private fun AppTimes(
     backdrop: ImageBitmap,
     header: String,
     apps: List<AppTime>,
+    chosen: String? = null,
+    onChoose: ((AppTime) -> Unit)? = null,
 ) {
     SettingsSection(backdrop, header = header) {
         if (apps.isEmpty()) SettingsRow(stringResource(R.string.time_empty))
-        apps.forEachIndexed { index, app -> TimeRow(app.name, app.minutes, showDivider = index > 0) }
+        apps.forEachIndexed { index, app ->
+            TimeRow(app.name, app.minutes, showDivider = index > 0, selected = app.pkg == chosen, onClick = onChoose?.let { { it(app) } })
+        }
     }
 }
 
@@ -145,10 +183,14 @@ private fun TimeRow(
     title: String,
     minutes: Int,
     showDivider: Boolean,
+    selected: Boolean = false,
+    onClick: (() -> Unit)? = null,
 ) {
+    val colors = Nova.tokens.colors
     SettingsRow(
         title,
         showDivider = showDivider,
-        trailing = { BasicText(readableTime(minutes), style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 16.sp)) },
+        onClick = onClick,
+        trailing = { BasicText(readableTime(minutes), style = TextStyle(if (selected) colors.accent else colors.onSurfaceMuted, 16.sp)) },
     )
 }

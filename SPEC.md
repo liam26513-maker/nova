@@ -723,7 +723,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.7 Benessere digitale (solo statistiche, nessun limite)
 
-> **Stato:** fatta la pagina «Il tuo tempo» (minuti per modalità e per app, in elenco). C'è il grafico dei minuti nelle modalità degli ultimi 7 giorni; manca quello per app.
+> **Stato:** fatta la pagina «Il tuo tempo» (minuti per modalità e per app, in elenco). C'è il grafico dei minuti nelle modalità degli ultimi 7 giorni e, dal 12 novembre 2026, quello delle app (tutte insieme o una toccata nell'elenco).
 
 - Tempo per app e per modalità (ore di studio, gaming, lavoro, disegno) da `UsageStatsManager`. Grafici settimanali. **Nessun blocco o limite** (eccetto il blocco distrazioni opzionale e volontario della modalità Studio).
 

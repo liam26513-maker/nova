@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Il tuo tempo: grafico delle app
+- Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: grafico per app, SPEC §12.7).
+- In Impostazioni → Il tuo tempo c'è anche il grafico dei minuti passati nelle app, giorno per giorno. Toccando un'app nell'elenco «Ultimi 7 giorni» il grafico mostra solo quella; ritoccandola torna a tutte.
+
 ### Scorciatoie delle app
 - Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: scorciatoie delle app, SPEC §6.2).
 - Tenendo premuta un'icona, in cima al menu compaiono le scorciatoie che l'app offre, per esempio «Nuova nota» o «Nuova scheda in incognito»: un tocco e vai dritto lì.
