@@ -33,7 +33,11 @@ non ridistribuibile. Servirebbe una libreria aperta. **Non misurato:** la latenz
 **Misura di riferimento (12 novembre 2026, 0.1.1330, U6 in orizzontale, aspetto iPad):** 24 tocchi su tasti dalla ricerca della Home.
 - Fotogrammi: mediana 14 ms, 90° percentile 22 ms, 95° 24 ms, 99° 40 ms. Circa il 30 % supera la scadenza, quasi tutti per «Slow issue draw commands», cioè il disegno dei tasti verso la GPU. Il thread UI non è mai lento, nessun ritardo d'ingresso.
 - Memoria: circa 108 MB PSS.
-- Da provare quando si ottimizza, misurando prima e dopo nello stesso modo: meno strati e ombre nei tasti, livello hardware della vista della tastiera.
+- Provato (0.1.1400, PR 150): niente `LAYER_TYPE_HARDWARE` nella vista dei tasti. Misura con `kbmeasure` (46 tocchi dalla ricerca), prima e dopo:
+  - prima: mediana 13 ms, 90° 19 ms, 26 % in ritardo;
+  - dopo, tre prove: mediana 13–15 ms, 90° 18–22 ms, 15–34 % in ritardo.
+  - Nessuna differenza oltre il rumore. Si tiene, perché fa a meno di una texture fuori schermo grande quanto la tastiera.
+- Da provare ancora: meno strati e ombre nei tasti.
 - Attenzione: un `am force-stop` della tastiera fa passare Android a un'altra tastiera predefinita; poi va rimessa con `ime set`.
 
 ## Già disponibili (da HeliBoard, in Impostazioni della tastiera)
