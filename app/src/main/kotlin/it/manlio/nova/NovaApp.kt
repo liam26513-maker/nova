@@ -179,6 +179,7 @@ class NovaApp :
         modes = ModeController(this, appScope).also { it.start() }
         StudySchedule.arm(this)
         automations = AutomationEngine(this).also { it.start() }
+        DnsGuard(this).start() // «Blocca pubblicità» non deve lasciare il tablet senza internet
         File(filesDir, "foglio-rapido.png").delete() // il Foglio rapido è stato tolto: niente file rimasti
         announceAccentChanges()
         gameMeter = GameMeter(this, appScope)

@@ -85,6 +85,7 @@ class PerformanceUi(
     /** Prima di accenderlo si controlla che il DNS risponda: se non risponde, Android non troverebbe più nessun sito. */
     fun chooseAdBlock(on: Boolean) =
         act {
+            DnsGuard.forgetPause(app)
             if (on && !withContext(Dispatchers.IO) { dnsReachable(SystemTools.AD_BLOCK_HOST) }) {
                 message = R.string.perf_dns_unreachable
                 true

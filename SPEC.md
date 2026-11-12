@@ -748,7 +748,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 13.1 Blocco pubblicità di sistema
 
-- Tramite **DNS privato** di Android (`private_dns_mode=hostname`, `private_dns_specifier=<provider>`) impostato via Shizuku; provider selezionabili (es. AdGuard DNS, NextDNS con profilo personale). Nessuna VPN: compatibile con Tailscale.
+- Tramite **DNS privato** di Android (`private_dns_mode=hostname`, `private_dns_specifier=<provider>`) impostato via Shizuku; provider selezionabili (es. AdGuard DNS, NextDNS con profilo personale). Nessuna VPN: compatibile con Tailscale. **Guardiano (12 novembre 2026):** se la rete non raggiunge AdGuard (Android non la convalida per 20 s), NOVA sospende il DNS da solo, lo dice con un avviso e lo rimette alla prossima rete; una sola volta per rete (`DnsGuard`, callback della rete predefinita, niente polling). Una scelta a mano dell'utente cancella la sospensione.
 - Prima di accenderlo NOVA controlla che il provider risponda sulla porta 853; se non risponde resta spento e lo dice.
 - Interruttore rapido nel centro di controllo (alcuni siti/app possono rompersi). Elenco eccezioni non disponibile a livello DNS: documentarlo.
 

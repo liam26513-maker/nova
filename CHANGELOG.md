@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### «Blocca pubblicità» non toglie più internet
+- Richiesta: "fai tutto cio che puoi fare tu" (dopo «non è possibile accedere al server dns privato»).
+- Se la rete non riesce a raggiungere il servizio che blocca la pubblicità, dopo 20 secondi NOVA lo sospende da solo e te lo dice: il tablet torna a navigare. Alla prossima rete lo riaccende.
+
 ### Gioca dal PC
 - Richiesta: "facciamo il collegamento al pc e streaming".
 - In tendina → Altro compare «Gioca dal PC» quando sul tablet c'è Moonlight: un tocco lo apre e ti collega al PC con Sunshine. Con Tailscale funziona anche fuori casa.
