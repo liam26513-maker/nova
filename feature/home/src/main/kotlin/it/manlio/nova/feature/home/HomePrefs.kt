@@ -91,6 +91,8 @@ data class HomePrefs(
     val standbyCalendar: Boolean = false,
     /** Le foto scelte a rotazione nello StandBy al posto dello sfondo (SPEC §12.6): spente di serie. */
     val standbyPhotos: Boolean = false,
+    /** Il widget accanto all'ora nello StandBy, in orizzontale e di giorno: "" nessuno, "CALENDAR", "BATTERY". */
+    val standbyWidget: String = "",
     /** Le App recenti di NOVA in stile iPad sopra quelle di Android (SPEC §12.10); servono Shizuku e il servizio di NOVA. */
     val ipadRecents: Boolean = true,
     /** Riquadri del centro di controllo a prima vista (ordine fisso di [ControlTileId]); gli altri stanno sotto «Altro». */
@@ -116,6 +118,7 @@ data class HomePrefs(
             standbyAuto = false,
             standbyCalendar = false,
             standbyPhotos = false,
+            standbyWidget = "",
             ipadRecents = true,
         )
 
@@ -129,6 +132,7 @@ data class HomePrefs(
             standbyAuto = standbyAuto,
             standbyCalendar = standbyCalendar,
             standbyPhotos = standbyPhotos,
+            standbyWidget = standbyWidget,
             ipadRecents = ipadRecents,
         )
 
@@ -234,6 +238,7 @@ internal object PrefsCodec {
             standbyAuto = bool("standbyAuto", d.standbyAuto),
             standbyCalendar = bool("standbyCalendar", d.standbyCalendar),
             standbyPhotos = bool("standbyPhotos", d.standbyPhotos),
+            standbyWidget = p.getProperty("standbyWidget", d.standbyWidget).takeIf { it in STANDBY_WIDGETS } ?: d.standbyWidget,
             ipadRecents = bool("ipadRecents", d.ipadRecents),
             controlTiles = tiles(p.getProperty("controlTiles"), d.controlTiles),
             hidden = p.stringPropertyNames().filter { it.startsWith(HIDDEN) }.associate { it.removePrefix(HIDDEN) to p.getProperty(it) },
@@ -276,6 +281,7 @@ internal object PrefsCodec {
         p["standbyAuto"] = prefs.standbyAuto.toString()
         p["standbyCalendar"] = prefs.standbyCalendar.toString()
         p["standbyPhotos"] = prefs.standbyPhotos.toString()
+        p["standbyWidget"] = prefs.standbyWidget
         p["ipadRecents"] = prefs.ipadRecents.toString()
         p["controlTiles"] = prefs.controlTiles.joinToString(",") { it.name }
         prefs.hidden.forEach { (key, label) -> p["$HIDDEN$key"] = label }
@@ -300,3 +306,6 @@ internal object PrefsCodec {
         default: E,
     ): E = enumValues<E>().firstOrNull { it.name == value } ?: default
 }
+
+/** I widget che lo StandBy sa mostrare ("" = nessuno). */
+val STANDBY_WIDGETS = listOf("", "CALENDAR", "BATTERY")

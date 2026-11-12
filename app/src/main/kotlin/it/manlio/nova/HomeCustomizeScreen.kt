@@ -24,6 +24,7 @@ import it.manlio.nova.feature.home.IconShape
 import it.manlio.nova.feature.home.IconSize
 import it.manlio.nova.feature.home.IconStyle
 import it.manlio.nova.feature.home.NovaWallpapers
+import it.manlio.nova.feature.home.STANDBY_WIDGETS
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
 import it.manlio.nova.feature.home.TextSize
@@ -348,6 +349,9 @@ private fun LayoutSection(
             onChange { it.copy(standbyPhotos = v) }
         }
         if (prefs.standbyPhotos) StandbyPhotoRows()
+        Choice(R.string.customize_standby_widget, STANDBY_WIDGETS, prefs.standbyWidget, { standbyWidgetName(it) }, divider = true) { v ->
+            onChange { it.copy(standbyWidget = v) }
+        }
         Choice(R.string.customize_ipad_recents, listOf(true, false), prefs.ipadRecents, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(ipadRecents = v) }
         }

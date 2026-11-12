@@ -259,6 +259,7 @@ fun HomeScreen(
                     weatherCity(layout),
                     actions.weather,
                     extras,
+                    prefs.standbyWidget,
                 ) {
                     // Le foto scelte, se l'opzione è accesa e ce ne sono; altrimenti lo sfondo della Home.
                     val context = LocalContext.current

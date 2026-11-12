@@ -46,3 +46,13 @@ internal fun StandbyPhotoRows() {
         )
     }
 }
+
+@Composable
+internal fun standbyWidgetName(kind: String): String =
+    stringResource(
+        when (kind) {
+            "CALENDAR" -> R.string.standby_widget_calendar
+            "BATTERY" -> R.string.standby_widget_battery
+            else -> R.string.standby_widget_none
+        },
+    )

@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Widget nello StandBy
+- Richiesta: "fai tutto cio che puoi fare tu" (dal piano: widget nello StandBy).
+- In Personalizza la Home → Disposizione e gesti puoi scegliere un widget da mettere accanto all'ora nello StandBy: Calendario o Batteria. Si vede con il tablet in orizzontale e di giorno; di notte lo StandBy resta solo l'ora, per non disturbare.
+
 ### «Blocca pubblicità» non toglie più internet
 - Richiesta: "fai tutto cio che puoi fare tu" (dopo «non è possibile accedere al server dns privato»).
 - Se la rete non riesce a raggiungere il servizio che blocca la pubblicità, dopo 20 secondi NOVA lo sospende da solo e te lo dice: il tablet torna a navigare. Alla prossima rete lo riaccende.
