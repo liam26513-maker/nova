@@ -44,13 +44,11 @@ Aggiornato a: release 0.1.1480. Per riprendere il lavoro in una chat nuova basta
   - Provati sul tablet con la 0.1.1480: suggerimenti con il perché, scorciatoie (Calendar → «Nuovo evento»), grafico per app, isola sopra YouTube Music (si apre con i comandi, sparisce sulla Home). Da provare a mano: risposta rapida (serve un messaggio vero), Home essenziale in Studio, app aperte nella barra del Lavoro.
 
 ## Prossimo passo (in ordine)
-1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
-2. **Tastiera** (SPEC §10; dettagli in `docs/modules/tastiera.md`): aspetto iPad e prima installazione da NOVA fatti. Resta da misurare la velocità sul tablet.
-3. **Fase 3, seguito:** altri profili automatici (la Home portfolio è rimandata: il proprietario ha detto di non farla per ora).
-4. **Fase 4** penna: profili della barra per app (serve l'elenco delle scorciatoie di ibisPaint: il proprietario non ha una tastiera da collegare). La galleria dei lavori non serve (detto dal proprietario).
-5. **Fase 5** PC e streaming: serve il PC.
-6. **Fase 6:** file cifrati nella cartella privata (il proprietario ha detto «per ora no»). Widget nello StandBy fatti.
-7. **Repository:** rimetterlo privato solo quando il limite delle Actions si è rinnovato (lo fa Claude, d'accordo con il proprietario).
+Le parti del piano che Claude poteva fare da solo sono fatte (controllo del 12 novembre 2026). Restano:
+1. **Prove a mano del proprietario:** risposta rapida con un messaggio vero, Home essenziale nella Studio, foto vere nello StandBy, Gaming e 65% in partita (vedi `docs/TEST-MANUALE.md`).
+2. **Rimandate o non volute dal proprietario:** gaming e streaming dal PC (con lo Stato PC), Home portfolio della Presentazione, consigli per modello di penna, galleria dei lavori, file cifrati nella cartella privata («per ora no»).
+3. **Penna:** profili della barra per altre app oltre a ibisPaint, solo se il proprietario ne indica una.
+4. **Repository:** rimetterlo privato quando il limite delle Actions si è rinnovato (lo fa Claude, d'accordo con il proprietario).
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso
