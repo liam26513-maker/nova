@@ -5,22 +5,28 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -28,6 +34,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import it.manlio.nova.core.design.Nova
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
@@ -113,6 +120,7 @@ private fun GameRow(
         name,
         summary = summary,
         showDivider = showDivider,
+        leading = { GameIcon(game) },
         onClick = {
             context.packageManager.getLaunchIntentForPackage(game)?.let { runCatching { context.startActivity(it) } }
         },
@@ -133,6 +141,21 @@ private fun GameRow(
     )
 }
 
+/** L'icona del gioco come copertina (SPEC §8.2), caricata fuori dal thread principale e piccola. */
+@Composable
+private fun GameIcon(game: String) {
+    val context = LocalContext.current
+    val px = with(LocalDensity.current) { ICON.roundToPx() }
+    var icon by remember(game) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(game) {
+        icon =
+            withContext(Dispatchers.IO) {
+                runCatching { context.packageManager.getApplicationIcon(game).toBitmap(px, px).asImageBitmap() }.getOrNull()
+            }
+    }
+    Box(Modifier.size(ICON)) { icon?.let { Image(it, contentDescription = null, Modifier.size(ICON)) } }
+}
+
 private fun openSite(
     context: Context,
     url: String,
@@ -140,5 +163,6 @@ private fun openSite(
     runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
 }
 
+private val ICON = 36.dp
 private const val XBOX_CLOUD = "https://www.xbox.com/play"
 private const val GEFORCE_NOW = "https://play.geforcenow.com"
