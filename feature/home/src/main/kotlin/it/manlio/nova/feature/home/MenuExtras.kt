@@ -8,4 +8,7 @@ internal data class MenuExtras(
     val onAddToHome: (() -> Unit)? = null,
     /** Chiude la notifica di quest'app (solo se ce n'è una). */
     val onClearNotification: (() -> Unit)? = null,
+    /** Risponde alla notifica di quest'app (solo se l'app lo permette); [replyTo] è a chi, per il titolo. */
+    val onReply: ((String) -> Unit)? = null,
+    val replyTo: String = "",
 )

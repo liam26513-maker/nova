@@ -91,4 +91,7 @@
     <string name="standby_charging">charging</string>
     <string name="standby_alarm">Alarm %1$s</string>
     <string name="control_turbo">Turbo</string>
+    <string name="home_menu_reply">Reply to %1$s</string>
+    <string name="home_menu_reply_hint">Write to %1$s…</string>
+    <string name="home_menu_reply_send">Send</string>
 </resources>

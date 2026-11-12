@@ -32,6 +32,8 @@ data class RawNotification(
     val ongoing: Boolean,
     val groupSummary: Boolean,
     val isMedia: Boolean,
+    /** L'app permette di rispondere dalla notifica (un'azione con RemoteInput). */
+    val canReply: Boolean = false,
 )
 
 /** Quel che si mostra di un'app: l'ultima notifica e quante sono in attesa. */
@@ -43,6 +45,7 @@ data class NotificationPreview(
     val text: String,
     val count: Int,
     val whenMs: Long,
+    val canReply: Boolean = false,
 )
 
 /** Da tutte le notifiche attive a un'anteprima per app (SPEC §6.2). Logica pura, provata con test. */
@@ -57,7 +60,7 @@ object NotificationIndex {
             .groupBy { it.pkg }
             .mapValues { (pkg, list) ->
                 val last = list.maxBy { it.whenMs }
-                NotificationPreview(pkg, last.key, last.title.trim(), last.text.trim(), list.size, last.whenMs)
+                NotificationPreview(pkg, last.key, last.title.trim(), last.text.trim(), list.size, last.whenMs, last.canReply)
             }
 
     /** «Titolo: testo», o solo quello che c'è. */
@@ -73,6 +76,12 @@ interface NotificationSource {
 
     /** Chiude la notifica (come «archivia»). */
     fun dismiss(key: String)
+
+    /** Risponde alla notifica con [text], come dalla tendina di Android. @return vero se l'app l'ha ricevuta. */
+    fun reply(
+        key: String,
+        text: String,
+    ): Boolean = false
 }
 
 /** Le anteprime correnti, per disegnare distintivi e righe senza passarle a ogni funzione. */

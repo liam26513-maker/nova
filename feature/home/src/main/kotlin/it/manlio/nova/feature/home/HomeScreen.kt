@@ -240,7 +240,14 @@ fun HomeScreen(
                     data.arranged,
                     ipad || hybrid,
                     ipadActions,
-                ) { menuFor = null }.copy(onClearNotification = clear)
+                ) { menuFor = null }.copy(onClearNotification = clear).let { base ->
+                    val p = menuFor?.let { previews[it.component.packageName] }?.takeIf { it.canReply }
+                    if (p == null) {
+                        base
+                    } else {
+                        base.copy(replyTo = p.title, onReply = { text -> actions.notifications?.reply(p.key, text) })
+                    }
+                }
             AppMenu(menuFor, menuFor?.key in data.favoriteSet, actions, extras) { menuFor = null }
             standby?.let {
                 val music = actions.media?.nowPlaying?.collectAsState()?.value?.takeIf { m -> m.playing }
