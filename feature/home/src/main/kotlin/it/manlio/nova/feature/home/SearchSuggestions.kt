@@ -9,10 +9,13 @@ import androidx.compose.runtime.produceState
 internal fun rememberSuggested(
     apps: List<AppEntry>,
     actions: HomeActions,
-): List<AppEntry> {
-    val suggested by produceState(emptyList<AppEntry>(), apps) {
+): List<Pair<AppEntry, String>> {
+    val suggested by produceState(emptyList<Pair<AppEntry, String>>(), apps) {
         val byPackage = apps.associateBy { it.component.packageName }
-        value = runCatching { actions.suggestions() }.getOrDefault(emptyList()).mapNotNull(byPackage::get)
+        value =
+            runCatching { actions.suggestions() }
+                .getOrDefault(emptyList())
+                .mapNotNull { (pkg, why) -> byPackage[pkg]?.let { it to why } }
     }
     return suggested
 }

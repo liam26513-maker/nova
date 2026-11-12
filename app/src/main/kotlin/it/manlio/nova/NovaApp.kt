@@ -109,6 +109,9 @@ class NovaApp :
 
     /** Le regole «quando → allora» dell'utente (SPEC §12.4). */
     internal lateinit var automations: AutomationEngine
+
+    /** La situazione in cui si aprono le app, per i suggerimenti (SPEC §12.5). */
+    internal val contexts by lazy { ContextLog(this) }
     lateinit var gameMeter: GameMeter
 
     /** App che sta suonando musica (la aggiorna `MediaHub`): il Turbo non la chiude. */

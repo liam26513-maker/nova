@@ -175,6 +175,7 @@ class NovaControlService : AccessibilityService() {
         // Quale app è davanti (non la tastiera): serve a misurare o chiudere un gioco.
         event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let {
             app.noteForeground(it)
+            app.contexts.note(it)
             penBar.foreground(it)
             deskBar.refresh()
             if (app.safeModeReason == null) studyGuard.check(it)

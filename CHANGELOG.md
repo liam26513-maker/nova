@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Suggerimenti più furbi, con il perché
+- Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: suggerimenti con accessori e modalità, SPEC §12.5).
+- Le app suggerite nella ricerca tengono conto anche della situazione: cuffie collegate, tastiera, modalità accesa. Sotto ogni app c'è il perché, per esempio «Lo usi spesso con le cuffie» o «Lo apri spesso a quest'ora». Tutto resta sul tablet.
+
 ### Lavoro: le app aperte nella barra
 - Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: app aperte nella barra, SPEC §8.3).
 - Nella barra delle app del Lavoro, dopo i preferiti e una sottile riga, ci sono le app che hai aperto di recente (fino a 4): un tocco la riporta davanti, come nel dock dell'iPad.
