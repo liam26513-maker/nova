@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
@@ -582,7 +583,8 @@ class HomeScreenTest {
         compose.onNodeWithText("App 001").performTouchInput { swipeLeft() }
         compose.waitForIdle()
         compose.onNodeWithContentDescription("Pagina 2 di", substring = true).assertExists()
-        compose.onNodeWithText("App 001").assertDoesNotExist()
+        // La pagina 1 resta pronta accanto (beyondViewportPageCount), ma non si vede.
+        compose.onNodeWithText("App 001").assertIsNotDisplayed()
         compose.onRoot().captureRoboImage("screenshots/home_ipad_pagina_2.png")
     }
 

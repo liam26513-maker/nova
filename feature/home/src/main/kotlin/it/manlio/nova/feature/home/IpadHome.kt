@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -251,7 +253,20 @@ private fun GridArea(
                         view.perform(NovaHaptic.SELECTION)
                     },
             ) {
-                HorizontalPager(pager, Modifier.fillMaxSize(), key = { it }) { index ->
+                // Le pagine accanto sono già pronte (prima nascevano a inizio trascinamento: picchi di 70–90 ms sul tablet) e basta un
+                // trascinamento breve per girare pagina, con un assestamento morbido.
+                HorizontalPager(
+                    pager,
+                    Modifier.fillMaxSize(),
+                    key = { it },
+                    beyondViewportPageCount = 1,
+                    flingBehavior =
+                        PagerDefaults.flingBehavior(
+                            pager,
+                            snapAnimationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = PAGE_STIFFNESS),
+                            snapPositionalThreshold = PAGE_THRESHOLD,
+                        ),
+                ) { index ->
                     GridPage(
                         pages.getOrElse(index) {
                             emptyList()
@@ -454,3 +469,7 @@ private const val DRAG_ALPHA = 0.92f
 private const val DOT_ACTIVE = 0.92f
 private const val DOT_IDLE = 0.32f
 private const val DOT_STIFFNESS = 500f
+
+/** Quanto basta trascinare (in frazione di pagina) per girarla, e la morbidezza dell'assestamento. */
+private const val PAGE_THRESHOLD = 0.25f
+private const val PAGE_STIFFNESS = 300f
