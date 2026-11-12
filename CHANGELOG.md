@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Home più scorrevole
+- Richiesta: "magari rendi la home meno dura e piu scorrevole".
+- Le pagine della Home sono pronte prima che tu le sfogli, così il primo trascinamento non scatta più. Basta un trascinamento breve per cambiare pagina, e la pagina si posa in modo più morbido.
+
 ### Misura delle prestazioni corretta
 - Richiesta: "fai tutto cio che puoi fare tu controlla se puoi fare anche altro" (difetto trovato provando la misura sul tablet).
 - «Misura le prestazioni» diceva «fluido nel 100% dei fotogrammi» anche quando la grafica scattava, e consigliava il livello più pesante. Ora conta i fotogrammi davvero persi sullo schermo. La misura vecchia non vale più: va rifatta una volta (Impostazioni → Il tuo tablet → Misura le prestazioni).
