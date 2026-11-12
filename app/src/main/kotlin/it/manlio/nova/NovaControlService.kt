@@ -176,6 +176,7 @@ class NovaControlService : AccessibilityService() {
         event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let {
             app.noteForeground(it)
             penBar.foreground(it)
+            deskBar.refresh()
             if (app.safeModeReason == null) studyGuard.check(it)
         }
     }
