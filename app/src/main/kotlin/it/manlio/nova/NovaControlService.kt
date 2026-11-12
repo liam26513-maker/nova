@@ -93,6 +93,7 @@ class NovaControlService : AccessibilityService() {
     private val autoDevices by lazy { AutoDevices(this, app) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
     private val recents by lazy { RecentsSwitcher(this, app, scope) }
+    private val island by lazy { IslandOverlay(this, app) }
     private val panelEdge by lazy { EdgeSwipeWindow(this, fromEnd = false) { gamingPanel.show() } }
     private val watchdog by lazy {
         GameWatchdog(app) {
@@ -189,6 +190,7 @@ class NovaControlService : AccessibilityService() {
     private fun recentsEvent(event: AccessibilityEvent) {
         val pkg = event.packageName?.toString() ?: return
         val cls = event.className?.toString().orEmpty()
+        if (!pkg.contains("inputmethod")) island.update(onHome = pkg == packageName && cls == HomeActivity::class.java.name)
         when {
             pkg == RecentsSwitcher.SYSTEM_LAUNCHER && cls == RecentsSwitcher.RECENTS_ACTIVITY -> recents.show()
             pkg == SYSTEM_UI || pkg.contains("inputmethod") -> Unit
@@ -223,6 +225,7 @@ class NovaControlService : AccessibilityService() {
         if (app.safeModeReason == null) AndroidShade.lock(app, false) // senza servizio la tendina di NOVA non si apre più
         exitMenu.dismiss()
         recents.dismiss()
+        island.hide()
         studyGuard.dismiss()
         edge.remove()
         heat.set(false)

@@ -337,6 +337,7 @@
     <string name="edge_again">Swipe again to leave</string>
     <string name="watchdog_frozen">The game looks frozen</string>
     <string name="more_standby">StandBy</string>
+    <string name="customize_island_everywhere">Music island over other apps</string>
     <string name="customize_ipad_recents">iPad-style Recents (with Shizuku)</string>
     <string name="recents_empty">No open apps</string>
     <string name="recents_close_all">Close all</string>
