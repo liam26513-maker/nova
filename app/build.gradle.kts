@@ -95,6 +95,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
+    // I nomi delle funzioni Compose nelle tracce Perfetto (per trovare cosa rallenta la Home); senza traccia attiva non costa nulla.
+    implementation(libs.compose.runtime.tracing)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
