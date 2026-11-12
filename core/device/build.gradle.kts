@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "it.manlio.nova.core.device"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 31 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

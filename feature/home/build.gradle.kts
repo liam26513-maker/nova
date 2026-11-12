@@ -7,7 +7,7 @@ plugins {
 // Home minima (SPEC §6, Fase 0 punto 11): lista delle app stile Niagara + preferiti.
 android {
     namespace = "it.manlio.nova.feature.home"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 31 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
