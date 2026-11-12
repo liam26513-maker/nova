@@ -383,6 +383,9 @@
     <string name="mode_action_calm">Minimal Home</string>
     <string name="mode_calm_home">Minimal Home during Study and Presentation</string>
     <string name="mode_calm_home_summary">Black and text only, fewer distractions; it goes back afterwards</string>
+    <string name="mode_action_nav">Buttons instead of gestures</string>
+    <string name="pen_nav">In Creative mode: buttons instead of gestures</string>
+    <string name="pen_nav_footer">A stroke that starts near the edge no longer becomes the Back gesture. Gestures come back when Creative mode ends. Needs Shizuku.</string>
     <string name="customize_lock">Wallpaper also on the lock screen and in Recents</string>
     <string name="customize_standby_calendar">Next calendar event in StandBy</string>
     <string name="customize_standby_auto">Automatic StandBy (charging and landscape)</string>

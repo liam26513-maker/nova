@@ -14,7 +14,7 @@
       "maxMinutes": 600
     },
     "creativa": {
-      "actions": ["PERFORMANCE_GRAPHICS", "DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "NIGHT_LIGHT_OFF"],
+      "actions": ["PERFORMANCE_GRAPHICS", "DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "NIGHT_LIGHT_OFF", "THREE_BUTTON_NAV"],
       "maxMinutes": 360
     },
     "presentazione": {

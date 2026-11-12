@@ -57,6 +57,7 @@ internal class QuickToggles(
                     ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED
             QuickToggle.NIGHT_LIGHT -> secure("night_display_activated")
             QuickToggle.INVERSION -> secure("accessibility_display_inversion_enabled")
+            QuickToggle.THREE_BUTTON_NAV -> Settings.Secure.getInt(context.contentResolver, "navigation_mode", 2) == 0
         }
 
     private fun doNotDisturbOn(): Boolean {

@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Creativa: tasti in basso al posto dei gesti** («ibispaint non prende tratti»): durante la Creativa Android usa i 3 tasti in basso invece dei gesti, così un tratto che parte vicino al bordo non diventa «Indietro». All'uscita tornano i gesti. Si spegne in Impostazioni → Penna e tavoletta.
+
 - **Copertine dei giochi** («controlla tutto»: dal piano, libreria giochi SPEC §8.2): in Impostazioni → Modalità Gaming ogni gioco ha la sua icona accanto al nome.
 
 - **Lavoro: la barra non copre più il dock della Home** (trovato provando la barra delle app aperte): sulla Home la barra del Lavoro si nasconde, perché lì c'è già il dock con gli stessi preferiti; nelle altre app resta.

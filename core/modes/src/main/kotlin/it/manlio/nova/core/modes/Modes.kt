@@ -26,6 +26,9 @@ enum class ModeAction {
     /** Filtro luce blu spento, per vedere i colori veri (serve Shizuku). */
     NIGHT_LIGHT_OFF,
 
+    /** I 3 tasti in basso al posto dei gesti, così un tratto vicino al bordo non diventa «Indietro». All'uscita tornano i gesti. */
+    THREE_BUTTON_NAV,
+
     /** Filtro caldo acceso per leggere (serve Shizuku). Solo se l'utente lo sceglie per la Studio. */
     NIGHT_LIGHT_ON,
 
@@ -104,6 +107,7 @@ object Modes {
                     ModeAction.LOCK_ROTATION,
                     ModeAction.KEEP_SCREEN_ON,
                     ModeAction.NIGHT_LIGHT_OFF,
+                    ModeAction.THREE_BUTTON_NAV,
                 ),
             maxMinutes = 6 * 60,
         )
