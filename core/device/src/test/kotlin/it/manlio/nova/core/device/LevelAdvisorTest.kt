@@ -119,4 +119,17 @@ class LevelAdvisorTest {
         val frames = List(60) { i -> FrameSample(totalMs = 12f, deadlineMs = 16.7f, vsyncMs = 1000.0 + i * 16.67) }
         assertEquals(0f, LevelAdvisor.lostFramesPercent(frames), 0.01f)
     }
+
+    @Test
+    fun `a level without lost frames but with slow response is not smooth`() {
+        // Come sul U6: Massimo fluido al 98% ma 9 su 10 entro 92 ms; Bilanciato entro 35 ms.
+        val result =
+            BenchmarkResult(
+                p90MsByLevel = mapOf(MAXIMUM to 92f, BALANCED to 35f, PERFORMANCE to 23f),
+                jankPercentByLevel = mapOf(MAXIMUM to 2f, BALANCED to 0f, PERFORMANCE to 0f),
+            )
+        val (start, ceiling) = LevelAdvisor.advise(result, ramMb = 6000, realtimeBlur = true)
+        assertEquals(BALANCED, ceiling)
+        assertEquals(BALANCED, start)
+    }
 }

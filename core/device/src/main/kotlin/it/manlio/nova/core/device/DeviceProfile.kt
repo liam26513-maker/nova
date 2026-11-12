@@ -75,9 +75,12 @@ object LevelAdvisor {
      * dai buchi tra un vsync e l'altro, perché sul tablet di riferimento la scadenza data da Android è inaffidabile e il
      * metodo 2 diceva «fluido al 100%» con 9 fotogrammi su 10 entro 91 ms).
      */
-    const val METHOD = 3
+    const val METHOD = 4 // 4: anche la reattività (90° percentile entro [MAX_P90_MS])
     const val JANK_MULTIPLIER = 2f
     const val MAX_JANK_PERCENT = 5f
+
+    /** Ritardo massimo accettabile al 90° percentile: circa 3 fotogrammi a 60 Hz. Sul U6 Massimo arrivava a 92 ms. */
+    const val MAX_P90_MS = 50f
     const val LOW_RAM_MB = 3_000L
     private const val ALL_PERCENT = 100f
     private const val P90_NUM = 9
@@ -91,7 +94,9 @@ object LevelAdvisor {
         val smooth =
             GraphicsLevel.entries.filter { level ->
                 val jank = result.jankPercentByLevel[level] ?: return@filter false
-                jank < MAX_JANK_PERCENT
+                // Senza scatti ma con 9 fotogrammi su 10 oltre ~3 vsync la Home risponde in ritardo al dito: sembra «dura».
+                val p90 = result.p90MsByLevel[level] ?: return@filter false
+                jank < MAX_JANK_PERCENT && p90 <= MAX_P90_MS
             }
         var ceiling = smooth.firstOrNull() ?: GraphicsLevel.PERFORMANCE
         if (!realtimeBlur && ceiling == GraphicsLevel.MAXIMUM) ceiling = GraphicsLevel.BALANCED

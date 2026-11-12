@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Livello grafico scelto anche sulla reattività
+- Richiesta: "magari rendi la home meno dura e piu scorrevole".
+- La misura delle prestazioni ora guarda anche quanto in fretta lo schermo risponde al dito, non solo se scatta. Sul tuo tablet il livello Massimo non scatta, ma risponde in ritardo: Automatico sceglierà Bilanciato, che è più pronto. La misura va rifatta una volta (la rifaccio io dopo l'aggiornamento).
+
 ### Home più scorrevole
 - Richiesta: "magari rendi la home meno dura e piu scorrevole".
 - Le pagine della Home sono pronte prima che tu le sfogli, così il primo trascinamento non scatta più. Basta un trascinamento breve per cambiare pagina, e la pagina si posa in modo più morbido.
