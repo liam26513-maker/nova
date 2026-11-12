@@ -22,6 +22,17 @@ class SystemCommandTest {
     }
 
     @Test
+    fun `only NOVA's own apps can be compiled`() {
+        assertEquals(
+            listOf("cmd", "package", "compile", "-m", "speed", "-f", "it.manlio.nova.keyboard"),
+            SystemCommand.CompileOwn("it.manlio.nova.keyboard").argv,
+        )
+        listOf("com.android.systemui", "it.manlio.nova; reboot", "").forEach { pkg ->
+            assertTrue(runCatching { SystemCommand.CompileOwn(pkg) }.isFailure)
+        }
+    }
+
+    @Test
     fun `sleep only sends the sleep key, with nothing to revert`() {
         assertEquals(listOf("input", "keyevent", "KEYCODE_SLEEP"), SystemCommand.Sleep.argv)
     }
