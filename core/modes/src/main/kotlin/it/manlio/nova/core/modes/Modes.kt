@@ -5,6 +5,9 @@ package it.manlio.nova.core.modes
  * Ognuna sa annullarsi da sola ([ModeEnvironment.undo]) con ciò che ha salvato entrando.
  */
 enum class ModeAction {
+    /** Home essenziale (tema «Essenziale»: nero, solo testo) durante la modalità; all'uscita torna l'aspetto di prima. Facoltativa. */
+    CALM_HOME,
+
     /** Livello grafico di NOVA su «Prestazioni». */
     PERFORMANCE_GRAPHICS,
 
@@ -78,7 +81,7 @@ object Modes {
     val STUDY =
         ModeDefinition(
             id = "studio",
-            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON, ModeAction.NIGHT_LIGHT_ON),
+            actions = listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON, ModeAction.NIGHT_LIGHT_ON, ModeAction.CALM_HOME),
             maxMinutes = 4 * 60,
         )
 
@@ -115,6 +118,7 @@ object Modes {
                     ModeAction.LOCK_ROTATION,
                     ModeAction.KEEP_SCREEN_ON,
                     ModeAction.FULL_BRIGHTNESS,
+                    ModeAction.CALM_HOME,
                 ),
             maxMinutes = 3 * 60,
         )

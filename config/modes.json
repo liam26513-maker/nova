@@ -6,7 +6,7 @@
       "maxMinutes": 360
     },
     "studio": {
-      "actions": ["DO_NOT_DISTURB", "KEEP_SCREEN_ON", "NIGHT_LIGHT_ON"],
+      "actions": ["DO_NOT_DISTURB", "KEEP_SCREEN_ON", "NIGHT_LIGHT_ON", "CALM_HOME"],
       "maxMinutes": 240
     },
     "lavoro": {
@@ -18,7 +18,7 @@
       "maxMinutes": 360
     },
     "presentazione": {
-      "actions": ["DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "FULL_BRIGHTNESS"],
+      "actions": ["DO_NOT_DISTURB", "LOCK_ROTATION", "KEEP_SCREEN_ON", "FULL_BRIGHTNESS", "CALM_HOME"],
       "maxMinutes": 180
     }
   }

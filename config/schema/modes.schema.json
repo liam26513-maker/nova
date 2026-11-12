@@ -26,6 +26,7 @@
                 "PAUSE_SYNC",
                 "NIGHT_LIGHT_OFF",
                 "NIGHT_LIGHT_ON",
+                "CALM_HOME",
                 "FULL_BRIGHTNESS",
                 "TURBO"
               ]
