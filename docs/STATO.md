@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.1310. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.1380. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -23,6 +23,15 @@ Aggiornato a: release 0.1.1310. Per riprendere il lavoro in una chat nuova basta
   - Provato tutto sul tablet.
   - Root studiato e scartato: il fastboot del U6 è in «secure mode» anche con lo Sblocco OEM acceso.
 - **9 novembre, pomeriggio (fino alla 0.1.1310):** tastiera stile iPad e installabile da NOVA; StandBy senza tastiera sopra e con foto a rotazione facoltative; automazioni con «solo se»; ricerca senza la barra della Home in mezzo; doppio swipe, watchdog e Gaming automatica accesi di serie. Provato sul tablet (le foto vere e la Gaming in partita restano al proprietario).
+- **12 novembre (fino alla 0.1.1380):**
+  - barra della penna per ibisPaint (tasti letti dall'elenco di ibisPaint sul tablet);
+  - «Gioca dal PC» in tendina: apre Moonlight. Il gaming dal PC è rimandato dal proprietario: Sunshine e Tailscale installati sul PC, ma senza collegamento diretto (reti dei telefoni) il ritardo è 1–2 s;
+  - «Blocca pubblicità» che si sospende da solo se la rete non raggiunge AdGuard;
+  - widget Calendario o Batteria nello StandBy;
+  - misura delle prestazioni corretta (fotogrammi persi davvero + reattività): sul U6 consiglia Bilanciato;
+  - Home: pagine accanto pronte prima e cambio pagina più morbido;
+  - misura della tastiera salvata in `docs/modules/tastiera.md`.
+  - Home ancora lenta nello scorrimento (mediana ~30 ms, UI thread): tracce Compose aggiunte (PR 148) per trovare il pezzo lento.
 
 ## Prossimo passo (in ordine)
 1. **Prove sul tablet** di `docs/TEST-MANUALE.md`: tutto ciò che è arrivato dopo la 0.1.460 è provato solo con test e CI.
