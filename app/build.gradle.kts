@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "it.manlio.nova"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         // Non cambiare mai: romperebbe gli aggiornamenti (CLAUDE.md).

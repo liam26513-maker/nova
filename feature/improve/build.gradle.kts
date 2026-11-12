@@ -7,7 +7,7 @@ plugins {
 // Pulsanti Migliora e Ripara (SPEC §4.2-4.3, Fase 0 punto 9).
 android {
     namespace = "it.manlio.nova.feature.improve"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 31 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

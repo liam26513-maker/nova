@@ -6,7 +6,7 @@ plugins {
 // Testo dalle immagini (SPEC §12.1): PaddleOCR (PP-OCRv6 tiny) su ONNX Runtime, tutto sul tablet, senza rete né statistiche.
 android {
     namespace = "it.manlio.nova.feature.ocr"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 31
         consumerProguardFiles("consumer-rules.pro")

@@ -7,7 +7,7 @@ plugins {
 // Procedura guidata del primo avvio (SPEC §17, Fase 0 punto 12).
 android {
     namespace = "it.manlio.nova.feature.onboarding"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 31 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

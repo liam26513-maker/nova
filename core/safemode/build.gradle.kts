@@ -7,7 +7,7 @@ plugins {
 // Modalità provvisoria: dipende SOLO dal nucleo, mai da moduli feature/ (CLAUDE.md, SPEC §14.2).
 android {
     namespace = "it.manlio.nova.core.safemode"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig { minSdk = 31 }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
