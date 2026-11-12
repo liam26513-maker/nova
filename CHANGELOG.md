@@ -8,10 +8,6 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 - Richiesta: "intanto che aspetti fai altro" (seguito della misura della tastiera).
 - A ogni tasto premuto la tastiera faceva fare alla scheda video un passaggio in più che non serviva. L'ho tolto: dovrebbe rispondere in modo più regolare. Misurato prima e dopo sul tablet.
 
-### Strumento per trovare i rallentamenti della Home
-- Richiesta: "installa e continua con il resto del piano" (lavoro sulla Home più scorrevole).
-- Aggiunto uno strumento invisibile che permette di vedere, durante una misura, quale parte della Home rallenta. Quando non si misura non fa niente e non pesa.
-
 ### Livello grafico scelto anche sulla reattività
 - Richiesta: "magari rendi la home meno dura e piu scorrevole".
 - La misura delle prestazioni ora guarda anche quanto in fretta lo schermo risponde al dito, non solo se scatta. Sul tuo tablet il livello Massimo non scatta, ma risponde in ritardo: Automatico sceglierà Bilanciato, che è più pronto. La misura va rifatta una volta (la rifaccio io dopo l'aggiornamento).
