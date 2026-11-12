@@ -478,6 +478,8 @@
     <string name="standby_widget_none">Nessuno</string>
     <string name="standby_widget_calendar">Calendario</string>
     <string name="standby_widget_battery">Batteria</string>
+    <string name="time_app_chart">Minuti nelle app, ultimi 7 giorni</string>
+    <string name="time_app_chart_one">%1$s, ultimi 7 giorni</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>
