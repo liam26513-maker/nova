@@ -132,12 +132,13 @@ class ModeController(
         when (action) {
             ModeAction.PERFORMANCE_GRAPHICS -> performanceGraphics()
             ModeAction.CALM_HOME -> calmHome.apply()
-            ModeAction.DO_NOT_DISTURB -> doNotDisturb()
+            ModeAction.DO_NOT_DISTURB -> toggle(QuickToggle.DND, on = true, KIND_DND)
             ModeAction.LOCK_ROTATION -> settings.lockRotation()
             ModeAction.KEEP_SCREEN_ON -> settings.keepScreenOn()
             ModeAction.PAUSE_SYNC -> settings.pauseSync()
-            ModeAction.NIGHT_LIGHT_OFF -> nightLight(on = false)
-            ModeAction.NIGHT_LIGHT_ON -> nightLight(on = true)
+            ModeAction.NIGHT_LIGHT_OFF -> toggle(QuickToggle.NIGHT_LIGHT, on = false, KIND_NIGHT_LIGHT)
+            ModeAction.NIGHT_LIGHT_ON -> toggle(QuickToggle.NIGHT_LIGHT, on = true, KIND_NIGHT_LIGHT_ON)
+            ModeAction.THREE_BUTTON_NAV -> toggle(QuickToggle.THREE_BUTTON_NAV, on = true, KIND_NAV)
             ModeAction.FULL_BRIGHTNESS -> settings.fullBrightness()
             ModeAction.TURBO -> turbo()
         }
@@ -146,12 +147,14 @@ class ModeController(
         when (token.kind) {
             KIND_GRAPHICS -> restoreGraphics(token.value)
             KIND_CALM_HOME -> calmHome.restore()
-            KIND_DND -> !quick.available || app.systemTools.setToggle(QuickToggle.DND, on = false, wasOn = true)
+            in TOGGLE_UNDO.keys ->
+                TOGGLE_UNDO.getValue(token.kind).let {
+                        (t, on) ->
+                    !quick.available || app.systemTools.setToggle(t, on, wasOn = !on)
+                }
             ModeSettings.KIND_ROTATION -> settings.restoreRotation(token.value)
             ModeSettings.KIND_SCREEN_ON -> settings.restoreScreenTimeout(token.value)
             ModeSettings.KIND_SYNC -> settings.resumeSync()
-            KIND_NIGHT_LIGHT -> !quick.available || app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = true, wasOn = false)
-            KIND_NIGHT_LIGHT_ON -> !quick.available || app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = false, wasOn = true)
             ModeSettings.KIND_BRIGHTNESS -> settings.restoreBrightness(token.value)
             else -> true // segnalibro di una versione futura o sconosciuto: niente da annullare
         }
@@ -171,19 +174,19 @@ class ModeController(
         return true
     }
 
-    private suspend fun doNotDisturb(): ActionOutcome {
+    /**
+     * Un interruttore di Android durante la modalità ([kind] è il segnalibro per l'uscita). Se era già com'era richiesto non lo
+     * tocchiamo, né ora né all'uscita: per esempio Non disturbare acceso dall'utente resta acceso.
+     */
+    private suspend fun toggle(
+        t: QuickToggle,
+        on: Boolean,
+        kind: String,
+    ): ActionOutcome {
         if (!quick.available) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_shizuku))
-        if (quick.isOn(QuickToggle.DND)) return ActionOutcome.Applied() // già acceso dall'utente: non lo spegniamo noi all'uscita
-        val ok = app.systemTools.setToggle(QuickToggle.DND, on = true, wasOn = false)
-        return if (ok) ActionOutcome.Applied(UndoToken(KIND_DND)) else ActionOutcome.Failed("Android non ha obbedito")
-    }
-
-    private suspend fun nightLight(on: Boolean): ActionOutcome {
-        if (!quick.available) return ActionOutcome.Skipped(context.getString(R.string.mode_reason_shizuku))
-        if (quick.isOn(QuickToggle.NIGHT_LIGHT) == on) return ActionOutcome.Applied() // già così: all'uscita non va toccato
-        val ok = app.systemTools.setToggle(QuickToggle.NIGHT_LIGHT, on = on, wasOn = !on)
-        val token = UndoToken(if (on) KIND_NIGHT_LIGHT_ON else KIND_NIGHT_LIGHT)
-        return if (ok) ActionOutcome.Applied(token) else ActionOutcome.Failed("Android non ha obbedito")
+        if (quick.isOn(t) == on) return ActionOutcome.Applied()
+        val ok = app.systemTools.setToggle(t, on = on, wasOn = !on)
+        return if (ok) ActionOutcome.Applied(UndoToken(kind)) else ActionOutcome.Failed("Android non ha obbedito")
     }
 
     private suspend fun turbo(): ActionOutcome {
@@ -229,6 +232,7 @@ class ModeController(
             ModeAction.KEEP_SCREEN_ON -> R.string.mode_action_screen
             ModeAction.PAUSE_SYNC -> R.string.mode_action_sync
             ModeAction.NIGHT_LIGHT_OFF -> R.string.mode_action_night_light
+            ModeAction.THREE_BUTTON_NAV -> R.string.mode_action_nav
             ModeAction.NIGHT_LIGHT_ON -> R.string.mode_action_warm
             ModeAction.FULL_BRIGHTNESS -> R.string.mode_action_brightness
             ModeAction.TURBO -> R.string.mode_action_turbo
@@ -243,6 +247,16 @@ class ModeController(
         const val KIND_DND = "dnd"
         const val KIND_NIGHT_LIGHT = "night_light"
         const val KIND_NIGHT_LIGHT_ON = "night_light_on"
+        const val KIND_NAV = "three_button_nav"
+
+        /** All'uscita: quale interruttore rimettere e in che stato, per ogni segnalibro. */
+        private val TOGGLE_UNDO =
+            mapOf(
+                KIND_DND to (QuickToggle.DND to false),
+                KIND_NIGHT_LIGHT to (QuickToggle.NIGHT_LIGHT to true),
+                KIND_NIGHT_LIGHT_ON to (QuickToggle.NIGHT_LIGHT to false),
+                KIND_NAV to (QuickToggle.THREE_BUTTON_NAV to false),
+            )
         const val KIND_CALM_HOME = "calm_home"
         const val AUTO = "auto"
     }

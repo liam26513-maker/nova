@@ -489,6 +489,9 @@
     <string name="mode_action_calm">Home essenziale</string>
     <string name="mode_calm_home">Home essenziale durante Studio e Presentazione</string>
     <string name="mode_calm_home_summary">Nera e solo testo, per distrarti meno; all\'uscita torna com\'era</string>
+    <string name="mode_action_nav">Tasti in basso al posto dei gesti</string>
+    <string name="pen_nav">Nella Creativa: tasti in basso al posto dei gesti</string>
+    <string name="pen_nav_footer">Così un tratto che parte vicino al bordo non diventa il gesto «Indietro». All\'uscita dalla Creativa tornano i gesti. Serve Shizuku.</string>
     <string name="customize_lock">Sfondo anche sulla schermata di blocco e nelle App recenti</string>
     <string name="customize_standby_calendar">Prossimo evento del calendario nello StandBy</string>
     <string name="customize_standby_auto">StandBy automatico (in carica e in orizzontale)</string>

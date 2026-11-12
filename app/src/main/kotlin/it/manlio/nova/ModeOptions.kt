@@ -62,7 +62,7 @@ class ModeOptions(private val file: File) {
         const val OVERLAY = "OVERLAY_IN_GAMES"
 
         /** Voci che le modalità fanno solo se l'utente le ha accese. */
-        private val OPTIONAL = setOf(ModeAction.NIGHT_LIGHT_ON, ModeAction.CALM_HOME)
+        private val OPTIONAL = setOf(ModeAction.NIGHT_LIGHT_ON, ModeAction.CALM_HOME, ModeAction.THREE_BUTTON_NAV)
 
         /** Le opzioni accese finché l'utente non le spegne; tutte le altre partono spente. */
         private val ON_BY_DEFAULT = setOf("EDGE_SWIPE", "WATCHDOG", "AUTO_GAMING")
@@ -95,6 +95,13 @@ class ModeOptions(private val file: File) {
 
         /** Acceso di serie: cambiano solo NOVA e impostazioni che non pesano sul gioco. Turbo e pausa sincronizzazione li accendi tu. */
         val DEFAULT_ON =
-            setOf(ModeAction.PERFORMANCE_GRAPHICS, ModeAction.DO_NOT_DISTURB, ModeAction.LOCK_ROTATION, ModeAction.KEEP_SCREEN_ON)
+            setOf(
+                ModeAction.PERFORMANCE_GRAPHICS,
+                ModeAction.DO_NOT_DISTURB,
+                ModeAction.LOCK_ROTATION,
+                ModeAction.KEEP_SCREEN_ON,
+                // 3 tasti nella Creativa: acceso di serie per scelta del proprietario (12 novembre 2026), si spegne in Penna e tavoletta.
+                ModeAction.THREE_BUTTON_NAV,
+            )
     }
 }

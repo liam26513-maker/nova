@@ -8,6 +8,7 @@ import android.view.InputDevice
 import android.view.MotionEvent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
+import it.manlio.nova.core.modes.ModeAction
 
 /** Cosa sa fare una penna o tavoletta collegata, da quello che dichiara ad Android. */
 private data class PenInfo(
@@ -83,5 +85,12 @@ internal fun PenSection(backdrop: ImageBitmap) {
                 showDivider = index > 0,
             )
         }
+    }
+    val options = (context.applicationContext as NovaApp).modes.options
+    val values by options.values.collectAsState()
+    val key = ModeAction.THREE_BUTTON_NAV.name
+    val nav = values[key] ?: (ModeAction.THREE_BUTTON_NAV in ModeOptions.DEFAULT_ON)
+    SettingsSection(backdrop, footer = stringResource(R.string.pen_nav_footer)) {
+        SettingsRow(stringResource(R.string.pen_nav), onClick = { options.set(key, !nav) }, trailing = { if (nav) Check() })
     }
 }

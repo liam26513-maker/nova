@@ -146,6 +146,11 @@ class QuickToggleCommandTest {
                         "settings put secure accessibility_display_inversion_enabled 1" to
                             "settings put secure accessibility_display_inversion_enabled 0"
                     ),
+                QuickToggle.THREE_BUTTON_NAV to
+                    (
+                        "cmd overlay enable-exclusive --category com.android.internal.systemui.navbar.threebutton" to
+                            "cmd overlay enable-exclusive --category com.android.internal.systemui.navbar.gestural"
+                    ),
             )
         assertEquals(QuickToggle.entries.toSet(), expected.keys) // un comando per ogni interruttore, nessuno dimenticato
         expected.forEach { (toggle, pair) ->

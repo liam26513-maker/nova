@@ -313,6 +313,12 @@ enum class QuickToggle(private val onCommand: String, private val offCommand: St
         "settings put secure accessibility_display_inversion_enabled 1",
         "settings put secure accessibility_display_inversion_enabled 0",
     ),
+
+    /** Navigazione con i 3 tasti al posto dei gesti (niente «Indietro» dal bordo); spento = gesti di Android. */
+    THREE_BUTTON_NAV(
+        "cmd overlay enable-exclusive --category com.android.internal.systemui.navbar.threebutton",
+        "cmd overlay enable-exclusive --category com.android.internal.systemui.navbar.gestural",
+    ),
     ;
 
     /** Gli argomenti del comando: una lista fissa, mai una stringa interpretata da una shell. */
