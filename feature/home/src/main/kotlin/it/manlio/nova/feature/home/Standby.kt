@@ -2,6 +2,7 @@
 
 package it.manlio.nova.feature.home
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -14,8 +15,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -24,9 +28,11 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -95,18 +101,14 @@ fun StandbyScreen(
     weather: (suspend (String) -> Result<Weather>)? = null,
     /** Righe in più, solo quando servono: la musica che suona, il Pomodoro della Studio. */
     extras: List<String> = emptyList(),
+    /** Il widget accanto all'ora ([STANDBY_WIDGETS]): solo in orizzontale e di giorno. */
+    widget: String = "",
     background: @Composable () -> Unit = {},
 ) {
     // La chiave è la città: l'ora che cambia ogni minuto non rifà la richiesta.
     val forecast by produceState<Weather?>(null, city) { value = city?.let { weather?.invoke(it)?.getOrNull() } }
     BackHandler(onBack = onExit)
-    // Lo StandBy è a tutto schermo: se prima era aperta la tastiera (per esempio nella ricerca), si chiude e il campo perde il fuoco.
-    val keyboard = LocalSoftwareKeyboardController.current
-    val focus = LocalFocusManager.current
-    LaunchedEffect(Unit) {
-        focus.clearFocus(force = true)
-        keyboard?.hide()
-    }
+    CloseKeyboard()
     val look = LocalHomeLook.current
     val ink = if (info.night) Color(0xFFB02A2A) else Color(0xFFF2F2F2)
     val muted = ink.copy(alpha = 0.62f)
@@ -133,30 +135,61 @@ fun StandbyScreen(
             background()
             Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = DAY_VEIL)))
         }
-        // Il margine dà un limite alle righe lunghe (titoli, indirizzi), che così finiscono con «…» invece di uscire dallo schermo.
-        Column(Modifier.padding(horizontal = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            BasicText(time, style = TextStyle(ink, 220.sp, FontWeight.Thin, fontFamily = look.family))
-            BasicText(date, style = TextStyle(muted, 36.sp, FontWeight.Light, fontFamily = look.family))
-            Spacer(Modifier.height(28.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(28.dp), verticalAlignment = Alignment.CenterVertically) {
-                val battery = stringResource(R.string.standby_battery, info.battery)
-                val charging = if (info.charging) " · " + stringResource(R.string.standby_charging) else ""
-                BasicText(battery + charging, style = TextStyle(muted, 26.sp, fontFamily = look.family))
-                info.alarm?.let {
-                    BasicText(stringResource(R.string.standby_alarm, it), style = TextStyle(muted, 26.sp, fontFamily = look.family))
+        val landscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Il margine dà un limite alle righe lunghe (titoli, indirizzi), che così finiscono con «…» invece di uscire dallo schermo.
+            Column(Modifier.weight(1f, fill = false).padding(horizontal = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                BasicText(time, style = TextStyle(ink, 220.sp, FontWeight.Thin, fontFamily = look.family))
+                BasicText(date, style = TextStyle(muted, 36.sp, FontWeight.Light, fontFamily = look.family))
+                Spacer(Modifier.height(28.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(28.dp), verticalAlignment = Alignment.CenterVertically) {
+                    val battery = stringResource(R.string.standby_battery, info.battery)
+                    val charging = if (info.charging) " · " + stringResource(R.string.standby_charging) else ""
+                    BasicText(battery + charging, style = TextStyle(muted, 26.sp, fontFamily = look.family))
+                    info.alarm?.let {
+                        BasicText(stringResource(R.string.standby_alarm, it), style = TextStyle(muted, 26.sp, fontFamily = look.family))
+                    }
+                }
+                forecast?.let {
+                    Spacer(Modifier.height(16.dp))
+                    BasicText("${it.tempC}° · ${it.city}", style = TextStyle(muted, 26.sp, fontFamily = look.family))
+                }
+                (listOfNotNull(info.event) + extras).forEach {
+                    Spacer(Modifier.height(16.dp))
+                    BasicText(it, style = TextStyle(muted, 26.sp, fontFamily = look.family), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
-            forecast?.let {
-                Spacer(Modifier.height(16.dp))
-                BasicText("${it.tempC}° · ${it.city}", style = TextStyle(muted, 26.sp, fontFamily = look.family))
-            }
-            (listOfNotNull(info.event) + extras).forEach {
-                Spacer(Modifier.height(16.dp))
-                BasicText(it, style = TextStyle(muted, 26.sp, fontFamily = look.family), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (widget.isNotEmpty() && landscape && !info.night) StandbyWidget(widget, nowMillis, look)
+        }
+    }
+}
+
+/** Il widget dello StandBy su una lastra chiara, con i colori dello StandBy (testo chiaro) qualunque sia il tema della Home. */
+@Composable
+private fun StandbyWidget(
+    kind: String,
+    nowMillis: Long,
+    look: HomeLook,
+) {
+    val light = Color(0xFFF2F2F2)
+    CompositionLocalProvider(LocalHomeLook provides look.copy(dark = true, ink = light, muted = light.copy(alpha = 0.62f))) {
+        Box(
+            Modifier
+                .padding(end = 56.dp)
+                .size(WIDGET_SIZE)
+                .clip(RoundedCornerShape(32.dp))
+                .background(Color.White.copy(alpha = WIDGET_GLASS)),
+        ) {
+            when (kind) {
+                "CALENDAR" -> CalendarWidget(nowMillis)
+                "BATTERY" -> BatteryWidget()
             }
         }
     }
 }
+
+private val WIDGET_SIZE = 240.dp
+private const val WIDGET_GLASS = 0.10f
 
 /** Avvisa a ogni tocco, senza consumarlo (passaggio iniziale): serve a ricominciare il conto del StandBy automatico. */
 internal fun Modifier.onAnyTouch(onTouch: State<() -> Unit>): Modifier =
@@ -166,3 +199,14 @@ internal fun Modifier.onAnyTouch(onTouch: State<() -> Unit>): Modifier =
             onTouch.value()
         }
     }
+
+/** Lo StandBy è a tutto schermo: se prima era aperta la tastiera (per esempio nella ricerca), si chiude e il campo perde il fuoco. */
+@Composable
+private fun CloseKeyboard() {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focus = LocalFocusManager.current
+    LaunchedEffect(Unit) {
+        focus.clearFocus(force = true)
+        keyboard?.hide()
+    }
+}
