@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -117,6 +118,14 @@ private fun MenuContent(
                 onDismiss()
             }, onCancel = { renaming = false })
         } else {
+            // Prima le scorciatoie dell'app, come sull'iPad tenendo premuta un'icona.
+            val shortcuts by produceState(emptyList<AppShortcut>(), app.key) { value = actions.shortcuts(app) }
+            shortcuts.forEach { s ->
+                MenuItem(s.label) {
+                    actions.onShortcut(app, s)
+                    onDismiss()
+                }
+            }
             val favoriteLabel = if (isFavorite) R.string.home_menu_unfavorite else R.string.home_menu_favorite
             MenuItem(stringResource(favoriteLabel)) {
                 actions.onToggleFavorite(app)

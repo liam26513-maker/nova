@@ -143,6 +143,36 @@ class AppCatalog(context: Context) {
         options: Bundle? = null,
     ): Boolean = runCatching { launcherApps.startMainActivity(entry.component, entry.user, sourceBounds, options) }.isSuccess
 
+    /**
+     * Le scorciatoie dell'app (SPEC §6.2), come «Nuova nota»: statiche e dinamiche, abilitate, in ordine, al massimo [max].
+     * Android le dà solo alla Home predefinita; altrimenti l'elenco è vuoto.
+     */
+    fun shortcuts(
+        entry: AppEntry,
+        max: Int = MAX_SHORTCUTS,
+    ): List<AppShortcut> =
+        runCatching {
+            if (!launcherApps.hasShortcutHostPermission()) return emptyList()
+            val query =
+                LauncherApps
+                    .ShortcutQuery()
+                    .setPackage(entry.component.packageName)
+                    .setQueryFlags(LauncherApps.ShortcutQuery.FLAG_MATCH_MANIFEST or LauncherApps.ShortcutQuery.FLAG_MATCH_DYNAMIC)
+            launcherApps
+                .getShortcuts(query, entry.user)
+                .orEmpty()
+                .filter { it.isEnabled && (it.activity == null || it.activity == entry.component) }
+                .sortedWith(compareBy({ it.isDynamic }, { it.rank }))
+                .mapNotNull { s -> (s.shortLabel ?: s.longLabel)?.toString()?.takeIf { it.isNotBlank() }?.let { AppShortcut(s.id, it) } }
+                .take(max)
+        }.getOrDefault(emptyList())
+
+    fun startShortcut(
+        entry: AppEntry,
+        shortcut: AppShortcut,
+        bounds: Rect? = null,
+    ): Boolean = runCatching { launcherApps.startShortcut(entry.component.packageName, shortcut.id, bounds, null, entry.user) }.isSuccess
+
     /** Apre la scheda dell'app nelle impostazioni di Android. */
     fun openInfo(
         entry: AppEntry,
@@ -173,3 +203,11 @@ class AppCatalog(context: Context) {
         const val ICON_CACHE = 300
     }
 }
+
+/** Una scorciatoia di un'app, da mostrare nel menu dell'icona. */
+data class AppShortcut(
+    val id: String,
+    val label: String,
+)
+
+private const val MAX_SHORTCUTS = 4

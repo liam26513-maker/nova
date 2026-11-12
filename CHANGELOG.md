@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Scorciatoie delle app
+- Richiesta: "tutti i passi del piano che puoi fare tu gli hai fatti?" (dal piano: scorciatoie delle app, SPEC §6.2).
+- Tenendo premuta un'icona, in cima al menu compaiono le scorciatoie che l'app offre, per esempio «Nuova nota» o «Nuova scheda in incognito»: un tocco e vai dritto lì.
+
 ### Tastiera più leggera da disegnare
 - Richiesta: "intanto che aspetti fai altro" (seguito della misura della tastiera).
 - A ogni tasto premuto la tastiera faceva fare alla scheda video un passaggio in più che non serviva. L'ho tolto: dovrebbe rispondere in modo più regolare. Misurato prima e dopo sul tablet.

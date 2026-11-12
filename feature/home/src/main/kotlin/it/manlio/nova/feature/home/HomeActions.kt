@@ -20,6 +20,9 @@ class HomeActions(
     /** Nome vuoto = torna al nome originale. */
     val onRename: (AppEntry, String) -> Unit = { _, _ -> },
     val onAppInfo: (AppEntry) -> Unit = {},
+    /** Scorciatoie dell'app per il menu dell'icona (SPEC §6.2); vuoto = nessuna. */
+    val shortcuts: suspend (AppEntry) -> List<AppShortcut> = { emptyList() },
+    val onShortcut: (AppEntry, AppShortcut) -> Unit = { _, _ -> },
     val onUninstall: (AppEntry) -> Unit = {},
     /** Vero se ora si può aprire un'app in una finestra flottante (modalità Lavoro con Shizuku). */
     val canOpenWindow: () -> Boolean = { false },

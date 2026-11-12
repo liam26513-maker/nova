@@ -201,6 +201,16 @@ class HomeActivity : ComponentActivity() {
                 }
             },
             onAppInfo = { entry -> catalog.openInfo(entry) },
+            shortcuts = { entry -> withContext(Dispatchers.IO) { catalog.shortcuts(entry) } },
+            onShortcut = { entry, s ->
+                if (!catalog.startShortcut(
+                        entry,
+                        s,
+                    )
+                ) {
+                    Toast.makeText(this, getString(R.string.home_launch_failed, s.label), Toast.LENGTH_SHORT).show()
+                }
+            },
             onUninstall = { entry ->
                 runCatching { startActivity(Intent(Intent.ACTION_DELETE, Uri.fromParts("package", entry.component.packageName, null))) }
             },
