@@ -188,3 +188,14 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 - **Sfondo della schermata di blocco** (`feature/home/LockWallpaper`, `app/LockScreenWallpaper`): `LockWallpaper.key(prefs, photoStamp)` dice quale immagine mettere (`nova:<n>`, `solid:<colore>`, `photo:<ora del file>`, o `null` = non toccare: opzione spenta o sfondo di sistema); `render` disegna lo sfondo di NOVA con **lo stesso `NovaWallpaper.draw`** della Home dentro un `ImageBitmap` quadrato (via `CanvasDrawScope`), il colore pieno o la foto scelta (senza sfocatura). `LockScreenWallpaper.apply` fa `WallpaperManager.setBitmap(bitmap, null, true, FLAG_LOCK)` (permesso normale `SET_WALLPAPER`) solo se la chiave è cambiata (file `lock-wallpaper.key`). Parte all'avvio dell'app e a ogni cambio di sfondo (`HomeCustomizeRoute` anche dopo una foto nuova). Preferenza `HomePrefs.lockWallpaper` (di serie acceso).
 - **StandBy** (`feature/home/Standby.kt`): `StandbyScreen` + `StandbyInfo` + `StandbyRules` (notte 21–7, `shouldStart(auto, charging, landscape)`, luminosità, inattività 30 s: puro Kotlin, testato). `HomeScreen(standby, onStandbyExit, onTouch)`; `onAnyTouch` osserva ogni tocco nel passaggio iniziale senza consumarlo. `app/StandbyController`: annuncio di sistema `ACTION_BATTERY_CHANGED` (nessun polling), un solo timer solo se `standbyAuto` e in carica, `FLAG_KEEP_SCREEN_ON` e luminosità della finestra solo mentre è visibile (poi `BRIGHTNESS_OVERRIDE_NONE`). Apertura a mano: `NovaApp.standbyRequest` (impostato da «Altro → StandBy», che porta in primo piano `HomeActivity`).
 - **Limiti:** non è la schermata di blocco (quella resta di Android, SPEC §2.2); niente foto/calendario/widget/Stato PC; di notte la luminosità resta quella scelta all'apertura.
+
+## Fluidità dello scorrimento (misura del 12 novembre 2026, 0.1.1390, U6)
+- Sfogliando le pagine: mediana circa 29 ms, 90° percentile circa 42 ms. La GPU sta sugli 8 ms; il collo di bottiglia è il thread UI, circa 15 ms per fotogramma:
+  - circa 6 ms per lo scorrimento del pager con rimisura (`Recomposer:animation`);
+  - circa 3 ms di `measureAndLayout`;
+  - circa 2,7 ms di registrazione del disegno;
+  - in media circa 2,4 ms, con punte di 27 ms, per `checkForSemanticsChanges`.
+- La semantica dell'accessibilità la calcola Compose perché è acceso il servizio di NOVA (`NovaControlService`): Compose 1.7 e 1.8 la attivano con qualunque servizio acceso, senza un modo supportato per evitarlo.
+- `runtime-tracing` non mostra i nomi dei composable nella build di rilascio (R8), quindi è stato tolto.
+- Fatto: `beyondViewportPageCount = 1` e soglia 0,25 (PR 146). Da Ferma la Home non disegna nulla.
+
