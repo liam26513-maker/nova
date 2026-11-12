@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
             val app = application as NovaApp
             val duration = metrics.getMetric(FrameMetrics.TOTAL_DURATION)
             app.graphicsController.onFrame(metrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP), duration)
-            benchmark?.onFrame(duration, metrics.getMetric(FrameMetrics.DEADLINE))
+            benchmark?.onFrame(duration, metrics.getMetric(FrameMetrics.DEADLINE), metrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP))
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {

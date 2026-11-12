@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+### Misura delle prestazioni corretta
+- Richiesta: "fai tutto cio che puoi fare tu controlla se puoi fare anche altro" (difetto trovato provando la misura sul tablet).
+- «Misura le prestazioni» diceva «fluido nel 100% dei fotogrammi» anche quando la grafica scattava, e consigliava il livello più pesante. Ora conta i fotogrammi davvero persi sullo schermo. La misura vecchia non vale più: va rifatta una volta (Impostazioni → Il tuo tablet → Misura le prestazioni).
+
 ### Widget nello StandBy
 - Richiesta: "fai tutto cio che puoi fare tu" (dal piano: widget nello StandBy).
 - In Personalizza la Home → Disposizione e gesti puoi scegliere un widget da mettere accanto all'ora nello StandBy: Calendario o Batteria. Si vede con il tablet in orizzontale e di giorno; di notte lo StandBy resta solo l'ora, per non disturbare.

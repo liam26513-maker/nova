@@ -2,6 +2,7 @@ package it.manlio.nova.core.device
 
 import it.manlio.nova.core.design.GraphicsLevel
 import kotlinx.serialization.Serializable
+import kotlin.math.roundToInt
 
 /** Capacità reali del tablet, misurate al primo avvio (SPEC §3.6). Tutte le decisioni leggono questo. */
 @Serializable
@@ -41,10 +42,11 @@ data class DeviceProfile(
         }
 }
 
-/** Un frame misurato: durata totale e scadenza (entrambe in millisecondi). */
+/** Un frame misurato: durata totale e scadenza in millisecondi; [vsyncMs] è l'istante del vsync (0 = sconosciuto). */
 data class FrameSample(
     val totalMs: Float,
     val deadlineMs: Float,
+    val vsyncMs: Double = 0.0,
 )
 
 /**
@@ -68,8 +70,12 @@ data class BenchmarkResult(
  * Il tetto è il livello più ricco fluido; si parte dal tetto, ma mai sopra Bilanciato se la RAM è poca.
  */
 object LevelAdvisor {
-    /** Versione del metodo di misura (1: soglia fissa 16,7 ms, troppo severa; 2: scadenza × 2). */
-    const val METHOD = 2
+    /**
+     * Versione del metodo di misura (1: soglia fissa 16,7 ms, troppo severa; 2: scadenza × 2; 3: fotogrammi persi sullo schermo,
+     * dai buchi tra un vsync e l'altro, perché sul tablet di riferimento la scadenza data da Android è inaffidabile e il
+     * metodo 2 diceva «fluido al 100%» con 9 fotogrammi su 10 entro 91 ms).
+     */
+    const val METHOD = 3
     const val JANK_MULTIPLIER = 2f
     const val MAX_JANK_PERCENT = 5f
     const val LOW_RAM_MB = 3_000L
@@ -98,9 +104,27 @@ object LevelAdvisor {
         if (frames.isEmpty()) return Float.MAX_VALUE to ALL_PERCENT
         val sorted = frames.map { it.totalMs }.sorted()
         val p90 = sorted[((sorted.size - 1) * P90_NUM) / P90_DEN]
-        val jank = frames.count { it.totalMs > it.deadlineMs * JANK_MULTIPLIER } * ALL_PERCENT / frames.size
-        return p90 to jank
+        val byDeadline = frames.count { it.totalMs > it.deadlineMs * JANK_MULTIPLIER } * ALL_PERCENT / frames.size
+        return p90 to maxOf(byDeadline, lostFramesPercent(frames))
     }
+
+    /**
+     * Quanti fotogrammi sono andati persi sullo schermo, in percentuale: durante la misura l'animazione non si ferma mai, quindi
+     * ogni vsync dovrebbe avere il suo fotogramma. Il periodo è la mediana dei buchi; un buco più lungo di [GAP_TOLERANCE] periodi
+     * vuol dire che ne sono saltati (buco / periodo − 1). Non dipende dalla scadenza dichiarata da Android.
+     */
+    fun lostFramesPercent(frames: List<FrameSample>): Float {
+        val times = frames.map { it.vsyncMs }.filter { it > 0.0 }.sorted()
+        if (times.size < MIN_FRAMES_FOR_GAPS) return 0f
+        val gaps = times.zipWithNext { a, b -> b - a }.filter { it > 0.0 }
+        if (gaps.isEmpty()) return 0f
+        val period = gaps.sorted()[gaps.size / 2]
+        val lost = gaps.filter { it > period * GAP_TOLERANCE }.sumOf { (it / period).roundToInt() - 1 }
+        return lost * ALL_PERCENT / (times.size + lost)
+    }
+
+    private const val MIN_FRAMES_FOR_GAPS = 10
+    private const val GAP_TOLERANCE = 1.5
 }
 
 private const val FULL = 100f
