@@ -37,3 +37,4 @@ ogni dizionario pesa da 0,3 a 10 MB, quindi tieni d'occhio il budget.
 
 Non si fa con un merge automatico (le cartelle sono state alleggerite). Si confrontano le novità di HeliBoard, si riportano a mano le correzioni
 che servono e si aggiorna il commit in questo file e in `docs/LICENZE.md`.
+- `KeyboardView.setHardwareAcceleratedDrawingEnabled`: niente `LAYER_TYPE_HARDWARE` (passaggio fuori schermo in più a ogni tasto premuto; misura in `docs/modules/tastiera.md`).

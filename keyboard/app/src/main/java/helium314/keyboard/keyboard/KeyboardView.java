@@ -162,8 +162,9 @@ public class KeyboardView extends View {
     }
 
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
-        if (!enabled) return;
-        setLayerType(LAYER_TYPE_HARDWARE, null);
+        // NOVA: niente livello hardware. Con l'accelerazione ogni tasto premuto ridisegna comunque tutti i tasti, e il livello
+        // aggiungeva un passaggio fuori schermo in più per la scheda video: sul tablet di riferimento era la causa dei
+        // fotogrammi lenti («Slow issue draw commands»). Si disegna direttamente nella finestra, sempre accelerata.
     }
 
     /**
