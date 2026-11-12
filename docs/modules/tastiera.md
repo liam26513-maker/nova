@@ -30,8 +30,11 @@ non ridistribuibile. Servirebbe una libreria aperta. **Non misurato:** la latenz
 - Solo i dizionari di italiano e inglese (via 15 lingue): APK molto più leggero e installazione più rapida.
 - Codice ridotto e ottimizzato da R8 (`isMinifyEnabled`, già nella versione release di HeliBoard).
 
-Non ho ancora misurato velocità di scrittura o avvio sul tablet: ogni miglioramento di velocità andrà confrontato con una misura (latenza dal
-tocco al tasto, apertura della tastiera, memoria) prima e dopo.
+**Misura di riferimento (12 novembre 2026, 0.1.1330, U6 in orizzontale, aspetto iPad):** 24 tocchi su tasti dalla ricerca della Home.
+- Fotogrammi: mediana 14 ms, 90° percentile 22 ms, 95° 24 ms, 99° 40 ms. Circa il 30 % supera la scadenza, quasi tutti per «Slow issue draw commands», cioè il disegno dei tasti verso la GPU. Il thread UI non è mai lento, nessun ritardo d'ingresso.
+- Memoria: circa 108 MB PSS.
+- Da provare quando si ottimizza, misurando prima e dopo nello stesso modo: meno strati e ombre nei tasti, livello hardware della vista della tastiera.
+- Attenzione: un `am force-stop` della tastiera fa passare Android a un'altra tastiera predefinita; poi va rimessa con `ime set`.
 
 ## Già disponibili (da HeliBoard, in Impostazioni della tastiera)
 
