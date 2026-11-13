@@ -83,9 +83,6 @@ class ModeOptions(private val file: File) {
         /** Gaming da sola quando si apre un gioco (SPEC §8.7): accesa di serie per scelta del proprietario. */
         const val AUTO_GAMING = "AUTO_GAMING"
 
-        /** La barra Annulla/Ripeti nella Creativa (SPEC §9.4): spenta di serie. */
-        const val PEN_BAR = "PEN_BAR"
-
         /** La barra del desktop nel Lavoro (SPEC §8.3): spenta di serie. */
         const val DESK_BAR = "DESK_BAR"
 

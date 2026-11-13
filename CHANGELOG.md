@@ -4,6 +4,9 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Foto dello StandBy più veloci** («accorcia un po i tempi nel cambio delle foto»): cambiano ogni 20 secondi invece che ogni minuto.
+- **Disposizione dei tasti a piacere** («aggiungi la personalizzazione della disposizione dei tasti»): nelle impostazioni della tastiera, in cima, c'è «Disposizione dei tasti»: tocchi un tasto e poi un altro per scambiarli, poi Salva. Si torna alla disposizione standard con un tocco.
+- **Barra della penna tolta** («non credo serva perchè non è una penna blutute quindi se è tohlila direttamente»): niente più barra né voce nella Creativa; NOVA è un po' più leggera.
 - **Studio non più vuota né opprimente** («nella modalita studio mi sembra troppo vuota e opprimente»): niente più nero e lista; resta la tua Home di sempre, con le tue app e il tuo sfondo, solo più quieta: sfondo molto sfocato, icone monocromatiche, carattere elegante e sottile.
 - **Rispondendo vedi il messaggio** («quando rispondo vedo anche il messaggio mandato dalla persona»): la finestra di risposta mostra gli ultimi messaggi della chat, i suoi a sinistra e i tuoi a destra.
 - **Home essenziale più minimal e carina** («la home essenziale falla piu minimal e carina»): nella Studio la Home diventa una lista di soli nomi su nero morbido, con orologio sottile e carattere elegante; all'uscita tornano la tua griglia e il tuo aspetto.

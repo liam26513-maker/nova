@@ -562,7 +562,7 @@ Scheda e widget: RAM usata/libera, temperatura (batteria e, se leggibile, CPU), 
 - Si attiva al collegamento di una penna/tavoletta o all'apertura di un'app di disegno.
 - Priorità all'app di disegno (congelamento delle altre), effetti NOVA spenti, notifiche bloccate, schermo sempre acceso, rotazione bloccata.
 - **Filtro luce blu disattivato e modalità colore fedele** (ripristino all'uscita).
-- Barra scorciatoie flottante e tasti penna: §9.4. La barra compare solo in ibisPaint e nelle note di NOVA (scelta del proprietario, 13 novembre 2026).
+- Tasti penna: §9.4. La barra scorciatoie flottante è stata tolta il 13 novembre 2026 (la penna del proprietario non è Bluetooth: non serviva).
 
 ### 8.6 Modalità Presentazione
 
@@ -601,7 +601,7 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 ### 9.4 Strumenti
 
 - **Fatto di base:** durante la Creativa, tendina → Altro → «Barra Annulla e Ripeti» mette sul bordo destro due tasti che inviano Ctrl+Z e Ctrl+Shift+Z (`input keycombination`, Shizuku) all'app davanti. Mancano gli altri strumenti e i profili per app. Dal 12 novembre 2026 la Creativa mette anche i 3 tasti di navigazione al posto dei gesti (`THREE_BUTTON_NAV`, `cmd overlay enable-exclusive`), così un tratto vicino al bordo non diventa «Indietro»; all'uscita tornano i gesti. Acceso di serie (scelta del proprietario), si spegne in Penna e tavoletta.
-- **Barra scorciatoie flottante** sopra qualsiasi app (overlay): annulla, ripeti, contagocce, dimensione pennello, gomma, salva. Invia all'app di disegno le **scorciatoie da tastiera** corrispondenti (iniezione eventi tasto via Shizuku `input keyevent`), con profili per app (Ibis Paint, Infinite Painter, Krita, Medibang…) in `config/pen-apps.json`. **Fatto (9 novembre 2026):** Annulla e Ripeti per tutte le app; con ibisPaint anche pennello (B), gomma (E), contagocce (I) e dimensione ([ ]), tasti letti dall'elenco delle scorciatoie di ibisPaint 14.1 sul tablet (`PenBar`, comando tipizzato `ToolKey`). Il profilo è nel codice: il file `config/pen-apps.json` servirà quando arriverà un'altra app.
+- **Barra scorciatoie flottante:** fatta il 9 novembre 2026 (`PenBar`) e **tolta il 13 novembre 2026** su richiesta del proprietario: la sua penna non è Bluetooth, la barra non serviva e occupava spazio. I comandi tipizzati `KeyCombo` e `ToolKey` restano in `core/system`, inutilizzati.
 - **Tasti penna personalizzabili** dove Android li espone; nelle superfici NOVA sempre.
 - **Foglio rapido:** fatto e poi tolto il 7 novembre 2026 su richiesta del proprietario («inutile e occupa spazio»): si usano ibisPaint e le Note.
 - **Galleria lavori:** widget con ultimi disegni (cartelle configurate) e riapertura nell'app di origine.
@@ -622,6 +622,8 @@ Fatti, spenti di serie (Impostazioni → Modalità Gaming): gioco aperto → Gam
 ### 10.2 Estetica
 
 Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), aptica e suoni dal vocabolario di §5.4, regolabili o spenti.
+
+**Disposizione dei tasti personalizzabile** (13 novembre 2026): voce «Disposizione dei tasti» in cima alle impostazioni della tastiera, editor visivo che scambia due tasti toccandoli (`KeyArrangementScreen`) e salva una disposizione personalizzata; un tocco per tornare a quella standard. Il clic dei tasti è il «tic» corto di Android a volume basso (il U6 non ha vibrazione).
 
 ### 10.3 Funzioni per tablet — **disattivate di default**, attivabili una per una
 
@@ -717,7 +719,7 @@ Aspetto ispirato iOS (tasti arrotondati, spaziature generose, anteprima tasto), 
 
 ### 12.6 StandBy
 
-> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Il prossimo evento del calendario c'è, spento di serie (permesso chiesto quando lo si accende). C'è anche il meteo della città del widget Meteo, la musica che suona e il Pomodoro della Studio (solo quando ci sono). Manca lo Stato PC. Il widget accanto all'ora (Calendario o Batteria, facoltativo, solo in orizzontale e di giorno: `standbyWidget`) c'è. Le foto a rotazione (facoltative, spente di serie, si accendono scegliendo le foto in Personalizza la Home, con il selettore di Android e copiate ridotte, una al minuto: `StandbyPhotos`) ci sono. Lo sfondo di NOVA sulla schermata di blocco e come sfondo di sistema, quindi dietro le App recenti del launcher di sistema (`LockWallpaper`, §2.2), è fatto.
+> **Stato:** fatto in versione base **dentro la Home** (`feature/home/Standby.kt`, `app/StandbyController`): ora grande, data, batteria, sveglia, di giorno sullo sfondo della Home velato, notte in rosso scuro su nero, avvio a mano (tendina → Altro) o automatico (in carica + orizzontale + 30 s fermo, spento di serie). Il prossimo evento del calendario c'è, spento di serie (permesso chiesto quando lo si accende). C'è anche il meteo della città del widget Meteo, la musica che suona e il Pomodoro della Studio (solo quando ci sono). Manca lo Stato PC. Il widget accanto all'ora (Calendario o Batteria, facoltativo, solo in orizzontale e di giorno: `standbyWidget`) c'è. Le foto a rotazione (facoltative, spente di serie, si accendono scegliendo le foto in Personalizza la Home, con il selettore di Android e copiate ridotte, una ogni 20 secondi: `StandbyPhotos`) ci sono. Lo sfondo di NOVA sulla schermata di blocco e come sfondo di sistema, quindi dietro le App recenti del launcher di sistema (`LockWallpaper`, §2.2), è fatto.
 
 - Quando il tablet è in carica, sbloccato e in orizzontale (o su richiesta): schermo a tutto campo con orologio grande, calendario, foto, Stato PC, widget a scelta; luminosità ridotta, notte in rosso scuro per non disturbare.
 

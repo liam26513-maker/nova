@@ -42,6 +42,7 @@ fun MainSettingsScreen(
     onClickLanguage: () -> Unit,
     onClickLayouts: () -> Unit,
     onClickDictionaries: () -> Unit,
+    onClickKeyArrangement: () -> Unit = {},
     onClickBack: () -> Unit,
 ) {
     SearchSettingsScreen(
@@ -59,6 +60,13 @@ fun MainSettingsScreen(
                     description = enabledSubtypes.joinToString(", ") { it.displayName() },
                     onClick = onClickLanguage,
                     icon = R.drawable.ic_settings_languages
+                ) { NextScreenIcon() }
+                // NOVA: la disposizione dei tasti a portata di mano, non nascosta sotto la lingua.
+                Preference(
+                    name = stringResource(R.string.nova_key_arrangement),
+                    description = stringResource(R.string.nova_key_arrangement_summary),
+                    onClick = onClickKeyArrangement,
+                    icon = R.drawable.ic_settings_layout
                 ) { NextScreenIcon() }
                 Preference(
                     name = stringResource(R.string.settings_screen_preferences),
@@ -124,7 +132,7 @@ private fun PreviewScreen() {
     initPreview(LocalContext.current)
     Theme(previewDark) {
         Surface {
-            MainSettingsScreen({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+            MainSettingsScreen({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
         }
     }
 }

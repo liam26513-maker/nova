@@ -1325,4 +1325,11 @@ New dictionary:
     <string name="theme_name_nova" tools:keep="@string/theme_name_nova">NOVA</string>
     <string name="send_to_claude">Send to Claude</string>
     <string name="send_to_claude_missing">The Claude app is not installed</string>
+    <!-- NOVA: editor della disposizione dei tasti -->
+    <string name="nova_key_arrangement">Disposizione dei tasti</string>
+    <string name="nova_key_arrangement_summary">Sposta le lettere dove vuoi</string>
+    <string name="nova_key_arrangement_hint">Tocca un tasto e poi un altro per scambiarli, poi Salva. Vale per la lingua che stai usando; i caratteri a pressione lunga seguono il tasto.</string>
+    <string name="nova_key_arrangement_reset">Torna alla disposizione standard</string>
+    <string name="nova_key_arrangement_saved">Disposizione salvata</string>
+    <string name="nova_key_arrangement_unsupported">Questa disposizione non si può modificare qui: scegline una diversa in Lingue e layout.</string>
 </resources>

@@ -181,7 +181,6 @@ class HomeControls(
             splitScreenItem(context, app, onSplitScreen),
             deskBarItem(context, app),
             mode(Modes.CREATIVE),
-            penBarItem(context, app),
             mode(Modes.PRESENTATION),
             MoreItem(context.getString(R.string.more_notifications)) { onSystemNotifications().let { null } },
             MoreItem(context.getString(R.string.more_quick_settings)) { onSystemQuickSettings().let { null } },
