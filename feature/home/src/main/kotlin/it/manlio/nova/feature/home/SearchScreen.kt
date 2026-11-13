@@ -7,14 +7,21 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imeAnimationTarget
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -79,7 +86,9 @@ internal fun SearchScreen(
     ) {
         Column(
             Modifier
-                .safeDrawingPadding()
+                // Bordi del sistema e tastiera, ma della tastiera solo l'altezza finale: con quella che sale fotogramma per
+                // fotogramma tutto il riquadro dei risultati si rimisurava a ogni fotogramma dell'apertura (fino a 24 ms l'uno).
+                .windowInsetsPadding(SEARCH_INSETS)
                 .padding(horizontal = 24.dp, vertical = 28.dp)
                 .widthIn(max = SEARCH_WIDTH)
                 .fillMaxWidth()
@@ -277,6 +286,10 @@ private val CONTROL_WORDS =
 private val EDIT_WORDS = listOf("modifica", "widget", "cartella", "sposta icone")
 private val NOVA_WORDS = listOf("nova", "personalizza", "tema", "sfondo", "grafica", "aggiornamenti", "impostazioni")
 private val SEARCH_WIDTH = 640.dp
+
+@OptIn(ExperimentalLayoutApi::class)
+private val SEARCH_INSETS: WindowInsets
+    @Composable get() = WindowInsets.safeDrawing.exclude(WindowInsets.ime).union(WindowInsets.imeAnimationTarget)
 private val RESULT_ICON = 40.dp
 private val RESULTS_RADIUS = 26.dp
 private const val DIM_DARK = 0.55f
