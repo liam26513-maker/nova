@@ -45,6 +45,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -165,10 +166,14 @@ fun HomeScreen(
             // Sfuma disegnando ogni elemento più trasparente, senza un'immagine intermedia grande quanto lo schermo: sulla GPU del
             // U6 quel passaggio in più costava parecchio a ogni fotogramma dell'apertura e chiusura della ricerca.
             Box(
-                Modifier.fillMaxSize().graphicsLayer {
-                    alpha = homeAlpha
-                    compositingStrategy = CompositingStrategy.ModulateAlpha
-                },
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        alpha = homeAlpha
+                        compositingStrategy = CompositingStrategy.ModulateAlpha
+                    }
+                    // Con la ricerca aperta la Home è del tutto trasparente: non la si manda proprio alla GPU, che sul U6 è il limite.
+                    .drawWithContent { if (homeAlpha > 0f) drawContent() },
             ) {
                 when {
                     ipad ->

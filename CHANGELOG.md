@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Ricerca più leggera per la grafica** («continua con il resto del piano»): con la ricerca aperta la Home nascosta dietro non viene più disegnata.
+
 - **Ricerca pronta subito** («continua con il resto del piano»): le app suggerite si preparano già quando torni sulla Home, così la ricerca si apre in un colpo invece di ricostruirsi quando arrivano i suggerimenti.
 
 - **Ricerca: apertura e chiusura più leggere per la grafica** («continua con il resto del piano»): la Home dietro la ricerca sfuma senza un passaggio di disegno in più a ogni fotogramma.
