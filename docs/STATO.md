@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.1620. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.1710 (tastiera 0.1.1710). Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -10,7 +10,7 @@ Aggiornato a: release 0.1.1620. Per riprendere il lavoro in una chat nuova basta
   accessibilità), riquadri a prima vista scelti in Personalizza la Home, sezione «Altro», interruttori diretti con Shizuku,
   sblocco in un tocco delle impostazioni con restrizioni.
 - **Fase 2** strumenti di sistema (Shizuku): Turbo, animazioni, densità, DNS anti-pubblicità, congelamento, stato, interruttori rapidi.
-- **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Mancano widget, foto e Stato PC nello StandBy.
+- **Schermata di blocco e StandBy (base):** sfondo di NOVA anche sul blocco; StandBy dentro la Home (ora, data, batteria, sveglia). Widget e foto nello StandBy fatti; manca lo Stato PC.
 - **Fase 3**: motore delle modalità (`core/modes`), Gaming solo manuale, Studio con Pomodoro, blocco app, note e filtro caldo; Lavoro, Creativa e Presentazione **di base** (tendina → Altro). Doppio swipe, watchdog e Gaming automatica accesi di serie (scelta del proprietario, 9 novembre). Risoluzione per gioco (minimo 65%), misura da volume su, uscita con volume giù tenuto 3 s. Vedi `docs/modules/modalita.md`.
 - **Fase 4, primo passo**: tastiera (`keyboard/`, fork di HeliBoard) costruita dalla CI e allegata alle release, con varianti Lavoro, Studio e Gaming (bassa e semitrasparente).
 - **7 novembre (0.1.800 → 0.1.950):** pannello Gaming in sovrimpressione con registrazione, avviso di temperatura, Gaming automatica facoltativa; PIN della Presentazione; finestre flottanti e set di finestre nel Lavoro; Foglio rapido; evento del calendario nello StandBy; grafico della settimana; pannello privacy e blocco di Internet per app; Novità; app suggerite nella ricerca. Poi (fino alla 0.1.1030): permessi concessi, pagina Penna e tavoletta, barra Annulla/Ripeti nella Creativa, barra delle app preferite nel Lavoro, profili automatici con tastiera, penna e orario di studio, cartella privata. Sera del 7 novembre (fino alla 0.1.1100): meteo nello StandBy; testo dalle foto con PaddleOCR PP-OCRv6 tiny su ONNX Runtime (`feature/ocr`, processo separato `:ocr`, APK ~22 MB su 25 di budget, provato sul tablet: meno di 2 s); Foglio rapido fatto e poi tolto su richiesta del proprietario (si usano ibisPaint e le Note). Il touchscreen gslX680 manda la posizione solo ogni ~0,7 mm: limite del firmware, vedi SPEC §9.1.
@@ -51,12 +51,20 @@ Aggiornato a: release 0.1.1620. Per riprendere il lavoro in una chat nuova basta
   - tratti persi in ibisPaint: lo schermo (gslX680, 50 letture al secondo) non sente alcuni contatti rapidissimi della penna; tutto ciò che sente arriva a ibisPaint. Non risolvibile senza root.
   - Copertine dei giochi nella libreria.
 
+- **13 novembre, giorno (fino alla 0.1.1710): richieste del proprietario dopo le prove**
+  - **Notifiche accanto alla tendina** di NOVA (Home e sopra le altre app): toccare apre, «Rispondi» apre una piccola finestra con gli ultimi messaggi della chat, × chiude. Risposta vera provata dal proprietario: funziona.
+  - **Studio**: Home essenziale accesa di serie, ora «quieta ma non vuota» (la tua griglia e il tuo sfondo, molto sfocato, icone monocromatiche, carattere elegante). Approvata dal proprietario.
+  - **Giochi**: risoluzione scelta direttamente (100/90/80/70/65%) in pannello Gaming e Impostazioni; Brawl Stars è al 70%, il proprietario sceglierà 80 o 90.
+  - **StandBy**: «Scegli le foto» sempre visibile (Personalizza la Home → Disposizione e gesti); foto ogni 20 s. Foto messe dal proprietario.
+  - **Tastiera**: ridisegna solo il tasto toccato (mediana da 14–15 a 11–12 ms, fotogrammi lenti da ~37% a ~15%); clic corto e più piano (il U6 non ha vibrazione); **«Disposizione dei tasti»** in cima alle sue impostazioni: si scambiano le lettere toccandole.
+  - **Barra della penna tolta** (la penna non è Bluetooth, non serviva).
+  - Correzioni dalle prove: crash all'avvio con Shizuku non ancora agganciato; tasto Impostazioni della Home protetto da un errore del sistema U6; «Riavvia NOVA normalmente» della modalità provvisoria ora riavvia davvero.
+
 ## Prossimo passo (in ordine)
-Le parti del piano che Claude poteva fare da solo sono fatte (controllo del 12 novembre 2026). Restano:
-1. **Prove a mano del proprietario:** risposta rapida con un messaggio vero, Home essenziale nella Studio, foto vere nello StandBy, Gaming e 65% in partita (vedi `docs/TEST-MANUALE.md`).
+Le parti del piano che Claude poteva fare da solo sono fatte (controllo del 13 novembre 2026). Restano:
+1. **Prove a mano del proprietario:** Gaming in partita con la nuova scelta della risoluzione; «Disposizione dei tasti» (scambiare e tornare allo standard); foto dello StandBy ogni 20 s.
 2. **Rimandate o non volute dal proprietario:** gaming e streaming dal PC (con lo Stato PC), Home portfolio della Presentazione, consigli per modello di penna, galleria dei lavori, file cifrati nella cartella privata («per ora no»).
-3. **Penna:** profili della barra per altre app oltre a ibisPaint, solo se il proprietario ne indica una.
-4. **Repository:** rimetterlo privato quando il limite delle Actions si è rinnovato (lo fa Claude, d'accordo con il proprietario).
+3. **Repository:** rimetterlo privato quando a dicembre il limite delle Actions si è rinnovato (lo fa Claude, d'accordo con il proprietario).
 
 ## Regole che contano (CLAUDE.md)
 Branch e PR con test, CHANGELOG in italiano semplice, budget di `perf-budget.json` mai superati, `core/safemode` indipendente da `feature/`, nessun permesso
