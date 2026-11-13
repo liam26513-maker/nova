@@ -28,6 +28,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 /**
@@ -73,12 +75,33 @@ fun MaterialSurface(
     }
 }
 
-/** Calcola una volta, fuori dal thread principale, la versione rimpicciolita e sfocata dello sfondo. */
+/**
+ * La versione rimpicciolita e sfocata dello sfondo, calcolata fuori dal thread principale e **una volta sola per tutti i
+ * pannelli**: prima ogni pannello (ogni gruppo delle Impostazioni) la rifaceva da sé, e di nuovo a ogni comparsa scorrendo.
+ */
 @Composable
 private fun rememberPreBlurred(source: ImageBitmap?): ImageBitmap? =
-    produceState<ImageBitmap?>(null, source) {
-        value = source?.let { withContext(Dispatchers.Default) { preBlur(it.asAndroidBitmap()) } }
+    produceState(source?.let(preBlurred::peek), source) {
+        if (value == null && source != null) {
+            value = withContext(Dispatchers.Default) { preBlurred.get(source) { preBlur(it.asAndroidBitmap()) } }
+        }
     }.value
+
+private val preBlurred = LastValueCache<ImageBitmap, ImageBitmap>()
+
+/** Ricorda l'ultimo risultato per l'ultima chiave (stesso oggetto). Chi chiede insieme la stessa chiave aspetta un solo calcolo. */
+internal class LastValueCache<K : Any, V : Any> {
+    private val mutex = Mutex()
+
+    @Volatile private var last: Pair<K, V>? = null
+
+    fun peek(key: K): V? = last?.takeIf { it.first === key }?.second
+
+    suspend fun get(
+        key: K,
+        make: suspend (K) -> V,
+    ): V = mutex.withLock { peek(key) ?: make(key).also { last = key to it } }
+}
 
 internal fun preBlur(src: Bitmap): ImageBitmap {
     val w = (src.width * PRE_BLUR_SCALE).toInt().coerceAtLeast(1)
