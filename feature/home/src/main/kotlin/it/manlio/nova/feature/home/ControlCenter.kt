@@ -13,6 +13,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
@@ -95,6 +96,8 @@ private class Tile(
     val glyph: ControlGlyph,
     val label: String,
     val active: Boolean = false,
+    /** Pressione lunga: per Wi-Fi e Bluetooth apre il pannello di Android (richiesta del 13 novembre 2026). */
+    val onLongClick: (() -> Unit)? = null,
     val onClick: () -> Unit,
 )
 
@@ -380,7 +383,7 @@ private fun panelTile(
     leave: (SystemPanel) -> Unit,
 ): Tile {
     val toggle = controls.toggles[panel] ?: return Tile(glyph, label) { leave(panel) }
-    return Tile(glyph, label, state.value) {
+    return Tile(glyph, label, state.value, onLongClick = { leave(panel) }) {
         val next = !state.value
         state.value = next
         toggle.set(next) { state.value = toggle.read() }
@@ -474,7 +477,18 @@ private fun TileView(
     val flat = Nova.tokens.graphicsLevel == GraphicsLevel.PERFORMANCE
     val ink = if (tile.active) Color.White else look.ink
     Column(
-        modifier.clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
+        modifier.combinedClickable(
+            remember { MutableInteractionSource() },
+            indication = null,
+            role = Role.Button,
+            onLongClick =
+                tile.onLongClick?.let { long ->
+                    {
+                        view.perform(NovaHaptic.TAP)
+                        long()
+                    }
+                },
+        ) {
             view.perform(NovaHaptic.TAP)
             tile.onClick()
         },
