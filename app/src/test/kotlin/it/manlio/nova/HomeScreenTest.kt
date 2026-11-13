@@ -168,10 +168,10 @@ class HomeScreenTest {
     }
 
     @Test
-    fun essential_home_screenshot() {
-        val calm = it.manlio.nova.feature.home.ThemePresets.all.first { it.name == "Essenziale" }.prefs
-        render(prefs = HomePrefs(layout = HomeLayoutStyle.LIST).withLookOf(calm))
-        compose.onRoot().captureRoboImage("screenshots/home_essenziale.png")
+    fun studio_calm_home_screenshot() {
+        val mine = HomePrefs(wallpaper = WallpaperSource.NOVA, novaWallpaper = 1, layout = HomeLayoutStyle.IPAD)
+        render(prefs = CalmHome.calmLook(mine), study = StudyBar("Studio fino alle 12:45", "Pomodoro", {}, "Note", {}, "Esci", {}))
+        compose.onRoot().captureRoboImage("screenshots/home_studio.png")
     }
 
     @Test
