@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Rispondendo vedi il messaggio** («quando rispondo vedo anche il messaggio mandato dalla persona»): la finestra di risposta mostra gli ultimi messaggi della chat, i suoi a sinistra e i tuoi a destra.
+- **Home essenziale più minimal e carina** («la home essenziale falla piu minimal e carina»): nella Studio la Home diventa una lista di soli nomi su nero morbido, con orologio sottile e carattere elegante; all'uscita tornano la tua griglia e il tuo aspetto.
 - **«Riavvia NOVA normalmente» ora funziona davvero** («controlla se va bene tutto il resto»): nella modalità provvisoria il tasto riapriva la stessa schermata; ora NOVA riparte da capo e torna normale.
 - **Niente più chiusure improvvise in due casi rari** («controlla se va bene tutto il resto»): se il sistema del tablet rifiuta per un attimo di aprire le Impostazioni, NOVA non si chiude più; e se NOVA ripartendo trova Shizuku non ancora pronto, aspetta invece di chiudersi.
 - **Notifiche accanto alla tendina** («i messaggi non li vedo e non posso risponderci nella tendina di nova (metti le notifiche a fianco della tendina)»): aprendo la tendina di NOVA, a sinistra compaiono le notifiche, una per una. Toccane una per aprirla, «Rispondi» per scrivere la risposta, la × per toglierla.

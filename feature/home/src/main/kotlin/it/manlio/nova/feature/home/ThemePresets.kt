@@ -55,15 +55,15 @@ object ThemePresets {
             ),
             ThemePreset(
                 "Essenziale",
-                "Nero pieno, carattere tecnico, solo testo",
+                "Nero morbido, carattere elegante e sottile, solo testo",
                 HomePrefs(
                     wallpaper = WallpaperSource.SOLID,
-                    solidColor = 0xFF000000.toInt(),
-                    font = HomeFont.TECHNICAL,
-                    weight = TextWeight.REGULAR,
+                    solidColor = 0xFF0D0E11.toInt(),
+                    font = HomeFont.ELEGANT,
+                    weight = TextWeight.LIGHT,
                     showIcons = false,
-                    clockStyle = ClockStyle.STACKED,
-                    accent = 0xFFFFFFFF.toInt(),
+                    clockStyle = ClockStyle.THIN,
+                    accent = 0xFFD9D4CC.toInt(),
                 ),
             ),
         )
