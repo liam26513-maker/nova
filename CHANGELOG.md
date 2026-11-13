@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Ricerca più fluida all'apertura** («continua con il resto del piano», dopo «velocizzare tutto»): mentre sale la tastiera il riquadro dei risultati non si ricalcola più a ogni fotogramma.
+
 - **Home: niente scatto a metà pagina** («velocizzare e rendere più fluido il tutto»): sfogliando le pagine, a metà strada la Home ridisegnava tutta la griglia; ora no.
 
 - **Meno lavoro a ogni fotogramma** («velocizzare e rendere più fluido il tutto»): NOVA non prepara più i dati per l'autocompletamento di Google, che sui suoi schermi non serve.
