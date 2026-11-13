@@ -38,8 +38,9 @@ public final class LanguageOnSpacebarUtils {
         if (subtype.isNoLanguage()) {
             return FORMAT_TYPE_FULL_LOCALE;
         }
-        // Only this subtype is enabled and equals to the system locale.
-        if (sEnabledSubtypes.size() < 2 && sIsSystemLanguageSameAsInputLanguage && Settings.getValues().mSecondaryLocales.isEmpty()) {
+        // NOVA: con una sola lingua la barra spaziatrice resta pulita, anche se la lingua è stata attivata a mano
+        // (succede salvando la disposizione dei tasti, richiesta del 13 novembre 2026).
+        if (sEnabledSubtypes.size() < 2 && Settings.getValues().mSecondaryLocales.isEmpty()) {
             return FORMAT_TYPE_NONE;
         }
         final Locale locale = subtype.getLocale();

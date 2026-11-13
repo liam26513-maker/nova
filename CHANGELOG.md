@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Barra spaziatrice pulita** («togli la scritta italiano»): con una sola lingua non compare più «Italiano».
+- **Wi-Fi e Bluetooth a pressione lunga** («se tieni premuto il tasto del wifi e il bluethote ti manda nelle impostazioni rapide»): nella tendina di NOVA, tenendo premuto uno dei due si apre il pannello di Android con le reti o i dispositivi.
 - **Foto dello StandBy più veloci** («accorcia un po i tempi nel cambio delle foto»): cambiano ogni 20 secondi invece che ogni minuto.
 - **Disposizione dei tasti a piacere** («aggiungi la personalizzazione della disposizione dei tasti»): nelle impostazioni della tastiera, in cima, c'è «Disposizione dei tasti»: tocchi un tasto e poi un altro per scambiarli, poi Salva. Si torna alla disposizione standard con un tocco.
 - **Barra della penna tolta** («non credo serva perchè non è una penna blutute quindi se è tohlila direttamente»): niente più barra né voce nella Creativa; NOVA è un po' più leggera.

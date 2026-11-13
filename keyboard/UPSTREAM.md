@@ -28,6 +28,7 @@ nativo con NDK): si compila da qui (`./gradlew :app:assembleRelease`) e lo contr
 | Sfondi semitrasparenti in Gaming (`KeyboardTheme`, `NovaAccent.seeThrough`) | SPEC §10.5. |
 | Un display list per tasto (`KeyboardView.onDrawKeyNodes`, Android 10+) | Premere un tasto ridisegna solo quel tasto invece dell'intera tastiera (richiesta «togli il limite della tastiera»). |
 | Editor visivo della disposizione dei tasti (`KeyArrangementScreen`, voce «Disposizione dei tasti» in cima alle impostazioni) | Scambiare le lettere toccandole, salvato come disposizione personalizzata «NOVA» nel formato semplice di HeliBoard (richiesta del 13 novembre 2026). |
+| Nome della lingua sulla barra spaziatrice (`LanguageOnSpacebarUtils`) | Con una sola lingua non compare mai, anche se attivata a mano (richiesta del 13 novembre 2026). |
 | Nessun permesso Internet | SPEC §10.1: lo verifica `tools/check_keyboard.py` sul manifest unito. |
 
 ## Come aggiungere un dizionario
