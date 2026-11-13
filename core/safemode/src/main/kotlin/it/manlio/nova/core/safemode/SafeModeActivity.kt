@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Process
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -76,7 +77,10 @@ class SafeModeActivity : ComponentActivity() {
         packageManager.getLaunchIntentForPackage(packageName)?.let {
             startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }
-        finish()
+        finishAffinity()
+        // La modalità provvisoria è decisa all'avvio del processo: senza ripartire davvero, NOVA rimostrava questa schermata
+        // (provato sul tablet il 13 novembre 2026). Android riavvia il processo per l'attività appena chiesta.
+        Process.killProcess(Process.myPid())
     }
 
     private fun isNight() =
