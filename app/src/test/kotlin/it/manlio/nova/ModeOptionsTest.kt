@@ -21,7 +21,7 @@ class ModeOptionsTest {
             assertTrue(it, ModeOptions.isOn(emptyMap(), it))
             assertFalse(it, ModeOptions.isOn(mapOf(it to false), it))
         }
-        listOf(ModeOptions.PANEL_SWIPE, ModeOptions.PEN_BAR, ModeOptions.DESK_BAR).forEach {
+        listOf(ModeOptions.PANEL_SWIPE, ModeOptions.DESK_BAR).forEach {
             assertFalse(it, ModeOptions.isOn(emptyMap(), it))
         }
     }

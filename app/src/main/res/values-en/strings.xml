@@ -361,11 +361,6 @@
     <string name="auto_if_weekend">only at the weekend</string>
     <string name="auto_if_charging">only while charging</string>
     <string name="auto_if_not_charging">only when not charging</string>
-    <string name="pen_bar_brush">Brush</string>
-    <string name="pen_bar_eraser">Eraser</string>
-    <string name="pen_bar_picker">Eyedropper</string>
-    <string name="pen_bar_bigger">Bigger brush</string>
-    <string name="pen_bar_smaller">Smaller brush</string>
     <string name="more_play_from_pc">Play from PC</string>
     <string name="dns_guard_paused">Ad blocking paused: this network cannot reach its service. It comes back on the next network.</string>
     <string name="customize_standby_widget">Widget in StandBy (landscape)</string>
@@ -412,9 +407,6 @@
     <string name="study_auto">Turn on by itself at</string>
     <string name="study_auto_footer">Monday to Friday, at the chosen time, Study starts by itself if no mode is on. It can be a few minutes late.</string>
     <string name="desk_bar">Favourite apps bar</string>
-    <string name="pen_bar">Undo and redo bar</string>
-    <string name="pen_bar_undo">Undo</string>
-    <string name="pen_bar_redo">Redo</string>
     <string name="panel_fps">FPS (last measure)</string>
     <string name="panel_temp">Temperature</string>
     <string name="panel_battery">Battery</string>

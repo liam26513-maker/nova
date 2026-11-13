@@ -13,10 +13,10 @@ class StandbyPhotosTest {
     }
 
     @Test
-    fun `one photo per minute, starting again after the last`() {
+    fun `one photo every 20 seconds, starting again after the last`() {
         assertEquals(0, StandbyPhotos.indexFor(0, 3))
-        assertEquals(1, StandbyPhotos.indexFor(60_000, 3))
-        assertEquals(0, StandbyPhotos.indexFor(180_000, 3))
+        assertEquals(1, StandbyPhotos.indexFor(20_000, 3))
+        assertEquals(0, StandbyPhotos.indexFor(60_000, 3))
         assertEquals(0, StandbyPhotos.indexFor(123_456, 0))
     }
 }

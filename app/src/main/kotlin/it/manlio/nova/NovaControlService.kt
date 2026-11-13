@@ -88,7 +88,6 @@ class NovaControlService : AccessibilityService() {
     }
     private val heat by lazy { GameHeatWatch(this) }
     private val autoGaming = AutoGaming()
-    private val penBar by lazy { PenBar(this, app) }
     private val deskBar by lazy { DeskBar(this, app) }
     private val autoDevices by lazy { AutoDevices(this, app) }
     private val gamingPanel by lazy { GamingPanel(this, app, scope) }
@@ -144,11 +143,6 @@ class NovaControlService : AccessibilityService() {
             scope.launch { gamingOption(ModeOptions.PANEL_SWIPE).collect { on -> if (on) panelEdge.add() else panelEdge.remove() } }
             scope.launch {
                 combine(app.modes.engine.active, app.modes.options.values) { active, values ->
-                    active?.modeId == Modes.CREATIVE.id && values[ModeOptions.PEN_BAR] == true
-                }.distinctUntilChanged().collect(penBar::set)
-            }
-            scope.launch {
-                combine(app.modes.engine.active, app.modes.options.values) { active, values ->
                     active?.modeId == Modes.WORK.id && values[ModeOptions.DESK_BAR] == true
                 }.distinctUntilChanged().collect(deskBar::set)
             }
@@ -171,18 +165,12 @@ class NovaControlService : AccessibilityService() {
             recentsEvent(event)
         }
         val other = event.packageName != packageName && event.packageName != SYSTEM_UI
-        // Le schermate di NOVA (non le sue finestre sopra le altre app) contano per la barra della penna: c'è nelle note.
-        val ownActivity = event.className?.toString()?.takeIf { event.packageName == packageName && it.endsWith("Activity") }
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && ownActivity != null) {
-            penBar.foreground(if (ownActivity == NotesActivity::class.java.name) PenBar.NOTES else packageName)
-        }
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
         requestClose()
         // Quale app è davanti (non la tastiera): serve a misurare o chiudere un gioco.
         event.packageName?.toString()?.takeUnless { it.contains("inputmethod") }?.let {
             app.noteForeground(it)
             app.contexts.note(it)
-            penBar.foreground(it)
             deskBar.refresh()
             if (app.safeModeReason == null) studyGuard.check(it)
         }
@@ -240,7 +228,6 @@ class NovaControlService : AccessibilityService() {
         studyGuard.dismiss()
         edge.remove()
         heat.set(false)
-        penBar.set(false)
         deskBar.set(false)
         autoDevices.set(false)
         panelEdge.remove()

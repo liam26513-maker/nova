@@ -560,4 +560,11 @@
     <string name="accent_shifted_icon">Icona shift con accento</string>
     <string name="send_to_claude">Invia a Claude</string>
     <string name="send_to_claude_missing">L\'app Claude non è installata</string>
+    <!-- NOVA: editor della disposizione dei tasti -->
+    <string name="nova_key_arrangement">Disposizione dei tasti</string>
+    <string name="nova_key_arrangement_summary">Sposta le lettere dove vuoi</string>
+    <string name="nova_key_arrangement_hint">Tocca un tasto e poi un altro per scambiarli, poi Salva. Vale per la lingua che stai usando; i caratteri a pressione lunga seguono il tasto.</string>
+    <string name="nova_key_arrangement_reset">Torna alla disposizione standard</string>
+    <string name="nova_key_arrangement_saved">Disposizione salvata</string>
+    <string name="nova_key_arrangement_unsupported">Questa disposizione non si può modificare qui: scegline una diversa in Lingue e layout.</string>
 </resources>

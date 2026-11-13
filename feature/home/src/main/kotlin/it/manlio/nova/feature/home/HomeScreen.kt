@@ -294,7 +294,7 @@ fun HomeScreen(
                     // Le foto scelte, se l'opzione è accesa e ce ne sono; altrimenti lo sfondo della Home.
                     val context = LocalContext.current
                     val photos = remember(it) { if (prefs.standbyPhotos) StandbyPhotos.list(context) else emptyList() }
-                    if (photos.isNotEmpty()) StandbyPhotoShow(photos, nowMillis) else HomeBackground(prefs, wallpaper)
+                    if (photos.isNotEmpty()) StandbyPhotoShow(photos) else HomeBackground(prefs, wallpaper)
                 }
             }
         }
