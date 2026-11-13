@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **StandBy con più calma** («lo standby si attiva in troppo poco tempo fallo entrare dopo 2 minuti di inattivita»): quello automatico parte dopo 2 minuti senza toccare il tablet, invece di 30 secondi.
+
 - **Icone più calme in modifica** («le icone si muovono troppo in fretta… rallentale e falle più armoniose»): quando modifichi la Home le icone ondeggiano piano e con un movimento morbido, invece di tremare.
 
 - **Barra spaziatrice pulita** («togli la scritta italiano»): con una sola lingua non compare più «Italiano».
