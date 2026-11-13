@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Icone più calme in modifica** («le icone si muovono troppo in fretta… rallentale e falle più armoniose»): quando modifichi la Home le icone ondeggiano piano e con un movimento morbido, invece di tremare.
+
 - **Barra spaziatrice pulita** («togli la scritta italiano»): con una sola lingua non compare più «Italiano».
 - **Wi-Fi e Bluetooth a pressione lunga** («se tieni premuto il tasto del wifi e il bluethote ti manda nelle impostazioni rapide»): nella tendina di NOVA, tenendo premuto uno dei due si apre il pannello di Android con le reti o i dispositivi.
 - **Foto dello StandBy più veloci** («accorcia un po i tempi nel cambio delle foto»): cambiano ogni 20 secondi invece che ogni minuto.

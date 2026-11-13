@@ -4,7 +4,7 @@ package it.manlio.nova.feature.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
@@ -421,7 +421,7 @@ private fun rememberJiggle(): State<Float> =
     rememberInfiniteTransition(label = "jiggle").animateFloat(
         initialValue = -1f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(JIGGLE_MS, easing = LinearEasing), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(tween(JIGGLE_MS, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "jiggle-value",
     )
 
@@ -463,7 +463,9 @@ private val DOT = 7.dp
 private val DOT_GAP = 5.dp
 private val EDGE = 48.dp
 private const val ID_LENGTH = 8
-private const val JIGGLE_MS = 120
+
+// Lento e morbido, come un respiro (richiesta del 13 novembre 2026: «tremano troppo velocemente»).
+private const val JIGGLE_MS = 420
 private const val EDGE_DWELL_MS = 650L
 private const val DRAG_SCALE = 1.08f
 private const val DRAG_ALPHA = 0.92f
