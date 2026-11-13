@@ -196,11 +196,16 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 | 0.1.1540: codice compilato (`SelfCompile`) + Compose 1.10 | 24 ms | 34 ms | 46 ms | 29 |
 | 0.1.1550: + semantica per l'autocompletamento spenta | 23 ms | 32 ms | 42 ms | 16 |
 | 0.1.1560: + griglia senza ricomposizione a metà sfogliata (due prove) | 23–24 ms | 29–34 ms | 40–42 ms | 19 |
+| 0.1.1620: + sfondo e sfumature in un'unica immagine (`BakedWallpaper`) | 19 ms | 29 ms | 36 ms | 21 (comandi di disegno lenti: 7) |
 
 - La causa più grossa era ART: NOVA, installata fuori dal Play Store, restava in `verify` (interpretata) dopo ogni aggiornamento. `SelfCompile` la fa compilare con Shizuku e la riavvia al primo spegnimento dello schermo.
 - `ComposeUiFlags.isSemanticAutofillEnabled = false`: con l'autocompletamento di Google attivo Compose 1.10 calcolava la semantica a ogni cambiamento.
 - PR 167: la griglia non legge più `pager.currentPage` in composizione (si ricomponeva tutta a metà di ogni sfogliata). Con la 0.1.1560 i numeri restano nella stessa fascia (differenza nel rumore della misura): il fotogramma pesante a metà sfogliata era raro.
 - Compose 1.12 richiede AGP 9: rimandato.
+- **Ricerca** (4 aperture con testo, `dumpsys gfxinfo`): 0.1.1560 mediana 28 ms, 90° 73 ms → 0.1.1620 mediana 21 ms, 90° 61 ms. Interventi: altezza finale della tastiera invece di quella animata (PR 170), sfumatura della Home con `ModulateAlpha` (PR 172), suggerimenti preparati sulla Home al ritorno (PR 173), Home invisibile non disegnata (PR 174). Resta il costo della prima composizione della lista e della tastiera che si apre insieme (la GPU è condivisa).
+- **Impostazioni** (10 scorrimenti): mediana 23 → 21 ms, 90° 34 → 30 ms con lo sfondo sfocato calcolato una volta per tutti i pannelli (`LastValueCache`, PR 171).
+- **Tastiera**: compilata da ART anche dopo l'aggiornamento automatico (`SelfCompile`); il resto del costo è il ridisegno di tutti i tasti a ogni tocco nel codice di HeliBoard (mediana 15 ms).
+- **Limite noto:** con il servizio di accessibilità di NOVA acceso Compose calcola sempre la semantica (circa 2–3 ms per fotogramma, di più nelle liste). Non c'è un modo supportato per evitarlo senza togliere il servizio.
 
 ## Fluidità dello scorrimento (misura del 12 novembre 2026, 0.1.1390, U6)
 - Sfogliando le pagine: mediana circa 29 ms, 90° percentile circa 42 ms. La GPU sta sugli 8 ms; il collo di bottiglia è il thread UI, circa 15 ms per fotogramma:

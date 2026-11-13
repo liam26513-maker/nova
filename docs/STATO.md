@@ -1,6 +1,6 @@
 # Stato del piano e come ripartire
 
-Aggiornato a: release 0.1.1480. Per riprendere il lavoro in una chat nuova basta scrivere:
+Aggiornato a: release 0.1.1620. Per riprendere il lavoro in una chat nuova basta scrivere:
 «Leggi CLAUDE.md, SPEC.md e docs/STATO.md e continua dal prossimo passo.» Tutto il resto sta nel repository.
 
 ## Fatto (vedi CHANGELOG.md per il dettaglio, in italiano semplice)
@@ -42,6 +42,14 @@ Aggiornato a: release 0.1.1480. Per riprendere il lavoro in una chat nuova basta
   - isola della musica sopra le altre app, facoltativa e spenta di serie.
   - Il modello della penna non si fa (detto dal proprietario).
   - Provati sul tablet con la 0.1.1480: suggerimenti con il perché, scorciatoie (Calendar → «Nuovo evento»), grafico per app, isola sopra YouTube Music (si apre con i comandi, sparisce sulla Home). Da provare a mano: risposta rapida (serve un messaggio vero), Home essenziale in Studio, app aperte nella barra del Lavoro.
+
+- **13 novembre, notte (fino alla 0.1.1620): velocità** («vorrei velocizzare e rendere più fluido il tutto»):
+  - NOVA e la tastiera si fanno compilare da ART dopo ogni aggiornamento (erano in «verify»), riavvio a schermo spento;
+  - Compose 1.10, AGP 8.9, compileSdk 36; niente semantica per l'autocompletamento;
+  - Home: mediana da 29 a 19 ms, 90° percentile da 42 a 29 ms; ricerca da 28 a 21 ms; Impostazioni da 23 a 21 ms (dettagli in `docs/modules/home.md`);
+  - Creativa: 3 tasti di navigazione al posto dei gesti (i tratti dal bordo non diventano «Indietro»);
+  - tratti persi in ibisPaint: lo schermo (gslX680, 50 letture al secondo) non sente alcuni contatti rapidissimi della penna; tutto ciò che sente arriva a ibisPaint. Non risolvibile senza root.
+  - Copertine dei giochi nella libreria.
 
 ## Prossimo passo (in ordine)
 Le parti del piano che Claude poteva fare da solo sono fatte (controllo del 12 novembre 2026). Restano:
