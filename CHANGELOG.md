@@ -4,6 +4,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Studio non più vuota né opprimente** («nella modalita studio mi sembra troppo vuota e opprimente»): niente più nero e lista; resta la tua Home di sempre, con le tue app e il tuo sfondo, solo più quieta: sfondo molto sfocato, icone monocromatiche, carattere elegante e sottile.
 - **Rispondendo vedi il messaggio** («quando rispondo vedo anche il messaggio mandato dalla persona»): la finestra di risposta mostra gli ultimi messaggi della chat, i suoi a sinistra e i tuoi a destra.
 - **Home essenziale più minimal e carina** («la home essenziale falla piu minimal e carina»): nella Studio la Home diventa una lista di soli nomi su nero morbido, con orologio sottile e carattere elegante; all'uscita tornano la tua griglia e il tuo aspetto.
 - **«Riavvia NOVA normalmente» ora funziona davvero** («controlla se va bene tutto il resto»): nella modalità provvisoria il tasto riapriva la stessa schermata; ora NOVA riparte da capo e torna normale.
