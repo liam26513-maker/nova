@@ -311,11 +311,10 @@
     <string name="study_unlock_title">Unlock for 5 minutes?</string>
     <string name="study_unlock_yes">Yes, unlock</string>
     <string name="games_title">Your games</string>
-    <string name="games_footer">Tap a game to open it, tap the percentage to change its resolution (needs Shizuku, applies the next time it opens). FPS come from «Measure the game».</string>
+    <string name="games_footer">Tap a game to open it, pick its resolution below (needs Shizuku, applies the next time the game opens). FPS come from «Measure the game».</string>
     <string name="games_none">No games found</string>
     <string name="games_fps">%1$d FPS in the last measure</string>
     <string name="games_fps_tip">%1$d FPS in the last measure: try %2$d%%</string>
-    <string name="games_change_scale">Change the resolution of %1$s</string>
     <string name="games_cloud">Cloud gaming</string>
     <string name="games_xbox">Xbox Cloud Gaming</string>
     <string name="games_geforce">GeForce NOW</string>
@@ -633,4 +632,9 @@
     <string name="health_unknown">Unknown</string>
     <string name="meter_nothing_yet">No measurement yet: start it from “Measure the game” and play for 2 minutes.</string>
     <string name="meter_no_data">No data</string>
+    <string name="reply_title">Reply to %1$s</string>
+    <string name="reply_hint">Write your reply</string>
+    <string name="reply_send">Send</string>
+    <string name="reply_cancel">Cancel</string>
+    <string name="reply_failed">The app did not accept the reply: open it to answer.</string>
 </resources>

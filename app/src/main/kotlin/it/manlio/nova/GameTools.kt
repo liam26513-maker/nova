@@ -96,21 +96,34 @@ internal class GameTools(
             return null
         }
         val next = SystemCommand.nextGameScale(before)
-        app.appScope.launch {
-            val ok = app.systemChanges.setGameScale(game, next).ok
-            if (ok) GameFps(context).forget(game) else fix(scaleText(before))
-            say(if (ok) R.string.game_scale_done else R.string.game_scale_failed)
+        apply(game, next) { ok ->
+            if (!ok) fix(scaleText(before))
             done()
         }
         return scaleText(next)
     }
 
-    /** Dalla libreria dei giochi: un passo in giù, poi [done] rilegge la riga. */
-    fun stepScale(
+    /** Dalla libreria e dal pannello: la risoluzione scelta direttamente ([percent] null = normale), poi [done] rilegge. */
+    fun setScale(
         game: String,
+        percent: Int?,
         done: () -> Unit,
     ) {
-        changeScale(game, {}, done)
+        if (app.shizuku.status.value != ShizukuStatus.READY) return say(R.string.meter_needs_shizuku)
+        apply(game, percent) { done() }
+    }
+
+    private fun apply(
+        game: String,
+        percent: Int?,
+        then: (Boolean) -> Unit,
+    ) {
+        app.appScope.launch {
+            val ok = app.systemChanges.setGameScale(game, percent).ok
+            if (ok) GameFps(context).forget(game)
+            say(if (ok) R.string.game_scale_done else R.string.game_scale_failed)
+            then(ok)
+        }
     }
 
     fun close(game: String) {

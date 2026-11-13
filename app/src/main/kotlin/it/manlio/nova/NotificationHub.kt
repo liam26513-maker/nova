@@ -1,10 +1,12 @@
 package it.manlio.nova
 
+import android.app.ActivityOptions
 import android.app.Notification
 import android.app.RemoteInput
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
@@ -24,6 +26,8 @@ import kotlinx.coroutines.flow.asStateFlow
 object NotificationHub : NotificationSource {
     private val _previews = MutableStateFlow<Map<String, NotificationPreview>>(emptyMap())
     override val previews: StateFlow<Map<String, NotificationPreview>> = _previews.asStateFlow()
+    private val _all = MutableStateFlow<List<NotificationPreview>>(emptyList())
+    override val all: StateFlow<List<NotificationPreview>> = _all.asStateFlow()
     private var service: NotificationListenerService? = null
     private lateinit var appContext: Context
 
@@ -52,33 +56,45 @@ object NotificationHub : NotificationSource {
             true
         }.getOrDefault(false)
 
-    private fun replyAction(n: Notification): Notification.Action? =
-        n.actions.orEmpty().firstOrNull { a -> a.remoteInputs?.any { it.allowFreeFormInput } == true }
+    override fun open(key: String) {
+        runCatching {
+            val sbn = service?.activeNotifications?.firstOrNull { it.key == key } ?: return
+            val target = sbn.notification.contentIntent ?: return
+            // Da Android 14 chi manda il PendingIntent deve permettere esplicitamente di aprire un'attività da dietro.
+            val options =
+                ActivityOptions.makeBasic().apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        setPendingIntentBackgroundActivityStartMode(ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+                    }
+                }
+            target.send(appContext, 0, null, null, null, null, options.toBundle())
+            if (sbn.notification.flags and Notification.FLAG_AUTO_CANCEL != 0) service?.cancelNotification(key)
+        }
+    }
+
+    override fun askReply(preview: NotificationPreview) {
+        val intent =
+            Intent(appContext, ReplyActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(ReplyActivity.KEY, preview.key)
+                .putExtra(ReplyActivity.TO, preview.title)
+        runCatching { appContext.startActivity(intent) }
+    }
 
     internal fun attach(s: NotificationListenerService?) {
         service = s
-        if (s == null) _previews.value = emptyMap() else refresh(s)
+        if (s == null) {
+            _previews.value = emptyMap()
+            _all.value = emptyList()
+        } else {
+            refresh(s)
+        }
     }
 
     internal fun refresh(s: NotificationListenerService) {
         val raw = runCatching { s.activeNotifications.orEmpty().map(::raw) }.getOrDefault(emptyList())
         _previews.value = NotificationIndex.build(raw)
-    }
-
-    private fun raw(sbn: StatusBarNotification): RawNotification {
-        val n = sbn.notification
-        val extras = n.extras
-        return RawNotification(
-            key = sbn.key,
-            pkg = sbn.packageName,
-            title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty(),
-            text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString().orEmpty(),
-            whenMs = sbn.postTime,
-            ongoing = sbn.isOngoing,
-            groupSummary = n.flags and Notification.FLAG_GROUP_SUMMARY != 0,
-            isMedia = extras?.containsKey(Notification.EXTRA_MEDIA_SESSION) == true || n.category == Notification.CATEGORY_TRANSPORT,
-            canReply = replyAction(n) != null,
-        )
+        _all.value = NotificationIndex.list(raw)
     }
 
     /** L'utente ha dato a NOVA l'accesso alle notifiche (Impostazioni di Android → Accesso alle notifiche)? */
@@ -87,6 +103,25 @@ object NotificationHub : NotificationSource {
         val me = ComponentName(context, NovaNotificationListener::class.java)
         return enabled.split(':').any { ComponentName.unflattenFromString(it) == me }
     }
+}
+
+private fun replyAction(n: Notification): Notification.Action? =
+    n.actions.orEmpty().firstOrNull { a -> a.remoteInputs?.any { it.allowFreeFormInput } == true }
+
+private fun raw(sbn: StatusBarNotification): RawNotification {
+    val n = sbn.notification
+    val extras = n.extras
+    return RawNotification(
+        key = sbn.key,
+        pkg = sbn.packageName,
+        title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty(),
+        text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString().orEmpty(),
+        whenMs = sbn.postTime,
+        ongoing = sbn.isOngoing,
+        groupSummary = n.flags and Notification.FLAG_GROUP_SUMMARY != 0,
+        isMedia = extras?.containsKey(Notification.EXTRA_MEDIA_SESSION) == true || n.category == Notification.CATEGORY_TRANSPORT,
+        canReply = replyAction(n) != null,
+    )
 }
 
 /** Servizio di sistema che riceve le notifiche, attivo solo se l'utente dà l'accesso. Non fa altro che tenere aggiornata la memoria. */

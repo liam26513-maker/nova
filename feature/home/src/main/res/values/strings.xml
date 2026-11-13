@@ -94,4 +94,8 @@
     <string name="home_menu_reply">Rispondi a %1$s</string>
     <string name="home_menu_reply_hint">Scrivi a %1$s…</string>
     <string name="home_menu_reply_send">Invia</string>
+    <string name="control_notifications">Notifiche</string>
+    <string name="control_notifications_none">Nessuna notifica</string>
+    <string name="control_notification_reply">Rispondi</string>
+    <string name="control_notification_dismiss">Chiudi la notifica</string>
 </resources>

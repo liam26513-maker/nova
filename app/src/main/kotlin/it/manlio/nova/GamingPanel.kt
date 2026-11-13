@@ -198,7 +198,24 @@ internal class GamingPanel(
     private fun ScaleAction(game: String) {
         var scale by remember(game) { mutableStateOf(tools.scale(game)) }
         val text = stringResource(R.string.game_scale_percent, scale ?: FULL_SCALE)
-        Action(stringResource(R.string.more_game_scale, text)) { tools.stepScale(game) { scale = tools.scale(game) } }
+        BasicText(stringResource(R.string.more_game_scale, text), style = TextStyle(Nova.tokens.colors.onSurface, 15.sp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            SCALE_CHOICES.forEach { choice ->
+                val chosen = choice == scale
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Nova.tokens.colors.accent.copy(alpha = if (chosen) 1f else BUTTON_TINT))
+                        .clickable { tools.setScale(game, choice) { scale = tools.scale(game) } }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    val ink = if (chosen) Color.White else Nova.tokens.colors.onSurface
+                    BasicText(stringResource(R.string.game_scale_percent, choice ?: FULL_SCALE), style = TextStyle(ink, 14.sp))
+                }
+            }
+        }
     }
 
     @Composable

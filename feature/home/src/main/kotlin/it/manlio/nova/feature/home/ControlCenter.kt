@@ -195,6 +195,7 @@ internal fun ControlCenter(
     firstView: List<ControlTileId>,
     onClose: () -> Unit,
     onSettled: (Boolean) -> Unit,
+    notifications: NotificationSource? = null,
 ) {
     val shown by remember(sheet) { derivedStateOf { sheet.progress > 0f } }
     if (!shown || controls == null) return
@@ -210,88 +211,100 @@ internal fun ControlCenter(
                 .drawBehind { drawRect(Color.Black.copy(alpha = DIM * sheet.progress)) }
                 .pointerInput(onClose) { detectTapGestures { onClose() } },
         )
-        Box(
-            Modifier
-                .align(Alignment.TopEnd)
-                .safeDrawingPadding()
-                .padding(PANEL_MARGIN)
-                .widthIn(max = CONTROL_WIDTH)
-                .onSizeChanged { sheet.measure(it.height + inset) }
-                .graphicsLayer {
-                    translationY = -(1f - sheet.progress) * (size.height + inset)
-                    alpha = (sheet.progress * FADE_IN_SPEED).coerceAtMost(1f)
-                }.background(card, SquircleShape(CARD_RADIUS))
-                .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
-                .closeByDragging(sheet, onSettled),
+        // Le notifiche a fianco, a sinistra del pannello: prendono lo spazio che resta.
+        Row(
+            Modifier.align(Alignment.TopEnd).safeDrawingPadding().padding(PANEL_MARGIN),
+            horizontalArrangement = Arrangement.spacedBy(PANEL_MARGIN),
         ) {
-            val torchOn = controls.torch?.on?.collectAsState()?.value ?: false
-            // I riquadri disponibili, nell'ordine fisso: quelli scelti in Personalizza la Home a prima vista, gli altri sotto «Altro».
-            // I riquadri che portano alle impostazioni di Android chiudono la tendina: al ritorno la Home è pulita.
-            val leave = { panel: SystemPanel ->
-                controls.openPanel(panel)
-                onClose()
-            }
-            val wifiOn = rememberToggleState(controls.toggles[SystemPanel.INTERNET])
-            val btOn = rememberToggleState(controls.toggles[SystemPanel.BLUETOOTH])
-            val dndOn = rememberToggleState(controls.toggles[SystemPanel.DND])
-            val available =
-                buildMap {
-                    val wifiLabel = stringResource(R.string.control_internet)
-                    val wifi = panelTile(ControlGlyph.WIFI, wifiLabel, SystemPanel.INTERNET, controls, wifiOn, leave)
-                    val btLabel = stringResource(R.string.control_bluetooth)
-                    val bluetooth = panelTile(ControlGlyph.BLUETOOTH, btLabel, SystemPanel.BLUETOOTH, controls, btOn, leave)
-                    val dnd = panelTile(ControlGlyph.MOON, stringResource(R.string.control_dnd), SystemPanel.DND, controls, dndOn, leave)
-                    put(ControlTileId.WIFI, wifi)
-                    put(ControlTileId.BLUETOOTH, bluetooth)
-                    put(ControlTileId.DND, dnd)
-                    controls.torch?.let { torch ->
-                        val label = stringResource(R.string.control_torch)
-                        put(ControlTileId.TORCH, Tile(ControlGlyph.TORCH, label, torchOn) { torch.toggle() })
-                    }
-                    put(ControlTileId.GRAPHICS, Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
-                    controls.onTurbo?.let { turbo ->
-                        put(ControlTileId.TURBO, Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() })
-                    }
-                    onEditHome?.let { edit ->
-                        put(ControlTileId.EDIT_HOME, Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() })
-                    }
-                    put(ControlTileId.SETTINGS, Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
-                }
-            val essentials = ControlTileId.entries.filter { it in firstView }.mapNotNull(available::get)
-            val nova = ControlTileId.entries.filter { it !in firstView }.mapNotNull(available::get)
-            var expanded by remember { mutableStateOf(false) }
-            Column(
-                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ControlNotifications(
+                notifications,
+                sheet,
+                card,
+                flat,
+                onClose,
+                Modifier.weight(1f, fill = false).widthIn(max = NOTIFICATIONS_WIDTH),
+            )
+            Box(
+                Modifier
+                    .widthIn(max = CONTROL_WIDTH)
+                    .onSizeChanged { sheet.measure(it.height + inset) }
+                    .graphicsLayer {
+                        translationY = -(1f - sheet.progress) * (size.height + inset)
+                        alpha = (sheet.progress * FADE_IN_SPEED).coerceAtMost(1f)
+                    }.background(card, SquircleShape(CARD_RADIUS))
+                    .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
+                    .closeByDragging(sheet, onSettled),
             ) {
-                if (essentials.isNotEmpty()) TileRows(essentials)
-                controls.volume?.let { SliderRow(ControlGlyph.VOLUME, stringResource(R.string.control_volume), it) }
-                if (controls.brightness != null) {
-                    SliderRow(ControlGlyph.SUN, stringResource(R.string.control_brightness), controls.brightness)
-                } else {
-                    GrantRow(controls.onGrantBrightness)
+                val torchOn = controls.torch?.on?.collectAsState()?.value ?: false
+                // I riquadri disponibili, nell'ordine fisso: quelli scelti in Personalizza la Home a prima vista, gli altri sotto «Altro».
+                // I riquadri che portano alle impostazioni di Android chiudono la tendina: al ritorno la Home è pulita.
+                val leave = { panel: SystemPanel ->
+                    controls.openPanel(panel)
+                    onClose()
                 }
-                MoreToggle(expanded) { expanded = !expanded }
-                AnimatedVisibility(
-                    expanded,
-                    enter = expandVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeIn(),
-                    exit = shrinkVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeOut(),
-                ) {
-                    Column(
-                        Modifier.heightIn(max = MORE_MAX_HEIGHT).verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        if (nova.isNotEmpty()) TileRows(nova)
-                        Column { controls.more.forEach { MoreRow(it, onClose) } }
+                val wifiOn = rememberToggleState(controls.toggles[SystemPanel.INTERNET])
+                val btOn = rememberToggleState(controls.toggles[SystemPanel.BLUETOOTH])
+                val dndOn = rememberToggleState(controls.toggles[SystemPanel.DND])
+                val available =
+                    buildMap {
+                        val wifiLabel = stringResource(R.string.control_internet)
+                        val wifi = panelTile(ControlGlyph.WIFI, wifiLabel, SystemPanel.INTERNET, controls, wifiOn, leave)
+                        val btLabel = stringResource(R.string.control_bluetooth)
+                        val bluetooth = panelTile(ControlGlyph.BLUETOOTH, btLabel, SystemPanel.BLUETOOTH, controls, btOn, leave)
+                        val dnd =
+                            panelTile(ControlGlyph.MOON, stringResource(R.string.control_dnd), SystemPanel.DND, controls, dndOn, leave)
+                        put(ControlTileId.WIFI, wifi)
+                        put(ControlTileId.BLUETOOTH, bluetooth)
+                        put(ControlTileId.DND, dnd)
+                        controls.torch?.let { torch ->
+                            val label = stringResource(R.string.control_torch)
+                            put(ControlTileId.TORCH, Tile(ControlGlyph.TORCH, label, torchOn) { torch.toggle() })
+                        }
+                        put(ControlTileId.GRAPHICS, Tile(ControlGlyph.LAYERS, controls.graphicsLabel()) { controls.onCycleGraphics() })
+                        controls.onTurbo?.let { turbo ->
+                            put(ControlTileId.TURBO, Tile(ControlGlyph.BOLT, stringResource(R.string.control_turbo)) { turbo() })
+                        }
+                        onEditHome?.let { edit ->
+                            put(ControlTileId.EDIT_HOME, Tile(ControlGlyph.EDIT, stringResource(R.string.control_edit_home)) { edit() })
+                        }
+                        put(ControlTileId.SETTINGS, Tile(ControlGlyph.SETTINGS, stringResource(R.string.control_settings)) { onSettings() })
                     }
+                val essentials = ControlTileId.entries.filter { it in firstView }.mapNotNull(available::get)
+                val nova = ControlTileId.entries.filter { it !in firstView }.mapNotNull(available::get)
+                var expanded by remember { mutableStateOf(false) }
+                Column(
+                    Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    if (essentials.isNotEmpty()) TileRows(essentials)
+                    controls.volume?.let { SliderRow(ControlGlyph.VOLUME, stringResource(R.string.control_volume), it) }
+                    if (controls.brightness != null) {
+                        SliderRow(ControlGlyph.SUN, stringResource(R.string.control_brightness), controls.brightness)
+                    } else {
+                        GrantRow(controls.onGrantBrightness)
+                    }
+                    MoreToggle(expanded) { expanded = !expanded }
+                    AnimatedVisibility(
+                        expanded,
+                        enter = expandVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeIn(),
+                        exit = shrinkVertically(spring(stiffness = SHEET_STIFFNESS)) + fadeOut(),
+                    ) {
+                        Column(
+                            Modifier.heightIn(max = MORE_MAX_HEIGHT).verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            if (nova.isNotEmpty()) TileRows(nova)
+                            Column { controls.more.forEach { MoreRow(it, onClose) } }
+                        }
+                    }
+                    // La maniglia dice "si tira su per chiudere".
+                    Box(
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .size(HANDLE_WIDTH, HANDLE_HEIGHT)
+                            .background(look.ink.copy(alpha = 0.3f), CircleShape),
+                    )
                 }
-                // La maniglia dice "si tira su per chiudere".
-                Box(
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(HANDLE_WIDTH, HANDLE_HEIGHT)
-                        .background(look.ink.copy(alpha = 0.3f), CircleShape),
-                )
             }
         }
     }
@@ -586,6 +599,7 @@ internal fun DrawScope.drawControlGlyph(
 }
 
 private val CONTROL_WIDTH = 460.dp
+private val NOTIFICATIONS_WIDTH = 420.dp
 private val TILE: Dp = 76.dp
 private val PANEL_MARGIN = 12.dp
 private val OFFSCREEN_MARGIN = 48.dp

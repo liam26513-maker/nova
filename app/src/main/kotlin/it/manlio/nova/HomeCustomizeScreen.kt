@@ -348,7 +348,8 @@ private fun LayoutSection(
         Choice(R.string.customize_standby_photos, listOf(true, false), prefs.standbyPhotos, { onOff(it) }, divider = true) { v ->
             onChange { it.copy(standbyPhotos = v) }
         }
-        if (prefs.standbyPhotos) StandbyPhotoRows()
+        // Sempre visibile: scegliere le foto accende anche «Foto nello StandBy» (prima il tasto compariva solo dopo il Sì).
+        StandbyPhotoRows { onChange { it.copy(standbyPhotos = true) } }
         Choice(R.string.customize_standby_widget, STANDBY_WIDGETS, prefs.standbyWidget, { standbyWidgetName(it) }, divider = true) { v ->
             onChange { it.copy(standbyWidget = v) }
         }

@@ -4,6 +4,12 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Notifiche accanto alla tendina** («i messaggi non li vedo e non posso risponderci nella tendina di nova (metti le notifiche a fianco della tendina)»): aprendo la tendina di NOVA, a sinistra compaiono le notifiche, una per una. Toccane una per aprirla, «Rispondi» per scrivere la risposta, la × per toglierla.
+- **Home essenziale nella Studio accesa di serie** («non ho visto cambiamenti nella home quando attivo la studio»): era una voce facoltativa spenta; ora la Studio (e la Presentazione) mettono la Home essenziale e all'uscita torna com'era.
+- **Risoluzione dei giochi scelta direttamente** («la grafica del gioco non è rimasta alla percentuale messa prima 65%»): invece di scendere un passo per tocco (era facile finire sulla percentuale sbagliata), scegli tu 100, 90, 80, 70 o 65%, nel pannello Gaming e in Impostazioni. Vale dalla prossima apertura del gioco.
+- **Foto dello StandBy più facili da trovare** («non ho visto un tasto per mettere le foto in standby»): in Personalizza la Home c'è sempre «Scegli le foto»; sceglierle accende anche le foto nello StandBy.
+- **Barra della penna solo dove serve** («non voglio la barra della penna e alte app se non in note»): compare solo in ibisPaint e nelle note di NOVA.
+
 - **Tastiera dal tocco più leggero** («la tastiera la sento ancora un po dura e pesante»): il tablet non ha vibrazione, quindi la sensazione viene dal clic: ora le lettere fanno un «tic» corto e più piano.
 - **Tastiera più leggera a ogni tocco** («togli il limite della tastiera»): quando premi un tasto viene ridisegnato solo quel tasto, non più tutta la tastiera.
 - **Home: sfondo disegnato in una volta** («continua con il resto del piano»): la tua foto e le sfumature sopra sono preparate insieme una volta sola, così la grafica a ogni fotogramma fa un terzo del lavoro sullo sfondo.

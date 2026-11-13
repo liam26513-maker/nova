@@ -20,6 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /** Una notifica come la dà il sistema, ridotta a ciò che serve. Solo in memoria: non viene mai salvata né inviata. */
@@ -56,12 +57,21 @@ object NotificationIndex {
      */
     fun build(raw: List<RawNotification>): Map<String, NotificationPreview> =
         raw
-            .filter { !it.ongoing && !it.groupSummary && !it.isMedia && (it.title.isNotBlank() || it.text.isNotBlank()) }
+            .filter(::shown)
             .groupBy { it.pkg }
             .mapValues { (pkg, list) ->
                 val last = list.maxBy { it.whenMs }
                 NotificationPreview(pkg, last.key, last.title.trim(), last.text.trim(), list.size, last.whenMs, last.canReply)
             }
+
+    /** Una per una, dalla più recente: l'elenco accanto alla tendina. */
+    fun list(raw: List<RawNotification>): List<NotificationPreview> =
+        raw
+            .filter(::shown)
+            .sortedByDescending { it.whenMs }
+            .map { NotificationPreview(it.pkg, it.key, it.title.trim(), it.text.trim(), 1, it.whenMs, it.canReply) }
+
+    private fun shown(n: RawNotification) = !n.ongoing && !n.groupSummary && !n.isMedia && (n.title.isNotBlank() || n.text.isNotBlank())
 
     /** «Titolo: testo», o solo quello che c'è. */
     fun line(p: NotificationPreview): String = listOf(p.title, p.text).filter { it.isNotBlank() }.joinToString(": ")
@@ -70,6 +80,15 @@ object NotificationIndex {
 /** Le notifiche lette dal sistema (`NotificationListenerService`); l'app le fornisce. null = senza notifiche in linea. */
 interface NotificationSource {
     val previews: StateFlow<Map<String, NotificationPreview>>
+
+    /** Tutte le notifiche, una per una dalla più recente (per l'elenco accanto alla tendina). */
+    val all: StateFlow<List<NotificationPreview>> get() = NO_NOTIFICATIONS
+
+    /** Apre ciò a cui porta la notifica, come toccarla nella tendina di Android. */
+    fun open(key: String) {}
+
+    /** Chiede il testo della risposta in una piccola finestra (sopra le altre app la tastiera non arriva alla tendina). */
+    fun askReply(preview: NotificationPreview) {}
 
     /** L'utente ha dato l'accesso alle notifiche a NOVA? */
     fun isEnabled(): Boolean
@@ -83,6 +102,8 @@ interface NotificationSource {
         text: String,
     ): Boolean = false
 }
+
+private val NO_NOTIFICATIONS: StateFlow<List<NotificationPreview>> = MutableStateFlow(emptyList())
 
 /** Le anteprime correnti, per disegnare distintivi e righe senza passarle a ogni funzione. */
 internal val LocalNotifications = compositionLocalOf<Map<String, NotificationPreview>> { emptyMap() }

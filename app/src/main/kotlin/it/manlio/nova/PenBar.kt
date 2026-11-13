@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
  * con Shizuku. Non prende il fuoco, così i tasti arrivano all'app. Piccola, sul bordo destro, e si accende da tendina → Altro.
  * Per tutte le app: Annulla (Ctrl+Z) e Ripeti (Ctrl+Shift+Z). Con ibisPaint davanti anche pennello (B), gomma (E), contagocce (I)
  * e dimensione del pennello ([ e ]): tasti letti dall'elenco delle scorciatoie di ibisPaint 14.1 sul tablet (9 novembre 2026).
+ * Compare solo in ibisPaint e nelle note di NOVA: sopra le altre app il proprietario non la vuole (13 novembre 2026).
  * shortcut: un solo profilo, scritto nel codice; un file di profili per più app quando ne servirà un altro.
  */
 internal class PenBar(
@@ -35,18 +36,18 @@ internal class PenBar(
 
     fun set(on: Boolean) {
         this.on = on
-        if (on) show() else hide()
+        update()
     }
 
-    /** L'app davanti è cambiata: se cambia il profilo, la barra si rifà con i suoi tasti. */
+    /** L'app davanti è cambiata ([NOTES] per le note di NOVA): la barra c'è solo dove serve, con i tasti di quell'app. */
     fun foreground(pkg: String) {
-        val before = foreground == IBISPAINT
+        if (pkg == foreground) return
         foreground = pkg
-        if (on && before != (pkg == IBISPAINT)) {
-            hide()
-            show()
-        }
+        hide()
+        update()
     }
+
+    private fun update() = if (on && penTarget(foreground)) show() else hide()
 
     private fun show() {
         if (view != null) return
@@ -96,17 +97,23 @@ internal class PenBar(
         if (app.shizuku.status.value == ShizukuStatus.READY) app.appScope.launch { app.shizuku.run(ToolKey(key)) }
     }
 
-    private companion object {
-        const val IBISPAINT = "jp.ne.ibis.ibispaintx.app"
-        val UNDO = listOf(Key.CTRL, Key.Z)
-        val REDO = listOf(Key.CTRL, Key.SHIFT, Key.Z)
-        const val RADIUS_DP = 22f
-        const val MARGIN_DP = 8
-        const val SIZE_DP = 48
-        const val TEXT_SP = 22f
-        const val BAR_COLOR = 0xCC1C1C1E.toInt()
+    companion object {
+        /** Segnaposto per le note di NOVA, che stanno nel pacchetto di NOVA come la Home. */
+        const val NOTES = "it.manlio.nova/notes"
+        private const val IBISPAINT = "jp.ne.ibis.ibispaintx.app"
 
-        fun button(
+        /** Le sole app in cui compare la barra. */
+        fun penTarget(foreground: String?): Boolean = foreground == IBISPAINT || foreground == NOTES
+
+        private val UNDO = listOf(Key.CTRL, Key.Z)
+        private val REDO = listOf(Key.CTRL, Key.SHIFT, Key.Z)
+        private const val RADIUS_DP = 22f
+        private const val MARGIN_DP = 8
+        private const val SIZE_DP = 48
+        private const val TEXT_SP = 22f
+        private const val BAR_COLOR = 0xCC1C1C1E.toInt()
+
+        private fun button(
             context: Context,
             symbol: String,
             label: Int,

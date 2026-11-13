@@ -171,6 +171,11 @@ class NovaControlService : AccessibilityService() {
             recentsEvent(event)
         }
         val other = event.packageName != packageName && event.packageName != SYSTEM_UI
+        // Le schermate di NOVA (non le sue finestre sopra le altre app) contano per la barra della penna: c'è nelle note.
+        val ownActivity = event.className?.toString()?.takeIf { event.packageName == packageName && it.endsWith("Activity") }
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && ownActivity != null) {
+            penBar.foreground(if (ownActivity == NotesActivity::class.java.name) PenBar.NOTES else packageName)
+        }
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || !other) return
         requestClose()
         // Quale app è davanti (non la tastiera): serve a misurare o chiudere un gioco.
@@ -357,6 +362,7 @@ class NovaControlService : AccessibilityService() {
                                         startActivity(open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                                     },
                                     onDismissed = ::removePanel,
+                                    notifications = NotificationHub,
                                 )
                             }
                         }

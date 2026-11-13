@@ -41,7 +41,7 @@ class ModeOptionsTest {
     @Test
     fun `study keeps its base actions and adds the warm filter only when chosen, gaming follows the choices`() {
         val o = options()
-        assertEquals(listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON), o.chosen(Modes.STUDY))
+        assertEquals(listOf(ModeAction.DO_NOT_DISTURB, ModeAction.KEEP_SCREEN_ON, ModeAction.CALM_HOME), o.chosen(Modes.STUDY))
         assertEquals(Modes.WORK.actions, o.chosen(Modes.WORK))
         assertFalse(ModeAction.TURBO in o.chosen(Modes.GAMING))
         o.set(ModeAction.NIGHT_LIGHT_ON.name, true)

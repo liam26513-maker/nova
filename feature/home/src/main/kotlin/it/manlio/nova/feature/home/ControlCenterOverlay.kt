@@ -23,6 +23,7 @@ fun ControlCenterOverlay(
     closing: Boolean,
     onSettings: () -> Unit,
     onDismissed: () -> Unit,
+    notifications: NotificationSource? = null,
 ) {
     val look = remember(prefs, systemDark) { prefs.look(systemDark) }
     LaunchedEffect(closing) { if (closing) sheet.settle(false) }
@@ -40,6 +41,7 @@ fun ControlCenterOverlay(
             firstView = prefs.controlTiles,
             onClose = { sheet.settle(false) },
             onSettled = {},
+            notifications = notifications,
         )
     }
 }
