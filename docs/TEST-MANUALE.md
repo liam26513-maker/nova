@@ -24,7 +24,7 @@ Controlli che i test automatici non possono fare. Ogni PR indica quali punti rip
 - [ ] Sfondo di NOVA = «Aurora»: spegni lo schermo e riaccendilo: la schermata di blocco ha lo stesso sfondo (l'ora e il PIN restano quelli di Android). Cambia sfondo in NOVA (o scegli una foto): la schermata di blocco si aggiorna. Con lo sfondo di sistema non cambia niente. «Sfondo anche sulla schermata di blocco» su Spento: non viene toccata.
 - [ ] Tendina → Altro → «StandBy» (da una app qualsiasi): compare lo schermo nero con ora grande, data, batteria (e «in carica» se è collegato), sveglia se c'è. Un tocco o Indietro: torna la Home. Lo schermo non si spegne mentre è aperto.
 - [ ] Di notte (21–7): colori rosso scuro e luminosità quasi al minimo; all'uscita la luminosità torna quella di prima.
-- [ ] «StandBy automatico» su Acceso: collega il caricatore, tablet in orizzontale con la Home aperta, non toccare per 30 secondi: parte da solo. Senza caricatore o in verticale non parte.
+- [ ] «StandBy automatico» su Acceso: collega il caricatore, tablet in orizzontale con la Home aperta, non toccare per 2 minuti: parte da solo. Senza caricatore o in verticale non parte.
 
 ## Uscite di emergenza in più (Gaming)
 - [ ] Impostazioni → Modalità Gaming: accendi il doppio swipe. In gioco, uno swipe dal bordo destro mostra «Scorri di nuovo»; il secondo entro 2 secondi apre il menu. I comandi del gioco vicino al bordo funzionano ancora.

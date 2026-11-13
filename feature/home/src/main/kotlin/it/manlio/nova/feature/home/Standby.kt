@@ -60,7 +60,7 @@ data class StandbyInfo(
 /** Le regole del StandBy (SPEC §12.6), senza Android, così si provano. */
 object StandbyRules {
     /** Dopo quanto tempo senza toccare lo schermo parte il StandBy automatico. */
-    const val IDLE_MS = 30_000L
+    const val IDLE_MS = 120_000L
     private const val NIGHT_FROM = 21
     private const val NIGHT_TO = 7
 
