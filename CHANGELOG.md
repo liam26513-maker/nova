@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Impostazioni più leggere** («continua con il resto del piano», dopo «velocizzare tutto»): lo sfondo sfocato dietro i gruppi delle Impostazioni si prepara una volta sola, non più una volta per gruppo a ogni scorrimento.
+
 - **Ricerca più fluida all'apertura** («continua con il resto del piano», dopo «velocizzare tutto»): mentre sale la tastiera il riquadro dei risultati non si ricalcola più a ogni fotogramma.
 
 - **Home: niente scatto a metà pagina** («velocizzare e rendere più fluido il tutto»): sfogliando le pagine, a metà strada la Home ridisegnava tutta la griglia; ora no.
