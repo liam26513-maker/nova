@@ -189,6 +189,18 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 - **StandBy** (`feature/home/Standby.kt`): `StandbyScreen` + `StandbyInfo` + `StandbyRules` (notte 21–7, `shouldStart(auto, charging, landscape)`, luminosità, inattività 30 s: puro Kotlin, testato). `HomeScreen(standby, onStandbyExit, onTouch)`; `onAnyTouch` osserva ogni tocco nel passaggio iniziale senza consumarlo. `app/StandbyController`: annuncio di sistema `ACTION_BATTERY_CHANGED` (nessun polling), un solo timer solo se `standbyAuto` e in carica, `FLAG_KEEP_SCREEN_ON` e luminosità della finestra solo mentre è visibile (poi `BRIGHTNESS_OVERRIDE_NONE`). Apertura a mano: `NovaApp.standbyRequest` (impostato da «Altro → StandBy», che porta in primo piano `HomeActivity`).
 - **Limiti:** non è la schermata di blocco (quella resta di Android, SPEC §2.2); niente foto/calendario/widget/Stato PC; di notte la luminosità resta quella scelta all'apertura.
 
+## Fluidità dopo le ottimizzazioni (13 novembre 2026, U6, 12 sfogliate con `input swipe`, `dumpsys gfxinfo`)
+| Versione | Mediana | 90° percentile | 99° percentile | Fotogrammi lenti (thread UI) |
+|---|---|---|---|---|
+| 0.1.1390 | 29 ms | 42 ms | – | – |
+| 0.1.1540: codice compilato (`SelfCompile`) + Compose 1.10 | 24 ms | 34 ms | 46 ms | 29 |
+| 0.1.1550: + semantica per l'autocompletamento spenta | 23 ms | 32 ms | 42 ms | 16 |
+
+- La causa più grossa era ART: NOVA, installata fuori dal Play Store, restava in `verify` (interpretata) dopo ogni aggiornamento. `SelfCompile` la fa compilare con Shizuku e la riavvia al primo spegnimento dello schermo.
+- `ComposeUiFlags.isSemanticAutofillEnabled = false`: con l'autocompletamento di Google attivo Compose 1.10 calcolava la semantica a ogni cambiamento.
+- PR 167: la griglia non legge più `pager.currentPage` in composizione (si ricomponeva tutta a metà di ogni sfogliata). Misura con la 0.1.1560 da fare: il cavo si è staccato durante la prova.
+- Compose 1.12 richiede AGP 9: rimandato.
+
 ## Fluidità dello scorrimento (misura del 12 novembre 2026, 0.1.1390, U6)
 - Sfogliando le pagine: mediana circa 29 ms, 90° percentile circa 42 ms. La GPU sta sugli 8 ms; il collo di bottiglia è il thread UI, circa 15 ms per fotogramma:
   - circa 6 ms per lo scorrimento del pager con rimisura (`Recomposer:animation`);
