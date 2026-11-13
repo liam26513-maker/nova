@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -161,7 +162,14 @@ fun HomeScreen(
             // Con la ricerca aperta le icone della Home si dissolvono: la tastiera alza la barra in basso, che altrimenti si vedeva
             // attraverso il riquadro dei suggerimenti. Come sull'iPad, resta solo lo sfondo.
             val homeAlpha by animateFloatAsState(if (searching) 0f else 1f, label = "home-search")
-            Box(Modifier.fillMaxSize().graphicsLayer { alpha = homeAlpha }) {
+            // Sfuma disegnando ogni elemento più trasparente, senza un'immagine intermedia grande quanto lo schermo: sulla GPU del
+            // U6 quel passaggio in più costava parecchio a ogni fotogramma dell'apertura e chiusura della ricerca.
+            Box(
+                Modifier.fillMaxSize().graphicsLayer {
+                    alpha = homeAlpha
+                    compositingStrategy = CompositingStrategy.ModulateAlpha
+                },
+            ) {
                 when {
                     ipad ->
                         AnimatedContent(

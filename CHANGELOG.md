@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Ricerca: apertura e chiusura più leggere per la grafica** («continua con il resto del piano»): la Home dietro la ricerca sfuma senza un passaggio di disegno in più a ogni fotogramma.
+
 - **Impostazioni più leggere** («continua con il resto del piano», dopo «velocizzare tutto»): lo sfondo sfocato dietro i gruppi delle Impostazioni si prepara una volta sola, non più una volta per gruppo a ogni scorrimento.
 
 - **Ricerca più fluida all'apertura** («continua con il resto del piano», dopo «velocizzare tutto»): mentre sale la tastiera il riquadro dei risultati non si ricalcola più a ogni fotogramma.
