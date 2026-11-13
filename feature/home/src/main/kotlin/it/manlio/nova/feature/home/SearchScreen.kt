@@ -64,6 +64,7 @@ internal fun SearchScreen(
     apps: List<AppEntry>,
     actions: HomeActions,
     commands: SearchCommands,
+    suggested: List<Pair<AppEntry, String>>,
     onShowAll: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -75,7 +76,6 @@ internal fun SearchScreen(
     val results = remember(apps, query) { if (query.isBlank()) emptyList() else AppSearch.search(apps, query) { it.label } }
     val novaLabel = stringResource(R.string.home_search_nova_settings)
     val calc = remember(query) { Calc.answer(query) }
-    val suggested = rememberSuggested(apps, actions)
     val showNova = query.isNotBlank() && (listOf(novaLabel) + NOVA_WORDS).any { AppSearch.score(query, it) != null }
     Box(
         Modifier
