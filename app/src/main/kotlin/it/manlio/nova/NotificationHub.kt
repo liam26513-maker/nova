@@ -41,6 +41,24 @@ object NotificationHub : NotificationSource {
         runCatching { service?.cancelNotification(key) }
     }
 
+    /** Gli ultimi messaggi della conversazione (per la finestra di risposta): letti al momento, mai salvati. */
+    fun conversation(key: String): List<ChatLine> =
+        runCatching {
+            val n = service?.activeNotifications?.firstOrNull { it.key == key }?.notification ?: return emptyList()
+            val extras = n.extras ?: return emptyList()
+
+            @Suppress("DEPRECATION") // la versione tipizzata c'è solo da Android 13; qui basta il Bundle
+            val messages =
+                extras.getParcelableArray(Notification.EXTRA_MESSAGES).orEmpty().filterIsInstance<Bundle>().map { b ->
+                    b.getCharSequence("sender")?.toString() to b.getCharSequence("text")?.toString()
+                }
+            ChatLines.from(
+                messages,
+                extras.getCharSequence(Notification.EXTRA_TITLE)?.toString(),
+                extras.getCharSequence(Notification.EXTRA_TEXT)?.toString(),
+            )
+        }.getOrDefault(emptyList())
+
     /** Usa l'azione di risposta dell'app (RemoteInput), come fa la tendina di Android: il testo va solo all'app della notifica. */
     override fun reply(
         key: String,

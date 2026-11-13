@@ -168,6 +168,13 @@ class HomeScreenTest {
     }
 
     @Test
+    fun essential_home_screenshot() {
+        val calm = it.manlio.nova.feature.home.ThemePresets.all.first { it.name == "Essenziale" }.prefs
+        render(prefs = HomePrefs(layout = HomeLayoutStyle.LIST).withLookOf(calm))
+        compose.onRoot().captureRoboImage("screenshots/home_essenziale.png")
+    }
+
+    @Test
     @Config(qualifiers = "it-w800dp-h1280dp-port-mdpi")
     fun portrait_screenshot() {
         render()

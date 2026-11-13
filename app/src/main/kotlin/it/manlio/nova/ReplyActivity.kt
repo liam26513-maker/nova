@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,8 +56,10 @@ class ReplyActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val key = intent.getStringExtra(KEY) ?: return finish()
         val to = intent.getStringExtra(TO).orEmpty()
+        // Il messaggio a cui rispondi, letto ora dalla notifica (richiesta del 13 novembre 2026).
+        val lines = NotificationHub.conversation(key)
         setContent {
-            ReplyScreen(to, onSend = { text ->
+            ReplyScreen(to, lines, onSend = { text ->
                 if (!NotificationHub.reply(key, text)) Toast.makeText(this, R.string.reply_failed, Toast.LENGTH_LONG).show()
                 finish()
             }, onCancel = ::finish)
@@ -71,6 +75,7 @@ class ReplyActivity : ComponentActivity() {
 @Composable
 private fun ReplyScreen(
     to: String,
+    lines: List<ChatLine>,
     onSend: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -102,6 +107,7 @@ private fun ReplyScreen(
                 style = TextStyle(Color.White, 18.sp, FontWeight.SemiBold),
                 maxLines = 1,
             )
+            if (lines.isNotEmpty()) Conversation(lines)
             BasicTextField(
                 text,
                 { text = it.take(MAX_REPLY) },
@@ -128,6 +134,31 @@ private fun ReplyScreen(
     }
 }
 
+/** I messaggi sopra il campo: i suoi a sinistra, i tuoi a destra, scorrevoli se sono tanti. */
+@Composable
+private fun Conversation(lines: List<ChatLine>) {
+    val scroll = rememberScrollState()
+    LaunchedEffect(Unit) { scroll.scrollTo(scroll.maxValue) }
+    Column(
+        Modifier.fillMaxWidth().heightIn(max = 260.dp).verticalScroll(scroll),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        lines.forEach { line ->
+            val mine = line.sender == null
+            Column(
+                Modifier
+                    .align(if (mine) Alignment.End else Alignment.Start)
+                    .widthIn(max = 460.dp)
+                    .background(if (mine) MINE else THEIRS, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {
+                if (!mine) BasicText(line.sender.orEmpty(), style = TextStyle(ACCENT, 12.sp, FontWeight.SemiBold), maxLines = 1)
+                BasicText(line.text, style = TextStyle(Color.White, 15.sp))
+            }
+        }
+    }
+}
+
 @Composable
 private fun ReplyButton(
     label: String,
@@ -149,3 +180,5 @@ private const val FIELD_ALPHA = 0.08f
 private val CARD = Color(0xF21D2127)
 private val HINT = Color(0xFF9AA0A6)
 private val ACCENT = Color(0xFF8AB4F8)
+private val THEIRS = Color(0x1FFFFFFF)
+private val MINE = Color(0x5C8AB4F8)
