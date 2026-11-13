@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Home: niente scatto a metà pagina** («velocizzare e rendere più fluido il tutto»): sfogliando le pagine, a metà strada la Home ridisegnava tutta la griglia; ora no.
+
 - **Meno lavoro a ogni fotogramma** («velocizzare e rendere più fluido il tutto»): NOVA non prepara più i dati per l'autocompletamento di Google, che sui suoi schermi non serve.
 
 - **NOVA più fluida: librerie aggiornate** («vorrei velocizzare e rendere più fluido il tutto»): la parte che disegna NOVA (Compose) passa dalla versione di dicembre 2024 alla 1.10 del 2026, più veloce negli scorrimenti e nelle liste. Anche la tastiera, quando NOVA la aggiorna, viene ottimizzata subito.

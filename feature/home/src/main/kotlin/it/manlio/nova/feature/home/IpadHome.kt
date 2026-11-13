@@ -216,19 +216,20 @@ private fun GridArea(
         val drag = remember { GridDragState() }
         var origin by remember { mutableStateOf(Offset.Zero) }
         LaunchedEffect(scrollToTop) { if (scrollToTop > 0) pager.animateScrollToPage(0) }
-        // Rettangoli (in pixel, nel riquadro del pager) degli elementi della pagina mostrata.
-        val rects by rememberUpdatedState(
+        // Rettangoli (in pixel, nel riquadro del pager) degli elementi della pagina mostrata. Calcolati solo quando servono (durante
+        // un trascinamento): leggere la pagina corrente qui ricomponeva tutta la griglia a metà di ogni scorrimento.
+        val rectsNow by rememberUpdatedState {
             pages.getOrNull(pager.currentPage).orEmpty().map { p ->
                 with(density) {
                     val left = margin.toPx() + cellW.toPx() * p.col
                     val top = cellH.toPx() * p.row
                     p.item to Rect(left, top, left + cellW.toPx() * p.cols, top + cellH.toPx() * p.rows)
                 }
-            },
-        )
+            }
+        }
         val currentLayout by rememberUpdatedState(layout)
         val currentDock by rememberUpdatedState(dockBounds)
-        val nextFirst by rememberUpdatedState(pages.getOrNull(pager.currentPage + 1)?.firstOrNull()?.item?.id)
+        val nextFirstNow by rememberUpdatedState { pages.getOrNull(pager.currentPage + 1)?.firstOrNull()?.item?.id }
         val defaultName = stringResource(R.string.home_folder_default)
         val width = with(density) { (maxWidth).toPx() }
         EdgePaging(drag, pager, width, density.run { EDGE.toPx() })
@@ -238,14 +239,14 @@ private fun GridArea(
                     .weight(1f)
                     .fillMaxWidth()
                     .onGloballyPositioned { origin = it.positionInRoot() }
-                    .gridDrag(editing, drag, hit = { pos -> rects.firstOrNull { it.second.contains(pos) }?.first?.id }) { id, pos ->
+                    .gridDrag(editing, drag, hit = { pos -> rectsNow().firstOrNull { it.second.contains(pos) }?.first?.id }) { id, pos ->
                         val dragged = currentLayout.items.firstOrNull { it.id == id } ?: return@gridDrag
                         val dockRect = currentDock
                         if (dragged is AppItem && dockRect != null && dockRect.contains(origin + pos)) {
                             entries[id]?.let { actions.onToggleFavorite(it) }
                             return@gridDrag
                         }
-                        when (val a = dropAction(dragged, pos, rects, currentLayout.items, nextFirst)) {
+                        when (val a = dropAction(dragged, pos, rectsNow(), currentLayout.items, nextFirstNow())) {
                             DropAction.None -> Unit
                             is DropAction.Merge -> ipad.onLayout { it.merge(a.draggedKey, a.ontoId, newId(), defaultName) }
                             is DropAction.Move -> ipad.onLayout { it.move(a.id, a.beforeId) }
