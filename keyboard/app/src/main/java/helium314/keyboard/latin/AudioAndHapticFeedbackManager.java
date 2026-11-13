@@ -93,7 +93,8 @@ public final class AudioAndHapticFeedbackManager {
             case KeyCode.DELETE -> AudioManager.FX_KEYPRESS_DELETE;
             case Constants.CODE_ENTER -> AudioManager.FX_KEYPRESS_RETURN;
             case Constants.CODE_SPACE -> AudioManager.FX_KEYPRESS_SPACEBAR;
-            default -> AudioManager.FX_KEYPRESS_STANDARD;
+            // NOVA: per le lettere il «tic» corto di Android, più leggero del suono standard (sul U6 non c'è vibrazione).
+            default -> AudioManager.FX_KEY_CLICK;
         };
         mAudioManager.playSoundEffect(sound, mSettingsValues.mKeypressSoundVolume);
     }

@@ -73,6 +73,7 @@ fun checkVersionUpgrade(context: Context) {
     val oldVersion = prefs.getInt(Settings.PREF_VERSION_CODE, 0)
     applyNovaThemeOnce(prefs)
     applyIpadLookOnce(prefs)
+    applyLightClickOnce(prefs)
     when (upgradeKind(oldVersion, BuildConfig.VERSION_CODE)) {
         UpgradeKind.NONE -> Unit
         UpgradeKind.REGULAR -> AppUpgrade.onUpgrade(context)
@@ -110,6 +111,21 @@ private fun applyIpadLookOnce(prefs: SharedPreferences) {
 }
 
 private const val NOVA_IPAD_LOOK = "nova_ipad_look"
+
+/** Clic più leggero (13 novembre 2026): chi aveva il volume vecchio o più alto scende al nuovo; un volume già più basso resta suo. */
+private fun applyLightClickOnce(prefs: SharedPreferences) {
+    if (prefs.getBoolean(NOVA_LIGHT_CLICK, false)) return
+    val now = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, Defaults.PREF_KEYPRESS_SOUND_VOLUME)
+    prefs.edit {
+        putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, lighterClickVolume(now))
+        putBoolean(NOVA_LIGHT_CLICK, true)
+    }
+}
+
+/** Il volume del clic dopo il passaggio al clic leggero. */
+internal fun lighterClickVolume(current: Float): Float = minOf(current, Defaults.PREF_KEYPRESS_SOUND_VOLUME)
+
+private const val NOVA_LIGHT_CLICK = "nova_light_click"
 
 /** Gli stessi valori dei nuovi predefiniti di NOVA (`Defaults`), scritti esplicitamente per chi ha già usato la tastiera. */
 private fun applyNovaFeel(context: Context, prefs: SharedPreferences) = prefs.edit {
