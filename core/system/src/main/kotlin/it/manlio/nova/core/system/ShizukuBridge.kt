@@ -76,7 +76,7 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
 
     /** Mostra la richiesta di permesso di Shizuku. */
     fun requestPermission() {
-        if (Shizuku.pingBinder() && !Shizuku.isPreV11()) Shizuku.requestPermission(REQUEST_CODE)
+        runCatching { if (Shizuku.pingBinder() && !Shizuku.isPreV11()) Shizuku.requestPermission(REQUEST_CODE) }
     }
 
     override suspend fun run(command: SystemCommand): ShellResult {
@@ -149,17 +149,30 @@ class ShizukuBridge(private val context: Context) : CommandRunner {
         _status.value = readStatus()
     }
 
-    private fun readStatus(): ShizukuStatus =
-        when {
-            !runCatching { Shizuku.pingBinder() }.getOrDefault(false) -> ShizukuStatus.NOT_RUNNING
-            Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED -> ShizukuStatus.NEEDS_PERMISSION
-            else -> ShizukuStatus.READY
-        }
+    private fun readStatus(): ShizukuStatus = statusOf({ Shizuku.pingBinder() }, { Shizuku.checkSelfPermission() })
 
-    private companion object {
-        const val REQUEST_CODE = 4721
-        const val SERVICE_VERSION = 3 // 3: le recenti; un servizio vecchio non ha i metodi nuovi
-        const val CONNECT_TIMEOUT_MS = 5_000L
-        const val NOT_READY = -100
+    internal companion object {
+        /**
+         * Lo stato di Shizuku. Appena NOVA riparte, Shizuku può rispondere «Not an attached client» finché non ci ha riagganciati:
+         * conta come «non attivo» (si riaggiorna quando arriva il binder) invece di far cadere l'avvio di NOVA (13 novembre 2026).
+         */
+        fun statusOf(
+            ping: () -> Boolean,
+            permission: () -> Int,
+        ): ShizukuStatus =
+            when {
+                !runCatching(ping).getOrDefault(false) -> ShizukuStatus.NOT_RUNNING
+                else ->
+                    when (runCatching(permission).getOrNull()) {
+                        null -> ShizukuStatus.NOT_RUNNING
+                        PackageManager.PERMISSION_GRANTED -> ShizukuStatus.READY
+                        else -> ShizukuStatus.NEEDS_PERMISSION
+                    }
+            }
+
+        private const val REQUEST_CODE = 4721
+        private const val SERVICE_VERSION = 3 // 3: le recenti; un servizio vecchio non ha i metodi nuovi
+        private const val CONNECT_TIMEOUT_MS = 5_000L
+        private const val NOT_READY = -100
     }
 }

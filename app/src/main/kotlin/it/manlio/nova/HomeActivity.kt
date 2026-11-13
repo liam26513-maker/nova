@@ -194,7 +194,8 @@ class HomeActivity : ComponentActivity() {
             icon = icon,
             onLaunch = ::launch,
             onToggleFavorite = { entry -> lifecycleScope.launch { favorites.toggle(entry.key) } },
-            onOpenSettings = { startActivity(Intent(this, MainActivity::class.java)) },
+            // Il sistema del U6 a volte rifiuta l'avvio con un errore suo (handleSpecailProcess): niente crash, si ritocca.
+            onOpenSettings = { runCatching { startActivity(Intent(this, MainActivity::class.java)) } },
             onReorderFavorites = { order -> lifecycleScope.launch { favorites.reorder(order) } },
             onHide = { entry -> app.homePrefs.updateIn(lifecycleScope) { it.copy(hidden = it.hidden + (entry.key to entry.label)) } },
             onRename = { entry, name ->
