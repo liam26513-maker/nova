@@ -17,6 +17,8 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RenderNode;
+import android.os.Build;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -26,6 +28,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import helium314.keyboard.keyboard.emoji.EmojiPageKeyboardView;
 import helium314.keyboard.keyboard.internal.KeyDrawParams;
@@ -42,6 +45,7 @@ import helium314.keyboard.latin.suggestions.MoreSuggestionsView;
 import helium314.keyboard.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 
 /** A view that renders a virtual {@link Keyboard}. */
 // todo: this ThemeStyle-dependent stuff really should not be in here!
@@ -84,6 +88,8 @@ public class KeyboardView extends View {
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
     private final HashSet<Key> mInvalidatedKeys = new HashSet<>();
+    // Key -> RenderNode (typed Object so the class still loads below API 29); identity, not Key.equals.
+    private final IdentityHashMap<Key, Object> mKeyNodes = new IdentityHashMap<>();
     /** The working rectangle for clipping */
     private final Rect mClipRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
@@ -239,7 +245,11 @@ public class KeyboardView extends View {
     protected void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
         if (canvas.isHardwareAccelerated()) {
-            onDrawKeyboard(canvas);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                onDrawKeyNodes(canvas);
+            } else {
+                onDrawKeyboard(canvas);
+            }
             return;
         }
 
@@ -253,6 +263,58 @@ public class KeyboardView extends View {
             onDrawKeyboard(mOffscreenCanvas);
         }
         canvas.drawBitmap(mOffscreenBuffer, 0.0f, 0.0f, null);
+    }
+
+    // NOVA: every key keeps its own display list, so pressing a key re-records only that key
+    // instead of the whole keyboard (the "TODO: Confirm if it's really required" below).
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private void onDrawKeyNodes(@NonNull final Canvas canvas) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
+        // An invalidate() not coming from invalidateKey() (layout, size, theme) re-records all keys.
+        if (mInvalidateAllKeys || mInvalidatedKeys.isEmpty()) {
+            discardKeyNodes();
+        } else {
+            for (final Key key : mInvalidatedKeys) {
+                final RenderNode node = (RenderNode) mKeyNodes.get(key);
+                if (node != null) node.discardDisplayList();
+            }
+        }
+        mShowsHints = Settings.getValues().mShowsHints;
+        final float scale = Settings.getValues().mKeyboardHeightScale;
+        mIconScaleFactor = scale < 0.8f ? scale + 0.2f : 1f;
+        final int width = getWidth();
+        final int height = getHeight();
+        for (final Key key : keyboard.getSortedKeys()) {
+            RenderNode node = (RenderNode) mKeyNodes.get(key);
+            if (node == null) {
+                node = new RenderNode("key");
+                mKeyNodes.put(key, node);
+            }
+            if (!node.hasDisplayList()) {
+                node.setPosition(0, 0, width, height);
+                final Canvas keyCanvas = node.beginRecording(width, height);
+                try {
+                    onDrawKey(key, keyCanvas, mPaint);
+                } finally {
+                    node.endRecording();
+                }
+            }
+            canvas.drawRenderNode(node);
+        }
+        mInvalidatedKeys.clear();
+        mInvalidateAllKeys = false;
+    }
+
+    private void discardKeyNodes() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            for (final Object node : mKeyNodes.values()) {
+                ((RenderNode) node).discardDisplayList();
+            }
+        }
+        mKeyNodes.clear();
     }
 
     private boolean maybeAllocateOffscreenBuffer() {
@@ -630,10 +692,12 @@ public class KeyboardView extends View {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         freeOffscreenBuffer();
+        discardKeyNodes();
     }
 
     public void deallocateMemory() {
         freeOffscreenBuffer();
+        discardKeyNodes();
     }
 
     private void setKeyIconColor(Key key, Drawable icon, Keyboard keyboard) {
