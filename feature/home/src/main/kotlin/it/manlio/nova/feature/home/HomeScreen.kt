@@ -52,7 +52,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -145,9 +144,17 @@ fun HomeScreen(
         BoxWithConstraints(
             Modifier.fillMaxSize().onAnyTouch(touch).pullDownControl(sheet, actions.controls != null) { control = it }.then(swipeDown),
         ) {
-            HomeBackground(prefs, wallpaper)
             val blurred = prefs.blurLevel != BlurLevel.NONE && (wallpaper != null || style.blurred)
-            Scrim(tint, blurred, prefs.scrim, look.dark)
+            val scrim = scrimColors(tint, blurred, prefs.scrim, look.dark)
+            // Foto (o sfondo di sistema) e sfumature fuse in un'unica immagine: la GPU fa una passata a schermo intero invece di tre.
+            val photo = wallpaper.takeIf { prefs.wallpaper == WallpaperSource.PHOTO || prefs.wallpaper == WallpaperSource.SYSTEM }
+            val baked = rememberBakedWallpaper(photo, scrim, constraints.maxWidth, constraints.maxHeight)
+            if (baked != null) {
+                Image(baked, contentDescription = null, contentScale = ContentScale.FillBounds, modifier = Modifier.fillMaxSize())
+            } else {
+                HomeBackground(prefs, wallpaper)
+                Scrim(scrim)
+            }
             val ipad = prefs.layout == HomeLayoutStyle.IPAD
             val hybrid = prefs.layout == HomeLayoutStyle.HYBRID && maxWidth > maxHeight
             val lists =
@@ -441,28 +448,9 @@ private fun HomeBackground(
  * più marcata a sinistra e in basso, dove c'è il testo. Più leggera se lo sfondo è già sfocato.
  */
 @Composable
-private fun Scrim(
-    tint: Color,
-    blurred: Boolean,
-    strength: ScrimStrength,
-    dark: Boolean,
-) {
-    val base = lerp(tint, if (dark) Color.Black else Color.White, if (dark) TINT_TO_BLACK else TINT_TO_WHITE)
-    val factor =
-        when (strength) {
-            ScrimStrength.LIGHT -> LIGHT_FACTOR
-            ScrimStrength.MEDIUM -> 1f
-            ScrimStrength.STRONG -> STRONG_FACTOR
-        }
-    val (top, bottom) = (if (blurred) BLURRED_ALPHA else SOLID_ALPHA).let { (a, b) -> a * factor to (b * factor).coerceAtMost(MAX_ALPHA) }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(listOf(base.copy(alpha = top), base.copy(alpha = (top + bottom) / 2), base.copy(alpha = bottom))),
-            ),
-    )
-    Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(base.copy(alpha = SIDE_ALPHA * factor), Color.Transparent))))
+private fun Scrim(c: ScrimColors) {
+    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(c.top, c.middle, c.bottom))))
+    Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(c.side, Color.Transparent))))
 }
 
 /**
@@ -532,19 +520,19 @@ private const val SLIDE_STIFFNESS = 360f
 private const val SLIDE_FRACTION = 10
 private const val GRID_SCALE = 0.94f
 private const val HYBRID_GRID_WEIGHT = 2f
-private const val TINT_TO_BLACK = 0.7f
-private const val TINT_TO_WHITE = 0.78f
+internal const val TINT_TO_BLACK = 0.7f
+internal const val TINT_TO_WHITE = 0.78f
 private val SWIPE_DISTANCE = 72.dp
-private const val SIDE_ALPHA = 0.35f
-private const val LIGHT_FACTOR = 0.6f
-private const val STRONG_FACTOR = 1.25f
-private const val MAX_ALPHA = 0.96f
+internal const val SIDE_ALPHA = 0.35f
+internal const val LIGHT_FACTOR = 0.6f
+internal const val STRONG_FACTOR = 1.25f
+internal const val MAX_ALPHA = 0.96f
 
 @Suppress("MagicNumber") // opacità in alto e in basso della sfumatura
-private val BLURRED_ALPHA = 0.30f to 0.62f
+internal val BLURRED_ALPHA = 0.30f to 0.62f
 
 @Suppress("MagicNumber")
-private val SOLID_ALPHA = 0.46f to 0.82f
+internal val SOLID_ALPHA = 0.46f to 0.82f
 
 /** La città del primo widget Meteo della Home, se c'è: lo StandBy mostra lo stesso tempo. */
 private fun weatherCity(layout: HomeLayout): String? =
