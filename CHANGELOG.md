@@ -4,6 +4,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **«Riavvia NOVA normalmente» ora funziona davvero** («controlla se va bene tutto il resto»): nella modalità provvisoria il tasto riapriva la stessa schermata; ora NOVA riparte da capo e torna normale.
 - **Niente più chiusure improvvise in due casi rari** («controlla se va bene tutto il resto»): se il sistema del tablet rifiuta per un attimo di aprire le Impostazioni, NOVA non si chiude più; e se NOVA ripartendo trova Shizuku non ancora pronto, aspetta invece di chiudersi.
 - **Notifiche accanto alla tendina** («i messaggi non li vedo e non posso risponderci nella tendina di nova (metti le notifiche a fianco della tendina)»): aprendo la tendina di NOVA, a sinistra compaiono le notifiche, una per una. Toccane una per aprirla, «Rispondi» per scrivere la risposta, la × per toglierla.
 - **Home essenziale nella Studio accesa di serie** («non ho visto cambiamenti nella home quando attivo la studio»): era una voce facoltativa spenta; ora la Studio (e la Presentazione) mettono la Home essenziale e all'uscita torna com'era.
