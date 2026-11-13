@@ -195,10 +195,11 @@ La home è il guscio del launcher (`app/` assembla i moduli, SPEC §3.3), quindi
 | 0.1.1390 | 29 ms | 42 ms | – | – |
 | 0.1.1540: codice compilato (`SelfCompile`) + Compose 1.10 | 24 ms | 34 ms | 46 ms | 29 |
 | 0.1.1550: + semantica per l'autocompletamento spenta | 23 ms | 32 ms | 42 ms | 16 |
+| 0.1.1560: + griglia senza ricomposizione a metà sfogliata (due prove) | 23–24 ms | 29–34 ms | 40–42 ms | 19 |
 
 - La causa più grossa era ART: NOVA, installata fuori dal Play Store, restava in `verify` (interpretata) dopo ogni aggiornamento. `SelfCompile` la fa compilare con Shizuku e la riavvia al primo spegnimento dello schermo.
 - `ComposeUiFlags.isSemanticAutofillEnabled = false`: con l'autocompletamento di Google attivo Compose 1.10 calcolava la semantica a ogni cambiamento.
-- PR 167: la griglia non legge più `pager.currentPage` in composizione (si ricomponeva tutta a metà di ogni sfogliata). Misura con la 0.1.1560 da fare: il cavo si è staccato durante la prova.
+- PR 167: la griglia non legge più `pager.currentPage` in composizione (si ricomponeva tutta a metà di ogni sfogliata). Con la 0.1.1560 i numeri restano nella stessa fascia (differenza nel rumore della misura): il fotogramma pesante a metà sfogliata era raro.
 - Compose 1.12 richiede AGP 9: rimandato.
 
 ## Fluidità dello scorrimento (misura del 12 novembre 2026, 0.1.1390, U6)
