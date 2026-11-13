@@ -126,8 +126,8 @@ object Defaults {
     const val PREF_GESTURE_INPUT = true
     // NOVA: tocco leggero. Un impulso breve di 10 ms (quello "di sistema" su certi tablet è lungo e pesante).
     const val PREF_VIBRATION_DURATION_SETTINGS = 10
-    // NOVA: clic sommesso (il volume "di sistema" è forte). Va da 0 a 1.
-    const val PREF_KEYPRESS_SOUND_VOLUME = 0.3f
+    // NOVA: clic leggero (il volume "di sistema" è forte; 0,3 era ancora "pesante" per il proprietario). Va da 0 a 1.
+    const val PREF_KEYPRESS_SOUND_VOLUME = 0.15f
     const val PREF_KEY_LONGPRESS_TIMEOUT = 300
     const val PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY = true
     // supporting hardware keyboard still has a bunch of issues

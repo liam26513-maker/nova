@@ -4,6 +4,7 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Tastiera dal tocco più leggero** («la tastiera la sento ancora un po dura e pesante»): il tablet non ha vibrazione, quindi la sensazione viene dal clic: ora le lettere fanno un «tic» corto e più piano.
 - **Tastiera più leggera a ogni tocco** («togli il limite della tastiera»): quando premi un tasto viene ridisegnato solo quel tasto, non più tutta la tastiera.
 - **Home: sfondo disegnato in una volta** («continua con il resto del piano»): la tua foto e le sfumature sopra sono preparate insieme una volta sola, così la grafica a ogni fotogramma fa un terzo del lavoro sullo sfondo.
 - **Ricerca più leggera per la grafica** («continua con il resto del piano»): con la ricerca aperta la Home nascosta dietro non viene più disegnata.

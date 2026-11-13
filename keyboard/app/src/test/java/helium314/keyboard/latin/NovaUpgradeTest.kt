@@ -22,4 +22,10 @@ class NovaUpgradeTest {
         // le soglie delle vecchie migrazioni di HeliBoard (<= 4201 e simili) non scattano mai sopra la base
         assertTrue(NOVA_VERSION_BASE + 1 > 4300)
     }
+
+    @Test fun `the click gets lighter, but a quieter choice stays`() {
+        assertEquals(0.15f, lighterClickVolume(0.3f))
+        assertEquals(0.15f, lighterClickVolume(1f))
+        assertEquals(0.05f, lighterClickVolume(0.05f))
+    }
 }
