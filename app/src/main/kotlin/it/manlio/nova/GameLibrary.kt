@@ -6,13 +6,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,21 +17,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
-import it.manlio.nova.core.design.Nova
+import it.manlio.nova.core.design.SegmentedChoice
 import it.manlio.nova.core.design.SettingsRow
 import it.manlio.nova.core.design.SettingsSection
 import it.manlio.nova.core.system.SystemCommand
@@ -124,22 +115,19 @@ private fun GameRow(
         onClick = {
             context.packageManager.getLaunchIntentForPackage(game)?.let { runCatching { context.startActivity(it) } }
         },
-        trailing = {
-            val label = stringResource(R.string.games_change_scale, name)
-            Box(
-                Modifier
-                    .heightIn(min = 48.dp)
-                    .widthIn(min = 56.dp)
-                    .semantics { contentDescription = label }
-                    .clickable(role = Role.Button) { tools.stepScale(game) { changes++ } },
-                contentAlignment = Alignment.Center,
-            ) {
-                val text = stringResource(R.string.game_scale_percent, scale ?: FULL_SCALE)
-                BasicText(text, Modifier.padding(horizontal = 8.dp), style = TextStyle(Nova.tokens.colors.accent, 16.sp))
-            }
-        },
+    )
+    // La percentuale si sceglie direttamente: a passi si finiva facilmente su quella sbagliata (13 novembre 2026).
+    SegmentedChoice(
+        options = SCALE_CHOICES,
+        selected = scale,
+        label = { stringResource(R.string.game_scale_percent, it ?: FULL_SCALE) },
+        onSelect = { tools.setScale(game, it) { changes++ } },
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
     )
 }
+
+/** Le risoluzioni da scegliere: normale e poi quelle consentite. */
+internal val SCALE_CHOICES: List<Int?> = listOf<Int?>(null) + SystemCommand.GAME_SCALES
 
 /** L'icona del gioco come copertina (SPEC §8.2), caricata fuori dal thread principale e piccola. */
 @Composable

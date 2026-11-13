@@ -61,4 +61,14 @@ class NotificationIndexTest {
     fun `text is trimmed`() {
         assertEquals("Anna", NotificationIndex.build(listOf(n("1", "p", "  Anna  ", "x"))).getValue("p").title)
     }
+
+    @Test
+    fun `the list beside the shade shows each notification, newest first, without service ones`() {
+        val list =
+            NotificationIndex.list(
+                listOf(n("a", "chat", "Mario", "ciao", 10), n("b", "mail", "Anna", "fattura", 30), n("c", "vpn", ongoing = true)),
+            )
+        assertEquals(listOf("b", "a"), list.map { it.key })
+        assertEquals(1, list.first().count)
+    }
 }

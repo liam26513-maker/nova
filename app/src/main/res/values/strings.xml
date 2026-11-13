@@ -320,11 +320,10 @@
     <string name="study_unlock_title">Sbloccare per 5 minuti?</string>
     <string name="study_unlock_yes">Sì, sblocca</string>
     <string name="games_title">I tuoi giochi</string>
-    <string name="games_footer">Tocca un gioco per aprirlo, tocca la percentuale per cambiare la risoluzione (serve Shizuku, vale dalla prossima apertura). Gli FPS arrivano da «Misura il gioco».</string>
+    <string name="games_footer">Tocca un gioco per aprirlo, scegli sotto la risoluzione (serve Shizuku, vale dalla prossima apertura del gioco). Gli FPS arrivano da «Misura il gioco».</string>
     <string name="games_none">Nessun gioco trovato</string>
     <string name="games_fps">%1$d FPS nell\'ultima misura</string>
     <string name="games_fps_tip">%1$d FPS nell\'ultima misura: prova il %2$d%%</string>
-    <string name="games_change_scale">Cambia la risoluzione di %1$s</string>
     <string name="games_cloud">Giochi in cloud</string>
     <string name="games_xbox">Xbox Cloud Gaming</string>
     <string name="games_geforce">GeForce NOW</string>
@@ -636,4 +635,9 @@
     <string name="health_unknown">Non nota</string>
     <string name="meter_nothing_yet">Non c\'è ancora nessuna misura: avviala da «Misura il gioco» e gioca 2 minuti.</string>
     <string name="meter_no_data">Nessun dato</string>
+    <string name="reply_title">Rispondi a %1$s</string>
+    <string name="reply_hint">Scrivi la risposta</string>
+    <string name="reply_send">Invia</string>
+    <string name="reply_cancel">Annulla</string>
+    <string name="reply_failed">L\'app non ha accettato la risposta: aprila per rispondere.</string>
 </resources>

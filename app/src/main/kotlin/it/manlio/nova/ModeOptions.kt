@@ -102,6 +102,8 @@ class ModeOptions(private val file: File) {
                 ModeAction.KEEP_SCREEN_ON,
                 // 3 tasti nella Creativa: acceso di serie per scelta del proprietario (12 novembre 2026), si spegne in Penna e tavoletta.
                 ModeAction.THREE_BUTTON_NAV,
+                // Home essenziale in Studio e Presentazione: il proprietario se l'aspettava già attiva (13 novembre 2026).
+                ModeAction.CALM_HOME,
             )
     }
 }

@@ -211,6 +211,7 @@ fun HomeScreen(
                     editing = true
                 },
                 firstView = prefs.controlTiles,
+                notifications = actions.notifications,
                 onClose = { control = false },
                 onSettled = { control = it },
             )

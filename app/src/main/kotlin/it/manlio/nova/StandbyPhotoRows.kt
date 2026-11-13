@@ -19,14 +19,17 @@ import kotlinx.coroutines.withContext
 
 /** Scelta delle foto dello StandBy con il selettore di Android (nessun permesso sulla galleria), e il tasto per toglierle. */
 @Composable
-internal fun StandbyPhotoRows() {
+internal fun StandbyPhotoRows(onPicked: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var count by remember { mutableIntStateOf(StandbyPhotos.list(context).size) }
     val picker =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(StandbyPhotos.MAX)) { uris ->
             if (uris.isEmpty()) return@rememberLauncherForActivityResult
-            scope.launch { count = withContext(Dispatchers.IO) { StandbyPhotos.replace(context, uris) } }
+            scope.launch {
+                count = withContext(Dispatchers.IO) { StandbyPhotos.replace(context, uris) }
+                if (count > 0) onPicked()
+            }
         }
     SettingsRow(
         stringResource(R.string.standby_photos_pick),

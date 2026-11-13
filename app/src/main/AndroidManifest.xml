@@ -90,6 +90,14 @@
             android:label="@string/notes_title"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|density" />
+        <!-- Risposta a una notifica dalla tendina di NOVA: il testo va solo all'app della notifica. -->
+        <activity
+            android:name=".ReplyActivity"
+            android:exported="false"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Nova.Reply"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <!-- Testo dalle immagini: si può condividere una foto a NOVA. Legge tutto sul tablet. -->
         <activity
             android:name=".ReadTextActivity"
