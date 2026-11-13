@@ -89,6 +89,11 @@ fun KeyArrangementScreen(onClickBack: () -> Unit) {
 
     fun apply(newSubtype: SettingsSubtype) {
         SubtypeUtilsAdditional.changeAdditionalSubtype(subtype, newSubtype, ctx)
+        // Con le lingue di sistema (nessuna lingua scelta a mano) la nuova versione non sarebbe né attiva né in uso: lo diventa qui.
+        val prefs = ctx.prefs()
+        val asSubtype = newSubtype.toAdditionalSubtype()
+        if (SubtypeSettings.getEnabledSubtypes().none { it.toSettingsSubtype() == newSubtype }) SubtypeSettings.addEnabledSubtype(prefs, asSubtype)
+        SubtypeSettings.setSelectedSubtype(prefs, asSubtype)
         subtype = newSubtype
         (ctx.getActivity() as? SettingsActivity)?.prefChanged()
         KeyboardSwitcher.getInstance().setThemeNeedsReload()
