@@ -202,10 +202,12 @@ fun HomeScreen(
                 onClose = { control = false },
                 onSettled = { control = it },
             )
+            val suggested = rememberSuggested(visible.orEmpty(), actions)
             if (searching) {
                 SearchScreen(
                     visible.orEmpty(),
                     actions,
+                    suggested = suggested,
                     commands =
                         SearchCommands(
                             onControl =
