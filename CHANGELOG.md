@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **La cartella resta visibile mentre scrivi il nome** («Sì, sistemala»): quando compare la tastiera la Home non scorre più in su, e la cartella si sposta sopra la tastiera.
+
 - **Riparato: NOVA si chiudeva rinominando una cartella** («quando provo a cambiare il nome alle cartelle ora l'app crusha»): col vetro liquido, mentre compariva la tastiera, un riquadro diventava troppo piccolo per il suo bordo e la Home si chiudeva.
 
 - **Cartelle che si aprono con un'animazione** («piccole animazioni per quando si apre una cartella»): la cartella cresce da piccola fino al centro dello schermo, e si richiude allo stesso modo.

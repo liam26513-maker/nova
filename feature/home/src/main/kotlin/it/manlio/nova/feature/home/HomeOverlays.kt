@@ -1,5 +1,7 @@
 package it.manlio.nova.feature.home
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -61,11 +64,14 @@ internal fun GlassDialog(
 ) {
     val look = LocalHomeLook.current
     val flat = Nova.tokens.graphicsLevel == GraphicsLevel.PERFORMANCE
+    KeepHomeStillForKeyboard(visible)
     AnimatedVisibility(visible, enter = fadeIn(spring(stiffness = FADE)), exit = fadeOut(spring(stiffness = FADE))) {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = DIM))
+                // La scheda si centra nello spazio sopra la tastiera.
+                .imePadding()
                 // Senza `clickable`: renderebbe un unico elemento tutta la scheda per TalkBack. Indietro chiude lo stesso.
                 .pointerInput(onDismiss) { detectTapGestures { onDismiss() } },
             contentAlignment = Alignment.Center,
@@ -83,6 +89,22 @@ internal fun GlassDialog(
                     .pointerInput(Unit) { detectTapGestures {} },
             ) { content() }
         }
+    }
+}
+
+/**
+ * Mentre la scheda è aperta la Home non si sposta quando compare la tastiera (di solito la finestra scorre in su, e la
+ * cartella finiva sotto la tastiera): ci pensa [imePadding] a tenerla sopra. Chiusa la scheda torna come prima.
+ * Richiesta del 26 novembre 2026.
+ */
+@Composable
+private fun KeepHomeStillForKeyboard(active: Boolean) {
+    val window = (LocalView.current.context as? Activity)?.window ?: return
+    DisposableEffect(active, window) {
+        if (!active) return@DisposableEffect onDispose {}
+        val before = window.attributes.softInputMode
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        onDispose { window.setSoftInputMode(before) }
     }
 }
 
