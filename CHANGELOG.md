@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Vetro liquido più leggibile**: tendina e notifiche lasciano ancora intravedere lo sfondo, ma le scritte della Home dietro non disturbano più la lettura.
+
 - **Il vetro liquido resta acceso** («non si attiva il vetro»): spariva quando il livello grafico automatico scendeva a Prestazioni; ora si vede sempre, perché non consuma più del vetro normale.
 
 - **Vetro liquido più limpido**: con lo stile Liquido la tendina, le notifiche e le cartelle lasciano vedere di più lo sfondo, come un vetro vero.
