@@ -67,6 +67,7 @@ import it.manlio.nova.feature.home.NowPlaying
 import it.manlio.nova.feature.home.Pomodoro
 import it.manlio.nova.feature.home.ScrimStrength
 import it.manlio.nova.feature.home.Side
+import it.manlio.nova.feature.home.Spot
 import it.manlio.nova.feature.home.StudyBar
 import it.manlio.nova.feature.home.SystemPanel
 import it.manlio.nova.feature.home.TextSize
@@ -497,6 +498,18 @@ class HomeScreenTest {
     }
 
     @Test
+    fun a_quick_sideways_swipe_on_an_icon_in_edit_mode_turns_the_page_instead_of_moving_it() {
+        render(prefs = HomePrefs())
+        compose.onNodeWithText("Mappe").performTouchInput { longClick() }
+        compose.onNodeWithText("Modifica la Home").performClick()
+        compose.waitForIdle()
+        compose.onNodeWithText("Calendario").performTouchInput { swipeLeft(startX = centerX, endX = centerX - 600f, durationMillis = 150) }
+        compose.waitForIdle()
+        assertEquals(emptyMap<String, Spot>(), layout.spots) // nessuna icona spostata
+        compose.onNodeWithText("Calendario").assertIsNotDisplayed() // si è passati alla pagina vuota dopo
+    }
+
+    @Test
     fun dragging_an_app_onto_another_in_edit_mode_makes_a_folder() {
         render(prefs = HomePrefs())
         compose.onNodeWithText("Mappe").performTouchInput { longClick() }
@@ -506,6 +519,7 @@ class HomeScreenTest {
         val from = compose.onNodeWithText("Calendario").fetchSemanticsNode().boundsInRoot
         compose.onNodeWithText("Calendario").performTouchInput {
             down(center)
+            advanceEventTime(400) // si tiene fermo il dito un attimo: afferra l'icona
             val end = target - from.topLeft
             repeat(6) { moveBy((end - center) / 6f) }
             up()
@@ -527,6 +541,7 @@ class HomeScreenTest {
         val target = Offset(label.center.x - 60f, label.center.y - 32f)
         compose.onNodeWithText("Calendario").performTouchInput {
             down(center)
+            advanceEventTime(400) // si tiene fermo il dito un attimo: afferra l'icona
             val end = target - from.topLeft
             repeat(6) { moveBy((end - center) / 6f) }
             up()

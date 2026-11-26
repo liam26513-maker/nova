@@ -79,9 +79,19 @@ internal fun dropSpot(
 private fun Size.toOffset() = Offset(width, height)
 
 /**
+ * Un movimento che parte da un elemento gira la pagina invece di spostarlo se è rapido (il dito si muove prima di
+ * [HOLD_MS]) e più di lato che in verticale: così si sfogliano anche pagine piene di icone. Tenendo fermo un attimo si afferra.
+ */
+internal fun swipesPage(
+    elapsedMs: Long,
+    delta: Offset,
+): Boolean = elapsedMs < HOLD_MS && abs(delta.x) > abs(delta.y)
+
+/**
  * Gesto della modalità modifica: si afferra un elemento con il dito e lo si trascina anche tra le pagine.
  * Sta sopra il pager e guarda gli eventi per primo ([PointerEventPass.Initial]): se il dito parte da un elemento e supera
- * la soglia, il movimento è suo e il pager non scorre; altrimenti non tocca nulla e si cambia pagina scorrendo.
+ * la soglia, il movimento è suo e il pager non scorre; altrimenti (o con uno scorrimento rapido di lato, [swipesPage]) non
+ * tocca nulla e si cambia pagina scorrendo.
  */
 internal fun Modifier.gridDrag(
     enabled: Boolean,
@@ -105,6 +115,7 @@ internal fun Modifier.gridDrag(
                     } else {
                         val delta = change.position - down.position
                         if (!started && (abs(delta.x) > viewConfiguration.touchSlop || abs(delta.y) > viewConfiguration.touchSlop)) {
+                            if (swipesPage(change.uptimeMillis - down.uptimeMillis, delta)) return@awaitEachGesture
                             started = true
                             state.id = id
                         }
@@ -124,3 +135,4 @@ internal fun Modifier.gridDrag(
     }
 
 private const val MERGE_ZONE = 0.22f
+private const val HOLD_MS = 180L

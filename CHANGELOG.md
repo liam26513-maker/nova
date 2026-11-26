@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Riparato: in modifica non si sfogliavano le pagine col dito** («Sì, sistemalo»): con la pagina piena di icone ogni scorrimento afferrava un'icona. Ora uno scorrimento rapido di lato gira la pagina anche partendo da un'icona; per spostarla basta tenere fermo il dito un attimo e poi trascinare.
+
 - **Pagina nuova trascinando** («si aggiungi la pagina nuova e temi con creazione automatica in base all'immagine di sfondo che si mette ma anche modificabili dall'utilizzatore in modo completo in ogni modo per tutto»): in modifica, dopo l'ultima pagina ce n'è sempre una vuota; lascia lì un'icona e nasce una pagina nuova.
 - **Tema dallo sfondo**: in Personalizza → Colori accendi «Tema dallo sfondo» e a ogni sfondo nuovo NOVA sceglie da sola tema chiaro o scuro e un colore d'accento preso dall'immagine. Puoi ritoccare tutto dopo: le tue modifiche restano fino al prossimo sfondo.
 - **Colori liberi e colore del testo**: per l'accento, il colore dello sfondo e il nuovo «Colore del testo» c'è «+» (colore libero), con tre barre: tonalità, intensità e luminosità.
