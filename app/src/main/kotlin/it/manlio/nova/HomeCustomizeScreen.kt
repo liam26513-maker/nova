@@ -118,7 +118,7 @@ private fun ThemesSection(
                 preset.name,
                 summary = preset.description,
                 showDivider = i > 0,
-                onClick = { actions.onChange { it.withLookOf(preset.prefs) } },
+                onClick = { actions.onChange { it.withPreset(preset.prefs) } },
                 trailing = if (active) ({ Check() }) else null,
             )
         }

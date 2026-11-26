@@ -142,6 +142,18 @@ data class HomePrefs(
             islandEverywhere = islandEverywhere,
         )
 
+    /**
+     * Un tema pronto scelto in Personalizza la Home: prende l'aspetto del tema ma tiene il tuo sfondo
+     * (richiesta del 26 novembre 2026: «quando si cambia il tema deve rimanere lo sfondo»).
+     */
+    fun withPreset(theme: HomePrefs): HomePrefs =
+        withLookOf(theme).copy(
+            wallpaper = wallpaper,
+            novaWallpaper = novaWallpaper,
+            solidColor = solidColor,
+            lockWallpaper = lockWallpaper,
+        )
+
     /** Firma di ciò che cambia l'aspetto delle icone (per invalidare la cache). */
     val iconSignature: String get() = "$iconShape/$iconStyle/${iconPack.orEmpty()}"
 

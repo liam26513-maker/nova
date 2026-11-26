@@ -141,7 +141,7 @@
     <string name="customize_done">Fatto</string>
     <string name="home_sleep_needs_shizuku">Per spegnere lo schermo dalla Home serve Shizuku attivo</string>
     <string name="customize_themes">Temi</string>
-    <string name="customize_themes_footer">Un tema cambia insieme sfondo, colori, testo, orologio e icone; poi puoi ritoccare ogni cosa. Puoi anche salvare il tuo tema in un file e condividerlo.</string>
+    <string name="customize_themes_footer">Un tema cambia insieme colori, testo, orologio e icone, e il tuo sfondo resta; poi puoi ritoccare ogni cosa. Puoi anche salvare il tuo tema in un file e condividerlo.</string>
     <string name="customize_theme_export">Salva il tema in un file</string>
     <string name="customize_theme_import">Apri un tema da un file</string>
     <string name="customize_theme_saved">Tema salvato</string>
