@@ -135,6 +135,9 @@ internal fun Check() {
 internal fun showHide(show: Boolean) = stringResource(if (show) R.string.customize_show else R.string.customize_hide)
 
 @Composable
+internal fun glassName(liquid: Boolean) = stringResource(if (liquid) R.string.customize_glass_liquid else R.string.customize_glass_classic)
+
+@Composable
 internal fun onOff(on: Boolean) = stringResource(if (on) R.string.customize_on else R.string.customize_off)
 
 /** Nome leggibile di un colore della tavolozza (per chi usa TalkBack). */

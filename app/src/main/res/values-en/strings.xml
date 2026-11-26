@@ -629,4 +629,7 @@
     <string name="reply_send">Send</string>
     <string name="reply_cancel">Cancel</string>
     <string name="reply_failed">The app did not accept the reply: open it to answer.</string>
+    <string name="customize_glass">Glass style</string>
+    <string name="customize_glass_classic">Classic</string>
+    <string name="customize_glass_liquid">Liquid</string>
 </resources>

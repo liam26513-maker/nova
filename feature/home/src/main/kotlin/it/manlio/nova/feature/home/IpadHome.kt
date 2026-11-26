@@ -112,7 +112,7 @@ internal fun IpadHome(
             folder,
             entries,
             actions,
-            onRename = { name -> openFolder?.let { id -> ipad.onLayout { it.renameFolder(id, name) } } },
+            onRename = { id, name -> ipad.onLayout { it.renameFolder(id, name) } },
             onMenu = ipad.onMenu,
             onClose = { openFolder = null },
         )
@@ -386,6 +386,7 @@ private fun ItemContent(
                     if (item.kind == WidgetKind.EXTERNAL) actions.widgets?.delete(item.ref)
                     remove()
                 },
+                framed = item.kind != WidgetKind.EXTERNAL,
             ) {
                 WidgetContent(item, nowMillis, actions, ipad)
             }

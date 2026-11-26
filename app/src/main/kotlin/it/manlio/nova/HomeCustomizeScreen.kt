@@ -176,6 +176,9 @@ private fun WallpaperSection(
                 onChange { it.copy(blurLevel = v) }
             }
         }
+        Choice(R.string.customize_glass, listOf(false, true), prefs.liquidGlass, { glassName(it) }, divider = true) { v ->
+            onChange { it.copy(liquidGlass = v) }
+        }
         if (prefs.wallpaper != WallpaperSource.SYSTEM) {
             Choice(R.string.customize_lock, listOf(true, false), prefs.lockWallpaper, { onOff(it) }, divider = true) { v ->
                 onChange { it.copy(lockWallpaper = v) }

@@ -37,7 +37,7 @@ Analisi di partenza: le pagine di aiuto di Niagara (funzioni Pro, temi) e gli ar
 
 | Area | Opzioni | Come in Niagara |
 |---|---|---|
-| **Temi** | 5 temi pronti (Notte, Aurora, Carta, Tramonto, Essenziale); salva il tema in un file `.novatheme` e aprilo su un altro tablet. Il tema porta solo l'aspetto, non le app nascoste o i nomi | temi pronti, condivisione dei temi |
+| **Temi** | 6 temi pronti (Vetro, Notte, Aurora, Carta, Tramonto, Essenziale); «Stile del vetro» Classico o Liquido (`liquidGlass`, spento di serie: riflesso in alto e bordo doppio, solo sfumature, nessuna sfocatura in tempo reale); salva il tema in un file `.novatheme` e aprilo su un altro tablet. Il tema porta solo l'aspetto, non le app nascoste o i nomi | temi pronti, condivisione dei temi |
 | **Sfondo** | Il mio (sfondo di sistema), NOVA (8 sfumature originali), Foto (dalla galleria), Colore (8 tinte); sfocatura No, Leggera, Forte o Massima; sfumatura Leggera, Media o Forte | raccolta di sfondi, sfondo nel tema |
 | **Colori** | Tema scuro, chiaro o automatico; colore d'accento preso dallo sfondo o scelto (8) | colore del tema |
 | **Testo e orologio** | Misura, carattere (Moderno, Elegante, Tecnico: solo caratteri di sistema), spessore; orologio Sottile, Marcato o Su due righe; data sì o no | caratteri, stili dell'orologio |

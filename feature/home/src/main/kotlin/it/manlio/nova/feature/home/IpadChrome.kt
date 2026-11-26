@@ -60,7 +60,7 @@ internal fun GlassButton(
     Box(
         Modifier
             .height(BUTTON_HEIGHT)
-            .glass(CircleShape, look.dark, flat)
+            .glass(CircleShape, look.dark, flat, look.liquid)
             .clickable(remember { MutableInteractionSource() }, indication = null, role = Role.Button) {
                 view.perform(NovaHaptic.TAP)
                 onClick()
@@ -88,7 +88,7 @@ internal fun SearchPill(
     Row(
         Modifier
             .graphicsLayer { alpha = if (enabled) 1f else 0f }
-            .glass(CircleShape, look.dark, flat)
+            .glass(CircleShape, look.dark, flat, look.liquid)
             .clickable(remember { MutableInteractionSource() }, indication = null, enabled = enabled, role = Role.Button) {
                 view.perform(NovaHaptic.TAP)
                 onClick()
@@ -132,7 +132,7 @@ internal fun Dock(
     Row(
         Modifier
             .onGloballyPositioned { onBounds(it.boundsInRoot()) }
-            .glass(SquircleShape(DOCK_RADIUS), look.dark, flat)
+            .glass(SquircleShape(DOCK_RADIUS), look.dark, flat, look.liquid)
             .padding(horizontal = DOCK_PADDING_H, vertical = DOCK_PADDING_V),
         horizontalArrangement = Arrangement.spacedBy(DOCK_GAP),
         verticalAlignment = Alignment.CenterVertically,

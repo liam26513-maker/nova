@@ -29,6 +29,7 @@ internal data class HomeLook(
     val weight: FontWeight,
     val clockStyle: ClockStyle,
     val showDate: Boolean,
+    val liquid: Boolean = false,
 )
 
 /** [systemDark]: tema scuro di sistema (per "Automatico"); [tint]: colore principale dello sfondo. */
@@ -55,6 +56,7 @@ internal fun HomePrefs.look(
         muted = ink.copy(alpha = 0.64f),
         accent = accentColor,
         showIcons = showIcons,
+        liquid = liquidGlass,
         bigIcon = bigIcon,
         smallIcon = smallIcon,
         gridIcon = gridIcon,

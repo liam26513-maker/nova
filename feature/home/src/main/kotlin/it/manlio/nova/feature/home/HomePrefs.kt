@@ -71,6 +71,8 @@ data class HomePrefs(
     val showDate: Boolean = true,
     // Icone
     val showIcons: Boolean = true,
+    /** Vetro lucido con riflessi sui bordi (richiesta del 26 novembre 2026); spento di serie. */
+    val liquidGlass: Boolean = false,
     val iconSize: IconSize = IconSize.MEDIUM,
     val iconShape: IconShape = IconShape.SQUIRCLE,
     val iconStyle: IconStyle = IconStyle.COLOR,
@@ -225,6 +227,7 @@ internal object PrefsCodec {
             clockStyle = enumOr(p.getProperty("clockStyle"), d.clockStyle),
             showDate = bool("date", d.showDate),
             showIcons = bool("icons", d.showIcons),
+            liquidGlass = bool("liquidGlass", d.liquidGlass),
             iconSize = enumOr(p.getProperty("iconSize"), d.iconSize),
             iconShape =
                 enumOr(
@@ -273,6 +276,7 @@ internal object PrefsCodec {
         p["clockStyle"] = prefs.clockStyle.name
         p["date"] = prefs.showDate.toString()
         p["icons"] = prefs.showIcons.toString()
+        p["liquidGlass"] = prefs.liquidGlass.toString()
         p["iconSize"] = prefs.iconSize.name
         p["iconShape"] = prefs.iconShape.name
         p["iconStyle"] = prefs.iconStyle.name
