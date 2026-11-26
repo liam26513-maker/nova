@@ -12,6 +12,18 @@ object ThemePresets {
     val all =
         listOf(
             ThemePreset(
+                "Vetro",
+                "Il tuo sfondo sfocato e trasparenze lucide, con riflessi sui bordi",
+                HomePrefs(
+                    theme = ThemeMode.DARK,
+                    wallpaper = WallpaperSource.SYSTEM,
+                    blurLevel = BlurLevel.STRONG,
+                    liquidGlass = true,
+                    iconStyle = IconStyle.MONO,
+                    accent = 0xFFBFD9FF.toInt(),
+                ),
+            ),
+            ThemePreset(
                 "Notte",
                 "Il tuo sfondo molto sfocato, testo chiaro e sottile",
                 HomePrefs(theme = ThemeMode.DARK, wallpaper = WallpaperSource.SYSTEM, blurLevel = BlurLevel.MAX),

@@ -97,7 +97,7 @@ internal fun SearchScreen(
             SearchField(query, { query = it }, focus, results.firstOrNull(), actions, onClose)
             Spacer(Modifier.padding(top = 14.dp))
             LazyColumn(
-                Modifier.fillMaxWidth().glass(SquircleShape(RESULTS_RADIUS), look.dark, flat = false),
+                Modifier.fillMaxWidth().glass(SquircleShape(RESULTS_RADIUS), look.dark, flat = false, liquid = look.liquid),
                 verticalArrangement = Arrangement.Top,
             ) {
                 if (query.isBlank()) {
@@ -141,7 +141,7 @@ private fun SearchField(
         Modifier.fillMaxWidth().background(
             panel(look.dark),
             CircleShape,
-        ).glass(CircleShape, look.dark, flat = false).padding(horizontal = 20.dp, vertical = 14.dp),
+        ).glass(CircleShape, look.dark, flat = false, liquid = look.liquid).padding(horizontal = 20.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicTextField(

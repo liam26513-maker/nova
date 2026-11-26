@@ -77,7 +77,7 @@ internal fun GlassDialog(
                     ).widthIn(max = width)
                     .padding(24.dp)
                     .background(if (look.dark) CARD else CARD_LIGHT, SquircleShape(CARD_RADIUS))
-                    .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
+                    .glass(SquircleShape(CARD_RADIUS), look.dark, flat, look.liquid)
                     // Toccare la scheda non deve chiuderla; senza `clickable`, così TalkBack vede ogni voce da sola.
                     .pointerInput(Unit) { detectTapGestures {} },
             ) { content() }
@@ -91,7 +91,8 @@ internal fun FolderOverlay(
     folder: FolderItem?,
     apps: Map<String, AppEntry>,
     actions: HomeActions,
-    onRename: (String) -> Unit,
+    /** (id della cartella, nuovo nome). L'id viaggia col nome: quando la scheda si chiude la cartella aperta non c'è più. */
+    onRename: (String, String) -> Unit,
     onMenu: (AppEntry) -> Unit,
     onClose: () -> Unit,
 ) {
@@ -101,7 +102,7 @@ internal fun FolderOverlay(
         val shown = last[0] ?: return@GlassDialog
         val look = LocalHomeLook.current
         var name by remember(shown.id) { mutableStateOf(shown.name) }
-        val commit by rememberUpdatedState { if (name != shown.name) onRename(name) }
+        val commit by rememberUpdatedState { if (name != shown.name) onRename(shown.id, name) }
         DisposableEffect(shown.id) { onDispose { commit() } }
         val fallback = stringResource(R.string.home_folder_default)
         Column(Modifier.padding(vertical = 20.dp), horizontalAlignment = Alignment.CenterHorizontally) {

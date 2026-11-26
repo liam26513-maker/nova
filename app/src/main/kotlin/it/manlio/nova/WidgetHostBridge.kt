@@ -2,10 +2,13 @@ package it.manlio.nova
 
 import android.app.Activity
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.SizeF
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,8 +73,24 @@ class WidgetHostBridge(private val activity: ComponentActivity) : ExternalWidget
     ): View? =
         runCatching {
             val info = manager.getAppWidgetInfo(ref) ?: return null
-            host.createView(activity, ref, info)
+            host.createView(activity, ref, info).apply { tellSize(this) }
         }.getOrNull()
+
+    /**
+     * Dice al widget quanto spazio ha davvero, a ogni cambio di misura: senza, l'app lo disegna per una misura di
+     * ripiego e il testo può uscire tagliato (richiesta del 26 novembre 2026, «migliora i widget»).
+     */
+    private fun tellSize(view: AppWidgetHostView) {
+        val density = activity.resources.displayMetrics.density
+        view.addOnLayoutChangeListener { _, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            val w = right - left
+            val h = bottom - top
+            val changed = w != oldRight - oldLeft || h != oldBottom - oldTop
+            if (changed && w > 0 && h > 0) {
+                runCatching { view.updateAppWidgetSize(Bundle(), listOf(SizeF(w / density, h / density))) }
+            }
+        }
+    }
 
     override fun add(
         provider: WidgetProvider,

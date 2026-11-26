@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
@@ -165,7 +166,7 @@ internal fun FolderIcon(
     val inset = size * FOLDER_INSET
     val mini = (size - inset * 2 - FOLDER_GAP * 2) / 3
     Column(
-        Modifier.size(size).glass(SquircleShape(size * ICON_RADIUS), look.dark, flat).padding(inset),
+        Modifier.size(size).glass(SquircleShape(size * ICON_RADIUS), look.dark, flat, look.liquid).padding(inset),
         verticalArrangement = Arrangement.spacedBy(FOLDER_GAP),
     ) {
         apps.take(FOLDER_PREVIEW).chunked(3).forEach { row ->
@@ -174,7 +175,10 @@ internal fun FolderIcon(
     }
 }
 
-/** Widget: scheda di vetro; [content] la riempie. Nella modifica ha il pulsante «−». */
+/**
+ * Widget: scheda di vetro; [content] la riempie. Nella modifica ha il pulsante «−». Con [framed] falso (i widget delle
+ * altre app, che hanno già il loro sfondo) niente vetro: solo gli angoli arrotondati, così non c'è una scheda dentro l'altra.
+ */
 @Composable
 internal fun WidgetCell(
     editing: Boolean,
@@ -182,12 +186,15 @@ internal fun WidgetCell(
     id: String,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
+    framed: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val look = LocalHomeLook.current
     val flat = Nova.tokens.graphicsLevel == GraphicsLevel.PERFORMANCE
+    val shape = SquircleShape(WIDGET_RADIUS)
     ItemFrame(editing, jiggle, id, onRemove, modifier) {
-        Box(Modifier.fillMaxSize().padding(WIDGET_GAP).glass(SquircleShape(WIDGET_RADIUS), look.dark, flat)) { content() }
+        val surface = if (framed) Modifier.glass(shape, look.dark, flat, look.liquid) else Modifier.clip(shape)
+        Box(Modifier.fillMaxSize().padding(WIDGET_GAP).then(surface)) { content() }
     }
 }
 

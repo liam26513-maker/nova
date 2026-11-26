@@ -632,4 +632,7 @@
     <string name="reply_send">Invia</string>
     <string name="reply_cancel">Annulla</string>
     <string name="reply_failed">L\'app non ha accettato la risposta: aprila per rispondere.</string>
+    <string name="customize_glass">Stile del vetro</string>
+    <string name="customize_glass_classic">Classico</string>
+    <string name="customize_glass_liquid">Liquido</string>
 </resources>

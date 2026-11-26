@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **I nomi delle cartelle si salvano** («alle cartelle non si possono modificare i nomi»): il nome scritto andava perso alla chiusura della cartella; ora resta.
+- **Widget più puliti** («migliora i widget»): quelli delle altre app (per esempio la ricerca di Brave o Tempo di utilizzo) non stanno più dentro un secondo riquadro di vetro e ricevono la loro misura vera, così il testo non esce tagliato.
+- **Vetro liquido** («migliora l'interfaccia mettendo il tema liquid glass»): in Personalizza la Home → «Stile del vetro» → Liquido, oppure con il nuovo tema pronto «Vetro». Tendina, dock, cartelle, widget e icone diventano trasparenze lucide con riflessi sui bordi, senza consumare di più.
+
 - **StandBy con più calma** («lo standby si attiva in troppo poco tempo fallo entrare dopo 2 minuti di inattivita»): quello automatico parte dopo 2 minuti senza toccare il tablet, invece di 30 secondi.
 
 - **Icone più calme in modifica** («le icone si muovono troppo in fretta… rallentale e falle più armoniose»): quando modifichi la Home le icone ondeggiano piano e con un movimento morbido, invece di tremare.

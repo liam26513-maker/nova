@@ -235,7 +235,7 @@ internal fun ControlCenter(
                         translationY = -(1f - sheet.progress) * (size.height + inset)
                         alpha = (sheet.progress * FADE_IN_SPEED).coerceAtMost(1f)
                     }.background(card, SquircleShape(CARD_RADIUS))
-                    .glass(SquircleShape(CARD_RADIUS), look.dark, flat)
+                    .glass(SquircleShape(CARD_RADIUS), look.dark, flat, look.liquid)
                     .closeByDragging(sheet, onSettled),
             ) {
                 val torchOn = controls.torch?.on?.collectAsState()?.value ?: false
@@ -496,7 +496,7 @@ private fun TileView(
     ) {
         Box(
             Modifier.size(TILE).background(if (tile.active) look.accent else Color.Transparent, SquircleShape(TILE * 0.3f)).let {
-                if (tile.active) it else it.glass(SquircleShape(TILE * 0.3f), look.dark, flat)
+                if (tile.active) it else it.glass(SquircleShape(TILE * 0.3f), look.dark, flat, look.liquid)
             },
             contentAlignment = Alignment.Center,
         ) { Canvas(Modifier.size(TILE * 0.5f)) { drawControlGlyph(tile.glyph, ink) } }
