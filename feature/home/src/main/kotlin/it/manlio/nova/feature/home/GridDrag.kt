@@ -9,10 +9,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 /** Elemento che si sta trascinando nella griglia: [id], dove si trova il dito ([pointer]) e quanto si è spostato ([delta]). */
 @Stable
@@ -31,43 +33,50 @@ internal sealed interface DropAction {
 
     data class Merge(val draggedKey: String, val ontoId: String) : DropAction
 
-    /** Sposta [id] prima di [beforeId] (null = in fondo). */
-    data class Move(val id: String, val beforeId: String?) : DropAction
+    /** Mette [id] nella casella sotto il dito (vedi [dropSpot]). */
+    data class Place(val id: String) : DropAction
 }
 
 /**
- * Decide cosa fare rilasciando [dragged] nel punto [pointer]. [page] sono gli elementi della pagina con il loro
- * rettangolo, [all] l'ordine completo, [nextPageFirstId] il primo elemento della pagina dopo (per «in fondo a questa pagina»).
- * Un'app sul centro di un'altra app o di una cartella le unisce; altrove l'elemento si inserisce nel punto.
+ * Decide cosa fare rilasciando [dragged] nel punto [pointer]. [page] sono gli elementi della pagina con il loro rettangolo.
+ * Un'app sul centro di un'altra app o di una cartella le unisce; sopra sé stesso non succede nulla; altrove l'elemento va
+ * nella casella sotto il dito, anche vuota, e chi c'era si sposta avanti.
  */
 internal fun dropAction(
     dragged: HomeItem,
     pointer: Offset,
     page: List<Pair<HomeItem, Rect>>,
-    all: List<HomeItem>,
-    nextPageFirstId: String?,
 ): DropAction {
     val over = page.firstOrNull { (item, rect) -> item.id != dragged.id && rect.contains(pointer) }
     if (over == null) {
-        return if (page.any {
-                it.first.id == dragged.id && it.second.contains(pointer)
-            }
-        ) {
-            DropAction.None
-        } else {
-            DropAction.Move(dragged.id, nextPageFirstId)
-        }
+        val onItself = page.any { it.first.id == dragged.id && it.second.contains(pointer) }
+        return if (onItself) DropAction.None else DropAction.Place(dragged.id)
     }
     val (target, rect) = over
     val centre = Rect(rect.center - rect.size.toOffset() * MERGE_ZONE, rect.center + rect.size.toOffset() * MERGE_ZONE)
     if (dragged is AppItem && target !is WidgetItem && centre.contains(pointer)) return DropAction.Merge(dragged.key, target.id)
-    val from = all.indexOfFirst { it.id == dragged.id }
-    val to = all.indexOfFirst { it.id == target.id }
-    val before = if (from in 0 until to) all.getOrNull(to + 1)?.id else target.id
-    return DropAction.Move(dragged.id, before)
+    return DropAction.Place(dragged.id)
 }
 
-private fun androidx.compose.ui.geometry.Size.toOffset() = Offset(width, height)
+/**
+ * La casella in cui cade [item] rilasciato con il dito in [pointer] (in pixel, dal bordo sinistro della griglia) sulla
+ * pagina [page]: l'elemento si centra sul dito e resta tutto dentro la pagina.
+ */
+internal fun dropSpot(
+    page: Int,
+    pointer: Offset,
+    item: HomeItem,
+    metrics: GridMetrics,
+    cell: Size,
+): Spot {
+    val w = item.cols.coerceIn(1, metrics.columns)
+    val h = item.rows.coerceIn(1, metrics.rows)
+    val col = (pointer.x / cell.width - w / 2f).roundToInt().coerceIn(0, metrics.columns - w)
+    val row = (pointer.y / cell.height - h / 2f).roundToInt().coerceIn(0, metrics.rows - h)
+    return Spot(page, col, row)
+}
+
+private fun Size.toOffset() = Offset(width, height)
 
 /**
  * Gesto della modalità modifica: si afferra un elemento con il dito e lo si trascina anche tra le pagine.

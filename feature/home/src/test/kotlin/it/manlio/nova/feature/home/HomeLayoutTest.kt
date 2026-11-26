@@ -2,6 +2,7 @@ package it.manlio.nova.feature.home
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -53,12 +54,21 @@ class HomeLayoutEditTest {
     private val base = HomeLayout(listOf(AppItem("a"), AppItem("b"), AppItem("c"), WidgetItem("w", WidgetKind.CLOCK)))
 
     @Test
-    fun `move puts an item before another, or at the end`() {
-        assertEquals(listOf("b", "a", "c", "w"), base.move("a", "c").ids())
-        assertEquals(listOf("b", "c", "w", "a"), base.move("a", null).ids())
-        assertEquals(listOf("w", "a", "b", "c"), base.move("w", "a").ids())
-        assertEquals(base, base.move("a", "a"))
-        assertEquals(base, base.move("nope", "a"))
+    fun `place gives an item its own cell, the last choice wins and a cell keeps one owner`() {
+        val l = base.place("a", Spot(0, 3, 1)).place("b", Spot(1, 0, 0)).place("a", Spot(0, 2, 1))
+        assertEquals(listOf("b" to Spot(1, 0, 0), "a" to Spot(0, 2, 1)), l.spots.toList())
+        assertEquals(listOf("a"), l.place("c", Spot(1, 0, 0)).spots.keys.filter { it != "c" })
+        assertEquals(base, base.place("nope", Spot(0, 0, 0)))
+    }
+
+    @Test
+    fun `chosen cells follow folders and vanish with their items`() {
+        val l = base.place("b", Spot(0, 3, 1)).place("a", Spot(0, 0, 1))
+        val f = l.merge("a", "b", "f1", "Cartella")
+        assertEquals(mapOf("f1" to Spot(0, 3, 1)), f.spots) // la cartella nasce dove stava b; a non ha più una casella sua
+        assertEquals(mapOf("b" to Spot(0, 3, 1)), f.takeOut("f1", "a").spots) // la cartella si scioglie: b riprende il posto
+        assertEquals(emptyMap<String, Spot>(), f.remove("f1").spots)
+        assertEquals(setOf("b"), l.reconcile(keys("b", "c"), emptySet()).spots.keys)
     }
 
     @Test
@@ -140,6 +150,22 @@ class PackTest {
     }
 
     @Test
+    fun `an item can sit in any cell, even leaving holes, and the others flow around it`() {
+        val pages = pack(apps(4), columns = 3, rows = 2, spots = mapOf("a1" to Spot(0, 2, 1), "a4" to Spot(1, 1, 0)))
+        assertEquals(mapOf("a1" to (2 to 1), "a2" to (0 to 0), "a3" to (1 to 0)), pages[0].associate { it.item.id to (it.col to it.row) })
+        assertEquals(listOf(1 to 0), pages[1].map { it.col to it.row }) // a4 da solo sulla seconda pagina, con un buco davanti
+    }
+
+    @Test
+    fun `when two chosen cells overlap the last wins, and a cell outside the grid is ignored`() {
+        val items = listOf(AppItem("a"), WidgetItem("w", WidgetKind.CLOCK), AppItem("b"))
+        val spots = linkedMapOf("a" to Spot(0, 1, 1), "w" to Spot(0, 0, 0), "b" to Spot(0, 7, 0))
+        val p = pack(items, columns = 3, rows = 2, spots = spots).single()
+        assertEquals(mapOf("w" to (0 to 0), "a" to (2 to 0), "b" to (2 to 1)), p.associate { it.item.id to (it.col to it.row) })
+        assertEquals(1, pack(items, 3, 2, mapOf("a" to Spot(99, 0, 0))).size) // una pagina assurda non crea pagine vuote
+    }
+
+    @Test
     fun `an oversized widget shrinks to the page, and no items still means one page`() {
         val big = pack(listOf(WidgetItem("w", WidgetKind.EXTERNAL, cols = 9, rows = 9)), columns = 3, rows = 2).single().single()
         assertEquals(3 to 2, big.cols to big.rows)
@@ -164,6 +190,7 @@ class LayoutStoreTest {
                         WidgetItem("w2", WidgetKind.EXTERNAL, cols = 3, rows = 2, ref = 42),
                     ),
                     offHome = setOf("com.z/.Z#0"),
+                    spots = linkedMapOf("w2" to Spot(1, 0, 2), "com.a/.Main#0" to Spot(0, 3, 4)),
                 )
             store.update { layout }
             assertEquals(layout, HomeLayoutStore(file).layout.value)
@@ -206,35 +233,35 @@ class DropActionTest {
             c to Rect(200f, 0f, 300f, 100f),
             w to Rect(0f, 100f, 200f, 300f),
         )
-    private val all = listOf<HomeItem>(a, b, c, w)
 
     @Test
     fun `dropping on the middle of another app merges`() {
-        assertEquals(DropAction.Merge("a", "b"), dropAction(a, Offset(150f, 50f), page, all, null))
+        assertEquals(DropAction.Merge("a", "b"), dropAction(a, Offset(150f, 50f), page))
     }
 
     @Test
-    fun `dropping near the side inserts, after the target when moving forward and before it when moving back`() {
-        assertEquals(DropAction.Move("a", "c"), dropAction(a, Offset(110f, 50f), page, all, null)) // avanti: dopo b, cioè prima di c
-        assertEquals(DropAction.Move("c", "b"), dropAction(c, Offset(110f, 50f), page, all, null)) // indietro: prima di b
-    }
-
-    @Test
-    fun `a widget is never merged into and apps dropped on it are inserted`() {
-        assertEquals(DropAction.Move("a", null), dropAction(a, Offset(100f, 200f), page, all, null))
-    }
-
-    @Test
-    fun `dropping in an empty cell goes to the end of the page, and on itself does nothing`() {
-        assertEquals(DropAction.Move("a", "next"), dropAction(a, Offset(280f, 250f), page, all, "next"))
-        assertEquals(DropAction.None, dropAction(a, Offset(50f, 50f), page, all, null))
+    fun `dropping near the side, on a widget or in an empty cell places the item there, and on itself does nothing`() {
+        assertEquals(DropAction.Place("a"), dropAction(a, Offset(110f, 50f), page))
+        assertEquals(DropAction.Place("a"), dropAction(a, Offset(100f, 200f), page))
+        assertEquals(DropAction.Place("a"), dropAction(a, Offset(280f, 250f), page))
+        assertEquals(DropAction.None, dropAction(a, Offset(50f, 50f), page))
     }
 
     @Test
     fun `a folder accepts an app on its middle, a widget never merges`() {
         val f = FolderItem("f", "F", keys("x", "y"))
         val p = listOf(a to Rect(0f, 0f, 100f, 100f), f to Rect(100f, 0f, 200f, 100f))
-        assertEquals(DropAction.Merge("a", "f"), dropAction(a, Offset(150f, 50f), p, listOf(a, f), null))
-        assertEquals(DropAction.Move("w", "a"), dropAction(w, Offset(50f, 50f), p, listOf(a, f, w), null))
+        assertEquals(DropAction.Merge("a", "f"), dropAction(a, Offset(150f, 50f), p))
+        assertEquals(DropAction.Place("w"), dropAction(w, Offset(50f, 50f), p))
+    }
+
+    @Test
+    fun `the cell under the finger, with the item centred on it and kept inside the page`() {
+        val m = GridMetrics(columns = 4, rows = 3)
+        val cell = Size(100f, 100f)
+        assertEquals(Spot(2, 3, 2), dropSpot(2, Offset(390f, 290f), a, m, cell))
+        assertEquals(Spot(0, 1, 0), dropSpot(0, Offset(110f, 10f), a, m, cell))
+        assertEquals(Spot(0, 1, 1), dropSpot(0, Offset(200f, 200f), w, m, cell)) // 2×2 centrato sul dito
+        assertEquals(Spot(0, 2, 1), dropSpot(0, Offset(399f, 299f), w, m, cell)) // e non esce dalla pagina
     }
 }

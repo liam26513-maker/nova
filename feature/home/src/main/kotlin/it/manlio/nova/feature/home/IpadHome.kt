@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -209,7 +210,7 @@ private fun GridArea(
     val density = LocalDensity.current
     BoxWithConstraints(modifier) {
         val metrics = GridMetrics.of((maxWidth - margin * 2).value, (maxHeight - DOTS_AREA).value)
-        val pages = remember(layout.items, metrics) { pack(layout.items, metrics.columns, metrics.rows) }
+        val pages = remember(layout.items, layout.spots, metrics) { pack(layout.items, metrics.columns, metrics.rows, layout.spots) }
         val pager = rememberPagerState(pageCount = { pages.size })
         val cellW = (maxWidth - margin * 2) / metrics.columns
         val cellH = (maxHeight - DOTS_AREA) / metrics.rows
@@ -229,7 +230,10 @@ private fun GridArea(
         }
         val currentLayout by rememberUpdatedState(layout)
         val currentDock by rememberUpdatedState(dockBounds)
-        val nextFirstNow by rememberUpdatedState { pages.getOrNull(pager.currentPage + 1)?.firstOrNull()?.item?.id }
+        val spotNow by rememberUpdatedState { item: HomeItem, pos: Offset ->
+            val px = density.density
+            dropSpot(pager.currentPage, pos - Offset(margin.value * px, 0f), item, metrics, Size(cellW.value * px, cellH.value * px))
+        }
         val defaultName = stringResource(R.string.home_folder_default)
         val width = with(density) { (maxWidth).toPx() }
         EdgePaging(drag, pager, width, density.run { EDGE.toPx() })
@@ -246,10 +250,13 @@ private fun GridArea(
                             entries[id]?.let { actions.onToggleFavorite(it) }
                             return@gridDrag
                         }
-                        when (val a = dropAction(dragged, pos, rectsNow(), currentLayout.items, nextFirstNow())) {
+                        when (val a = dropAction(dragged, pos, rectsNow())) {
                             DropAction.None -> Unit
                             is DropAction.Merge -> ipad.onLayout { it.merge(a.draggedKey, a.ontoId, newId(), defaultName) }
-                            is DropAction.Move -> ipad.onLayout { it.move(a.id, a.beforeId) }
+                            is DropAction.Place -> {
+                                val spot = spotNow(dragged, pos)
+                                ipad.onLayout { it.place(a.id, spot) }
+                            }
                         }
                         view.perform(NovaHaptic.SELECTION)
                     },
