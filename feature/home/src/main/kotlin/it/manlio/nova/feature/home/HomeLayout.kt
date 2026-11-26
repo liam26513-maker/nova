@@ -57,15 +57,20 @@ data class WidgetItem(
     val text: String = "",
 ) : HomeItem
 
+/** Una casella scelta a mano: pagina, colonna e riga (da 0) dell'angolo in alto a sinistra. */
+@Immutable
+data class Spot(val page: Int, val col: Int, val row: Int)
+
 /**
- * Come sono disposti gli elementi della Home: ordine di lettura (la griglia li impagina, vedi [pack]) e app
- * tolte dalla Home ([offHome]: restano nell'elenco completo). Il dock sono i preferiti e non è qui.
- * Funzioni pure: ogni modifica restituisce una nuova disposizione.
+ * Come sono disposti gli elementi della Home: ordine di lettura (la griglia li impagina, vedi [pack]), caselle scelte a mano
+ * ([spots]: l'ultima scelta vince) e app tolte dalla Home ([offHome]: restano nell'elenco completo). Il dock sono i preferiti
+ * e non è qui. Funzioni pure: ogni modifica restituisce una nuova disposizione.
  */
 @Immutable
 data class HomeLayout(
     val items: List<HomeItem> = emptyList(),
     val offHome: Set<String> = emptySet(),
+    val spots: Map<String, Spot> = emptyMap(),
 ) {
     /**
      * Allinea la disposizione alle app che ci sono davvero ([visible]: chiavi in ordine alfabetico):
@@ -94,20 +99,19 @@ data class HomeLayout(
                 }
             }
         val fresh = visible.filter { it in usable && it !in seen && it !in offHome }.map(::AppItem)
-        val next = HomeLayout(kept + fresh, offHome.filterTo(HashSet()) { it in usable })
+        val all = kept + fresh
+        val ids = all.mapTo(HashSet()) { it.id }
+        val next = HomeLayout(all, offHome.filterTo(HashSet()) { it in usable }, spots.filterKeys { it in ids })
         return if (next == this) this else next
     }
 
-    /** Sposta [id] prima di [beforeId], o in fondo se è null o non esiste. */
-    fun move(
+    /** Mette [id] nella casella [spot]; chi l'aveva scelta proprio lì la lascia e torna a scorrere con gli altri. */
+    fun place(
         id: String,
-        beforeId: String?,
+        spot: Spot,
     ): HomeLayout {
-        val item = items.firstOrNull { it.id == id } ?: return this
-        if (id == beforeId) return this
-        val rest = items - item
-        val at = rest.indexOfFirst { it.id == beforeId }.takeIf { it >= 0 } ?: rest.size
-        return copy(items = rest.toMutableList().apply { add(at, item) })
+        if (items.none { it.id == id }) return this
+        return copy(spots = spots.filter { (k, s) -> k != id && s != spot } + (id to spot))
     }
 
     /** Trascina l'app [draggedKey] sull'elemento [ontoId]: app + app = nuova cartella, app + cartella = dentro la cartella. */
@@ -119,6 +123,8 @@ data class HomeLayout(
     ): HomeLayout {
         if (draggedKey == ontoId || items.none { it is AppItem && it.key == draggedKey }) return this
         val without = items.filterNot { it is AppItem && it.key == draggedKey }
+        val ontoApp = items.any { it is AppItem && it.id == ontoId }
+        val ontoSpot = spots[ontoId]
         val merged =
             without.map { item ->
                 when {
@@ -128,7 +134,10 @@ data class HomeLayout(
                     else -> return this
                 }
             }
-        return copy(items = merged)
+        // La nuova cartella prende la casella dell'app su cui è nata.
+        val kept = spots - draggedKey
+        val next = if (ontoApp && ontoSpot != null) kept - ontoId + (newFolderId to ontoSpot) else kept
+        return copy(items = merged, spots = next)
     }
 
     /** Toglie [key] dalla cartella [folderId] e la rimette subito dopo; una cartella con una sola app si scioglie. */
@@ -143,7 +152,10 @@ data class HomeLayout(
         val out = mutableListOf<HomeItem>()
         if (left.size >= 2) out += folder.copy(keys = left) else out += left.map(::AppItem)
         out += AppItem(key)
-        return copy(items = items.toMutableList().apply { removeAt(index) }.also { it.addAll(index, out) })
+        // Una cartella che si scioglie lascia la sua casella all'app rimasta.
+        val spot = spots[folderId]
+        val next = if (left.size < 2 && spot != null) spots - folderId + (left.single() to spot) else spots
+        return copy(items = items.toMutableList().apply { removeAt(index) }.also { it.addAll(index, out) }, spots = next)
     }
 
     fun renameFolder(
@@ -163,7 +175,7 @@ data class HomeLayout(
                 is FolderItem -> item.keys.toSet()
                 is WidgetItem -> emptySet()
             }
-        return HomeLayout(items - item, offHome + gone)
+        return HomeLayout(items - item, offHome + gone, spots - id)
     }
 
     /** Rimette [key] sulla Home (finisce in fondo alla prima occasione di [reconcile]). */
@@ -196,49 +208,92 @@ data class Placement(
 )
 
 /**
- * Impagina gli elementi in ordine di lettura su pagine di [columns]×[rows], senza tornare indietro:
- * ogni elemento va nella prima casella libera dove entra dopo il precedente, altrimenti nella pagina dopo.
+ * Impagina gli elementi su pagine di [columns]×[rows]. Prima quelli con una casella scelta a mano ([spots], l'ultima scelta
+ * vince se due si sovrappongono; una casella che non entra più nella griglia si ignora). Poi gli altri in ordine di lettura,
+ * senza tornare indietro: ognuno nella prima casella libera dove entra dopo il precedente, anche nelle pagine dopo.
  * Un widget più grande della pagina si riduce. Sempre almeno una pagina.
  */
 fun pack(
     items: List<HomeItem>,
     columns: Int,
     rows: Int,
+    spots: Map<String, Spot> = emptyMap(),
 ): List<List<Placement>> {
-    val cols = columns.coerceAtLeast(1)
-    val rws = rows.coerceAtLeast(1)
-    val pages = mutableListOf(mutableListOf<Placement>())
-    var taken = Array(rws) { BooleanArray(cols) }
-    var cursor = 0
-
-    fun fits(
-        at: Int,
-        w: Int,
-        h: Int,
-    ): Boolean {
-        val c = at % cols
-        val r = at / cols
-        if (c + w > cols || r + h > rws) return false
-        for (y in r until r + h) for (x in c until c + w) if (taken[y][x]) return false
-        return true
-    }
-    items.forEach { item ->
-        val w = item.cols.coerceIn(1, cols)
-        val h = item.rows.coerceIn(1, rws)
-        var at = cursor
-        while (at < cols * rws && !fits(at, w, h)) at++
-        if (at >= cols * rws) {
-            pages.add(mutableListOf())
-            taken = Array(rws) { BooleanArray(cols) }
-            at = 0
+    val grid = PageGrid(columns.coerceAtLeast(1), rows.coerceAtLeast(1))
+    val byId = items.associateBy { it.id }
+    val pinned = HashSet<String>()
+    spots.entries.toList().asReversed().forEach { (id, s) ->
+        val item = byId[id] ?: return@forEach
+        // Mai più pagine che elementi: una casella assurda non crea pagine vuote all'infinito.
+        if (s.page in items.indices && grid.fits(item, s.page, s.col, s.row)) {
+            grid.put(item, s.page, s.col, s.row)
+            pinned += id
         }
-        val c = at % cols
-        val r = at / cols
-        for (y in r until r + h) for (x in c until c + w) taken[y][x] = true
-        pages.last() += Placement(item, pages.lastIndex, c, r, w, h)
+    }
+    var cursor = 0
+    items.forEach { item ->
+        if (item.id in pinned) return@forEach
+        var at = cursor
+        while (!grid.fits(item, grid.pageOf(at), grid.colOf(at), grid.rowOf(at))) at++
+        grid.put(item, grid.pageOf(at), grid.colOf(at), grid.rowOf(at))
         cursor = at + 1
     }
-    return pages
+    return grid.pages
+}
+
+/** Le caselle occupate di ogni pagina, per [pack]; le pagine nascono quando servono (sempre almeno una). */
+private class PageGrid(
+    val cols: Int,
+    val rows: Int,
+) {
+    private val taken = mutableListOf<Array<BooleanArray>>()
+    val pages = mutableListOf<MutableList<Placement>>()
+
+    init {
+        page(0)
+    }
+
+    fun pageOf(at: Int) = at / (cols * rows)
+
+    fun colOf(at: Int) = at % (cols * rows) % cols
+
+    fun rowOf(at: Int) = at % (cols * rows) / cols
+
+    private fun page(index: Int): Array<BooleanArray> {
+        while (taken.size <= index) {
+            taken += Array(rows) { BooleanArray(cols) }
+            pages += mutableListOf<Placement>()
+        }
+        return taken[index]
+    }
+
+    private fun HomeItem.w() = cols.coerceIn(1, this@PageGrid.cols)
+
+    private fun HomeItem.h() = rows.coerceIn(1, this@PageGrid.rows)
+
+    fun fits(
+        item: HomeItem,
+        index: Int,
+        c: Int,
+        r: Int,
+    ): Boolean {
+        val inside = c >= 0 && r >= 0 && c + item.w() <= cols
+        if (!inside || r + item.h() > rows) return false
+        val grid = page(index)
+        for (y in r until r + item.h()) for (x in c until c + item.w()) if (grid[y][x]) return false
+        return true
+    }
+
+    fun put(
+        item: HomeItem,
+        index: Int,
+        c: Int,
+        r: Int,
+    ) {
+        val grid = page(index)
+        for (y in r until r + item.h()) for (x in c until c + item.w()) grid[y][x] = true
+        pages[index] += Placement(item, index, c, r, item.w(), item.h())
+    }
 }
 
 /** Salva [HomeLayout] in un file di testo, in modo atomico e fuori dal thread principale. */
@@ -283,6 +338,8 @@ internal object LayoutCodec {
                 }
             }
             layout.offHome.sorted().forEach { appendLine("off|${enc(it)}") }
+            val ids = layout.items.mapTo(HashSet()) { it.id }
+            layout.spots.forEach { (id, s) -> if (id in ids) appendLine("spot|${enc(id)}|${s.page}|${s.col}|${s.row}") }
         }
 
     fun read(text: String): HomeLayout {
@@ -290,6 +347,7 @@ internal object LayoutCodec {
         if (lines.firstOrNull() != MARK) return HomeLayout()
         val items = mutableListOf<HomeItem>()
         val off = mutableSetOf<String>()
+        val spots = LinkedHashMap<String, Spot>()
         lines.drop(1).forEach { line ->
             runCatching {
                 val p = line.split('|')
@@ -298,10 +356,11 @@ internal object LayoutCodec {
                     "folder" -> items += FolderItem(dec(p[1]), dec(p[2]), p[3].split(',').filter { it.isNotEmpty() }.map(::dec))
                     "widget" -> items += widget(p)
                     "off" -> off += dec(p[1])
+                    "spot" -> spots[dec(p[1])] = Spot(p[2].toInt(), p[3].toInt(), p[4].toInt())
                 }
             }
         }
-        return HomeLayout(items, off)
+        return HomeLayout(items, off, spots)
     }
 
     private fun widget(p: List<String>): WidgetItem =

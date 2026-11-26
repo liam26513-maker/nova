@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Le app vanno dove vuoi sulla Home** («fammi sistemare le app nella home in ogni parte liberamente»): in modifica puoi lasciare un'icona, una cartella o un widget in qualsiasi casella, anche vuota e lontana dalle altre; resta lì. Se la lasci su un'altra icona, quella si sposta avanti. Sul centro di un'app crei ancora una cartella.
+
 - **La cartella resta visibile mentre scrivi il nome** («Sì, sistemala»): quando compare la tastiera la Home non scorre più in su, e la cartella si sposta sopra la tastiera.
 
 - **Riparato: NOVA si chiudeva rinominando una cartella** («quando provo a cambiare il nome alle cartelle ora l'app crusha»): col vetro liquido, mentre compariva la tastiera, un riquadro diventava troppo piccolo per il suo bordo e la Home si chiudeva.
