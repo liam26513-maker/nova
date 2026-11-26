@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Riparato: NOVA si chiudeva rinominando una cartella** («quando provo a cambiare il nome alle cartelle ora l'app crusha»): col vetro liquido, mentre compariva la tastiera, un riquadro diventava troppo piccolo per il suo bordo e la Home si chiudeva.
+
 - **Cartelle che si aprono con un'animazione** («piccole animazioni per quando si apre una cartella»): la cartella cresce da piccola fino al centro dello schermo, e si richiude allo stesso modo.
 - **Il tema non cambia più lo sfondo** («quando si cambia il tema deve rimanere lo sfondo»): scegliendo un tema pronto in Personalizza la Home cambiano colori, testo, orologio, icone e vetro, ma il tuo sfondo resta.
 - **Vetro liquido più leggibile**: tendina e notifiche lasciano ancora intravedere lo sfondo, ma le scritte della Home dietro non disturbano più la lettura.

@@ -53,7 +53,7 @@ internal fun Modifier.glass(
         )
     }
 
-private fun DrawScope.liquidGlass(
+internal fun DrawScope.liquidGlass(
     shape: Shape,
     dark: Boolean,
 ) {
@@ -88,6 +88,8 @@ private fun DrawScope.liquidGlass(
     )
     // Bordo interno sottile: dà spessore al vetro.
     val gap = 2.dp.toPx()
+    // Un riquadro più piccolo del bordo (succede mentre la tastiera stringe la Home) avrebbe misure negative: niente bordo interno.
+    if (size.minDimension <= gap * 2) return
     inset(gap) {
         drawOutline(
             shape.createOutline(size, layoutDirection, this),
