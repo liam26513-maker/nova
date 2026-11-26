@@ -76,7 +76,7 @@ internal fun GlassDialog(
                         exit = scaleOut(spring(stiffness = FADE), targetScale = POP_FROM),
                     ).widthIn(max = width)
                     .padding(24.dp)
-                    .background(if (look.dark) CARD else CARD_LIGHT, SquircleShape(CARD_RADIUS))
+                    .background((if (look.dark) CARD else CARD_LIGHT).glassBase(look.liquid), SquircleShape(CARD_RADIUS))
                     .glass(SquircleShape(CARD_RADIUS), look.dark, flat, look.liquid)
                     // Toccare la scheda non deve chiuderla; senza `clickable`, così TalkBack vede ogni voce da sola.
                     .pointerInput(Unit) { detectTapGestures {} },

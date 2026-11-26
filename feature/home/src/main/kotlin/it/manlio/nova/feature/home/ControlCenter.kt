@@ -234,7 +234,7 @@ internal fun ControlCenter(
                     .graphicsLayer {
                         translationY = -(1f - sheet.progress) * (size.height + inset)
                         alpha = (sheet.progress * FADE_IN_SPEED).coerceAtMost(1f)
-                    }.background(card, SquircleShape(CARD_RADIUS))
+                    }.background(card.glassBase(look.liquid), SquircleShape(CARD_RADIUS))
                     .glass(SquircleShape(CARD_RADIUS), look.dark, flat, look.liquid)
                     .closeByDragging(sheet, onSettled),
             ) {
