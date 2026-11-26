@@ -70,12 +70,12 @@ internal fun <T> Choice(
     }
 }
 
-/** Un campione da scegliere: colore pieno, sfumatura della raccolta o "automatico". */
+/** Un campione da scegliere: colore pieno, sfumatura della raccolta o un segno ([mark]: «A» automatico, «+» colore libero). */
 internal class SwatchItem(
     val name: String,
     val color: Color? = null,
     val gradient: NovaWallpaper? = null,
-    val auto: Boolean = false,
+    val mark: String? = null,
 )
 
 /** Riga di campioni tondi scorrevole; quello scelto ha un anello d'accento. */
@@ -121,7 +121,7 @@ private fun SwatchFill(item: SwatchItem) {
         item.color != null -> Box(Modifier.size(SWATCH).background(item.color))
         else ->
             Box(Modifier.size(SWATCH).background(Nova.tokens.colors.onSurface.copy(alpha = 0.06f)), contentAlignment = Alignment.Center) {
-                BasicText("A", style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 13.sp))
+                BasicText(item.mark.orEmpty(), style = TextStyle(Nova.tokens.colors.onSurfaceMuted, 13.sp))
             }
     }
 }
@@ -148,6 +148,9 @@ private const val RGB_MASK = 0xFFFFFF
 @Suppress("MagicNumber") // tavolozze
 internal val SOLID_COLORS =
     listOf(0xFF000000, 0xFF1B2028, 0xFF2B2F3A, 0xFF1F3A34, 0xFF3A2430, 0xFF20304A, 0xFFE9E4D8, 0xFFF7F6F3).map { it.toInt() }
+
+@Suppress("MagicNumber")
+internal val INKS = listOf(0xFFFFFFFF, 0xFFE9E4D8, 0xFFBFD9FF, 0xFFFFD9A8, 0xFF15171A, 0xFF2B3A55).map { it.toInt() }
 
 @Suppress("MagicNumber")
 internal val ACCENTS =

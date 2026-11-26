@@ -56,6 +56,10 @@ data class HomePrefs(
     val theme: ThemeMode = ThemeMode.DARK,
     /** Colore d'accento ARGB; null = preso dallo sfondo. */
     val accent: Int? = null,
+    /** Colore del testo e delle icone a tema, ARGB; null = bianco sul tema scuro, quasi nero su quello chiaro. */
+    val inkColor: Int? = null,
+    /** Tema creato dallo sfondo: a ogni sfondo nuovo NOVA sceglie da sé chiaro o scuro e l'accento ([themedFrom]). */
+    val autoTheme: Boolean = false,
     // Sfondo
     val wallpaper: WallpaperSource = WallpaperSource.SYSTEM,
     val novaWallpaper: Int = 0,
@@ -226,6 +230,8 @@ internal object PrefsCodec {
         return HomePrefs(
             theme = enumOr(p.getProperty("theme"), d.theme),
             accent = p.getProperty("accent")?.toLongOrNull()?.toInt(),
+            inkColor = p.getProperty("inkColor")?.toLongOrNull()?.toInt(),
+            autoTheme = bool("autoTheme", d.autoTheme),
             wallpaper = enumOr(p.getProperty("wallpaper"), d.wallpaper),
             novaWallpaper = int("novaWallpaper", d.novaWallpaper).coerceIn(0, NovaWallpapers.all.lastIndex),
             solidColor = int("solidColor", d.solidColor),
@@ -276,6 +282,8 @@ internal object PrefsCodec {
         p[MARK] = "1"
         p["theme"] = prefs.theme.name
         prefs.accent?.let { p["accent"] = it.toString() }
+        prefs.inkColor?.let { p["inkColor"] = it.toString() }
+        p["autoTheme"] = prefs.autoTheme.toString()
         p["wallpaper"] = prefs.wallpaper.name
         p["novaWallpaper"] = prefs.novaWallpaper.toString()
         p["solidColor"] = prefs.solidColor.toString()

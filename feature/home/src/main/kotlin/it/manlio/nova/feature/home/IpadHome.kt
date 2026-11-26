@@ -211,7 +211,8 @@ private fun GridArea(
     BoxWithConstraints(modifier) {
         val metrics = GridMetrics.of((maxWidth - margin * 2).value, (maxHeight - DOTS_AREA).value)
         val pages = remember(layout.items, layout.spots, metrics) { pack(layout.items, metrics.columns, metrics.rows, layout.spots) }
-        val pager = rememberPagerState(pageCount = { pages.size })
+        // In modifica c'è sempre una pagina vuota in più in fondo: lasciandoci un elemento nasce una pagina nuova.
+        val pager = rememberPagerState(pageCount = { pages.size + if (editing) 1 else 0 })
         val cellW = (maxWidth - margin * 2) / metrics.columns
         val cellH = (maxHeight - DOTS_AREA) / metrics.rows
         val drag = remember { GridDragState() }

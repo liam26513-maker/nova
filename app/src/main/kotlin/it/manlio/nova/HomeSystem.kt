@@ -42,7 +42,7 @@ internal object HomeSystem {
         context: Context,
         prefs: HomePrefs,
     ): IconSpec {
-        val ink = if (isDark(context, prefs)) Color.White else Color(INK_LIGHT_THEME)
+        val ink = prefs.inkColor?.let(::Color) ?: if (isDark(context, prefs)) Color.White else Color(INK_LIGHT_THEME)
         val plate = ink.copy(alpha = if (prefs.iconStyle == IconStyle.MONO) PLATE_MONO else PLATE_COLOR)
         return IconSpec(prefs.iconShape, prefs.iconStyle, prefs.iconPack, ink.toArgb(), plate.toArgb())
     }

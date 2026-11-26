@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,6 +41,7 @@ import it.manlio.nova.feature.home.HomeActions
 import it.manlio.nova.feature.home.HomeLayoutStore
 import it.manlio.nova.feature.home.HomeScreen
 import it.manlio.nova.feature.home.HomeStyle
+import it.manlio.nova.feature.home.NovaWallpapers
 import it.manlio.nova.feature.home.Open
 import it.manlio.nova.feature.home.PreparedWallpaper
 import it.manlio.nova.feature.home.Suggested
@@ -49,6 +51,7 @@ import it.manlio.nova.feature.home.WallpaperLoader
 import it.manlio.nova.feature.home.WallpaperSource
 import it.manlio.nova.feature.home.Why
 import it.manlio.nova.feature.home.rememberMinuteClock
+import it.manlio.nova.feature.home.themedFrom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -182,7 +185,7 @@ class HomeActivity : ComponentActivity() {
                 // Riparte a ogni ritorno nella home: così lo sfondo si rilegge anche dopo aver scelto
                 // una foto o concesso il permesso nelle Impostazioni.
                 app.homePrefs.prefs
-                    .map { it.wallpaper to it.blurLevel }
+                    .map { listOf(it.wallpaper, it.blurLevel, it.autoTheme, it.novaWallpaper, it.solidColor) }
                     .distinctUntilChanged()
                     .collect { reloadWallpaper() }
             }
@@ -276,6 +279,16 @@ class HomeActivity : ComponentActivity() {
             wallpaper = prepared
             prepared?.primaryColor?.let { style = style.copy(tint = Color(it)) }
             applyWindow()
+            if (current.autoTheme) {
+                val color =
+                    when (current.wallpaper) {
+                        WallpaperSource.NOVA -> NovaWallpapers.all[current.novaWallpaper].primary.toArgb()
+                        WallpaperSource.SOLID -> current.solidColor
+                        else -> prepared?.primaryColor
+                    }
+                // Solo tema e accento cambiano; le altre scelte (e i ritocchi fatti dopo) restano fino al prossimo sfondo.
+                color?.let { c -> app.homePrefs.update { it.themedFrom(c) } }
+            }
         }
     }
 
