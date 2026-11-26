@@ -4,6 +4,8 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Vetro liquido più limpido**: con lo stile Liquido la tendina, le notifiche e le cartelle lasciano vedere di più lo sfondo, come un vetro vero.
+
 - **I nomi delle cartelle si salvano** («alle cartelle non si possono modificare i nomi»): il nome scritto andava perso alla chiusura della cartella; ora resta.
 - **Widget più puliti** («migliora i widget»): quelli delle altre app (per esempio la ricerca di Brave o Tempo di utilizzo) non stanno più dentro un secondo riquadro di vetro e ricevono la loro misura vera, così il testo non esce tagliato.
 - **Vetro liquido** («migliora l'interfaccia mettendo il tema liquid glass»): in Personalizza la Home → «Stile del vetro» → Liquido, oppure con il nuovo tema pronto «Vetro». Tendina, dock, cartelle, widget e icone diventano trasparenze lucide con riflessi sui bordi, senza consumare di più.

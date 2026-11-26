@@ -60,7 +60,7 @@ internal fun ControlNotifications(
             .graphicsLayer {
                 translationY = -(1f - sheet.progress) * (size.height + inset)
                 alpha = (sheet.progress * 3f).coerceAtMost(1f)
-            }.background(card, SquircleShape(RADIUS))
+            }.background(card.glassBase(look.liquid), SquircleShape(RADIUS))
             .glass(SquircleShape(RADIUS), look.dark, flat, look.liquid)
             // I tocchi sulla scheda non arrivano al velo dietro, che chiuderebbe la tendina.
             .clickable(remember { MutableInteractionSource() }, indication = null) {}

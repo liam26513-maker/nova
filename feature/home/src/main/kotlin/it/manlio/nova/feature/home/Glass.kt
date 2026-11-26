@@ -57,14 +57,14 @@ private fun DrawScope.liquidGlass(
 ) {
     val outline = shape.createOutline(size, layoutDirection, this)
     // Corpo limpido: poco colore, più chiaro in alto.
-    val top = if (dark) 0.14f else 0.42f
-    val bottom = if (dark) 0.05f else 0.24f
+    val top = if (dark) 0.09f else 0.36f
+    val bottom = if (dark) 0.02f else 0.18f
     drawOutline(outline, Brush.verticalGradient(listOf(Color.White.copy(alpha = top), Color.White.copy(alpha = bottom))))
     // Riflesso morbido in alto a sinistra.
     drawOutline(
         outline,
         Brush.radialGradient(
-            listOf(Color.White.copy(alpha = if (dark) 0.16f else 0.30f), Color.Transparent),
+            listOf(Color.White.copy(alpha = if (dark) 0.13f else 0.26f), Color.Transparent),
             center = Offset(size.width * 0.18f, 0f),
             radius = size.maxDimension * 0.75f,
         ),
@@ -94,3 +94,6 @@ private fun DrawScope.liquidGlass(
         )
     }
 }
+
+/** Il fondo delle schede sotto il vetro: col vetro liquido è più trasparente, così lo sfondo si vede attraverso. */
+internal fun Color.glassBase(liquid: Boolean): Color = if (liquid) copy(alpha = alpha * 0.62f) else this
