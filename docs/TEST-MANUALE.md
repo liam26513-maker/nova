@@ -129,6 +129,8 @@ Questi punti valgono per lo stile **Elenco** (Personalizza → Disposizione e ge
 - [ ] Personalizza → Icone → «Originale» rimette le icone com'erano; la scelta resta dopo il riavvio.
 - [ ] **Modifica la Home:** tieni premuto lo sfondo vuoto: le icone ondeggiano, compaiono «+», «Fine» e i «−». Indietro esce.
   - [ ] Trascina un'icona in un altro posto; trascinala al bordo e aspetta: cambia pagina e la lascia lì.
+  - [ ] In modifica scorri oltre l'ultima pagina: c'è una pagina vuota; lasciaci un'icona e premi Fine: la pagina resta.
+  - [ ] Personalizza → Colori → «Tema dallo sfondo» acceso, poi cambia sfondo (chiaro, poi scuro): tema e accento cambiano da soli. «+» su accento, sfondo a colore e «Colore del testo»: le tre barre cambiano il colore, che resta dopo il riavvio.
   - [ ] Lascia un'icona in una casella vuota lontana dalle altre (es. in basso a destra): resta lì, anche dopo aver riavviato NOVA. Lasciala su un'altra icona (non al centro): l'altra si sposta avanti.
   - [ ] Mettila sopra un'altra icona: nasce una cartella con le due app; sopra una cartella ci entra.
   - [ ] «−» su un'icona la toglie dalla Home; in Cerca → Tutte le app → pressione lunga → «Aggiungi alla Home» torna.

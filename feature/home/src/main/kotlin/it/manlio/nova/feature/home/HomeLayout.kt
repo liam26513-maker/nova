@@ -224,8 +224,8 @@ fun pack(
     val pinned = HashSet<String>()
     spots.entries.toList().asReversed().forEach { (id, s) ->
         val item = byId[id] ?: return@forEach
-        // Mai più pagine che elementi: una casella assurda non crea pagine vuote all'infinito.
-        if (s.page in items.indices && grid.fits(item, s.page, s.col, s.row)) {
+        // Al massimo una pagina per elemento: una casella assurda non crea pagine vuote all'infinito.
+        if (s.page in 0..items.size && grid.fits(item, s.page, s.col, s.row)) {
             grid.put(item, s.page, s.col, s.row)
             pinned += id
         }

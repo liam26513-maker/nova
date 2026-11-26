@@ -166,6 +166,12 @@ class PackTest {
     }
 
     @Test
+    fun `an item dropped on the empty page after the last one starts a new page`() {
+        val pages = pack(apps(2), columns = 3, rows = 2, spots = mapOf("a2" to Spot(1, 0, 0)))
+        assertEquals(listOf(listOf("a1"), listOf("a2")), pages.map { p -> p.map { it.item.id } })
+    }
+
+    @Test
     fun `an oversized widget shrinks to the page, and no items still means one page`() {
         val big = pack(listOf(WidgetItem("w", WidgetKind.EXTERNAL, cols = 9, rows = 9)), columns = 3, rows = 2).single().single()
         assertEquals(3 to 2, big.cols to big.rows)

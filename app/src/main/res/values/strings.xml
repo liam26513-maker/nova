@@ -165,6 +165,13 @@
     <string name="customize_theme_auto">Automatico</string>
     <string name="customize_accent">Colore d\'accento</string>
     <string name="customize_accent_auto">Preso dallo sfondo</string>
+    <string name="customize_auto_theme">Tema dallo sfondo</string>
+    <string name="customize_ink">Colore del testo</string>
+    <string name="customize_ink_auto">Automatico</string>
+    <string name="customize_color_custom">Colore libero</string>
+    <string name="customize_hue">Tonalità</string>
+    <string name="customize_saturation">Intensità</string>
+    <string name="customize_brightness">Luminosità</string>
     <string name="customize_text_and_clock">Testo e orologio</string>
     <string name="customize_weight">Spessore</string>
     <string name="customize_weight_light">Sottile</string>

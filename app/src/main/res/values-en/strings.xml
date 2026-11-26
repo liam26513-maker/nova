@@ -162,6 +162,13 @@
     <string name="customize_theme_auto">Automatic</string>
     <string name="customize_accent">Accent colour</string>
     <string name="customize_accent_auto">From the background</string>
+    <string name="customize_auto_theme">Theme from background</string>
+    <string name="customize_ink">Text colour</string>
+    <string name="customize_ink_auto">Automatic</string>
+    <string name="customize_color_custom">Custom colour</string>
+    <string name="customize_hue">Hue</string>
+    <string name="customize_saturation">Intensity</string>
+    <string name="customize_brightness">Brightness</string>
     <string name="customize_text_and_clock">Text and clock</string>
     <string name="customize_weight">Weight</string>
     <string name="customize_weight_light">Thin</string>

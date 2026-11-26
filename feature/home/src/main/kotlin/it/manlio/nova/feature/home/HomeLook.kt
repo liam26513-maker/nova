@@ -44,7 +44,7 @@ internal fun HomePrefs.look(
             ThemeMode.LIGHT -> false
             ThemeMode.AUTO -> systemDark
         }
-    val ink = if (dark) Color.White else Color(0xFF15171A)
+    val ink = inkColor?.let(::Color) ?: if (dark) Color.White else Color(0xFF15171A)
     val (big, small) = labelSizes(textSize)
     val (bigIcon, smallIcon) = iconSizes(iconSize)
     val gridIcon = gridIconSize(iconSize)

@@ -165,11 +165,9 @@ private fun WallpaperSection(
                     onClick = actions.onPickPhoto,
                 )
             WallpaperSource.SOLID ->
-                Swatches(
-                    R.string.customize_solid_color,
-                    SOLID_COLORS.map { SwatchItem(colorName(it), color = Color(it)) },
-                    selected = SOLID_COLORS.indexOf(prefs.solidColor),
-                ) { i -> onChange { it.copy(solidColor = SOLID_COLORS[i]) } }
+                ColorChoice(R.string.customize_solid_color, SOLID_COLORS, prefs.solidColor, autoLabel = null) { c ->
+                    c?.let { color -> onChange { it.copy(solidColor = color) } }
+                }
         }
         if (prefs.wallpaper == WallpaperSource.SYSTEM || prefs.wallpaper == WallpaperSource.PHOTO) {
             Choice(R.string.customize_blur, BlurLevel.entries, prefs.blurLevel, { stringResource(labelOf(it)) }, divider = true) { v ->
@@ -197,15 +195,18 @@ private fun ColorsSection(
     onChange: ((HomePrefs) -> HomePrefs) -> Unit,
 ) {
     SettingsSection(backdrop, header = stringResource(R.string.customize_colors)) {
+        Choice(R.string.customize_auto_theme, listOf(true, false), prefs.autoTheme, { onOff(it) }) { v ->
+            onChange { it.copy(autoTheme = v) }
+        }
         Choice(R.string.customize_theme_mode, ThemeMode.entries, prefs.theme, {
             stringResource(labelOf(it))
-        }) { v -> onChange { it.copy(theme = v) } }
-        val auto = stringResource(R.string.customize_accent_auto)
-        Swatches(
-            R.string.customize_accent,
-            listOf(SwatchItem(auto, auto = true)) + ACCENTS.map { SwatchItem(colorName(it), color = Color(it)) },
-            selected = prefs.accent?.let { ACCENTS.indexOf(it) + 1 } ?: 0,
-        ) { i -> onChange { it.copy(accent = if (i == 0) null else ACCENTS[i - 1]) } }
+        }, divider = true) { v -> onChange { it.copy(theme = v) } }
+        ColorChoice(R.string.customize_accent, ACCENTS, prefs.accent, stringResource(R.string.customize_accent_auto)) { c ->
+            onChange { it.copy(accent = c) }
+        }
+        ColorChoice(R.string.customize_ink, INKS, prefs.inkColor, stringResource(R.string.customize_ink_auto)) { c ->
+            onChange { it.copy(inkColor = c) }
+        }
     }
 }
 

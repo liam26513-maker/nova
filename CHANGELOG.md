@@ -4,6 +4,10 @@ Ogni voce racconta in parole semplici cosa è cambiato.
 
 ## Non rilasciato
 
+- **Pagina nuova trascinando** («si aggiungi la pagina nuova e temi con creazione automatica in base all'immagine di sfondo che si mette ma anche modificabili dall'utilizzatore in modo completo in ogni modo per tutto»): in modifica, dopo l'ultima pagina ce n'è sempre una vuota; lascia lì un'icona e nasce una pagina nuova.
+- **Tema dallo sfondo**: in Personalizza → Colori accendi «Tema dallo sfondo» e a ogni sfondo nuovo NOVA sceglie da sola tema chiaro o scuro e un colore d'accento preso dall'immagine. Puoi ritoccare tutto dopo: le tue modifiche restano fino al prossimo sfondo.
+- **Colori liberi e colore del testo**: per l'accento, il colore dello sfondo e il nuovo «Colore del testo» c'è «+» (colore libero), con tre barre: tonalità, intensità e luminosità.
+
 - **Le app vanno dove vuoi sulla Home** («fammi sistemare le app nella home in ogni parte liberamente»): in modifica puoi lasciare un'icona, una cartella o un widget in qualsiasi casella, anche vuota e lontana dalle altre; resta lì. Se la lasci su un'altra icona, quella si sposta avanti. Sul centro di un'app crei ancora una cartella.
 
 - **La cartella resta visibile mentre scrivi il nome** («Sì, sistemala»): quando compare la tastiera la Home non scorre più in su, e la cartella si sposta sopra la tastiera.
