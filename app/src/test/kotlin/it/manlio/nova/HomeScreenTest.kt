@@ -516,14 +516,14 @@ class HomeScreenTest {
     }
 
     @Test
-    fun dragging_an_app_in_edit_mode_reorders_the_grid() {
+    fun dragging_an_app_in_edit_mode_puts_it_in_the_cell_under_the_finger() {
         render(prefs = HomePrefs())
         compose.onNodeWithText("Mappe").performTouchInput { longClick() }
         compose.onNodeWithText("Modifica la Home").performClick()
         compose.waitForIdle()
         val label = compose.onNodeWithText("Disegno").fetchSemanticsNode().boundsInRoot
         val from = compose.onNodeWithText("Calendario").fetchSemanticsNode().boundsInRoot
-        // Nella parte sinistra della cella di Disegno, fuori dal centro: si inserisce lì, non si unisce.
+        // Nella parte sinistra della cella di Disegno, fuori dal centro: prende quella casella, non si unisce.
         val target = Offset(label.center.x - 60f, label.center.y - 32f)
         compose.onNodeWithText("Calendario").performTouchInput {
             down(center)
@@ -533,8 +533,7 @@ class HomeScreenTest {
         }
         compose.waitForIdle()
         assertEquals(true, layout.items.none { it is FolderItem })
-        val order = layout.items.map { it.id }
-        assertEquals(true, order.indexOf(apps[0].key) > order.indexOf(apps[2].key))
+        assertEquals(listOf(apps[0].key), layout.spots.keys.toList())
     }
 
     @Test
