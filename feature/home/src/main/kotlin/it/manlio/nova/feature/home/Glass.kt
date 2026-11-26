@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Vetro: un riempimento traslucido più chiaro in alto, con un filo di luce sul bordo (più forte in alto,
  * quasi spento in basso). Solo colori e un tratto: niente sfocatura in tempo reale, quindi costa quasi nulla.
- * Con [flat] (livello grafico Prestazioni) resta un riempimento piatto più pieno, senza bordo.
+ * Con [flat] (livello grafico Prestazioni) resta un riempimento piatto più pieno, senza bordo, salvo col vetro liquido.
  * Con [liquid] il vetro è più limpido e lucido: un riflesso morbido in alto a sinistra e un bordo doppio che prende luce
  * da un lato e la rimanda dall'altro. Sempre solo sfumature e tratti: lo stesso costo del vetro normale.
  */
@@ -29,7 +29,9 @@ internal fun Modifier.glass(
 ): Modifier =
     drawBehind {
         val outline = shape.createOutline(size, layoutDirection, this)
-        if (liquid && !flat) {
+        // Il vetro liquido vale anche col livello Prestazioni: costa come il vetro normale (sfumature e tratti, niente
+        // sfocatura) e chi lo sceglie deve vederlo anche quando il livello automatico scende (richiesta del 26 novembre 2026).
+        if (liquid) {
             liquidGlass(shape, dark)
             return@drawBehind
         }
