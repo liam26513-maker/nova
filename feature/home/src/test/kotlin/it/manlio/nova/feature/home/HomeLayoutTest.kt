@@ -262,6 +262,13 @@ class DropActionTest {
     }
 
     @Test
+    fun `a quick sideways move turns the page, holding first or moving up and down picks the item`() {
+        assertEquals(true, swipesPage(80, Offset(-40f, 5f)))
+        assertEquals(false, swipesPage(400, Offset(-40f, 5f)))
+        assertEquals(false, swipesPage(80, Offset(5f, 40f)))
+    }
+
+    @Test
     fun `the cell under the finger, with the item centred on it and kept inside the page`() {
         val m = GridMetrics(columns = 4, rows = 3)
         val cell = Size(100f, 100f)
