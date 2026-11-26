@@ -98,4 +98,4 @@ private fun DrawScope.liquidGlass(
 }
 
 /** Il fondo delle schede sotto il vetro: col vetro liquido è più trasparente, così lo sfondo si vede attraverso. */
-internal fun Color.glassBase(liquid: Boolean): Color = if (liquid) copy(alpha = alpha * 0.62f) else this
+internal fun Color.glassBase(liquid: Boolean): Color = if (liquid) copy(alpha = alpha * 0.84f) else this
