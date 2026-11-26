@@ -1,6 +1,6 @@
 package it.manlio.nova.feature.home
 
-/** Temi pronti, da applicare con un tocco e poi ritoccare (come i temi pronti di Niagara, ma propri). */
+/** Temi pronti, da applicare con un tocco e poi ritoccare. Dalle impostazioni tengono lo sfondo scelto ([HomePrefs.withPreset]). */
 data class ThemePreset(
     val name: String,
     val description: String,
@@ -13,7 +13,7 @@ object ThemePresets {
         listOf(
             ThemePreset(
                 "Vetro",
-                "Il tuo sfondo sfocato e trasparenze lucide, con riflessi sui bordi",
+                "Sfondo sfocato e trasparenze lucide, con riflessi sui bordi",
                 HomePrefs(
                     theme = ThemeMode.DARK,
                     wallpaper = WallpaperSource.SYSTEM,
@@ -25,12 +25,12 @@ object ThemePresets {
             ),
             ThemePreset(
                 "Notte",
-                "Il tuo sfondo molto sfocato, testo chiaro e sottile",
+                "Sfondo molto sfocato, testo chiaro e sottile",
                 HomePrefs(theme = ThemeMode.DARK, wallpaper = WallpaperSource.SYSTEM, blurLevel = BlurLevel.MAX),
             ),
             ThemePreset(
                 "Aurora",
-                "Sfumatura verde-blu, icone monocromatiche, accento acqua",
+                "Icone monocromatiche e rotonde, accento acqua",
                 HomePrefs(
                     wallpaper = WallpaperSource.NOVA,
                     novaWallpaper = 1,
@@ -55,7 +55,7 @@ object ThemePresets {
             ),
             ThemePreset(
                 "Tramonto",
-                "Sfumatura calda, orologio grande e marcato",
+                "Orologio grande e marcato, accento caldo",
                 HomePrefs(
                     wallpaper = WallpaperSource.NOVA,
                     novaWallpaper = 2,
@@ -67,7 +67,7 @@ object ThemePresets {
             ),
             ThemePreset(
                 "Essenziale",
-                "Nero morbido, carattere elegante e sottile, solo testo",
+                "Carattere elegante e sottile, solo testo",
                 HomePrefs(
                     wallpaper = WallpaperSource.SOLID,
                     solidColor = 0xFF0D0E11.toInt(),

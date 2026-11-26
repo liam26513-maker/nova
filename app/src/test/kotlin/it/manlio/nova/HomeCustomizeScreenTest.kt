@@ -111,7 +111,7 @@ class HomeCustomizeScreenTest {
         }
         // La prima categoria è «Temi».
         compose.onNodeWithText("Aurora").performScrollTo().performClick()
-        assertEquals(WallpaperSource.NOVA, prefs.wallpaper)
+        assertEquals(WallpaperSource.SYSTEM, prefs.wallpaper) // il tema tiene lo sfondo (26 novembre 2026)
         assertEquals(IconStyle.MONO, prefs.iconStyle)
 
         open("Sfondo")

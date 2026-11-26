@@ -56,6 +56,7 @@ internal fun GlassDialog(
     visible: Boolean,
     onDismiss: () -> Unit,
     width: androidx.compose.ui.unit.Dp,
+    popFrom: Float = POP_FROM,
     content: @Composable () -> Unit,
 ) {
     val look = LocalHomeLook.current
@@ -72,8 +73,8 @@ internal fun GlassDialog(
             Box(
                 Modifier
                     .animateEnterExit(
-                        enter = scaleIn(spring(dampingRatio = POP_DAMPING, stiffness = POP_STIFFNESS), initialScale = POP_FROM),
-                        exit = scaleOut(spring(stiffness = FADE), targetScale = POP_FROM),
+                        enter = scaleIn(spring(dampingRatio = POP_DAMPING, stiffness = POP_STIFFNESS), initialScale = popFrom),
+                        exit = scaleOut(spring(stiffness = FADE), targetScale = popFrom),
                     ).widthIn(max = width)
                     .padding(24.dp)
                     .background((if (look.dark) CARD else CARD_LIGHT).glassBase(look.liquid), SquircleShape(CARD_RADIUS))
@@ -98,7 +99,8 @@ internal fun FolderOverlay(
 ) {
     val last = remember { arrayOfNulls<FolderItem>(1) }
     if (folder != null) last[0] = folder
-    GlassDialog(folder != null, onClose, FOLDER_WIDTH) {
+    // La cartella cresce dal piccolo al centro dello schermo (richiesta del 26 novembre 2026).
+    GlassDialog(folder != null, onClose, FOLDER_WIDTH, popFrom = FOLDER_POP_FROM) {
         val shown = last[0] ?: return@GlassDialog
         val look = LocalHomeLook.current
         var name by remember(shown.id) { mutableStateOf(shown.name) }
@@ -228,3 +230,4 @@ private const val FADE = 600f
 private const val POP_DAMPING = 0.72f
 private const val POP_STIFFNESS = 520f
 private const val POP_FROM = 0.86f
+private const val FOLDER_POP_FROM = 0.4f

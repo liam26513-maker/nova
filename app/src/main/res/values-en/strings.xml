@@ -138,7 +138,7 @@
     <string name="customize_done">Done</string>
     <string name="home_sleep_needs_shizuku">Turning the screen off from Home needs Shizuku running</string>
     <string name="customize_themes">Themes</string>
-    <string name="customize_themes_footer">A theme changes background, colours, text, clock and icons together; then you can tweak anything. You can also save your theme to a file and share it.</string>
+    <string name="customize_themes_footer">A theme changes colours, text, clock and icons together and keeps your background; then you can tweak anything. You can also save your theme to a file and share it.</string>
     <string name="customize_theme_export">Save theme to a file</string>
     <string name="customize_theme_import">Open a theme from a file</string>
     <string name="customize_theme_saved">Theme saved</string>
